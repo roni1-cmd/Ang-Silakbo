@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Admin Panel</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gradient-start: #FF6B35;
+            --gradient-mid: #FF8C38;
+            --gradient-end: #FFA351;
+            --text-color: #333;
+            --background-color: #FFF5E6;
+            --card-background: #FFFFFF;
+            --accent-color: #FF8C00;
+            --shadow-color: rgba(255, 107, 53, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        #welcomeMessage {
+            font-size: 1.5em;
+            color: white;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            color: white;
+            transition: transform 0.3s ease;
+            margin-right: 20px;
+        }
+
+        .notification-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #FF3B30;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        .notification-panel {
+            display: none;
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: var(--card-background);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            z-index: 1000;
+        }
+
+        .notification-list {
+            list-style-type: none;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification-item.unread {
+            background-color: #FFF0E6;
+        }
+
+        .notification-item:hover {
+            background-color: #FFE8D6;
+        }
+
+        .admin-content {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            flex-grow: 1;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .btn i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            background: white;
+            color: var(--gradient-start);
+        }
+
+        .logout-btn:hover {
+            background: var(--gradient-start);
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                margin-top: 10px;
+            }
+
+            .notification-panel {
+                top: 120px;
+                right: 10px;
+                left: 10px;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h1>Ang Silakbo</h1>
+            <nav>
+                <button id="dashboardBtn" class="btn"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+                <button id="checkApplicationsBtn" class="btn"><i class="fas fa-clipboard-check"></i> Check Applications</button>
+                <button id="manageUsersBtn" class="btn"><i class="fas fa-users"></i> Manage Users</button>
+                <button id="editContentBtn" class="btn"><i class="fas fa-edit"></i> Edit Content</button>
+                <button id="applicantsBtn" class="btn"><i class="fas fa-user-plus"></i> Applicants</button>
+            </nav>
+            <button id="logoutBtn" class="btn logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div class="header-content">
+                    <img src="SILAKBO (1).png" alt="Ang Silakbo Logo" class="logo">
+                    <div id="welcomeMessage"><span class="loading"></span> Loading...</div>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-icon" id="notificationIcon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count" id="notificationCount">0</span>
+                    </div>
+                </div>
+            </header>
+            <div class="admin-content fade-in" id="adminContent">
+                <!-- Admin content will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+    <div class="notification-panel" id="notificationPanel">
+        <ul id="notificationList" class="notification-list"></ul>
+    </div>
+
+    <script type="module">
+        // Import the necessary Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import { getDatabase, ref, get, onValue, push, set, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const adminContent = document.getElementById('adminContent');
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationPanel = document.getElementById('notificationPanel');
+        const notificationList = document.getElementById('notificationList');
+        const notificationCount = document.getElementById('notificationCount');
+        const dashboardBtn = document.getElementById('dashboardBtn');
+        const checkApplicationsBtn = document.getElementById('checkApplicationsBtn');
+        const manageUsersBtn = document.getElementById('manageUsersBtn');
+        const editContentBtn = document.getElementById('editContentBtn');
+        const applicantsBtn = document.getElementById('applicantsBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let unreadNotifications = 0;
+
+        // Function to get personalized greeting
+        function getPersonalizedGreeting(email) {
+            switch (email) {
+                case 'angsilakbo1@uclm.com':
+                    return 'Hello, Miss Queenie!';
+                case 'angsilakbo2@uclm.com':
+                    return 'Hello, Miss June!';
+                case 'angsilakbo3@uclm.com':
+                    return 'Hello, Miss Diana!';
+                default:
+                    return `Welcome, ${email}!`;
+            }
+        }
+
+        // Function to check for new applications
+        function checkForNewApplications() {
+            const applicationsRef = ref(db, 'applications');
+            let lastTimestamp = localStorage.getItem('lastApplicationTimestamp') || 0;
+
+            onValue(applicationsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const applications = Object.values(data);
+                    const newApplications = applications.filter(app => app.timestamp > lastTimestamp);
+                    
+                    newApplications.forEach(app => {
+                        createNotification(`New applicant: ${app.name} for ${app.position}`);
+                    });
+
+                    if (newApplications.length > 0) {
+                        lastTimestamp = Math.max(...newApplications.map(app => app.timestamp));
+                        localStorage.setItem('lastApplicationTimestamp', lastTimestamp);
+                    }
+                }
+            });
+        }
+
+        // Function to create a new notification in the database
+        function createNotification(message) {
+            const notificationsRef = ref(db, 'notifications');
+            const newNotificationRef = push(notificationsRef);
+            set(newNotificationRef, {
+                message: message,
+                timestamp: Date.now(),
+                read: false
+            });
+        }
+
+        // Function to fetch notifications
+        function fetchNotifications() {
+            const notificationsRef = ref(db, 'notifications');
+            onValue(notificationsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const notifications = Object.entries(data).map(([key, value]) => ({
+                        id: key,
+                        ...value,
+                        timestamp: new Date(value.timestamp)
+                    })).sort((a, b) => b.timestamp - a.timestamp);
+                    updateNotificationPanel(notifications);
+                }
+            });
+        }
+
+        // Function to update the notification panel
+        function updateNotificationPanel(notifications) {
+            notificationList.innerHTML = '';
+            unreadNotifications = 0;
+            
+            notifications.forEach(notification => {
+                const li = document.createElement('li');
+                li.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                li.innerHTML = `
+                    <strong>${notification.message}</strong><br>
+                    <small>${notification.timestamp.toLocaleString()}</small>
+                `;
+                li.onclick = () => markNotificationAsRead(notification.id);
+                notificationList.appendChild(li);
+
+                if (!notification.read) {
+                    unreadNotifications++;
+                }
+            });
+
+            notificationCount.textContent = unreadNotifications;
+        }
+
+        // Function to mark a notification as read
+        function markNotificationAsRead(notificationId) {
+            const notificationRef = ref(db, `notifications/${notificationId}`);
+            update(notificationRef, { read: true });
+        }
+
+        // Function to check authentication and admin status
+        function checkAuthAndAdminStatus() {
+            welcomeMessage.innerHTML = '<span class="loading"></span> Loading...';
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    const adminRef = ref(db, `admins/${user.uid}`);
+                    get(adminRef).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const greeting = getPersonalizedGreeting(user.email);
+                            welcomeMessage.textContent = greeting;
+                            showDashboard();
+                            checkForNewApplications();
+                            fetchNotifications();
+                        } else {
+                            welcomeMessage.textContent = "You don't have admin privileges.";
+                            adminContent.innerHTML = '<p>Access denied. Please contact the system administrator.</p>';
+                        }
+                    }).catch((error) => {
+                        console.error("Error checking admin status:", error);
+                        welcomeMessage.textContent = "Error checking admin status.";
+                        adminContent.innerHTML = '<p>An error occurred. Please try again later.</p>';
+                    });
+                } else {
+                    welcomeMessage.textContent = "Please log in to access the admin panel.";
+                    adminContent.innerHTML = '<p>You are not logged in. Redirecting to login page...</p>';
+                    setTimeout(() => {
+                        window.location.href = 'Ang Silakbo Login1.html';
+                    }, 3000);
+                }
+            });
+        }
+
+        // Function to show dashboard
+        function showDashboard() {
+            adminContent.innerHTML = `
+                <h2>Dashboard</h2>
+                <div class="dashboard">
+                    <div class="dashboard-card">
+                        <h3>Total Applications</h3>
+                        <p id="totalApplications"><span class="loading"></span></p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>New Applications</h3>
+                        <p id="newApplications"><span class="loading"></span></p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Active Users</h3>
+                        <p id="activeUsers"><span class="loading"></span></p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Content Updates</h3>
+                        <p id="contentUpdates"><span class="loading"></span></p>
+                    </div>
+                </div>
+            `;
+
+            // Fetch real-time data for dashboard
+            fetchDashboardData();
+        }
+
+        // Function to fetch real-time data for dashboard
+        function fetchDashboardData() {
+            const totalApplicationsRef = ref(db, 'applications');
+            const usersRef = ref(db, 'users');
+            const contentUpdatesRef = ref(db, 'contentUpdates');
+
+            // Fetch total applications
+            get(totalApplicationsRef).then((snapshot) => {
+                const totalApplications = snapshot.size || 0;
+                document.getElementById('totalApplications').textContent = totalApplications;
+            });
+
+            // Fetch new applications (last 24 hours)
+            get(totalApplicationsRef).then((snapshot) => {
+                const now = Date.now();
+                const oneDayAgo = now - 24 * 60 * 60 * 1000;
+                const newApplications = Object.values(snapshot.val() || {}).filter(app => app.timestamp > oneDayAgo).length;
+                document.getElementById('newApplications').textContent = newApplications;
+            });
+
+            // Fetch active users (users who logged in within the last 30 days)
+            get(usersRef).then((snapshot) => {
+                const now = Date.now();
+                const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+                const activeUsers = Object.values(snapshot.val() || {}).filter(user => user.lastLogin > thirtyDaysAgo).length;
+                document.getElementById('activeUsers').textContent = activeUsers;
+            });
+
+            // Fetch content updates (last 7 days)
+            get(contentUpdatesRef).then((snapshot) => {
+                const now = Date.now();
+                const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+                const recentUpdates = Object.values(snapshot.val() || {}).filter(update => update.timestamp > sevenDaysAgo).length;
+                document.getElementById('contentUpdates').textContent = recentUpdates;
+            });
+        }
+
+        // Call the function when the page loads
+        checkAuthAndAdminStatus();
+
+        // Notification icon click event
+        notificationIcon.addEventListener('click', () => {
+            notificationPanel.style.display = notificationPanel.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close notification panel when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!notificationIcon.contains(event.target) && !notificationPanel.contains(event.target)) {
+                notificationPanel.style.display = 'none';
+            }
+        });
+
+        // Admin control button event listeners
+        dashboardBtn.addEventListener('click', showDashboard);
+
+        checkApplicationsBtn.addEventListener('click', () => {
+            adminContent.innerHTML = '<h2><i class="fas fa-clipboard-check"></i> Check Applications</h2><p>Functionality to check applications will be implemented here.</p>';
+        });
+
+        manageUsersBtn.addEventListener('click', () => {
+            adminContent.innerHTML = '<h2><i class="fas fa-users"></i> Manage Users</h2><p>User management interface will be implemented here.</p>';
+        });
+
+        editContentBtn.addEventListener('click', () => {
+            adminContent.innerHTML = '<h2><i class="fas fa-edit"></i> Edit Content</h2><p>Content editing functionality will be implemented here.</p>';
+        });
+
+        applicantsBtn.addEventListener('click', () => {
+            window.location.href = 'Ang Silakbo Registered Applicants.html';
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("User signed out successfully");
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('adminUser');
+                window.location.href = 'Ang Silakbo Login1.html';
+            }).catch((error) => {
+                console.error("Error signing out:", error);
+            });
+        });
+    </script>
+</body>
+</html>

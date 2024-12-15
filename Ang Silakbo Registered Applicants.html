@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Registered Applicants</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gradient-start: #FF6B35;
+            --gradient-mid: #FF8C38;
+            --gradient-end: #FFA351;
+            --text-color: #333;
+            --background-color: #FFF5E6;
+            --card-background: #FFFFFF;
+            --accent-color: #FF8C00;
+            --shadow-color: rgba(255, 107, 53, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--gradient-start);
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px var(--shadow-color);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px var(--shadow-color);
+            text-align: center;
+            flex: 1;
+            margin: 10px;
+            min-width: 200px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px var(--shadow-color);
+        }
+
+        .stat-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        #searchInput {
+            width: 70%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid var(--gradient-start);
+            border-radius: 30px 0 0 30px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput:focus {
+            box-shadow: 0 0 10px var(--shadow-color);
+        }
+
+        #searchBtn {
+            padding: 15px 30px;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #searchBtn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pagination button {
+            padding: 12px 25px;
+            margin: 0 10px;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--shadow-color);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--shadow-color);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #message {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: var(--gradient-start);
+            font-size: 1.2em;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .icon-cell {
+            text-align: center;
+        }
+
+        .icon-cell i {
+            font-size: 1.5em;
+            color: var(--gradient-mid);
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #searchInput, #searchBtn {
+                width: 100%;
+                margin-bottom: 10px;
+                border-radius: 30px;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+
+            th, td {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="admin_panel.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Admin Panel</a>
+        <h1><i class="fas fa-users"></i> Registered Applicants</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3><i class="fas fa-user-plus"></i> Total Applicants</h3>
+                <p id="totalApplicants">0</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-briefcase"></i> Unique Positions</h3>
+                <p id="uniquePositions">0</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-calendar-alt"></i> Latest Application</h3>
+                <p id="latestApplication">N/A</p>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by name, email, or position...">
+            <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+
+        <div id="message"></div>
+
+        <div class="table-container">
+            <table id="applicantDataTable">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Name</th>
+                        <th><i class="fas fa-envelope"></i> Email</th>
+                        <th><i class="fas fa-phone"></i> Phone</th>
+                        <th><i class="fas fa-briefcase"></i> Position</th>
+                        <th><i class="fas fa-star"></i> Experience</th>
+                        <th><i class="fas fa-calendar-day"></i> Application Date</th>
+                    </tr>
+                </thead>
+                <tbody id="applicantDataBody">
+                    <!-- Data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button id="prevPage"><i class="fas fa-chevron-left"></i> Previous</button>
+            <button id="nextPage">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        let allApplicants = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        const messageElement = document.getElementById('message');
+        const tableBody = document.getElementById('applicantDataBody');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+
+        function showMessage(msg, isError = false) {
+            messageElement.textContent = msg;
+            messageElement.style.color = isError ? 'red' : 'var(--gradient-start)';
+            messageElement.style.animation = 'none';
+            messageElement.offsetHeight; // Trigger reflow
+            messageElement.style.animation = null;
+        }
+
+        function showLoading() {
+            tableBody.innerHTML = '<tr><td colspan="6"><div class="loading"></div> Loading applicant data...</td></tr>';
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is signed in");
+                fetchApplicantData();
+            } else {
+                console.log("No user is signed in");
+                showMessage("Please sign in to view this data.", true);
+            }
+        });
+
+        function fetchApplicantData() {
+            showLoading();
+            const applicationsRef = ref(database, 'applications');
+
+            onValue(applicationsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    allApplicants = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+                    updateTable();
+                    updateStats();
+                    showMessage(`${allApplicants.length} applicants found.`);
+                } else {
+                    showMessage("No applicant data available.", true);
+                }
+            }, (error) => {
+                console.error("Error fetching data:", error);
+                showMessage("Error loading data. Please try again later.", true);
+            });
+        }
+
+        function updateTable(searchTerm = '') {
+            tableBody.innerHTML = '';
+
+            const filteredApplicants = searchTerm
+                ? allApplicants.filter(applicant => 
+                    applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    applicant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    applicant.position.toLowerCase().includes(searchTerm.toLowerCase())
+                ): allApplicants;
+
+            const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedApplicants = filteredApplicants.slice(startIndex, endIndex);
+
+            if (paginatedApplicants.length === 0) {
+                showMessage("No matching applicants found.", true);
+            } else {
+                paginatedApplicants.forEach(applicant => {
+                    const row = tableBody.insertRow();
+                    row.insertCell().textContent = applicant.name;
+                    row.insertCell().textContent = applicant.email;
+                    row.insertCell().textContent = applicant.phone;
+                    row.insertCell().textContent = applicant.position;
+                    row.insertCell().textContent = applicant.experience;
+                    row.insertCell().textContent = new Date(applicant.timestamp).toLocaleString();
+                });
+                showMessage(`Showing ${startIndex + 1}-${Math.min(endIndex, filteredApplicants.length)} of ${filteredApplicants.length} applicants`);
+            }
+
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        function updateStats() {
+            document.getElementById('totalApplicants').textContent = allApplicants.length;
+            const uniquePositions = new Set(allApplicants.map(a => a.position)).size;
+            document.getElementById('uniquePositions').textContent = uniquePositions;
+            const latestApplication = allApplicants.length > 0 
+                ? new Date(allApplicants[0].timestamp).toLocaleDateString()
+                : 'N/A';
+            document.getElementById('latestApplication').textContent = latestApplication;
+        }
+
+        searchBtn.addEventListener('click', () => {
+            currentPage = 1;
+            updateTable(searchInput.value);
+        });
+
+        searchInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                currentPage = 1;
+                updateTable(searchInput.value);
+            }
+        });
+
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable(searchInput.value);
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(allApplicants.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTable(searchInput.value);
+            }
+        });
+    </script>
+</body>
+</html>

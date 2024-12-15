@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fff5f0;
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: flex;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            width: 1000px;
+            height: 600px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 100px;
+            height: auto;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.5s forwards;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .login-form {
+            flex: 1;
+            padding: 60px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-image {
+            flex: 1;
+            background: linear-gradient(135deg, #ff9b5b, #ff7e33);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+            color: #ff7e33;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.2s forwards;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.4s forwards;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.6s forwards;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #fff5f0;
+            background: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff7e33;
+            box-shadow: 0 0 0 3px rgba(255, 126, 51, 0.1);
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 12px;
+            color: #ff7e33;
+            background: #fff;
+            padding: 0 4px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #ff7e33;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.8s forwards;
+        }
+
+        .login-btn:hover {
+            background: #ff6b1a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 126, 51, 0.2);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 1s forwards;
+        }
+
+        .forgot-password:hover {
+            color: #ff7e33;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #ff7e33;
+            color: white;
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .moving-circle {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                width: 90%;
+                height: auto;
+                margin: 20px;
+            }
+
+            .login-image {
+                display: none;
+            }
+
+            .login-form {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="SILAKBO (1).png" alt="Logo" class="logo">
+        <div class="login-form">
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Please login to access your account</p>
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" id="username" placeholder=" " required>
+                    <label for="username">Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder=" " required>
+                    <label for="password">Password</label>
+                </div>
+                <button type="submit" class="login-btn">Login Now</button>
+        </div>
+        <div class="login-image">
+            <img src="Editorial Cartoon.jpg" alt="Login illustration 1" class="slide">
+            <img src="Photo 1.PNG" alt="Login illustration 2" class="slide">
+            <img src="image 1.PNG" alt="Login illustration 3" class="slide">
+            <img src="image 2.jpg" alt="Login illustration 4" class="slide">
+            <img src="Photo 2.jpg" alt="Login illustration 5" class="slide">
+        </div>
+    </div>
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        let loginAttempts = 0;
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    showNotification('Login successful!', 'success');
+                    return user.getIdToken();
+                })
+                .then((idToken) => {
+                    localStorage.setItem('authToken', idToken);
+                    return firebase.database().ref(`admins/${firebase.auth().currentUser.uid}`).once('value');
+                })
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const adminData = snapshot.val();
+                        localStorage.setItem('adminUser', JSON.stringify({uid: firebase.auth().currentUser.uid, adminData}));
+                        setTimeout(() => {
+                            window.location.href = 'Ang Silakbo Admin Panel.html';
+                        }, 1500);
+                    } else {
+                        showNotification('You do not have admin privileges.', 'error');
+                        return firebase.auth().signOut();
+                    }
+                })
+                .catch((error) => {
+                    loginAttempts++;
+                    let message;
+                    switch(loginAttempts) {
+                        case 1:
+                            message = "Oops. Maybe try again?";
+                            break;
+                        case 2:
+                            message = "Uh-oh. This is tough. Try again?";
+                            break;
+                        case 3:
+                            message = "Hmm. Do you really know your account?";
+                            break;
+                        default:
+                            message = "Are you really the admin?";
+                    }
+                    showNotification(message, 'error');
+                });
+        });
+
+        // Slideshow functionality
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlides() {
+            slides.forEach(slide => slide.style.opacity = 0);
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}
+            slides[slideIndex-1].style.opacity = 1;
+            setTimeout(showSlides, 5000); // Change image every 5 seconds
+        }
+
+        showSlides();
+
+        // Floating label functionality
+        const inputs = document.querySelectorAll('.input-group input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.classList.add('active');
+            });
+            input.addEventListener('blur', () => {
+                if (input.value === '') {
+                    input.classList.remove('active');
+                }
+            });
+        });
+
+        // Notification functionality
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Moving circles background
+        function createMovingCircle() {
+            const circle = document.createElement('div');
+            circle.classList.add('moving-circle');
+            
+            const size = Math.random() * 100 + 50;
+            circle.style.width = `${size}px`;
+            circle.style.height = `${size}px`;
+            
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * window.innerHeight;
+            circle.style.left = `${startX}px`;
+            circle.style.top = `${startY}px`;
+            
+            const hue = Math.random() * 60 + 15; // Orange hues
+            circle.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+            
+            document.body.appendChild(circle);
+            
+            animateCircle(circle);
+        }
+
+        function animateCircle(circle) {
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 2 + 1;
+            let x = parseFloat(circle.style.left);
+            let y = parseFloat(circle.style.top);
+            
+            function move() {
+                x += Math.cos(angle) * velocity;
+                y += Math.sin(angle) * velocity;
+                
+                if (x < -100 || x > window.innerWidth + 100 || y < -100 || y > window.innerHeight + 100) {
+                    document.body.removeChild(circle);
+                    createMovingCircle();
+                    return;
+                }
+                
+                circle.style.left = `${x}px`;
+                circle.style.top = `${y}px`;
+                
+                requestAnimationFrame(move);
+            }
+            
+            move();
+        }
+
+        // Create initial set of moving circles
+        for (let i = 0; i < 10; i++) {
+            createMovingCircle();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silakbo Articles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #articlesList > div {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Silakbo Articles</h1>
+    <div id="articlesList"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a reference to the database service
+        const database = firebase.database();
+
+        // Fetch and display articles
+        const articlesRef = database.ref('articles');
+
+        articlesRef.on('value', (snapshot) => {
+            const articles = snapshot.val();
+            const articlesList = document.getElementById('articlesList');
+            articlesList.innerHTML = '';
+
+            if (articles) {
+                Object.keys(articles).reverse().forEach(id => {
+                    const article = articles[id];
+                    const articleElement = document.createElement('div');
+                    articleElement.innerHTML = `
+                        <h2>${article.title}</h2>
+                        <p>${article.content}</p>
+                        <small>Posted on: ${new Date(article.timestamp).toLocaleString()}</small>
+                    `;
+                    articlesList.appendChild(articleElement);
+                });
+            } else {
+                articlesList.innerHTML = '<p>No articles found.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
