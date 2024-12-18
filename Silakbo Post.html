@@ -3,336 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Post Article</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Professional Article Editor - Ang Silakbo</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <script src="https://cdn.tiny.cloud/1/n92j01vjprp9xy96v0uxd2kgqi5vnd50dwm5i47veg2u1bur/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #ff6b33;
-            --secondary-color: #fff5f0;
-            --text-color: #333;
-            --background-color: #fff;
+            --primary-color: #FF5722;
+            --primary-light: #FFCCBC;
+            --primary-dark: #E64A19;
+            --text-color: #333333;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --success-color: #4CAF50;
+            --error-color: #F44336;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: var(--secondary-color);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            color: var(--text-color);
         }
 
         .container {
-            background: var(--background-color);
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            width: 100%;
             max-width: 1200px;
-            margin: 20px auto;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.8s ease-out forwards;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            flex-grow: 1;
         }
 
-        @keyframes fadeIn {
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+        }
+
+        h1 i {
+            margin-right: 10px;
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        #editor {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        #editor:focus-within {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #saveButton {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #saveButton:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #saveButton:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #saveButton i {
+            margin-right: 8px;
+        }
+
+        #preview {
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        #preview:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
+        }
+
+        .loading-spinner {
+            border: 5px solid var(--primary-light);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 2000;
+            animation: fadeInUp 0.3s, fadeOut 0.3s 2.7s;
+            font-weight: 500;
+        }
+
+        .toast.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .toast.error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        nav {
-            background: var(--primary-color);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover img {
-            transform: scale(1.1);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: white;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            transform: scaleX(1);
-        }
-
-        .main-content {
-            padding: 40px;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            font-size: 32px;
-            margin-bottom: 20px;
-            text-align: center;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: var(--primary-color);
-        }
-
-        .article-form {
-            background-color: #f9f9f9;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-group input[type="text"],
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .form-group textarea {
-            height: 200px;
-            resize: vertical;
-        }
-
-        .form-group input[type="file"] {
-            display: none;
-        }
-
-        .file-upload-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .file-upload-label:hover {
-            background-color: #e55a2a;
-        }
-
-        .file-name {
-            margin-left: 10px;
-            font-style: italic;
-        }
-
-        .submit-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            background-color: #e55a2a;
-        }
-
-        .articles-list {
-            margin-top: 40px;
-        }
-
-        .article-card {
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .article-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .article-title {
-            font-size: 24px;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .article-meta {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .article-content {
-            margin-bottom: 15px;
-        }
-
-        .article-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
-        .loading {
-            text-align: center;
-            font-size: 18px;
-            margin-top: 20px;
+        @keyframes fadeOut {
+            from {opacity: 1;}
+            to {opacity: 0;}
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .main-content {
-                padding: 20px;
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .article-form {
-                padding: 20px;
+            nav ul {
+                margin-top: 10px;
             }
-        }
 
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+            nav ul li {
+                margin-left: 0;
+                margin-right: 20px;
+            }
 
-        .toast.show {
-            opacity: 1;
-        }
+            h1 {
+                font-size: 1.5em;
+            }
 
-        .toast.error {
-            background-color: #f44336;
+            #saveButton {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header>
         <nav>
-            <div class="logo">
-                <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
-                <span>Ang Silakbo</span>
-            </div>
-            <div class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Teams</a>
-                <a href="#">Contact</a>
-            </div>
+            <h1><i class="fas fa-edit"></i> Post an Article</h1>
+            <ul>
+                <li><a href="#" id="adminPanelLink"><i class="fas fa-user-cog"></i> Admin Panel</a></li>
+            </ul>
         </nav>
-
-        <div class="main-content">
-            <h1>Post an Article</h1>
-            
-            <form id="articleForm" class="article-form">
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea id="content" name="content" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="image" class="file-upload-label">
-                        <i class="fas fa-cloud-upload-alt"></i> Upload Image
-                    </label>
-                    <input type="file" id="image" name="image" accept="image/*">
-                    <span id="fileName" class="file-name"></span>
-                </div>
-                <button type="submit" class="submit-btn">Post Article</button>
-            </form>
-
-            <div id="articlesList" class="articles-list">
-                <!-- Articles will be dynamically inserted here -->
-            </div>
-            <div id="loading" class="loading">Loading articles...</div>
-        </div>
+    </header>
+    <div class="container">
+        <div id="editor"></div>
+        <button id="saveButton"><i class="fas fa-save"></i> Save Article</button>
+        <h2>Preview of your work:</h2>
+        <div id="preview"></div>
     </div>
-
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
     <div id="toast" class="toast"></div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
-
+    <script>
+        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
             authDomain: "ang-silakbo.firebaseapp.com",
@@ -343,98 +287,117 @@
             appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
             measurementId: "G-TSDTG2YJ94"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const storage = getStorage(app);
+        const loading = document.querySelector('.loading');
+        const toast = document.getElementById('toast');
+        const saveButton = document.getElementById('saveButton');
+        const preview = document.getElementById('preview');
 
-        // Reference to the articles in the database
-        const articlesRef = ref(database, 'articles');
+        tinymce.init({
+            selector: '#editor',
+            plugins: [
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists',
+                'media', 'searchreplace', 'table', 'visualblocks', 'wordcount', 'checklist', 'mediaembed',
+                'casechange', 'export', 'formatpainter', 'pageembed', 'permanentpen', 'footnotes',
+                'advtemplate', 'autocorrect', 'typography', 'inlinecss'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            skin: 'oxide',
+            content_css: 'default',
+            height: 500,
+            menubar: true,
+            branding: false,
+            setup: function(editor) {
+                editor.on('init', function() {
+                    loading.style.display = 'flex';
+                    // Load saved content if available
+                    db.ref('articles/main').once('value')
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const savedContent = snapshot.val().content;
+                            editor.setContent(savedContent);
+                            preview.innerHTML = savedContent;
+                        }
+                        loading.style.display = 'none';
+                    })
+                    .catch((error) => {
+                        console.error('Error loading article: ', error);
+                        loading.style.display = 'none';
+                        showToast('Error loading article. Please try again.', 'error');
+                    });
+                });
 
-        // Form submission
-        document.getElementById('articleForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+                editor.on('change', debounce(function() {
+                    preview.innerHTML = editor.getContent();
+                }, 500));
+            }
+        });
+
+        saveButton.addEventListener('click', () => {
+            loading.style.display = 'flex';
+            const content = tinymce.get('editor').getContent();
+            preview.innerHTML = content;
             
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            const imageFile = document.getElementById('image').files[0];
-
-            try {
-                let imageUrl = '';
-                if (imageFile) {
-                    const imageRef = storageRef(storage, `article_images/${Date.now()}_${imageFile.name}`);
-                    await uploadBytes(imageRef, imageFile);
-                    imageUrl = await getDownloadURL(imageRef);
-                }
-
-                const newArticleRef = push(articlesRef);
-                await set(newArticleRef, {
-                    title,
-                    content,
-                    imageUrl,
-                    timestamp: Date.now()
-                });
-
-                showToast('Article posted successfully!');
-                document.getElementById('articleForm').reset();
-                document.getElementById('fileName').textContent = '';
-            } catch (error) {
-                console.error('Error posting article:', error);
-                showToast('Error posting article. Please try again.', true);
-            }
+            // Save the content to Firebase
+            db.ref('articles/main').set({
+                content: content,
+                lastUpdated: new Date().toISOString()
+            })
+            .then(() => {
+                loading.style.display = 'none';
+                showToast('Article saved successfully!', 'success');
+                saveButton.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                setTimeout(() => {
+                    saveButton.innerHTML = '<i class="fas fa-save"></i> Save Article';
+                }, 2000);
+            })
+            .catch((error) => {
+                console.error('Error saving article: ', error);
+                loading.style.display = 'none';
+                showToast('Error saving article. Please try again.', 'error');
+            });
         });
 
-        // Display file name when selected
-        document.getElementById('image').addEventListener('change', (e) => {
-            const fileName = e.target.files[0]?.name || '';
-            document.getElementById('fileName').textContent = fileName;
+        // Admin Panel Link
+        document.getElementById('adminPanelLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'Ang Silakbo Admin Panel.html';
         });
 
-        // Listen for changes in the articles data
-        onValue(articlesRef, (snapshot) => {
-            const data = snapshot.val();
-            updateArticlesList(data);
-        });
-
-        function updateArticlesList(data) {
-            const articlesListElement = document.getElementById('articlesList');
-            const loadingElement = document.getElementById('loading');
-
-            // Clear existing articles
-            articlesListElement.innerHTML = '';
-
-            if (data) {
-                // Hide loading message
-                loadingElement.style.display = 'none';
-
-                // Add new articles to the list
-                Object.entries(data).reverse().forEach(([key, article]) => {
-                    const articleElement = document.createElement('div');
-                    articleElement.className = 'article-card';
-                    articleElement.innerHTML = `
-                        <h2 class="article-title">${article.title}</h2>
-                        <p class="article-meta">Posted on ${new Date(article.timestamp).toLocaleString()}</p>
-                        <p class="article-content">${article.content}</p>
-                        ${article.imageUrl ? `<img src="${article.imageUrl}" alt="Article image" class="article-image">` : ''}
-                    `;
-                    articlesListElement.appendChild(articleElement);
-                });
-            } else {
-                // If no data, show a message
-                loadingElement.textContent = 'No articles available.';
-            }
-        }
-
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
+        function showToast(message, type) {
             toast.textContent = message;
-            toast.className = `toast ${isError ? 'error' : ''} show`;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
             setTimeout(() => {
-                toast.className = toast.className.replace('show', '');
+                toast.style.display = 'none';
             }, 3000);
         }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Scroll-based header effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                header.style.background = 'linear-gradient(to bottom, var(--primary-color), var(--primary-dark))';
+            } else {
+                header.style.boxShadow = 'none';
+                header.style.background = 'var(--primary-color)';
+            }
+        });
     </script>
 </body>
 </html>
-
