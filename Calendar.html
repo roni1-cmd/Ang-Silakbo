@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Calendar of Events</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #E65100;
+            --primary-light: #FFB74D;
+            --primary-dark: #BF360C;
+            --text-color: #333333;
+            --background-color: #FFFFFF;
+            --event-color: #FB8C00;
+            --shadow-color: rgba(230, 81, 0, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .calendar-controls select {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-light);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+
+        .calendar-controls select:hover {
+            background-color: var(--primary-dark);
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background-color: #f5f5f5;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+
+        .day:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .day span {
+            font-weight: 500;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+
+        .event {
+            background-color: var(--event-color);
+            color: white;
+        }
+
+        .event-text {
+            font-size: 0.8em;
+            margin-top: 25px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #eventOverview, #eventForm {
+            display: none;
+            background-color: var(--background-color);
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        #eventOverview h3, #eventForm h3 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        #eventDescription {
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .primary-button {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .secondary-button {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+
+        #eventText {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .fa-icon {
+            margin-right: 5px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calendar-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            #calendar {
+                gap: 10px;
+            }
+
+            .day {
+                padding: 5px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-calendar-alt"></i> Calendar of Events</h1>
+    </header>
+    <div class="container">
+        <div class="calendar-controls">
+            <select id="monthSelect"></select>
+            <select id="yearSelect"></select>
+        </div>
+        <div id="calendar"></div>
+        <div id="eventOverview">
+            <h3 id="eventDate"></h3>
+            <p id="eventDescription"></p>
+            <div class="button-group">
+                <button onclick="editEvent()" class="primary-button"><i class="fas fa-edit fa-icon"></i>Edit Event</button>
+                <button onclick="addEvent()" class="primary-button"><i class="fas fa-plus fa-icon"></i>Add Event</button>
+                <button onclick="closeOverview()" class="secondary-button"><i class="fas fa-times fa-icon"></i>Close</button>
+            </div>
+        </div>
+        <div id="eventForm">
+            <h3>Add/Edit Event</h3>
+            <input type="text" id="eventText" placeholder="Event description">
+            <div class="button-group">
+                <button onclick="saveEvent()" class="primary-button"><i class="fas fa-save fa-icon"></i>Save</button>
+                <button onclick="deleteEvent()" class="primary-button"><i class="fas fa-trash fa-icon"></i>Delete</button>
+                <button onclick="closeForm()" class="secondary-button"><i class="fas fa-times fa-icon"></i>Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        const calendar = document.getElementById('calendar');
+        const eventForm = document.getElementById('eventForm');
+        const eventText = document.getElementById('eventText');
+        const eventOverview = document.getElementById('eventOverview');
+        const eventDate = document.getElementById('eventDate');
+        const eventDescription = document.getElementById('eventDescription');
+        const monthSelect = document.getElementById('monthSelect');
+        const yearSelect = document.getElementById('yearSelect');
+
+        let selectedDate;
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        function initializeCalendarControls() {
+            monthNames.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+            monthSelect.value = currentMonth;
+
+            for (let year = new Date().getFullYear(); year <= 2050; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+            yearSelect.value = currentYear;
+
+            monthSelect.addEventListener('change', updateCalendar);
+            yearSelect.addEventListener('change', updateCalendar);
+        }
+
+        function updateCalendar() {
+            currentYear = parseInt(yearSelect.value);
+            currentMonth = parseInt(monthSelect.value);
+            createCalendar();
+        }
+
+        function createCalendar() {
+            calendar.innerHTML = '';
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+            const monthYear = document.createElement('h2');
+            monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            monthYear.style.gridColumn = '1 / -1';
+            monthYear.style.textAlign = 'center';
+            monthYear.style.marginBottom = '10px';
+            calendar.appendChild(monthYear);
+
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                const dayName = document.createElement('div');
+                dayName.textContent = day;
+                dayName.style.fontWeight = 'bold';
+                dayName.style.textAlign = 'center';
+                calendar.appendChild(dayName);
+            });
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendar.appendChild(createDay(''));
+            }
+
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const day = createDay(i);
+                calendar.appendChild(day);
+                loadEvents(currentYear, currentMonth, i, day);
+            }
+        }
+
+        function createDay(content) {
+            const day = document.createElement('div');
+            day.className = 'day';
+            day.innerHTML = `<span>${content}</span>`;
+            if (content) {
+                day.addEventListener('click', () => openEventOverview(content));
+            }
+            return day;
+        }
+
+        function openEventOverview(day) {
+            selectedDate = `${currentYear}-${currentMonth + 1}-${day}`;
+            eventDate.textContent = `${monthNames[currentMonth]} ${day}, ${currentYear}`;
+            loadExistingEvent();
+            eventOverview.style.display = 'block';
+        }
+
+        function closeOverview() {
+            eventOverview.style.display = 'none';
+        }
+
+        function editEvent() {
+            eventForm.style.display = 'block';
+            eventOverview.style.display = 'none';
+        }
+
+        function addEvent() {
+            eventText.value = '';
+            eventForm.style.display = 'block';
+            eventOverview.style.display = 'none';
+        }
+
+        function closeForm() {
+            eventForm.style.display = 'none';
+            eventText.value = '';
+        }
+
+        function saveEvent() {
+            const event = eventText.value.trim();
+            if (event) {
+                db.ref('events/' + selectedDate).set({
+                    description: event
+                })
+                .then(() => {
+                    console.log('Event saved');
+                    updateCalendarUI();
+                    closeForm();
+                    closeOverview();
+                })
+                .catch((error) => {
+                    console.error('Error saving event: ', error);
+                    alert('Error saving event. Please try again.');
+                });
+            }
+        }
+
+        function deleteEvent() {
+            db.ref('events/' + selectedDate).remove()
+            .then(() => {
+                console.log('Event deleted');
+                updateCalendarUI();
+                closeForm();
+                closeOverview();
+            })
+            .catch((error) => {
+                console.error('Error deleting event: ', error);
+                alert('Error deleting event. Please try again.');
+            });
+        }
+
+        function loadEvents(year, month, day, dayElement) {
+            const dateString = `${year}-${month + 1}-${day}`;
+            db.ref('events/' + dateString).once('value')
+            .then((snapshot) => {
+                if (snapshot.exists() && snapshot.val().description) {
+                    dayElement.classList.add('event');
+                    dayElement.title = snapshot.val().description;
+                    const eventDiv = document.createElement('div');
+                    eventDiv.className = 'event-text';
+                    eventDiv.textContent = snapshot.val().description;
+                    dayElement.appendChild(eventDiv);
+                }
+            })
+            .catch((error) => {
+                console.error('Error loading event: ', error);
+            });
+        }
+
+        function loadExistingEvent() {
+            db.ref('events/' + selectedDate).once('value')
+            .then((snapshot) => {
+                if (snapshot.exists() && snapshot.val().description) {
+                    eventText.value = snapshot.val().description;
+                    eventDescription.textContent = snapshot.val().description;
+                } else {
+                    eventText.value = '';
+                    eventDescription.textContent = 'No event scheduled for this date.';
+                }
+            })
+            .catch((error) => {
+                console.error('Error loading existing event: ', error);
+            });
+        }
+
+        function updateCalendarUI() {
+            createCalendar();
+        }
+
+        // Check authentication state and create calendar
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('User is signed in:', user.email);
+                initializeCalendarControls();
+                createCalendar();
+            } else {
+                console.log('No user is signed in');
+                calendar.innerHTML = '<p>Please sign in to view the calendar</p>';
+            }
+        });
+    </script>
+</body>
+</html>

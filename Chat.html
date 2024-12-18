@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Communications</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6600;
+            --secondary-color: #ff8533;
+            --background-color: #fff9f5;
+            --text-color: #333333;
+            --light-text-color: #666666;
+            --border-color: #e0e0e0;
+            --hover-color: #fff0e6;
+            --transition: all 0.3s ease;
+            --online-color: #4CAF50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            max-width: none;
+            margin: 0;
+            box-shadow: none;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: white;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .room-list {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .room-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: var(--shadow);
+        }
+
+        .room-btn:hover, .room-btn.active {
+            background-color: var(--hover-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .room-btn .room-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-footer button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-footer button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-header {
+            padding: 20px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h2 {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-indicator.online {
+            background-color: var(--online-color);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            line-height: 1.4;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message .sender {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.9em;
+            color: var(--light-text-color);
+        }
+
+        .message-form {
+            padding: 20px;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .message-form input {
+            flex-grow: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .message-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+        }
+
+        .message-form button {
+            margin-left: 12px;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+
+        .message-form button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        #backToAdminBtn {
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        #backToAdminBtn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 18px;
+            color: var(--light-text-color);
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 300px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-buttons button.cancel {
+            background-color: #f0f0f0;
+            color: var(--text-color);
+        }
+
+        .modal-buttons button.create {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-buttons button:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-comments"></i> Communications</h1>
+                <button id="backToAdminBtn"><i class="fas fa-cog"></i> Admin Panel</button>
+            </div>
+            <input type="text" id="roomSearch" class="search-bar" placeholder="Search rooms...">
+            <div id="roomList" class="room-list">
+                <div class="loading">Loading rooms</div>
+            </div>
+            <div class="sidebar-footer">
+                <button id="createRoomBtn"><i class="fas fa-plus"></i> Create New Room</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="user-status">
+                        <span class="status-indicator"></span>
+                        <span id="userName"></span>
+                    </div>
+                    <h2 id="currentRoomName">Select a room</h2>
+                </div>
+                <div id="roomParticipants"></div>
+            </div>
+            <div id="messages" class="chat-messages"></div>
+            <form id="messageForm" class="message-form">
+                <input type="text" id="messageInput" placeholder="Type your message..." required>
+                <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="createRoomModal" class="modal">
+        <div class="modal-content">
+            <h2>Create New Room</h2>
+            <input type="text" id="newRoomName" placeholder="Enter room name" required>
+            <div class="modal-buttons">
+                <button class="cancel" id="cancelCreateRoom">Cancel</button>
+                <button class="create" id="confirmCreateRoom">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        const userNames = {
+            'angsilakbo1@uclm.com': 'Queenie',
+            'angsilakbo2@uclm.com': 'June Marie',
+            'angsilakbo3@uclm.com': 'Diana'
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const roomList = document.getElementById('roomList');
+        const createRoomBtn = document.getElementById('createRoomBtn');
+        const backToAdminBtn = document.getElementById('backToAdminBtn');
+        const currentRoomName = document.getElementById('currentRoomName');
+        const messages = document.getElementById('messages');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const createRoomModal = document.getElementById('createRoomModal');
+        const newRoomNameInput = document.getElementById('newRoomName');
+        const cancelCreateRoomBtn = document.getElementById('cancelCreateRoom');
+        const confirmCreateRoomBtn = document.getElementById('confirmCreateRoom');
+        const roomParticipants = document.getElementById('roomParticipants');
+        const roomSearch = document.getElementById('roomSearch');
+        const userName = document.getElementById('userName');
+        const statusIndicator = document.querySelector('.status-indicator');
+
+        let currentRoom = null;
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('User authenticated:', user.email);
+                currentUser = user;
+                userName.textContent = userNames[user.email] || user.email;
+                statusIndicator.classList.add('online');
+                loadRooms();
+            } else {
+                console.log('User not authenticated, redirecting to login');
+                window.location.href = 'Ang Silakbo Login1.html';
+            }
+        });
+
+        function loadRooms() {
+            const roomsRef = ref(db, 'chatRooms');
+            onValue(roomsRef, (snapshot) => {
+                roomList.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const roomId = childSnapshot.key;
+                    const roomName = childSnapshot.val().name;
+                    const roomBtn = document.createElement('button');
+                    roomBtn.className = 'room-btn';
+                    roomBtn.innerHTML = `
+                        <div class="room-icon">${roomName.charAt(0).toUpperCase()}</div>
+                        <span>${roomName}</span>
+                    `;
+                    roomBtn.onclick = () => selectRoom(roomId, roomName);
+                    roomList.appendChild(roomBtn);
+                });
+            }, (error) => {
+                console.error('Error loading rooms:', error);
+                roomList.innerHTML = '<div class="loading">Error loading rooms</div>';
+            });
+        }
+
+        function selectRoom(roomId, roomName) {
+            currentRoom = roomId;
+            currentRoomName.textContent = roomName;
+            loadMessages(roomId);
+            loadParticipants(roomId);
+            document.querySelectorAll('.room-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.room-btn').classList.add('active');
+        }
+
+        function loadMessages(roomId) {
+            messages.innerHTML = '<div class="loading">Loading messages</div>';
+            const messagesRef = ref(db, `messages/${roomId}`);
+            onValue(messagesRef, (snapshot) => {
+                messages.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const message = childSnapshot.val();
+                    const messageElement = document.createElement('div');
+                    const senderName = userNames[message.sender] || message.sender;
+                    messageElement.className = `message ${message.sender === currentUser.email ? 'sent' : 'received'}`;
+                    messageElement.innerHTML = `
+                        <div class="sender">${senderName}</div>
+                        <div class="text">${message.text}</div>
+                    `;
+                    messages.appendChild(messageElement);
+                });
+                messages.scrollTop = messages.scrollHeight;
+            }, (error) => {
+                console.error('Error loading messages:', error);
+                messages.innerHTML = '<div class="loading">Error loading messages</div>';
+            });
+        }
+
+        function loadParticipants(roomId) {
+            const participantsRef = ref(db, `roomParticipants/${roomId}`);
+            onValue(participantsRef, (snapshot) => {
+                const participants = snapshot.val() || {};
+                roomParticipants.textContent = `Participants: ${Object.keys(participants).length}`;
+            });
+        }
+
+        createRoomBtn.onclick = () => {
+            createRoomModal.style.display = 'block';
+        };
+
+        cancelCreateRoomBtn.onclick = () => {
+            createRoomModal.style.display = 'none';
+            newRoomNameInput.value = '';
+        };
+
+        confirmCreateRoomBtn.onclick = () => {
+            const roomName = newRoomNameInput.value.trim();
+            if (roomName) {
+                const roomsRef = ref(db, 'chatRooms');
+                const newRoomRef = push(roomsRef);
+                set(newRoomRef, { name: roomName })
+                    .then(() => {
+                        console.log('Room created successfully');
+                        createRoomModal.style.display = 'none';
+                        newRoomNameInput.value = '';
+                    })
+                    .catch((error) => {
+                        console.error('Error creating room:', error);
+                        alert(`Failed to create room: ${error.message}`);
+                    });
+            }
+        };
+
+        messageForm.onsubmit = (e) => {
+            e.preventDefault();
+            if (currentRoom && messageInput.value.trim()) {
+                const messagesRef = ref(db, `messages/${currentRoom}`);
+                push(messagesRef, {
+                    sender: currentUser.email,
+                    text: messageInput.value.trim(),
+                    timestamp: Date.now()
+                }).catch((error) => {
+                    console.error('Error sending message:', error);
+                    alert('Failed to send message. Please try again.');
+                });
+                messageInput.value = '';
+            }
+        };
+
+        backToAdminBtn.onclick = () => {
+            window.location.href = 'Ang Silakbo Admin Panel.html';
+        };
+
+        // Close the modal if clicked outside
+        window.onclick = (event) => {
+            if (event.target === createRoomModal) {
+                createRoomModal.style.display = 'none';
+                newRoomNameInput.value = '';
+            }
+        };
+
+        // Search functionality
+        roomSearch.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rooms = roomList.querySelectorAll('.room-btn');
+            rooms.forEach(room => {
+                const roomName = room.querySelector('span').textContent.toLowerCase();
+                if (roomName.includes(searchTerm)) {
+                    room.style.display = 'flex';
+                } else {
+                    room.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize the app
+        function init() {
+            loadRooms();
+        }
+
+        init();
+    </script>
+</body>
+</html>

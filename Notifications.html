@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Notifications - Ang Silakbo</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff6600;
+            --secondary-color: #fff5e6;
+            --accent-color: #ff9933;
+            --text-color: #333;
+            --shadow-color: rgba(255, 102, 0, 0.2);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        .notifications-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .notification-item {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            padding: 1.5rem;
+            transition: all var(--transition-speed) ease;
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        .notification-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .notification-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .notification-content {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-icon {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-right: 1rem;
+        }
+
+        .notification-time {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-time i {
+            margin-right: 0.5rem;
+        }
+
+        .view-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .view-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .view-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 102, 0, 0.3);
+        }
+
+        .view-btn i {
+            margin-right: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .modal-field {
+            margin-bottom: 1.5rem;
+            padding: 1.2rem;
+            background-color: #fff5e6;
+            border-radius: 8px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .modal-field:hover {
+            background-color: #ffe6cc;
+            transform: translateY(-2px);
+        }
+
+        .modal-label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .modal-value {
+            font-weight: 400;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .stat-item {
+            text-align: center;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: all var(--transition-speed) ease;
+            flex: 1;
+            margin: 0 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .stat-item:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .stat-item {
+                margin: 0.5rem 0;
+            }
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-bell"></i> Silakbo Inquiries </h1>
+        </div>
+    </header>
+    <main class="container">
+        <section class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="totalNotifications">0</div>
+                <div class="stat-label"><i class="fas fa-inbox"></i> Total Notifications</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value pulse" id="unreadNotifications">0</div>
+                <div class="stat-label"><i class="fas fa-envelope-open"></i> Unread Notifications</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="todayNotifications">0</div>
+                <div class="stat-label"><i class="fas fa-calendar-day"></i> Today's Notifications</div>
+            </div>
+        </section>
+        <section id="notificationsList" class="notifications-container">
+            <div class="loading"></div>
+        </section>
+    </main>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-envelope-open-text"></i> Message Details</h2>
+            <div id="messageDetails"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, update, get, query, orderByChild, startAt } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        let totalNotifications = 0;
+        let unreadNotifications = 0;
+        let todayNotifications = 0;
+
+        function updateStats() {
+            document.getElementById('totalNotifications').textContent = totalNotifications;
+            document.getElementById('unreadNotifications').textContent = unreadNotifications;
+            document.getElementById('todayNotifications').textContent = todayNotifications;
+        }
+
+        function createNotificationElement(notification, notificationId) {
+            const div = document.createElement('div');
+            div.className = 'notification-item';
+            div.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-envelope-circle-check notification-icon"></i>
+                    <strong>New message request received</strong>
+                </div>
+                <div class="notification-time">
+                    <i class="far fa-clock"></i>
+                    ${new Date(notification.timestamp).toLocaleString()}
+                </div>
+                <button class="view-btn" data-request-id="${notification.requestId}" data-notification-id="${notificationId}">
+                    <i class="fas fa-eye"></i> View Details
+                </button>
+            `;
+            return div;
+        }
+
+        function setupNotifications() {
+            const notificationsRef = ref(db, 'notifications');
+            const notificationsList = document.getElementById('notificationsList');
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const recentNotificationsQuery = query(
+                notificationsRef,
+                orderByChild('timestamp'),
+                startAt(today.getTime())
+            );
+
+            // Remove loading indicator
+            notificationsList.innerHTML = '';
+
+            onChildAdded(recentNotificationsQuery, (snapshot) => {
+                const notification = snapshot.val();
+                const notificationId = snapshot.key;
+
+                if (notification.type === 'newMessageRequest') {
+                    totalNotifications++;
+                    if (!notification.read) {
+                        unreadNotifications++;
+                    }
+                    todayNotifications++;
+
+                    updateStats();
+
+                    const notificationElement = createNotificationElement(notification, notificationId);
+                    notificationsList.appendChild(notificationElement);
+                }
+            });
+        }
+
+        function viewMessageRequest(requestId, notificationId) {
+            const messageRequestRef = ref(db, `messageRequests/${requestId}`);
+            get(messageRequestRef).then((snapshot) => {
+                const request = snapshot.val();
+                if (request) {
+                    const messageDetails = document.getElementById('messageDetails');
+                    messageDetails.innerHTML = `
+                        <div class="modal-field">
+                            <span class="modal-label"><i class="fas fa-user-circle"></i> Name:</span>
+                            <span class="modal-value">${request.name}</span>
+                        </div>
+                        <div class="modal-field">
+                            <span class="modal-label"><i class="fas fa-envelope"></i> Email:</span>
+                            <span class="modal-value">${request.email}</span>
+                        </div>
+                        <div class="modal-field">
+                            <span class="modal-label"><i class="fas fa-comment-alt"></i> Message:</span>
+                            <span class="modal-value">${request.message}</span>
+                        </div>
+                        <div class="modal-field">
+                            <span class="modal-label"><i class="fas fa-calendar-alt"></i> Timestamp:</span>
+                            <span class="modal-value">${new Date(request.timestamp).toLocaleString()}</span>
+                        </div>
+                    `;
+                    
+                    const modal = document.getElementById('messageModal');
+                    modal.style.display = "block";
+                    
+                    // Mark the notification as read
+                    update(ref(db, `notifications/${notificationId}`), { read: true }).then(() => {
+                        if (unreadNotifications > 0) {
+                            unreadNotifications--;
+                            updateStats();
+                        }
+                    });
+                } else {
+                    alert('Message request not found.');
+                }
+            }).catch((error) => {
+                console.error('Error fetching message request:', error);
+                alert('Failed to fetch message request details.');
+            });
+        }
+
+        function setupEventListeners() {
+            // Close modal when clicking on <span> (x)
+            document.getElementsByClassName("close")[0].onclick = function() {
+                document.getElementById('messageModal').style.display = "none";
+            }
+
+            // Close modal when clicking outside of it
+            window.onclick = function(event) {
+                let modal = document.getElementById('messageModal');
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            // Add event listener for view buttons
+            document.getElementById('notificationsList').addEventListener('click', function(event) {
+                if (event.target.classList.contains('view-btn')) {
+                    const requestId = event.target.dataset.requestId;
+                    const notificationId = event.target.dataset.notificationId;
+                    viewMessageRequest(requestId, notificationId);
+                }
+            });
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Admin signed in:", user.email);
+                setupNotifications();
+                setupEventListeners();
+            } else {
+                console.log("No admin signed in");
+                alert("Please sign in as an admin to view notifications");
+            }
+        });
+    </script>
+</body>
+</html>
