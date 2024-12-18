@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Login</title>
+    <title>Ang Silakbo - Admin Login</title>
+    <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
+        :root {
+            --primary-color: #ff7e33;
+            --primary-light: #ff9b5b;
+            --primary-dark: #ff6b1a;
+            --text-color: #333;
+            --background-color: #fff5f0;
+            --white: #ffffff;
+            --gray: #666666;
+            --light-gray: #999999;
+            --error-color: #f44336;
+            --success-color: #4CAF50;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -21,13 +35,13 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #fff5f0;
+            background-color: var(--background-color);
             overflow: hidden;
         }
 
         .login-container {
             display: flex;
-            background: white;
+            background: var(--white);
             border-radius: 24px;
             overflow: hidden;
             width: 1000px;
@@ -38,13 +52,6 @@
             animation: fadeInUp 0.8s ease-out forwards;
             position: relative;
             z-index: 1;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .logo {
@@ -58,16 +65,10 @@
             z-index: 2;
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
         .login-form {
             flex: 1;
             padding: 60px;
-            background: white;
+            background: var(--white);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -75,7 +76,7 @@
 
         .login-image {
             flex: 1;
-            background: linear-gradient(135deg, #ff9b5b, #ff7e33);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
             position: relative;
             overflow: hidden;
         }
@@ -92,13 +93,13 @@
         h1 {
             font-size: 36px;
             margin-bottom: 8px;
-            color: #ff7e33;
+            color: var(--primary-color);
             opacity: 0;
             animation: fadeIn 0.8s ease-out 0.2s forwards;
         }
 
         .subtitle {
-            color: #666;
+            color: var(--gray);
             margin-bottom: 40px;
             opacity: 0;
             animation: fadeIn 0.8s ease-out 0.4s forwards;
@@ -114,8 +115,8 @@
         .input-group input {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid #fff5f0;
-            background: #fff;
+            border: 2px solid var(--background-color);
+            background: var(--white);
             border-radius: 8px;
             font-size: 14px;
             transition: all 0.3s ease;
@@ -123,7 +124,7 @@
 
         .input-group input:focus {
             outline: none;
-            border-color: #ff7e33;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(255, 126, 51, 0.1);
         }
 
@@ -132,7 +133,7 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
+            color: var(--light-gray);
             transition: all 0.3s ease;
             pointer-events: none;
         }
@@ -141,18 +142,18 @@
         .input-group input:not(:placeholder-shown) + label {
             top: 0;
             font-size: 12px;
-            color: #ff7e33;
-            background: #fff;
+            color: var(--primary-color);
+            background: var(--white);
             padding: 0 4px;
         }
 
         .login-btn {
             width: 100%;
             padding: 12px;
-            background: #ff7e33;
+            background: var(--primary-color);
             border: none;
             border-radius: 8px;
-            color: white;
+            color: var(--white);
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
@@ -160,19 +161,53 @@
             transition: all 0.3s ease;
             opacity: 0;
             animation: fadeIn 0.8s ease-out 0.8s forwards;
+            position: relative;
+            overflow: hidden;
         }
 
         .login-btn:hover {
-            background: #ff6b1a;
+            background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(255, 126, 51, 0.2);
         }
 
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+
+        .login-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
         .forgot-password {
             text-align: right;
-            margin-top: 10px;
             font-size: 14px;
-            color: #666;
+            color: var(--gray);
             text-decoration: none;
             transition: color 0.3s ease;
             opacity: 0;
@@ -180,7 +215,7 @@
         }
 
         .forgot-password:hover {
-            color: #ff7e33;
+            color: var(--primary-color);
         }
 
         .notification {
@@ -188,8 +223,7 @@
             top: 20px;
             right: 20px;
             padding: 15px 20px;
-            background-color: #ff7e33;
-            color: white;
+            color: var(--white);
             border-radius: 8px;
             opacity: 0;
             transform: translateY(-20px);
@@ -202,11 +236,32 @@
             transform: translateY(0);
         }
 
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--error-color);
+        }
+
         .moving-circle {
             position: fixed;
             border-radius: 50%;
             opacity: 0.1;
             pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
@@ -225,14 +280,72 @@
                 padding: 40px;
             }
         }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .password-strength {
+            height: 5px;
+            margin-top: 5px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { background-color: #ff4d4d; width: 33.33%; }
+        .strength-medium { background-color: #ffa64d; width: 66.66%; }
+        .strength-strong { background-color: #4CAF50; width: 100%; }
+
+        .loading-container {
+            --uib-size: 40px;
+            --uib-color: white;
+            --uib-speed: 1.4s;
+            height: var(--uib-size);
+            width: var(--uib-size);
+            transform-origin: center;
+            overflow: visible;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .loading-container .car {
+            fill: none;
+            stroke: var(--uib-color);
+            stroke-dasharray: 15, 85;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            animation: travel var(--uib-speed) linear infinite;
+            will-change: stroke-dasharray, stroke-dashoffset;
+            transition: stroke 0.5s ease;
+        }
+
+        .loading-container .track {
+            stroke: var(--uib-color);
+            opacity: 0.1;
+            transition: stroke 0.5s ease;
+        }
+
+        @keyframes travel {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: -100;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <img src="SILAKBO (1).png" alt="Logo" class="logo">
+        <img src="SILAKBO (1).png" alt="Ang Silakbo Logo" class="logo">
         <div class="login-form">
-            <h1>Welcome Back</h1>
-            <p class="subtitle">Please login to access your account</p>
+            <h1>Welcome Back, Admin</h1>
+            <p class="subtitle">Please log in to access the admin panel.</p>
             <form id="loginForm">
                 <div class="input-group">
                     <input type="email" id="username" placeholder=" " required>
@@ -241,8 +354,12 @@
                 <div class="input-group">
                     <input type="password" id="password" placeholder=" " required>
                     <label for="password">Password</label>
+                    <span class="password-toggle" id="passwordToggle">👁️</span>
+                    <div class="password-strength" id="passwordStrength"></div>
                 </div>
-                <button type="submit" class="login-btn">Login Now</button>
+                <button type="submit" class="login-btn" id="loginBtn">Log In</button>
+            </form>
+            <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
         </div>
         <div class="login-image">
             <img src="Editorial Cartoon.jpg" alt="Login illustration 1" class="slide">
@@ -272,12 +389,30 @@
 
         let loginAttempts = 0;
 
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const forgotPasswordLink = document.getElementById('forgotPassword');
+        const passwordStrength = document.getElementById('passwordStrength');
+
         // Login form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const email = usernameInput.value;
+            const password = passwordInput.value;
             
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `
+                <svg class="loading-container" x="0px" y="0px" viewBox="0 0 40 40" height="40" width="40" preserveAspectRatio="xMidYMid meet">
+                    <path class="track" fill="none" stroke-width="4" pathLength="100" d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z"></path>
+                    <path class="car" fill="none" stroke-width="4" pathLength="100" d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z"></path>
+                </svg>
+                Logging in...
+            `;
+
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
@@ -305,58 +440,102 @@
                     let message;
                     switch(loginAttempts) {
                         case 1:
-                            message = "Oops. Maybe try again?";
+                            message = "Oops! That didn't work. Please try again.";
                             break;
                         case 2:
-                            message = "Uh-oh. This is tough. Try again?";
+                            message = "Still having trouble? Double-check your credentials.";
                             break;
                         case 3:
-                            message = "Hmm. Do you really know your account?";
+                            message = "Hmm, this is unusual. Are you sure you have an admin account?";
                             break;
                         default:
-                            message = "Are you really the admin?";
+                            message = "Multiple failed attempts. Please contact support if you're having issues.";
                     }
                     showNotification(message, 'error');
+                })
+                .finally(() => {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Log In';
                 });
         });
 
-        // Slideshow functionality
-        let slideIndex = 0;
-        const slides = document.querySelectorAll('.slide');
-
-        function showSlides() {
-            slides.forEach(slide => slide.style.opacity = 0);
-            slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}
-            slides[slideIndex-1].style.opacity = 1;
-            setTimeout(showSlides, 5000); // Change image every 5 seconds
-        }
-
-        showSlides();
-
-        // Floating label functionality
-        const inputs = document.querySelectorAll('.input-group input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                input.classList.add('active');
-            });
-            input.addEventListener('blur', () => {
-                if (input.value === '') {
-                    input.classList.remove('active');
-                }
-            });
+        // Password visibility toggle
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
         });
 
-        // Notification functionality
+        // Password strength indicator
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            if (password.match(/[a-z]+/)) strength++;
+            if (password.match(/[A-Z]+/)) strength++;
+            if (password.match(/[0-9]+/)) strength++;
+            if (password.match(/[$@#&!]+/)) strength++;
+
+            switch (strength) {
+                case 0:
+                    passwordStrength.className = 'password-strength';
+                    break;
+                case 1:
+                case 2:
+                    passwordStrength.className = 'password-strength strength-weak';
+                    break;
+                case 3:
+                    passwordStrength.className = 'password-strength strength-medium';
+                    break;
+                case 4:
+                    passwordStrength.className = 'password-strength strength-strong';
+                    break;
+            }
+        });
+
+        // Forgot password functionality
+        forgotPasswordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = usernameInput.value;
+            if (!email) {
+                showNotification('Please enter your email address first.', 'error');
+                return;
+            }
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => {
+                    showNotification('Password reset email sent. Check your inbox.', 'success');
+                })
+                .catch((error) => {
+                    showNotification('Error sending password reset email. Try again.', 'error');
+                });
+        });
+
+        // Notification function
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
-            notification.classList.add('show');
+            notification.className = `notification ${type} show`;
             setTimeout(() => {
-                notification.classList.remove('show');
+                notification.className = 'notification';
             }, 3000);
         }
+
+        // Background image slideshow
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides[currentSlide].style.opacity = 0;
+            slides[index].style.opacity = 1;
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let next = (currentSlide + 1) % slides.length;
+            showSlide(next);
+        }
+
+        setInterval(nextSlide, 5000);
+        showSlide(0);
 
         // Moving circles background
         function createMovingCircle() {
@@ -372,25 +551,21 @@
             circle.style.left = `${startX}px`;
             circle.style.top = `${startY}px`;
             
-            const hue = Math.random() * 60 + 15; // Orange hues
-            circle.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+            const hue = Math.random() * 360;
+            circle.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
             
             document.body.appendChild(circle);
             
-            animateCircle(circle);
-        }
-
-        function animateCircle(circle) {
             const angle = Math.random() * Math.PI * 2;
-            const velocity = Math.random() * 2 + 1;
-            let x = parseFloat(circle.style.left);
-            let y = parseFloat(circle.style.top);
+            const speed = Math.random() * 2 + 1;
+            let x = startX;
+            let y = startY;
             
-            function move() {
-                x += Math.cos(angle) * velocity;
-                y += Math.sin(angle) * velocity;
+            function moveCircle() {
+                x += Math.cos(angle) * speed;
+                y += Math.sin(angle) * speed;
                 
-                if (x < -100 || x > window.innerWidth + 100 || y < -100 || y > window.innerHeight + 100) {
+                if (x < -size || x > window.innerWidth + size || y < -size || y > window.innerHeight + size) {
                     document.body.removeChild(circle);
                     createMovingCircle();
                     return;
@@ -399,13 +574,12 @@
                 circle.style.left = `${x}px`;
                 circle.style.top = `${y}px`;
                 
-                requestAnimationFrame(move);
+                requestAnimationFrame(moveCircle);
             }
             
-            move();
+            moveCircle();
         }
 
-        // Create initial set of moving circles
         for (let i = 0; i < 10; i++) {
             createMovingCircle();
         }
