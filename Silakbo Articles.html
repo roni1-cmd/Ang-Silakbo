@@ -138,6 +138,8 @@
             margin-top: 30px;
             overflow: hidden;
             min-height: 50vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .article-container:hover {
@@ -161,6 +163,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: var(--transition);
+            flex-grow: 1;
         }
 
         #articleContent.loaded {
@@ -203,6 +206,7 @@
             background-color: rgba(255, 87, 34, 0.1);
             font-size: 0.9em;
             color: var(--primary-dark);
+            margin-top: auto;
         }
 
         .article-metadata i {
@@ -253,6 +257,134 @@
             transform: scale(1.1);
         }
 
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--card-background);
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-content {
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar a:hover {
+            color: var(--primary-color);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .theme-toggle {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .dark-mode {
+            --primary-color: #FF7043;
+            --primary-light: #FFCCBC;
+            --primary-dark: #E64A19;
+            --text-color: #F5F5F5;
+            --background-color: #212121;
+            --card-background: #424242;
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-background);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--primary-light);
+            width: 0;
+            transition: width 0.3s ease-out;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -297,6 +429,11 @@
             .article-metadata span {
                 margin-bottom: 5px;
             }
+
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
         }
 
         @keyframes fadeIn {
@@ -313,6 +450,249 @@
             color: var(--primary-dark);
             padding: 2px 0;
         }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .featured-article {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .featured-article img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 30px;
+        }
+
+        .featured-article-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .featured-article-content p {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .newsletter {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .newsletter-form input {
+            padding: 10px;
+            border: 1px solid var(--primary-light);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .newsletter-form button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .newsletter-form button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .latest-posts {
+            margin-top: 30px;
+        }
+
+        .latest-posts h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .post-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .post-card-content {
+            padding: 15px;
+        }
+
+        .post-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .post-card p {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin-right: 20px;
+            min-width: 200px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-light);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-light);
+        }
+
+        .quick-links {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-links ul {
+            list-style-type: none;
+        }
+
+        .quick-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .quick-links ul li a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .quick-links ul li a:hover {
+            color: var(--primary-dark);
+        }
     </style>
 </head>
 <body>
@@ -328,9 +708,21 @@
                     <i class="fas fa-search"></i>
                 </button>
             </div>
+            <button id="themeToggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     </header>
+    <div class="progress-bar" id="progressBar"></div>
     <main class="container">
+        <div class="featured-article">
+            <img src="Featured 1.jpg" alt="Featured Article">
+            <div class="featured-article-content">
+                <h2>𝗞𝗔𝗞𝗔𝗕𝗔𝗡𝗔𝗧𝗔  𝟓: 𝗦𝗜𝗞𝗔𝗣</h2>
+                <p>Ito ay patuloy na pagtatrabaho o paggawa ng isang bagay kahit na mahirap o nakakapagod upang makamit ang isang bagay. Nangangahulugang pagbigay ng lahat ng iyong makakaya at pagiging masipag sa kabila ng mga hamon na kinakaharap upang makuha ang ninanais na resulta at mithiin.</p>
+                <a href="https://www.facebook.com/photo/?fbid=1058838509590395&set=a.478537700953815" class="btn">Read More</a>
+            </div>
+        </div>
         <div class="article-container fade-in" id="articleContainer">
             <div class="article-preview" id="articlePreview">
                 <div id="articleContent">
@@ -347,7 +739,97 @@
                 <i class="fas fa-times"></i>
             </div>
         </div>
+        <div class="newsletter">
+            <h2>Subscribe to Our Newsletter</h2>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+        <div class="latest-posts">
+            <h2>Featured Works</h2>
+            <div class="post-grid">
+                <div class="post-card">
+                    <img src="Photo 3.jpg" alt="Post 1">
+                    <div class="post-card-content">
+                        <h3>Pagkakaisa</h3>
+                        <p>Iba-iba man ang panalangin at pangangailangan, nagkakaisa ang lahat sa simbahan.</p>
+                        <a href="https://www.facebook.com/AngSilakboUCLM" class="btn">Read More</a>
+                    </div>
+                </div>
+                <div class="post-card">
+                    <img src="Featured 2.jpg" alt="Post 2">
+                    <div class="post-card-content">
+                        <h3>𝗞𝗔𝗕𝗔𝗡𝗔𝗧𝗔 4: 𝗧𝗔𝗚𝗨𝗠𝗣𝗔𝗬</h3>
+                        <p>Ang "𝙩𝙖𝙜𝙪𝙢𝙥𝙖𝙮" ay isang salitang nagpapahiwatig ng "𝗽𝗮𝗴𝗸𝗮𝗺𝗶𝘁 𝗻𝗴 𝗹𝗮𝘆𝗼𝗻 𝗼 𝗽𝗮𝗴-𝗮𝗯𝗼𝘁 𝘀𝗮 𝗶𝘀𝗮𝗻𝗴 𝗮𝗱𝗵𝗶𝗸𝗮𝗶𝗻." Sa bawat tagumpay, masasalamin ang bunga ng pagsusumikap, dedikasyon, at tibay ng loob.</p>
+                        <a href="https://www.facebook.com/AngSilakboUCLM" class="btn">Read More</a>
+                    </div>
+                </div>
+                <div class="post-card">
+                    <img src="Featured 3.jpg" alt="Post 3">
+                    <div class="post-card-content">
+                        <h3>The Future of Literature</h3>
+                        <p>I reminisce the sparks I felt inside.
+                            The times when blush seems hard to hide.
+                            When butterflies in my stomach fights,
+                            And the times were it's hard to sleep at night.
+                            </p>
+                        <a href="https://www.facebook.com/AngSilakboUCLM" class="btn">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <h2>Navigation</h2>
+            <ul id="sidebarNav"></ul>
+        </div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    <div class="floating-button" id="menuButton">
+        <i class="fas fa-bars"></i>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    <div class="quick-links">
+        <ul>
+            <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-book"></i> Articles</a></li>
+            <li><a href="#"><i class="fas fa-user"></i> About</a></li>
+            <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Ang Silakbo is dedicated to promoting Filipino literature and fostering a community of writers and readers.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Articles</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const firebaseConfig = {
@@ -371,6 +853,14 @@
         const publishDateSpan = document.getElementById('publishDate');
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const menuButton = document.getElementById('menuButton');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const themeToggle = document.getElementById('themeToggle');
+        const toast = document.getElementById('toast');
+        const progressBar = document.getElementById('progressBar');
+        const scrollToTop = document.getElementById('scrollToTop');
         
         let currentArticle = null;
 
@@ -384,6 +874,7 @@
                     currentArticle = articleData;
                     articleContent.innerHTML = articleData.content;
                     updateMetadata(articleData);
+                    updateSidebar(articleData);
                 } else {
                     articleContent.innerHTML = '<p>No article contents at the moment.</p>';
                 }
@@ -401,6 +892,17 @@
 
             const publishDate = articleData.publishDate ? new Date(articleData.publishDate).toLocaleDateString() : 'Not available';
             publishDateSpan.textContent = `Posted on ${publishDate}`;
+        }
+
+        function updateSidebar(articleData) {
+            const headings = articleData.content.match(/<h[2-3][^>]*>.*?<\/h[2-3]>/g) || [];
+            sidebarNav.innerHTML = headings.map((heading, index) => {
+                const level = heading.match(/<h(\d)/)[1];
+                const text = heading.replace(/<[^>]+>/g, '');
+                return `<li style="margin-left: ${(level - 2) * 10}px;"><a href="#heading-${index}">${text}</a></li>`;
+            }).join('');
+
+            articleContent.innerHTML = articleData.content.replace(/<h([2-3])/g, (match, level) => `<h${level} id="heading-${headings.indexOf(match)}"`);
         }
 
         function toggleArticleExpansion(event) {
@@ -423,9 +925,39 @@
                 const regex = new RegExp(searchTerm, 'gi');
                 const highlightedContent = currentArticle.content.replace(regex, match => `<mark>${match}</mark>`);
                 articleContent.innerHTML = highlightedContent;
+                showToast('Search results highlighted');
             } else {
                 articleContent.innerHTML = '<p>No matching content found.</p>';
+                showToast('No matching content found');
             }
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            showToast(isDarkMode ? 'Dark mode enabled' : 'Light mode enabled');
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateProgressBar() {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
+            progressBar.style.width = `${progress}%`;
         }
 
         articleContainer.addEventListener('click', toggleArticleExpansion);
@@ -439,100 +971,26 @@
                 searchArticles();
             }
         });
-
+        menuButton.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+        themeToggle.addEventListener('click', toggleTheme);
         window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-            } else {
-                header.style.boxShadow = 'none';
-            }
-        });
-
-        loadArticle();
-
-        // Smooth scrolling for expanded article
-        articleContainer.addEventListener('scroll', () => {
-            if (articleContainer.classList.contains('expanded')) {
-                const scrollPosition = articleContainer.scrollTop;
-                const maxScroll = articleContainer.scrollHeight - articleContainer.clientHeight;
-                const scrollPercentage = (scrollPosition / maxScroll) * 100;
-
-                if (scrollPercentage > 95) {
-                    closeButton.style.opacity = '0';
-                } else {
-                    closeButton.style.opacity = '1';
-                }
-            }
-        });
-
-        // Add transition effect when searching
-        searchInput.addEventListener('input', () => {
-            articleContent.style.transition = 'opacity 0.3s ease';
-            articleContent.style.opacity = '0.5';
-        });
-
-        searchInput.addEventListener('input', debounce(() => {
-            searchArticles();
-            articleContent.style.opacity = '1';
-        }, 300));
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Add a back-to-top button
-        const backToTopButton = document.createElement('button');
-        backToTopButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        backToTopButton.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
-            cursor: pointer;
-            display: none;
-            transition: opacity 0.3s, transform 0.3s;
-            opacity: 0;
-            transform: translateY(20px);
-        `;
-        document.body.appendChild(backToTopButton);
-
-        window.addEventListener('scroll', () => {
+            updateProgressBar();
             if (window.pageYOffset > 300) {
-                backToTopButton.style.display = 'block';
-                setTimeout(() => {
-                    backToTopButton.style.opacity = '1';
-                    backToTopButton.style.transform = 'translateY(0)';
-                }, 50);
+                scrollToTop.classList.add('visible');
             } else {
-                backToTopButton.style.opacity = '0';
-                backToTopButton.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    backToTopButton.style.display = 'none';
-                }, 300);
+                scrollToTop.classList.remove('visible');
             }
         });
 
-        backToTopButton.addEventListener('click', () => {
+        scrollToTop.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         });
+
+        loadArticle();
     </script>
 </body>
 </html>
