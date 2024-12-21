@@ -13,14 +13,23 @@
     <style>
         :root {
             --primary-color: #FF5722;
-            --primary-light: #FFCCBC;
+            --primary-light: #FFAB91;
             --primary-dark: #E64A19;
             --text-color: #333333;
-            --background-color: #F5F5F5;
+            --background-color: #FFF3E0;
             --card-background: #FFFFFF;
             --success-color: #4CAF50;
             --error-color: #F44336;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .dark-mode {
+            --primary-color: #FF5722;
+            --primary-light: #E64A19;
+            --primary-dark: #BF360C;
+            --text-color: #F5F5F5;
+            --background-color: #212121;
+            --card-background: #424242;
         }
 
         * {
@@ -37,10 +46,12 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: var(--transition);
         }
 
         .container {
-            max-width: 1200px;
+            display: flex;
+            max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             padding: 20px;
@@ -63,7 +74,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -106,6 +117,43 @@
             font-size: 1.5em;
         }
 
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            transition: var(--transition);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+        }
+
         #editor {
             margin-bottom: 20px;
             border-radius: 8px;
@@ -116,6 +164,22 @@
 
         #editor:focus-within {
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .editor-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        #wordCount, #lastSaved {
+            background-color: var(--card-background);
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         #saveButton {
@@ -173,7 +237,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 2000;
         }
 
@@ -209,6 +273,67 @@
             color: white;
         }
 
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* Help Navigation Bar Styles */
+        #helpNav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .help-content {
+            background-color: var(--card-background);
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .help-content ul {
+            list-style-type: none;
+        }
+
+        .help-content li {
+            margin-bottom: 15px;
+        }
+
+        .help-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .help-content p {
+            margin-left: 20px;
+        }
+
+        .close-help {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -231,6 +356,16 @@
         }
 
         @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
             nav {
                 flex-direction: column;
                 align-items: flex-start;
@@ -238,11 +373,13 @@
 
             nav ul {
                 margin-top: 10px;
+                flex-wrap: wrap;
             }
 
             nav ul li {
                 margin-left: 0;
                 margin-right: 20px;
+                margin-bottom: 10px;
             }
 
             h1 {
@@ -251,6 +388,20 @@
 
             #saveButton {
                 width: 100%;
+            }
+
+            .editor-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            #wordCount, #lastSaved {
+                margin-bottom: 10px;
+            }
+
+            .help-content {
+                margin: 20px;
+                padding: 15px;
             }
         }
     </style>
@@ -261,19 +412,86 @@
             <h1><i class="fas fa-edit"></i> Ang Silakbo Workstation</h1>
             <ul>
                 <li><a href="#" id="adminPanelLink"><i class="fas fa-user-cog"></i> Admin Panel</a></li>
+                <li><a href="#" id="helpLink"><i class="fas fa-question-circle"></i> Help</a></li>
+                <li><a href="#" id="darkModeToggle"><i class="fas fa-moon"></i> Dark Mode</a></li>
             </ul>
         </nav>
     </header>
     <div class="container">
-        <div id="editor"></div>
-        <button id="saveButton"><i class="fas fa-save"></i> Save Article</button>
-        <h2>Preview of your work:</h2>
-        <div id="preview"></div>
+        <aside class="sidebar">
+            <h3>Quick Navigation</h3>
+            <ul id="sectionList">
+                <!-- Sections will be dynamically added here -->
+            </ul>
+            <h3>Suggestions</h3>
+            <ul id="suggestionList">
+                <li><a href="#" class="suggestion">Add an introduction</a></li>
+                <li><a href="#" class="suggestion">Include a conclusion</a></li>
+                <li><a href="#" class="suggestion">Add supporting images</a></li>
+                <li><a href="#" class="suggestion">Review for grammar</a></li>
+                <li><a href="#" class="suggestion">Add a table of contents</a></li>
+                <li><a href="#" class="suggestion">Include citations</a></li>
+                <li><a href="#" class="suggestion">Add a call-to-action</a></li>
+                <li><a href="#" class="suggestion">Include key takeaways</a></li>
+                <li><a href="#" class="suggestion">Add author biography</a></li>
+                <li><a href="#" class="suggestion">Include related articles</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="editor-info">
+                <span id="wordCount">Words: 0</span>
+                <span id="lastSaved">Last saved: Never</span>
+            </div>
+            <div id="editor"></div>
+            <button id="saveButton"><i class="fas fa-save"></i> Save Article</button>
+            <h2>Preview of your work:</h2>
+            <div id="preview"></div>
+        </main>
     </div>
     <div class="loading">
         <div class="loading-spinner"></div>
     </div>
     <div id="toast" class="toast"></div>
+    <div id="helpNav">
+        <div class="help-content">
+            <h2>Help Guide</h2>
+            <span class="close-help">&times;</span>
+            <ul>
+                <li>
+                    <h3>Rich Text Editor</h3>
+                    <p>Use the toolbar to format your text, add links, images, and more.</p>
+                </li>
+                <li>
+                    <h3>Quick Navigation</h3>
+                    <p>Use the sidebar to jump to different sections of your article.</p>
+                </li>
+                <li>
+                    <h3>Suggestions</h3>
+                    <p>Click on suggestions in the sidebar to add pre-formatted sections to your article.</p>
+                </li>
+                <li>
+                    <h3>Save Article</h3>
+                    <p>Click the 'Save Article' button to save your work. The last saved time will be updated.</p>
+                </li>
+                <li>
+                    <h3>Word Count</h3>
+                    <p>The word count is automatically updated as you type.</p>
+                </li>
+                <li>
+                    <h3>Dark Mode</h3>
+                    <p>Toggle dark mode for a different color scheme that's easier on the eyes in low-light conditions.</p>
+                </li>
+                <li>
+                    <h3>Preview</h3>
+                    <p>See a live preview of your article below the editor.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Ang Silakbo. All rights reserved.</p>
+        <p>Empowering writers with modern tools.</p>
+    </footer>
 
     <script>
         // Initialize Firebase
@@ -294,6 +512,13 @@
         const toast = document.getElementById('toast');
         const saveButton = document.getElementById('saveButton');
         const preview = document.getElementById('preview');
+        const wordCount = document.getElementById('wordCount');
+        const lastSaved = document.getElementById('lastSaved');
+        const sectionList = document.getElementById('sectionList');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const helpLink = document.getElementById('helpLink');
+        const helpNav = document.getElementById('helpNav');
+        const closeHelp = document.querySelector('.close-help');
 
         tinymce.init({
             selector: '#editor',
@@ -319,6 +544,9 @@
                             const savedContent = snapshot.val().content;
                             editor.setContent(savedContent);
                             preview.innerHTML = savedContent;
+                            updateWordCount();
+                            updateLastSaved(snapshot.val().lastUpdated);
+                            updateSectionList();
                         }
                         loading.style.display = 'none';
                     })
@@ -331,6 +559,8 @@
 
                 editor.on('change', debounce(function() {
                     preview.innerHTML = editor.getContent();
+                    updateWordCount();
+                    updateSectionList();
                 }, 500));
             }
         });
@@ -349,6 +579,7 @@
                 loading.style.display = 'none';
                 showToast('Article saved successfully!', 'success');
                 saveButton.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                updateLastSaved(new Date().toISOString());
                 setTimeout(() => {
                     saveButton.innerHTML = '<i class="fas fa-save"></i> Save Article';
                 }, 2000);
@@ -387,6 +618,53 @@
             };
         }
 
+        function updateWordCount() {
+            const content = tinymce.get('editor').getContent({ format: 'text' });
+            const words = content.trim().split(/\s+/).length;
+            wordCount.textContent = `Words: ${words}`;
+        }
+
+        function updateLastSaved(timestamp) {
+            const date = new Date(timestamp);
+            lastSaved.textContent = `Last saved: ${date.toLocaleString()}`;
+        }
+
+        function updateSectionList() {
+            const content = tinymce.get('editor').getContent();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            
+            sectionList.innerHTML = '';
+            headings.forEach((heading, index) => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#section-${index}`;
+                a.textContent = heading.textContent;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    tinymce.get('editor').focus();
+                    tinymce.get('editor').selection.select(heading);
+                    tinymce.get('editor').selection.scrollIntoView();
+                });
+                li.appendChild(a);
+                sectionList.appendChild(li);
+            });
+        }
+
+        // Dark mode toggle
+        darkModeToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+            
+            // Update TinyMCE skin
+            tinymce.get('editor').setContent(tinymce.get('editor').getContent());
+            tinymce.get('editor').ui.styleSheetLoader.unload('default');
+            tinymce.get('editor').ui.styleSheetLoader.load(isDarkMode ? 'dark' : 'default');
+        });
+
         // Scroll-based header effect
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
@@ -396,6 +674,32 @@
             } else {
                 header.style.boxShadow = 'none';
                 header.style.background = 'var(--primary-color)';
+            }
+        });
+
+        // Suggestions functionality
+        const suggestionList = document.getElementById('suggestionList');
+        suggestionList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('suggestion')) {
+                e.preventDefault();
+                const suggestion = e.target.textContent;
+                tinymce.get('editor').insertContent(`<h2>${suggestion}</h2><p>Your content here...</p>`);
+            }
+        });
+
+        // Help navigation
+        helpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            helpNav.style.display = 'block';
+        });
+
+        closeHelp.addEventListener('click', () => {
+            helpNav.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === helpNav) {
+                helpNav.style.display = 'none';
             }
         });
     </script>
