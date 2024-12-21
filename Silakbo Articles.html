@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Articles</title>
+    <title>Ang Silakbo Articles</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         :root {
             --primary-color: #FF5722;
@@ -40,6 +40,9 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         header {
@@ -51,6 +54,7 @@
             top: 0;
             z-index: 1000;
             transition: var(--transition);
+            border-radius: 0 0 15px 15px;
         }
 
         .header-content {
@@ -72,6 +76,7 @@
             height: 60px;
             margin-right: 20px;
             transition: var(--transition);
+            border-radius: 50%;
         }
 
         .logo:hover {
@@ -130,87 +135,153 @@
             transform: scale(1.1);
         }
 
-        .article-container {
+        .featured-article {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .featured-article:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .featured-article img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 30px;
+            transition: var(--transition);
+        }
+
+        .featured-article:hover img {
+            transform: scale(1.05);
+        }
+
+        .featured-article-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .featured-article-content p {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .newsletter {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .newsletter:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .newsletter h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .newsletter-form input {
+            padding: 10px;
+            border: 1px solid var(--primary-light);
+            border-radius: 25px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+        }
+
+        .newsletter-form button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .newsletter-form button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        #articlesContainer {
+            margin-top: 30px;
+            flex-grow: 1;
+        }
+
+        .article-card {
             background-color: var(--card-background);
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
-            margin-top: 30px;
             overflow: hidden;
-            min-height: 50vh;
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 20px;
+            cursor: pointer;
         }
 
-        .article-container:hover {
+        .article-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
-        .article-container.expanded {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            border-radius: 0;
-            overflow-y: auto;
-        }
-
-        #articleContent {
-            padding: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: var(--transition);
-            flex-grow: 1;
-        }
-
-        #articleContent.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .article-preview {
-            padding: 30px;
-            max-height: 50vh;
+        .article-content {
+            padding: 20px;
+            max-height: 200px; /* Increased from 100px to 200px */
             overflow: hidden;
-            position: relative;
+            transition: max-height 0.5s ease-out;
         }
 
-        .article-preview::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(transparent, var(--card-background));
-            pointer-events: none;
-        }
-
-        .expanded .article-preview {
-            max-height: none;
-            padding: 40px;
-        }
-
-        .expanded .article-preview::after {
-            display: none;
+        .article-content.expanded {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
         }
 
         .article-metadata {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background-color: rgba(255, 87, 34, 0.1);
+            background-color: var(--primary-light);
+            padding: 10px 20px;
             font-size: 0.9em;
             color: var(--primary-dark);
-            margin-top: auto;
-        }
-
-        .article-metadata i {
-            margin-right: 5px;
+            border-radius: 0 0 15px 15px;
         }
 
         .loading {
@@ -229,100 +300,20 @@
             animation: spin 1s linear infinite;
         }
 
-        .close-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            opacity: 0;
-            transform: scale(0.8);
-        }
-
-        .expanded .close-button {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .close-button:hover {
-            background-color: var(--primary-dark);
-            transform: scale(1.1);
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100%;
-            background-color: var(--card-background);
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            z-index: 1001;
-            overflow-y: auto;
-        }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar-content {
-            padding: 20px;
-        }
-
-        .sidebar h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-        }
-
-        .sidebar li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .sidebar a:hover {
-            color: var(--primary-color);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 1000;
-        }
-
         .theme-toggle {
             background-color: transparent;
             border: none;
             color: white;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1.5em;
             transition: var(--transition);
+            padding: 10px;
+            border-radius: 50%;
         }
 
         .theme-toggle:hover {
             transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .dark-mode {
@@ -334,60 +325,246 @@
             --card-background: #424242;
         }
 
-        .floating-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .featured-works {
+            margin-top: 30px;
+        }
+
+        .featured-works h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .post-card {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
         }
 
-        .floating-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+        .post-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .post-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .post-card-content {
+            padding: 15px;
+        }
+
+        .post-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .post-card p {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 30px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin-bottom: 20px;
+            min-width: 200px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-light);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5em;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Improved structure styles */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .articles-section {
+            flex: 2;
+        }
+
+        .sidebar {
+            flex: 1;
+        }
+
+        .category-filter {
             background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .category-filter h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .category-list {
+            list-style-type: none;
+        }
+
+        .category-list li {
+            margin-bottom: 10px;
+        }
+
+        .category-list li a {
             color: var(--text-color);
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            text-decoration: none;
+            transition: var(--transition);
         }
 
-        .toast.show {
-            opacity: 1;
+        .category-list li a:hover {
+            color: var(--primary-color);
         }
 
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
+        .popular-tags {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .popular-tags h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
             background-color: var(--primary-light);
-            width: 0;
-            transition: width 0.3s ease-out;
+            color: var(--primary-dark);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            transition: var(--transition);
+        }
+
+        .tag:hover {
+            background-color: var(--primary-color);
+            color: white;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInFromRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        .slide-in-left {
+            animation: slideInFromLeft 0.5s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInFromRight 0.5s ease-out;
         }
 
         @media (max-width: 768px) {
@@ -417,281 +594,41 @@
                 height: 50px;
             }
 
-            .article-preview, .expanded .article-preview {
-                padding: 20px;
-            }
-
-            .article-metadata {
+            .featured-article {
                 flex-direction: column;
-                align-items: flex-start;
             }
 
-            .article-metadata span {
-                margin-bottom: 5px;
+            .featured-article img {
+                width: 100%;
+                height: auto;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-form input,
+            .newsletter-form button {
+                width: 100%;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+
+            .footer-section {
+                margin-bottom: 30px;
+            }
+
+            .main-content {
+                flex-direction: column;
             }
 
             .sidebar {
-                width: 100%;
-                left: -100%;
+                order: -1;
             }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        mark {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 2px 0;
-        }
-
-        .scroll-to-top {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .scroll-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .scroll-to-top:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .featured-article {
-            background-color: var(--card-background);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-top: 30px;
-            display: flex;
-            align-items: center;
-        }
-
-        .featured-article img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-right: 30px;
-        }
-
-        .featured-article-content h2 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .featured-article-content p {
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .newsletter {
-            background-color: var(--card-background);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .newsletter h2 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .newsletter-form {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .newsletter-form input {
-            padding: 10px;
-            border: 1px solid var(--primary-light);
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .newsletter-form button {
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .newsletter-form button:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .latest-posts {
-            margin-top: 30px;
-        }
-
-        .latest-posts h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        .post-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .post-card {
-            background-color: var(--card-background);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-
-        .post-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .post-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .post-card-content {
-            padding: 15px;
-        }
-
-        .post-card h3 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .post-card p {
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 40px 0;
-            margin-top: 50px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .footer-section {
-            flex: 1;
-            margin-right: 20px;
-            min-width: 200px;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 20px;
-        }
-
-        .footer-section ul {
-            list-style-type: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-section ul li a {
-            color: white;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-section ul li a:hover {
-            color: var(--primary-light);
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .social-icons a {
-            color: white;
-            font-size: 20px;
-            transition: var(--transition);
-        }
-
-        .social-icons a:hover {
-            color: var(--primary-light);
-        }
-
-        .quick-links {
-            position: fixed;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            background-color: var(--card-background);
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .quick-links ul {
-            list-style-type: none;
-        }
-
-        .quick-links ul li {
-            margin-bottom: 10px;
-        }
-
-        .quick-links ul li a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .quick-links ul li a:hover {
-            color: var(--primary-dark);
         }
     </style>
 </head>
@@ -713,40 +650,16 @@
             </button>
         </div>
     </header>
-    <div class="progress-bar" id="progressBar"></div>
     <main class="container">
-        <div class="featured-article">
+        <div class="featured-article fade-in">
             <img src="Featured 1.jpg" alt="Featured Article">
             <div class="featured-article-content">
-                <h2>𝗞𝗔𝗞𝗔𝗕𝗔𝗡𝗔𝗧𝗔  𝟓: 𝗦𝗜𝗞𝗔𝗣</h2>
+                <h2>𝗞𝗔𝗕𝗔𝗡𝗔𝗧𝗔  𝟓: 𝗦𝗜𝗞𝗔𝗣</h2>
                 <p>Ito ay patuloy na pagtatrabaho o paggawa ng isang bagay kahit na mahirap o nakakapagod upang makamit ang isang bagay. Nangangahulugang pagbigay ng lahat ng iyong makakaya at pagiging masipag sa kabila ng mga hamon na kinakaharap upang makuha ang ninanais na resulta at mithiin.</p>
                 <a href="https://www.facebook.com/photo/?fbid=1058838509590395&set=a.478537700953815" class="btn">Read More</a>
             </div>
         </div>
-        <div class="article-container fade-in" id="articleContainer">
-            <div class="article-preview" id="articlePreview">
-                <div id="articleContent">
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="article-metadata">
-                <span><i class="far fa-clock"></i> <span id="readingTime">0 min read</span></span>
-                <span><i class="far fa-calendar-alt"></i> <span id="publishDate">Not available</span></span>
-            </div>
-            <div class="close-button" id="closeButton">
-                <i class="fas fa-times"></i>
-            </div>
-        </div>
-        <div class="newsletter">
-            <h2>Subscribe to Our Newsletter</h2>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </div>
-        <div class="latest-posts">
+        <div class="featured-works slide-in-left">
             <h2>Featured Works</h2>
             <div class="post-grid">
                 <div class="post-card">
@@ -761,7 +674,7 @@
                     <img src="Featured 2.jpg" alt="Post 2">
                     <div class="post-card-content">
                         <h3>𝗞𝗔𝗕𝗔𝗡𝗔𝗧𝗔 4: 𝗧𝗔𝗚𝗨𝗠𝗣𝗔𝗬</h3>
-                        <p>Ang "𝙩𝙖𝙜𝙪𝙢𝙥𝙖𝙮" ay isang salitang nagpapahiwatig ng "𝗽𝗮𝗴𝗸𝗮𝗺𝗶𝘁 𝗻𝗴 𝗹𝗮𝘆𝗼𝗻 𝗼 𝗽𝗮𝗴-𝗮𝗯𝗼𝘁 𝘀𝗮 𝗶𝘀𝗮𝗻𝗴 𝗮𝗱𝗵𝗶𝗸𝗮𝗶𝗻." Sa bawat tagumpay, masasalamin ang bunga ng pagsusumikap, dedikasyon, at tibay ng loob.</p>
+                        <p>Ang "𝙩𝙖𝙜𝙪𝙢𝙥𝙖𝙮" ay isang salitang nagpapahiwatig ng "𝗽𝗮𝗴𝗸𝗮𝗺𝗶𝘁 𝗻𝗴 𝗹𝗮𝘆𝗼𝗻 𝗼 𝗽𝗮𝗴-𝗮𝗯𝗼𝘁 𝘀a isang adhikain." Sa bawat tagumpay, masasalamin ang bunga ng pagsusumikap, dedikasyon, at tibay ng loob.</p>
                         <a href="https://www.facebook.com/AngSilakboUCLM" class="btn">Read More</a>
                     </div>
                 </div>
@@ -777,61 +690,91 @@
                         <a href="https://www.facebook.com/AngSilakboUCLM" class="btn">Read More</a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-content">
-            <h2>Navigation</h2>
-            <ul id="sidebarNav"></ul>
-        </div>
-    </div>
-    <div class="overlay" id="overlay"></div>
-    <div class="floating-button" id="menuButton">
-        <i class="fas fa-bars"></i>
-    </div>
-    <div class="toast" id="toast"></div>
-    <div class="scroll-to-top" id="scrollToTop">
-        <i class="fas fa-arrow-up"></i>
-    </div>
-    <div class="quick-links">
-        <ul>
-            <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="#"><i class="fas fa-book"></i> Articles</a></li>
-            <li><a href="#"><i class="fas fa-user"></i> About</a></li>
-            <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
-        </ul>
-    </div>
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>About Us</h3>
-                    <p>Ang Silakbo is dedicated to promoting Filipino literature and fostering a community of writers and readers.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Articles</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Connect With Us</h3>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                <div class="post-card">
+                    <img src="Featured 4.jpg" alt="Post 4">
+                    <div class="post-card-content">
+                        <h3>𝐖𝐇𝐀𝐓 𝐀 𝐁𝐋𝐀𝐒𝐓 𝐓𝐇𝐀𝐓 𝐖𝐀𝐒!</h3>
+                        <p>This festivity resulted in the creation of numerous memories. As we twisted our way through the INTRAMURALS and yelled our scream "SOAR HIGH, SENIOR HIGH," we will all treasure the time we spent with our friends, teachers, and fellow students! </p>
+                        <a href="https://www.facebook.com/AngSilakboUCLM" class="btn">Read More</a>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="main-content">
+            <section class="articles-section slide-in-right">
+                <h2>Latest Articles</h2>
+                <div id="articlesContainer">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </section>
+            <aside class="sidebar fade-in">
+                <div class="category-filter">
+                    <h3>Categories</h3>
+                    <ul class="category-list">
+                        <li><a href="#">Poetry</a></li>
+                        <li><a href="#">Short Stories</a></li>
+                        <li><a href="#">Essays</a></li>
+                        <li><a href="#">Literary Criticism</a></li>
+                        <li><a href="#">Cultural Studies</a></li>
+                    </ul>
+                </div>
+                <div class="popular-tags">
+                    <h3>Popular Tags</h3>
+                    <div class="tag-cloud">
+                        <span class="tag">Filipino</span>
+                        <span class="tag">Literature</span>
+                        <span class="tag">Culture</span>
+                        <span class="tag">Heritage</span>
+                        <span class="tag">Language</span>
+                        <span class="tag">Identity</span>
+                        <span class="tag">Tradition</span>
+                        <span class="tag">Modern</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        <div class="newsletter fade-in">
+            <h2>Subscribe to Our Newsletter</h2>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Ang Silakbo is dedicated to promoting Filipino literature and culture through our articles and featured works.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Articles</a></li>
+                    <li><a href="#">Featured Works</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/AngSilakboUCLM"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2021 Ang Silakbo Articles. | All rights reserved.</p>
+        </div>
     </footer>
 
     <script>
+        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
             authDomain: "ang-silakbo.firebaseapp.com",
@@ -845,152 +788,76 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const articleContainer = document.getElementById('articleContainer');
-        const articlePreview = document.getElementById('articlePreview');
-        const articleContent = document.getElementById('articleContent');
-        const closeButton = document.getElementById('closeButton');
-        const readingTimeSpan = document.getElementById('readingTime');
-        const publishDateSpan = document.getElementById('publishDate');
+        const articlesContainer = document.getElementById('articlesContainer');
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const menuButton = document.getElementById('menuButton');
-        const sidebarNav = document.getElementById('sidebarNav');
         const themeToggle = document.getElementById('themeToggle');
-        const toast = document.getElementById('toast');
-        const progressBar = document.getElementById('progressBar');
-        const scrollToTop = document.getElementById('scrollToTop');
-        
-        let currentArticle = null;
 
-        function loadArticle(articleId = 'main') {
-            articleContent.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-            articleContent.classList.remove('loaded');
-
-            db.ref(`articles/${articleId}`).once('value', (snapshot) => {
+        function loadArticles() {
+            db.ref('articles').on('value', (snapshot) => {
+                articlesContainer.innerHTML = '';
                 if (snapshot.exists()) {
-                    const articleData = snapshot.val();
-                    currentArticle = articleData;
-                    articleContent.innerHTML = articleData.content;
-                    updateMetadata(articleData);
-                    updateSidebar(articleData);
+                    const articlesArray = [];
+                    snapshot.forEach((childSnapshot) => {
+                        articlesArray.push({
+                            key: childSnapshot.key,
+                            ...childSnapshot.val()
+                        });
+                    });
+
+                    // Sort articles by lastUpdated timestamp, newest first
+                    articlesArray.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
+
+                    // Display sorted articles
+                    articlesArray.forEach((article) => {
+                        const articleElement = document.createElement('div');
+                        articleElement.className = 'article-card';
+                        articleElement.innerHTML = `
+                            <div class="article-content">
+                                ${article.content}
+                            </div>
+                            <div class="article-metadata">
+                                <p>Posted: ${new Date(article.lastUpdated).toLocaleString()}</p>
+                            </div>
+                        `;
+                        articleElement.addEventListener('click', () => {
+                            articleElement.querySelector('.article-content').classList.toggle('expanded');
+                        });
+                        articlesContainer.appendChild(articleElement);
+                    });
                 } else {
-                    articleContent.innerHTML = '<p>No article contents at the moment.</p>';
+                    articlesContainer.innerHTML = '<p>No articles available.</p>';
                 }
-                
-                setTimeout(() => {
-                    articleContent.classList.add('loaded');
-                }, 100);
             });
-        }
-
-        function updateMetadata(articleData) {
-            const wordCount = articleData.content.trim().split(/\s+/).length;
-            const readingTime = Math.ceil(wordCount / 200);
-            readingTimeSpan.textContent = `${readingTime} min read`;
-
-            const publishDate = articleData.publishDate ? new Date(articleData.publishDate).toLocaleDateString() : 'Not available';
-            publishDateSpan.textContent = `Posted on ${publishDate}`;
-        }
-
-        function updateSidebar(articleData) {
-            const headings = articleData.content.match(/<h[2-3][^>]*>.*?<\/h[2-3]>/g) || [];
-            sidebarNav.innerHTML = headings.map((heading, index) => {
-                const level = heading.match(/<h(\d)/)[1];
-                const text = heading.replace(/<[^>]+>/g, '');
-                return `<li style="margin-left: ${(level - 2) * 10}px;"><a href="#heading-${index}">${text}</a></li>`;
-            }).join('');
-
-            articleContent.innerHTML = articleData.content.replace(/<h([2-3])/g, (match, level) => `<h${level} id="heading-${headings.indexOf(match)}"`);
-        }
-
-        function toggleArticleExpansion(event) {
-            if (!articleContainer.classList.contains('expanded') && 
-                event.target !== closeButton && 
-                !event.target.closest('.close-button')) {
-                articleContainer.classList.add('expanded');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeExpandedArticle() {
-            articleContainer.classList.remove('expanded');
-            document.body.style.overflow = '';
         }
 
         function searchArticles() {
             const searchTerm = searchInput.value.toLowerCase();
-            if (currentArticle && currentArticle.content.toLowerCase().includes(searchTerm)) {
-                const regex = new RegExp(searchTerm, 'gi');
-                const highlightedContent = currentArticle.content.replace(regex, match => `<mark>${match}</mark>`);
-                articleContent.innerHTML = highlightedContent;
-                showToast('Search results highlighted');
-            } else {
-                articleContent.innerHTML = '<p>No matching content found.</p>';
-                showToast('No matching content found');
-            }
-        }
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('open');
-            overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+            const articles = articlesContainer.getElementsByClassName('article-card');
+            
+            Array.from(articles).forEach((article) => {
+                const content = article.textContent.toLowerCase();
+                if (content.includes(searchTerm)) {
+                    article.style.display = '';
+                } else {
+                    article.style.display = 'none';
+                }
+            });
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDarkMode = document.body.classList.contains('dark-mode');
             themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            showToast(isDarkMode ? 'Dark mode enabled' : 'Light mode enabled');
         }
 
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function updateProgressBar() {
-            const scrollPosition = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        articleContainer.addEventListener('click', toggleArticleExpansion);
-        closeButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            closeExpandedArticle();
-        });
+        // Event listeners
         searchButton.addEventListener('click', searchArticles);
-        searchInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                searchArticles();
-            }
-        });
-        menuButton.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+        searchInput.addEventListener('keyup', searchArticles);
         themeToggle.addEventListener('click', toggleTheme);
-        window.addEventListener('scroll', () => {
-            updateProgressBar();
-            if (window.pageYOffset > 300) {
-                scrollToTop.classList.add('visible');
-            } else {
-                scrollToTop.classList.remove('visible');
-            }
-        });
 
-        scrollToTop.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        loadArticle();
+        // Load articles when the page loads
+        loadArticles();
     </script>
 </body>
 </html>
