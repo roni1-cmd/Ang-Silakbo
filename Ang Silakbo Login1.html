@@ -36,7 +36,7 @@
             align-items: center;
             min-height: 100vh;
             background-color: var(--background-color);
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .login-container {
@@ -44,8 +44,10 @@
             background: var(--white);
             border-radius: 24px;
             overflow: hidden;
-            width: 1000px;
-            height: 600px;
+            width: 90%;
+            max-width: 1000px;
+            height: auto;
+            min-height: 600px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             opacity: 0;
             transform: translateY(20px);
@@ -58,7 +60,7 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            width: 100px;
+            width: 80px;
             height: auto;
             opacity: 0;
             animation: fadeIn 0.8s ease-out 0.5s forwards;
@@ -67,7 +69,7 @@
 
         .login-form {
             flex: 1;
-            padding: 60px;
+            padding: 40px;
             background: var(--white);
             display: flex;
             flex-direction: column;
@@ -91,7 +93,7 @@
         }
 
         h1 {
-            font-size: 36px;
+            font-size: 28px;
             margin-bottom: 8px;
             color: var(--primary-color);
             opacity: 0;
@@ -100,9 +102,10 @@
 
         .subtitle {
             color: var(--gray);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             opacity: 0;
             animation: fadeIn 0.8s ease-out 0.4s forwards;
+            font-size: 14px;
         }
 
         .input-group {
@@ -136,6 +139,7 @@
             color: var(--light-gray);
             transition: all 0.3s ease;
             pointer-events: none;
+            font-size: 14px;
         }
 
         .input-group input:focus + label,
@@ -157,7 +161,7 @@
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
             opacity: 0;
             animation: fadeIn 0.8s ease-out 0.8s forwards;
@@ -264,23 +268,6 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .login-container {
-                flex-direction: column;
-                width: 90%;
-                height: auto;
-                margin: 20px;
-            }
-
-            .login-image {
-                display: none;
-            }
-
-            .login-form {
-                padding: 40px;
-            }
-        }
-
         .password-toggle {
             position: absolute;
             right: 10px;
@@ -338,6 +325,74 @@
                 stroke-dashoffset: -100;
             }
         }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .remember-me input {
+            margin-right: 10px;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2;
+        }
+
+        .language-selector select {
+            padding: 5px 10px;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            background-color: var(--white);
+            color: var(--text-color);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-image {
+                display: none;
+            }
+
+            .login-form {
+                padding: 30px;
+            }
+
+            .logo {
+                width: 60px;
+                top: 10px;
+                left: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+
+            .language-selector {
+                top: 10px;
+                right: 10px;
+            }
+
+            .language-selector select {
+                font-size: 12px;
+                padding: 3px 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -357,19 +412,30 @@
                     <span class="password-toggle" id="passwordToggle">👁️</span>
                     <div class="password-strength" id="passwordStrength"></div>
                 </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Remember me</label>
+                </div>
                 <button type="submit" class="login-btn" id="loginBtn">Log In</button>
             </form>
             <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
         </div>
         <div class="login-image">
             <img src="Editorial Cartoon.jpg" alt="Login illustration 1" class="slide">
-            <img src="Photo 7.PNG" alt="Login illustration 2" class="slide">
-            <img src="image 1.PNG" alt="Login illustration 3" class="slide">
+            <img src="Photo 7.jpg" alt="Login illustration 2" class="slide">
+            <img src="Photo 6.jpg" alt="Login illustration 3" class="slide">
             <img src="image 2.jpg" alt="Login illustration 4" class="slide">
             <img src="Photo 2.jpg" alt="Login illustration 5" class="slide">
         </div>
     </div>
     <div class="notification" id="notification"></div>
+    <div class="language-selector">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+        </select>
+    </div>
 
     <script>
         // Firebase configuration
@@ -397,6 +463,8 @@
         const passwordToggle = document.getElementById('passwordToggle');
         const forgotPasswordLink = document.getElementById('forgotPassword');
         const passwordStrength = document.getElementById('passwordStrength');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const languageSelect = document.getElementById('languageSelect');
 
         // Login form submission
         loginForm.addEventListener('submit', function(e) {
@@ -421,6 +489,11 @@
                 })
                 .then((idToken) => {
                     localStorage.setItem('authToken', idToken);
+                    if (rememberMeCheckbox.checked) {
+                        localStorage.setItem('rememberedEmail', email);
+                    } else {
+                        localStorage.removeItem('rememberedEmail');
+                    }
                     return firebase.database().ref(`admins/${firebase.auth().currentUser.uid}`).once('value');
                 })
                 .then((snapshot) => {
@@ -509,6 +582,13 @@
                 });
         });
 
+        // Language selector functionality
+        languageSelect.addEventListener('change', function() {
+            const selectedLanguage = this.value;
+            // Implement language change logic here
+            showNotification(`Language changed to ${selectedLanguage}`, 'success');
+        });
+
         // Notification function
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
@@ -582,6 +662,13 @@
 
         for (let i = 0; i < 10; i++) {
             createMovingCircle();
+        }
+
+        // Check for remembered email
+        const rememberedEmail = localStorage.getItem('rememberedEmail');
+        if (rememberedEmail) {
+            usernameInput.value = rememberedEmail;
+            rememberMeCheckbox.checked = true;
         }
     </script>
 </body>
