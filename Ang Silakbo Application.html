@@ -96,6 +96,13 @@
             color: var(--accent-color);
         }
 
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
         main {
             padding-top: 80px;
         }
@@ -327,6 +334,31 @@
 
             nav ul {
                 display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 0;
+                text-align: center;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
             }
 
             .hero h1 {
@@ -335,6 +367,10 @@
 
             .hero p {
                 font-size: 1rem;
+            }
+
+            #applicationForm {
+                padding: 2rem;
             }
         }
     </style>
@@ -347,12 +383,15 @@
                 ANG SILAKBO
             </div>
             <nav>
-                <ul>
+                <ul id="menu">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#applicationForm">Apply</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
+                <div class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
             </nav>
         </div>
     </header>
@@ -476,14 +515,14 @@
 
     <footer id="contact">
         <div class="container">
-            <p>&copy; 2021 Silakbo. All rights reserved.</p>
+            <p>&copy; 2021 Silakbo. | All rights reserved.</p>
             <div class="social-links">
                 <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
                 <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
             </div>
-            <p>Contact us: angsilalkbo@gmail.com | +63 123 456 7890</p>
+            <p>Contact us: angsilalkbouclm@gmail.com | +63 123 456 7890</p>
         </div>
     </footer>
 
@@ -512,11 +551,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('applicationForm');
             const messageElement = document.getElementById('message');
+            const menuToggle = document.getElementById('menuToggle');
+            const menu = document.getElementById('menu');
 
             // Initialize AOS
             AOS.init({
                 duration: 1300,
                 once: true,
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', function() {
+                menu.classList.toggle('show');
             });
 
             form.addEventListener('submit', function(e) {
@@ -586,6 +632,8 @@
                             behavior: 'smooth'
                         });
                     }
+                    // Close mobile menu after clicking a link
+                    menu.classList.remove('show');
                 });
             });
 
