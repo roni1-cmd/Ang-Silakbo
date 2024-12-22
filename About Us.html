@@ -15,6 +15,7 @@
             --text-color: #333;
             --bg-color: #f8f9fa;
             --white: #ffffff;
+            --accent-color: #FFA726;
         }
 
         * {
@@ -77,10 +78,22 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            position: relative;
         }
 
-        .nav-links a:hover {
-            color: var(--text-color);
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--white);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         .menu-toggle {
@@ -258,6 +271,7 @@
             background-color: var(--bg-color);
             position: relative;
             border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         /* Stats Section */
@@ -404,6 +418,7 @@
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
+            position: relative;
         }
 
         .testimonial {
@@ -412,6 +427,12 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 1rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .testimonial.active {
+            opacity: 1;
         }
 
         .testimonial p {
@@ -422,6 +443,25 @@
         .testimonial-author {
             font-weight: bold;
             color: var(--primary-color);
+        }
+
+        .testimonial-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .testimonial-nav button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .testimonial-nav button:hover {
+            color: var(--secondary-color);
         }
 
         /* Gallery Section */
@@ -442,6 +482,9 @@
             overflow: hidden;
             border-radius: 10px;
             cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
         .gallery-item img {
@@ -493,7 +536,7 @@
         }
 
         .footer-links a:hover {
-            color: var(--primary-color);
+            color: var(--accent-color);
         }
 
         .social-icons {
@@ -511,7 +554,7 @@
         }
 
         .social-icon:hover {
-            color: var(--primary-color);
+            color: var(--accent-color);
             transform: translateY(-2px);
         }
 
@@ -757,7 +800,7 @@
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-quote-left"></i> Echo of Thoughts</h2>
                 <div class="testimonial-slider">
-                    <div class="testimonial">
+                    <div class="testimonial active">
                         <p>"Leadership does not define any gender role. One could be a leader just like any other woman. However, one cannot, take the lader if she is not a woman of FAITH. Faith acknowledges God as the source of leadership qualities. Faith that influences and transforms the lives through her servant leadership."</p>
                         <div class="testimonial-author">- Dr. Danielita Patindol, UCLM-SHS Department Principal</div>
                     </div>
@@ -769,6 +812,10 @@
                         <p>"My advice to women to take on leadership roles is to believe and invest in themselves, get out of their comfort zone, influence and empower others, not take everything personally, and always love what they do. More importantly, do everything that glorifies God."</p>
                         <div class="testimonial-author">- Ms. Erna Sagnoy, Ang Silakbo Former Adviser</div>
                     </div>
+                </div>
+                <div class="testimonial-nav">
+                    <button id="prevTestimonial"><i class="fas fa-chevron-left"></i></button>
+                    <button id="nextTestimonial"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
         </section>
@@ -791,7 +838,7 @@
                     </div>
                     <div class="gallery-item">
                         <img src="Feature 8.jpg" alt="Award Ceremony">
-                        <div class="gallery-caption">Project Happines, December 2024</div>
+                        <div class="gallery-caption">Project Happiness, December 2024</div>
                     </div>
                 </div>
             </div>
@@ -806,7 +853,7 @@
                     <button type="submit">Subscribe</button>
                 </form>
             </div>
-        </section>
+        </section></section>
     </main>
 
     <footer>
@@ -905,35 +952,36 @@
             statsObserver.observe(number);
         });
 
-        // Image hover effect
-        const aboutImages = document.querySelectorAll('.about-image');
-        aboutImages.forEach(image => {
-            image.addEventListener('mouseover', () => {
-                image.style.transform = 'scale(1.05)';
-            });
-            image.addEventListener('mouseout', () => {
-                image.style.transform = 'scale(1)';
-            });
-        });
-
         // Testimonial slider
-        let currentTestimonial = 0;
         const testimonials = document.querySelectorAll('.testimonial');
-        const totalTestimonials = testimonials.length;
+        const prevButton = document.getElementById('prevTestimonial');
+        const nextButton = document.getElementById('nextTestimonial');
+        let currentTestimonial = 0;
 
         function showTestimonial(index) {
             testimonials.forEach((testimonial, i) => {
-                testimonial.style.display = i === index ? 'block' : 'none';
+                testimonial.classList.remove('active');
+                if (i === index) {
+                    testimonial.classList.add('active');
+                }
             });
         }
 
         function nextTestimonial() {
-            currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
             showTestimonial(currentTestimonial);
         }
 
-        setInterval(nextTestimonial, 5000); // Change testimonial every 5 seconds
-        showTestimonial(currentTestimonial); // Show initial testimonial
+        function prevTestimonial() {
+            currentTestimonial = (currentTestimonial - 1 + testimonials.length) % testimonials.length;
+            showTestimonial(currentTestimonial);
+        }
+
+        nextButton.addEventListener('click', nextTestimonial);
+        prevButton.addEventListener('click', prevTestimonial);
+
+        // Auto-rotate testimonials
+        setInterval(nextTestimonial, 5000);
 
         // Gallery image modal
         const galleryItems = document.querySelectorAll('.gallery-item');
@@ -942,18 +990,29 @@
         galleryItems.forEach(item => {
             item.addEventListener('click', () => {
                 const imgSrc = item.querySelector('img').src;
+                const caption = item.querySelector('.gallery-caption').textContent;
                 const modal = document.createElement('div');
                 modal.classList.add('gallery-modal');
                 modal.innerHTML = `
-                    <img src="${imgSrc}" alt="Gallery Image">
-                    <span class="close-modal">&times;</span>
+                    <div class="modal-content">
+                        <img src="${imgSrc}" alt="Gallery Image">
+                        <p>${caption}</p>
+                        <span class="close-modal">&times;</span>
+                    </div>
                 `;
                 body.appendChild(modal);
                 body.style.overflow = 'hidden';
 
                 modal.querySelector('.close-modal').addEventListener('click', () => {
                     body.removeChild(modal);
-                    body.style.overflow = 'a uto';
+                    body.style.overflow = 'auto';
+                });
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        body.removeChild(modal);
+                        body.style.overflow = 'auto';
+                    }
                 });
             });
         });
