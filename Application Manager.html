@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo Applicant Manager</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF7E33;
+            --primary-light: #FFA366;
+            --primary-dark: #E65C00;
+            --text-color: #333333;
+            --background-color: #FFF5F0;
+            --white: #FFFFFF;
+            --gray: #666666;
+            --light-gray: #CCCCCC;
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary-color: #FF9F5B;
+            --primary-light: #FFB280;
+            --primary-dark: #FF8033;
+            --text-color: #F0F0F0;
+            --background-color: #1A1A1A;
+            --white: #2A2A2A;
+            --gray: #B0B0B0;
+            --light-gray: #4A4A4A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .logo span {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-dark);
+        }
+
+        main {
+            padding: 40px 0;
+        }
+
+        .dashboard {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        #loginStatus {
+            background-color: var(--primary-light);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #applicantList {
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .applicant-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .applicant-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .applicant-item input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:not(:last-child) {
+            margin-right: 10px;
+        }
+
+        .notification {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            transition: var(--transition);
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .loading-spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--white);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: var(--gray);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .quick-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--primary-light);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination button:hover,
+        .pagination button.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            .dashboard {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .quick-stats {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                margin: 10px 0;
+            }
+
+            .filters {
+                flex-wrap: wrap;
+            }
+
+            .filter-btn {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="SILAKBO.png" alt="SILAKBO Logo">
+                <span>APPLICATION MANAGER</span>
+            </a>
+            <div class="nav-links">
+                <a href="Ang Silakbo Admin Panel.html">Home</a>
+                <a href="Ang Silakbo Registered Applicants.html">Applicants</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="dashboard">
+            <div id="loginStatus"></div>
+
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <h3>Total Applicants</h3>
+                    <p id="totalApplicants">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Review</h3>
+                    <p id="pendingReview">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Approved</h3>
+                    <p id="approvedApplicants">0</p>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="searchApplicants" placeholder="Search applicants...">
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="approved">Approved</button>
+                <button class="filter-btn" data-filter="rejected">Rejected</button>
+            </div>
+
+            <section id="applicants">
+                <div id="applicantList" style="display: none;"></div>
+                <button id="sendEmailsBtn" class="btn" style="display: none;">
+                    <i class="fas fa-envelope"></i> Send Emails
+                </button>
+                <button id="approveSelectedBtn" class="btn" style="display: none;">
+                    <i class="fas fa-check"></i> Approve Selected
+                </button>
+                <button id="rejectSelectedBtn" class="btn" style="display: none;">
+                    <i class="fas fa-times"></i> Reject Selected
+                </button>
+            </section>
+
+            <div class="pagination">
+                <button id="prevPage">&laquo; Previous</button>
+                <button id="nextPage">Next &raquo;</button>
+            </div>
+
+            <div id="notificationArea"></div>
+        </div>
+    </main>
+
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Email.js
+        (function(){
+            emailjs.init("9VJFt7y1guYetJ7is");
+        })();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginStatus = document.getElementById('loginStatus');
+            const applicantList = document.getElementById('applicantList');
+            const sendEmailsBtn = document.getElementById('sendEmailsBtn');
+            const approveSelectedBtn = document.getElementById('approveSelectedBtn');
+            const rejectSelectedBtn = document.getElementById('rejectSelectedBtn');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const totalApplicantsEl = document.getElementById('totalApplicants');
+            const pendingReviewEl = document.getElementById('pendingReview');
+            const approvedApplicantsEl = document.getElementById('approvedApplicants');
+            const searchApplicants = document.getElementById('searchApplicants');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+
+            let currentPage = 1;
+            const applicantsPerPage = 10;
+            let currentFilter = 'all';
+
+            function showNotification(message, type) {
+                const notificationArea = document.getElementById('notificationArea');
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notificationArea.appendChild(notification);
+                setTimeout(() => notification.remove(), 5000);
+            }
+
+            function showLoading() {
+                loadingSpinner.style.display = 'flex';
+            }
+
+            function hideLoading() {
+                loadingSpinner.style.display = 'none';
+            }
+
+            function signIn() {
+                const email = prompt("Enter your admin email:");
+                const password = prompt("Enter your password:");
+                
+                showLoading();
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        hideLoading();
+                        loginStatus.textContent = `Logged in as: ${getAdminName(email)}`;
+                        checkAdminStatus(userCredential.user);
+                    })
+                    .catch((error) => {
+                        hideLoading();
+                        showNotification(`Login failed: ${error.message}`, 'error');
+                    });
+            }
+
+            function getAdminName(email) {
+                switch(email) {
+                    case 'angsilakbo1@uclm.com':
+                        return 'Queenie Marie';
+                    case 'angsilakbo2@uclm.com':
+                        return 'June Marie';
+                    case 'angsilakbo3@uclm.com':
+                        return 'Diana Rose';
+                    default:
+                        return email;
+                }
+            }
+
+            function checkAdminStatus(user) {
+                const adminRef = firebase.database().ref('admins').child(user.email.replace('.', ','));
+                adminRef.once('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        applicantList.style.display = 'block';
+                        sendEmailsBtn.style.display = 'inline-block';
+                        approveSelectedBtn.style.display = 'inline-block';
+                        rejectSelectedBtn.style.display = 'inline-block';
+                        fetchAndDisplayApplicants();
+                    } else {
+                        showNotification('You do not have admin privileges.', 'error');
+                    }
+                });
+            }
+
+            function fetchAndDisplayApplicants() {
+                showLoading();
+                firebase.database().ref('applications').once('value', (snapshot) => {
+                    hideLoading();
+                    const applications = snapshot.val();
+                    if (applications) {
+                        let html = '<h2>Applicant List</h2>';
+                        let totalApplicants = 0;
+                        let pendingReview = 0;
+                        let approvedApplicants = 0;
+                        const applicantArray = Object.entries(applications).map(([key, value]) => ({id: key, ...value}));
+                        const filteredApplicants = filterApplicants(applicantArray);
+                        const paginatedApplicants = paginateApplicants(filteredApplicants);
+
+                        paginatedApplicants.forEach(applicant => {
+                            totalApplicants++;
+                            if (!applicant.reviewed) pendingReview++;
+                            if (applicant.status === 'approved') approvedApplicants++;
+                            html += `
+                                <div class="applicant-item" data-status="${applicant.status || 'pending'}">
+                                    <input type="checkbox" class="applicant-select" data-email="${applicant.email}" id="${applicant.id}">
+                                    <label for="${applicant.id}">
+                                        ${applicant.name} (${applicant.email}) - ${applicant.status || 'Pending'}
+                                        <div class="tooltip">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span class="tooltiptext">Click to select</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            `;
+                        });
+                        applicantList.innerHTML = html;
+                        totalApplicantsEl.textContent = totalApplicants;
+                        pendingReviewEl.textContent = pendingReview;
+                        approvedApplicantsEl.textContent = approvedApplicants;
+                        updatePagination(filteredApplicants.length);
+                    } else {
+                        applicantList.innerHTML = '<p>No applicants found.</p>';
+                        totalApplicantsEl.textContent = '0';
+                        pendingReviewEl.textContent = '0';
+                        approvedApplicantsEl.textContent = '0';
+                    }
+                }).catch(error => {
+                    hideLoading();
+                    console.error('Error fetching applicants:', error);
+                    showNotification('Failed to fetch applicants. Please refresh the page.', 'error');
+                });
+            }
+
+            function filterApplicants(applicants) {
+                const searchTerm = searchApplicants.value.toLowerCase();
+                return applicants.filter(applicant => {
+                    const matchesSearch = applicant.name.toLowerCase().includes(searchTerm) || 
+                                          applicant.email.toLowerCase().includes(searchTerm);
+                    const matchesFilter = currentFilter === 'all' || applicant.status === currentFilter;
+                    return matchesSearch && matchesFilter;
+                });
+            }
+
+            function paginateApplicants(applicants) {
+                const startIndex = (currentPage - 1) * applicantsPerPage;
+                const endIndex = startIndex + applicantsPerPage;
+                return applicants.slice(startIndex, endIndex);
+            }
+
+            function updatePagination(totalApplicants) {
+                const totalPages = Math.ceil(totalApplicants / applicantsPerPage);
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+            }
+
+            async function sendEmailsToApplicants(emails) {
+                showLoading();
+                console.log('Starting to send emails to:', emails);
+                for (let email of emails) {
+                    console.log('Attempting to send email to:', email);
+                    try {
+                        const response = await emailjs.send(
+                            "service_opd6z0r",
+                            "template_ikakd6d",
+                            {
+                                to_email: email,
+                                to_name: "Applicant"
+                            }
+                        );
+                        console.log('Email.js response:', response);
+                        showNotification(`Email sent successfully to ${email}`, 'success');
+                    } catch (error) {
+                        console.error('Error sending email:', error);
+                        console.error('Error details:', JSON.stringify(error, null, 2));
+                        showNotification(`Failed to send email to ${email}`, 'error');
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                console.log('Finished sending emails');
+                hideLoading();
+            }
+
+            function updateApplicantStatus(applicantIds, status) {
+                showLoading();
+                const updates = {};
+                applicantIds.forEach(id => {
+                    updates[`applications/${id}/status`] = status;
+                    updates[`applications/${id}/reviewed`] = true;
+                });
+                firebase.database().ref().update(updates)
+                    .then(() => {
+                        hideLoading();
+                        showNotification(`Successfully updated ${applicantIds.length} applicant(s) to ${status}`, 'success');
+                        fetchAndDisplayApplicants();
+                    })
+                    .catch(error => {
+                        hideLoading();
+                        console.error('Error updating applicant status:', error);
+                        showNotification('Failed to update applicant status. Please try again.', 'error');
+                    });
+            }
+
+            sendEmailsBtn.addEventListener('click', () => {
+                const selectedApplicants = document.querySelectorAll('.applicant-select:checked');
+                const emails = Array.from(selectedApplicants).map(checkbox => checkbox.dataset.email);
+                
+                if(emails.length === 0) {
+                    showNotification('Please select at least one applicant.', 'error');
+                    return;
+                }
+
+                sendEmailsToApplicants(emails);
+            });
+
+            approveSelectedBtn.addEventListener('click', () => {
+                const selectedApplicants = document.querySelectorAll('.applicant-select:checked');
+                const applicantIds = Array.from(selectedApplicants).map(checkbox => checkbox.id);
+                
+                if(applicantIds.length === 0) {
+                    showNotification('Please select at least one applicant.', 'error');
+                    return;
+                }
+
+                updateApplicantStatus(applicantIds, 'approved');
+            });
+
+            rejectSelectedBtn.addEventListener('click', () => {
+                const selectedApplicants = document.querySelectorAll('.applicant-select:checked');
+                const applicantIds = Array.from(selectedApplicants).map(checkbox => checkbox.id);
+                
+                if(applicantIds.length === 0) {
+                    showNotification('Please select at least one applicant.', 'error');
+                    return;
+                }
+
+                updateApplicantStatus(applicantIds, 'rejected');
+            });
+
+            firebase.auth().onAuthStateChanged((user) => {
+                console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
+                if (user) {
+                    loginStatus.textContent = `Logged in as: ${getAdminName(user.email)}`;
+                    checkAdminStatus(user);
+                } else {
+                    loginStatus.textContent = 'Not logged in';
+                    applicantList.style.display = 'none';
+                    sendEmailsBtn.style.display = 'none';
+                    approveSelectedBtn.style.display = 'none';
+                    rejectSelectedBtn.style.display = 'none';
+                    signIn();
+                }
+            });
+
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const icon = darkModeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            searchApplicants.addEventListener('input', () => {
+                currentPage = 1;
+                fetchAndDisplayApplicants();
+            });
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    currentPage = 1;
+                    fetchAndDisplayApplicants();
+                });
+            });
+
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    fetchAndDisplayApplicants();
+                }
+            });
+
+            nextPageBtn.addEventListener('click', () => {
+                currentPage++;
+                fetchAndDisplayApplicants();
+            });
+
+            signIn();
+        });
+    </script>
+</body>
+</html>
+
