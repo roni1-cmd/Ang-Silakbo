@@ -13,15 +13,15 @@
             --primary-light: #FF8C61;
             --primary-dark: #E85D2E;
             --secondary-color: #FFB563;
-            --background-color: #FFF5EE;
+            --background-color: #F7F7F7;
             --card-background: #FFFFFF;
             --text-color: #333333;
             --text-light: #666666;
-            --border-color: #FFE0D1;
-            --shadow-color: rgba(255, 107, 53, 0.1);
-            --sidebar-width: 280px;
-            --header-height: 80px;
-            --border-radius: 15px;
+            --border-color: #E0E0E0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --border-radius: 12px;
             --transition-speed: 0.3s;
         }
 
@@ -42,67 +42,117 @@
         .container {
             display: flex;
             min-height: 100vh;
-            flex-direction: column;
         }
 
         .sidebar {
-            width: 100%;
+            width: var(--sidebar-width);
             background-color: var(--card-background);
-            color: var(--text-color);
-            padding: 10px;
-            transition: all var(--transition-speed) ease;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 4px 10px var(--shadow-color);
-            z-index: 10;
+            box-shadow: 2px 0 10px var(--shadow-color);
+            transition: transform var(--transition-speed) ease;
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
-            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
         }
 
-        .sidebar-logo {
-            display: none;
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .sidebar-btn {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+            border-radius: var(--border-radius);
+            margin: 5px 10px;
+        }
+
+        .sidebar-btn:hover, .sidebar-btn.active {
+            background-color: var(--primary-light);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar-btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
         }
 
         .main-content {
             flex-grow: 1;
+            margin-left: 0;
+            transition: margin-left var(--transition-speed) ease;
             padding: 20px;
-            padding-bottom: 80px;
-            transition: all var(--transition-speed) ease;
+            padding-top: calc(var(--header-height) + 20px);
+        }
+
+        .main-content.sidebar-open {
+            margin-left: var(--sidebar-width);
         }
 
         .header {
-            height: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background-color: var(--card-background);
+            box-shadow: 0 2px 10px var(--shadow-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            background-color: var(--card-background);
-            box-shadow: 0 4px 10px var(--shadow-color);
-            position: sticky;
-            top: 0;
-            z-index: 5;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
+            padding: 0 20px;
+            z-index: 999;
+            transition: left var(--transition-speed) ease;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
         }
 
-        .header-content {
-            display: flex;
-            align-items: center;
+        .header.sidebar-open {
+            left: var(--sidebar-width);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
         }
 
         #welcomeMessage {
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--primary-color);
-            transition: color var(--transition-speed) ease;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
         }
 
         .notification-icon {
@@ -110,7 +160,11 @@
             cursor: pointer;
             position: relative;
             color: var(--text-color);
-            transition: color var(--transition-speed) ease;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .notification-icon:hover {
+            transform: scale(1.1);
         }
 
         .notification-count {
@@ -125,18 +179,82 @@
             font-weight: 600;
         }
 
+        .admin-content {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            margin-bottom: 30px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background-color: var(--card-background);
+            color: var(--text-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .dashboard-card.fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .dashboard-card.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+
+        .dashboard-card h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .dashboard-card p {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
         .notification-panel {
             display: none;
             position: fixed;
-            top: 70px;
-            left: 10px;
-            right: 10px;
+            top: var(--header-height);
+            right: 20px;
+            width: 300px;
             max-height: 60vh;
             overflow-y: auto;
             background-color: var(--card-background);
             border-radius: var(--border-radius);
             box-shadow: 0 4px 15px var(--shadow-color);
             z-index: 1000;
+            animation: slideDown 0.3s ease-out;
         }
 
         .notification-list {
@@ -158,226 +276,101 @@
             background-color: #FFF8F2;
         }
 
-        .admin-content {
+        .section {
             background-color: var(--card-background);
-            padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: 0 4px 15px var(--shadow-color);
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        .dashboard-card {
-            background-color: var(--card-background);
-            color: var(--text-color);
             padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px var(--shadow-color);
-            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            overflow: hidden;
-            position: relative;
+            margin-top: 30px;
         }
 
-        .dashboard-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background-color: var(--primary-color);
-            transform: scaleX(0);
-            transition: transform var(--transition-speed) ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px var(--shadow-color);
-        }
-
-        .dashboard-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .dashboard-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: var(--text-light);
-        }
-
-        .dashboard-card p {
-            font-size: 2rem;
-            font-weight: 700;
+        .section h3 {
+            margin-bottom: 20px;
             color: var(--primary-color);
         }
 
-        .btn {
-            background-color: transparent;
-            color: var(--text-color);
-            border: none;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all var(--transition-speed) ease;
+        .article-list, .inquiry-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .article-item, .inquiry-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
+            border-radius: var(--border-radius);
+        }
+
+        .article-item:hover, .inquiry-item:hover {
+            background-color: #FFF8F2;
+        }
+
+        .article-title, .inquiry-subject {
+            font-weight: 600;
+        }
+
+        .article-author, .inquiry-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .article-status, .inquiry-status {
+            padding: 5px 10px;
+            border-radius: 20px;
             font-size: 0.8rem;
-            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
         }
 
-        .btn:hover, .btn.active {
-            background-color: var(--primary-color);
-            color: white;
+        .status-pending {
+            background-color: #FFE082;
+            color: #FF6F00;
         }
 
-        .btn i {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+        .status-approved {
+            background-color: #A5D6A7;
+            color: #1B5E20;
         }
 
-        .btn span {
-            display: none;
-        }
-
-        .logout-btn {
-            display: none;
-        }
-
-        .background-decoration {
-            display: none;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
+        .status-rejected {
+            background-color: #EF9A9A;
+            color: #B71C1C;
         }
 
         @media (min-width: 768px) {
-            .container {
-                flex-direction: row;
-            }
-
             .sidebar {
-                width: var(--sidebar-width);
-                height: 100vh;
-                flex-direction: column;
-                justify-content: flex-start;
-                padding: 30px 20px;
-                position: fixed;
-                top: 0;
-                left: 0;
-                bottom: auto;
-            }
-
-            .sidebar-logo {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 40px;
-            }
-
-            .sidebar-logo img {
-                width: 50px;
-                height: 50px;
-                margin-right: 15px;
-            }
-
-            .sidebar-logo h1 {
-                font-size: 1.8rem;
-                font-weight: 700;
-                color: var(--primary-color);
+                transform: translateX(0);
             }
 
             .main-content {
                 margin-left: var(--sidebar-width);
-                padding: 30px;
             }
 
             .header {
-                left: calc(var(--sidebar-width) + 20px);
-                right: 20px;
-                position: sticky;
+                left: var(--sidebar-width);
             }
 
-            #welcomeMessage {
-                font-size: 1.8rem;
-            }
-
-            .btn {
-                width: 100%;
-                border-radius: var(--border-radius);
-                padding: 12px 20px;
-                flex-direction: row;
-                justify-content: flex-start;
-                margin-bottom: 15px;
-            }
-
-            .btn i {
-                margin-right: 15px;
-                margin-bottom: 0;
-            }
-
-            .btn span {
-                display: inline;
-            }
-
-            .logout-btn {
-                display: flex;
-                margin-top: auto;
-                background-color: #FEE2E2;
-                color: #DC2626;
-            }
-
-            .dashboard {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .background-decoration {
-                display: block;
-                position: fixed;
-                z-index: -1;
-                opacity: 0.1;
-            }
-
-            .background-decoration-1 {
-                top: 10%;
-                left: 30%;
-                width: 300px;
-                height: 300px;
-                background-color: var(--primary-light);
-                border-radius: 50%;
-                animation: float 10s ease-in-out infinite;
-            }
-
-            .background-decoration-2 {
-                bottom: 15%;
-                right: 20%;
-                width: 200px;
-                height: 200px;
-                background-color: var(--secondary-color);
-                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-                animation: float 8s ease-in-out infinite reverse;
-            }
-
-            @keyframes float {
-                0% { transform: translate(0, 0) rotate(0deg); }
-                50% { transform: translate(20px, 20px) rotate(5deg); }
-                100% { transform: translate(0, 0) rotate(0deg); }
+            .menu-toggle {
+                display: none;
             }
         }
 
-        @media (min-width: 1200px) {
+        @media (max-width: 767px) {
+            .sidebar.open + .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar.open + .main-content .header {
+                left: 0;
+            }
+
             .dashboard {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                overflow-x: auto;
             }
         }
     </style>
@@ -385,43 +378,38 @@
 <body>
     <div class="container">
         <aside class="sidebar">
-            <div class="sidebar-logo">
+            <div class="sidebar-header">
                 <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
-                <h1>Admin Controls</h1>
+                <h2>Admin Controls</h2>
             </div>
-            <nav>
-                <button id="dashboardBtn" class="btn active"><i class="fas fa-chart-line"></i> <span>Dashboard</span></button>
-                <button id="checkApplicantsBtn" class="btn"><i class="fas fa-users"></i> <span>Check Applicants</span></button>
-                <button id="calendarBtn" class="btn"><i class="fas fa-calendar-alt"></i> <span>Calendar</span></button>
-                <button id="communicationsBtn" class="btn"><i class="fas fa-comments"></i> <span>Communications</span></button>
-                <button id="editContentBtn" class="btn"><i class="fas fa-edit"></i> <span>Edit Content</span></button>
-                <button id="reviewArticlesBtn" class="btn"><i class="fas fa-newspaper"></i> <span>Review Articles</span></button>
-                <button id="inquiriesBtn" class="btn"><i class="fas fa-question-circle"></i> <span>Inquiries</span></button>
-            </nav>
-            <button id="logoutBtn" class="btn logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+            <a href="#" id="dashboardBtn" class="sidebar-btn active"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="#" id="checkApplicantsBtn" class="sidebar-btn"><i class="fas fa-users"></i> Applicants</a>
+            <a href="#" id="calendarBtn" class="sidebar-btn"><i class="fas fa-calendar-alt"></i> Calendar</a>
+            <a href="#" id="communicationsBtn" class="sidebar-btn"><i class="fas fa-comments"></i> Communications</a>
+            <a href="#" id="editContentBtn" class="sidebar-btn"><i class="fas fa-edit"></i> Edit Content</a>
+            <a href="#" id="reviewArticlesBtn" class="sidebar-btn"><i class="fas fa-file-alt"></i> Review Articles</a>
+            <a href="#" id="inquiriesBtn" class="sidebar-btn"><i class="fas fa-question-circle"></i> Inquiries</a>
+            <a href="#" id="logoutBtn" class="sidebar-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </aside>
-        <main class="main-content">
+        <div class="main-content">
             <header class="header">
-                <div class="header-content">
-                    <div id="welcomeMessage">Wait for a moment while getting things set-up...</div>
-                </div>
-                <div class="header-actions">
-                    <div class="notification-icon" id="notificationIcon">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count" id="notificationCount">0</span>
-                    </div>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div id="welcomeMessage">Loading...</div>
+                <div class="notification-icon" id="notificationIcon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count" id="notificationCount">0</span>
                 </div>
             </header>
-            <div class="admin-content fade-in" id="adminContent">
+            <div class="admin-content" id="adminContent">
                 <!-- Admin content will be dynamically inserted here -->
             </div>
-        </main>
+        </div>
     </div>
     <div class="notification-panel" id="notificationPanel">
         <ul id="notificationList" class="notification-list"></ul>
     </div>
-    <div class="background-decoration background-decoration-1"></div>
-    <div class="background-decoration background-decoration-2"></div>
 
     <script type="module">
         // Import the necessary Firebase modules
@@ -452,41 +440,30 @@
         const notificationPanel = document.getElementById('notificationPanel');
         const notificationList = document.getElementById('notificationList');
         const notificationCount = document.getElementById('notificationCount');
-        const dashboardBtn = document.getElementById('dashboardBtn');
-        const checkApplicantsBtn = document.getElementById('checkApplicantsBtn');
-        const calendarBtn = document.getElementById('calendarBtn');
-        const communicationsBtn = document.getElementById('communicationsBtn');
-        const editContentBtn = document.getElementById('editContentBtn');
-        const reviewArticlesBtn = document.getElementById('reviewArticlesBtn');
-        const inquiriesBtn = document.getElementById('inquiriesBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('.header');
 
         let unreadNotifications = 0;
 
-        function isAdmin(email) {
-            const adminEmails = [
-                'angsilakbo1@uclm.com',
-                'angsilakbo2@uclm.com',
-                'angsilakbo3@uclm.com'
-            ];
-            return adminEmails.includes(email);
-        }
-
-        // Function to get personalized greeting
         function getPersonalizedGreeting(email) {
-            switch (email) {
-                case 'angsilakbo1@uclm.com':
-                    return 'Hello, Miss Queenie! What brings you here today, miss?';
-                case 'angsilakbo2@uclm.com':
-                    return 'Hello, Miss June! What is on your mind, miss?';
-                case 'angsilakbo3@uclm.com':
-                    return 'Hello, Miss Diana! What is bringing you here, miss?';
-                default:
-                    return `Welcome, ${email}!`;
-            }
+            const greetings = {
+                'angsilakbo1@uclm.com': 'Hello, Miss Queenie!',
+                'angsilakbo2@uclm.com': 'Hello, Miss June!',
+                'angsilakbo3@uclm.com': 'Hello, Miss Diana!'
+            };
+            return greetings[email] || `Welcome, ${email}!`;
         }
 
-        // Function to check for new applications
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            mainContent.classList.toggle('sidebar-open');
+            header.classList.toggle('sidebar-open');
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+
         function checkForNewApplications() {
             const applicationsRef = ref(db, 'applications');
             let lastTimestamp = localStorage.getItem('lastApplicationTimestamp') || 0;
@@ -509,7 +486,6 @@
             });
         }
 
-        // Function to create a new notification in the database
         function createNotification(message) {
             const notificationsRef = ref(db, 'notifications');
             const newNotificationRef = push(notificationsRef);
@@ -520,7 +496,6 @@
             });
         }
 
-        // Function to fetch notifications
         function fetchNotifications() {
             const notificationsRef = ref(db, 'notifications');
             onValue(notificationsRef, (snapshot) => {
@@ -536,7 +511,6 @@
             });
         }
 
-        // Function to update the notification panel
         function updateNotificationPanel(notifications) {
             notificationList.innerHTML = '';
             unreadNotifications = 0;
@@ -559,13 +533,11 @@
             notificationCount.textContent = unreadNotifications;
         }
 
-        // Function to mark a notification as read
         function markNotificationAsRead(notificationId) {
             const notificationRef = ref(db, `notifications/${notificationId}`);
             update(notificationRef, { read: true });
         }
 
-        // Function to check authentication and admin status
         function checkAuthAndAdminStatus() {
             welcomeMessage.textContent = 'Loading...';
             onAuthStateChanged(auth, (user) => {
@@ -597,7 +569,6 @@
             });
         }
 
-        // Function to show dashboard
         function showDashboard() {
             adminContent.innerHTML = `
                 <h2>Dashboard</h2>
@@ -625,32 +596,43 @@
                 </div>
             `;
 
-            // Fetch real-time data for dashboard
             fetchDashboardData();
+            animateDashboardCards();
         }
 
-        // Function to fetch real-time data for dashboard
+        function animateDashboardCards() {
+            const cards = document.querySelectorAll('.dashboard-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-in');
+                }, index * 100);
+            });
+        }
+
         function fetchDashboardData() {
             const totalApplicationsRef = ref(db, 'applications');
             const usersRef = ref(db, 'users');
             const contentUpdatesRef = ref(db, 'contentUpdates');
             const inquiriesRef = ref(db, 'inquiries');
 
-            // Fetch total applications
             get(totalApplicationsRef).then((snapshot) => {
                 const totalApplications = snapshot.size || 0;
                 document.getElementById('totalApplications').textContent = totalApplications;
+            }).catch(error => {
+                console.error("Error fetching total applications:", error);
+                document.getElementById('totalApplications').textContent = 'Error';
             });
 
-            // Fetch new applications (last 24 hours)
             get(totalApplicationsRef).then((snapshot) => {
                 const now = Date.now();
                 const oneDayAgo = now - 24 * 60 * 60 * 1000;
                 const newApplications = Object.values(snapshot.val() || {}).filter(app => app.timestamp > oneDayAgo).length;
                 document.getElementById('newApplications').textContent = newApplications;
+            }).catch(error => {
+                console.error("Error fetching new applications:", error);
+                document.getElementById('newApplications').textContent = 'Error';
             });
 
-            // Fetch active users (users who logged in within the last 30 days)
             get(usersRef).then((snapshot) => {
                 const now = Date.now();
                 const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
@@ -658,9 +640,9 @@
                 document.getElementById('activeUsers').textContent = activeUsers;
             }).catch(error => {
                 console.error("Error fetching active users:", error);
+                document.getElementById('activeUsers').textContent = 'Error';
             });
 
-            // Fetch content updates (last 7 days)
             get(contentUpdatesRef).then((snapshot) => {
                 const now = Date.now();
                 const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
@@ -668,77 +650,168 @@
                 document.getElementById('contentUpdates').textContent = recentUpdates;
             }).catch(error => {
                 console.error("Error fetching content updates:", error);
+                document.getElementById('contentUpdates').textContent = 'Error';
             });
 
-            // Fetch inquiries (total count)
             get(inquiriesRef).then((snapshot) => {
                 const totalInquiries = snapshot.size || 0;
                 document.getElementById('inquiries').textContent = totalInquiries;
             }).catch(error => {
                 console.error("Error fetching inquiries:", error);
+                document.getElementById('inquiries').textContent = 'Error';
             });
         }
 
-        // Call the function when the page loads
+        function showReviewArticles() {
+            adminContent.innerHTML = `
+                <h2>Review Articles</h2>
+                <div class="section">
+                    <h3>Pending Articles</h3>
+                    <ul class="article-list" id="pendingArticles">
+                        <li>Loading pending articles...</li>
+                    </ul>
+                </div>
+            `;
+
+            const articlesRef = ref(db, 'articles');
+            get(articlesRef).then((snapshot) => {
+                const articles = snapshot.val();
+                const pendingArticlesList = document.getElementById('pendingArticles');
+                pendingArticlesList.innerHTML = '';
+
+                if (articles) {
+                    Object.entries(articles).forEach(([key, article]) => {
+                        if (article.status === 'pending') {
+                            const li = document.createElement('li');
+                            li.className = 'article-item';
+                            li.innerHTML = `
+                                <div>
+                                    <span class="article-title">${article.title}</span>
+                                    <br>
+                                    <span class="article-author">By ${article.author}</span>
+                                </div>
+                                <span class="article-status status-pending">Pending</span>
+                            `;
+                            pendingArticlesList.appendChild(li);
+                        }
+                    });
+                }
+
+                if (pendingArticlesList.children.length === 0) {
+                    pendingArticlesList.innerHTML = '<li>No pending articles</li>';
+                }
+            }).catch(error => {
+                console.error("Error fetching articles:", error);
+                const pendingArticlesList = document.getElementById('pendingArticles');
+                pendingArticlesList.innerHTML = '<li>Error loading articles</li>';
+            });
+        }
+
+        function showInquiries() {
+            adminContent.innerHTML = `
+                <h2>Inquiries</h2>
+                <div class="section">
+                    <h3>Recent Inquiries</h3>
+                    <ul class="inquiry-list" id="recentInquiries">
+                        <li>Loading recent inquiries...</li>
+                    </ul>
+                </div>
+            `;
+
+            const inquiriesRef = ref(db, 'inquiries');
+            get(inquiriesRef).then((snapshot) => {
+                const inquiries = snapshot.val();
+                const recentInquiriesList = document.getElementById('recentInquiries');
+                recentInquiriesList.innerHTML = '';
+
+                if (inquiries) {
+                    Object.entries(inquiries).slice(0, 10).forEach(([key, inquiry]) => {
+                        const li = document.createElement('li');
+                        li.className = 'inquiry-item';
+                        li.innerHTML = `
+                            <div>
+                                <span class="inquiry-subject">${inquiry.subject}</span>
+                                <br>
+                                <span class="inquiry-date">${new Date(inquiry.timestamp).toLocaleString()}</span>
+                            </div>
+                            <span class="inquiry-status ${inquiry.status === 'open' ? 'status-pending' : 'status-approved'}">${inquiry.status}</span>
+                        `;
+                        recentInquiriesList.appendChild(li);
+                    });
+                }
+
+                if (recentInquiriesList.children.length === 0) {
+                    recentInquiriesList.innerHTML = '<li>No recent inquiries</li>';
+                }
+            }).catch(error => {
+                console.error("Error fetching inquiries:", error);
+                const recentInquiriesList = document.getElementById('recentInquiries');
+                recentInquiriesList.innerHTML = '<li>Error loading inquiries</li>';
+            });
+        }
+
         checkAuthAndAdminStatus();
 
-        // Notification icon click event
         notificationIcon.addEventListener('click', () => {
             notificationPanel.style.display = notificationPanel.style.display === 'block' ? 'none' : 'block';
         });
 
-        // Close notification panel when clicking outside
         document.addEventListener('click', (event) => {
             if (!notificationIcon.contains(event.target) && !notificationPanel.contains(event.target)) {
                 notificationPanel.style.display = 'none';
             }
         });
 
-        // Admin control button event listeners
-        dashboardBtn.addEventListener('click', () => {
-            setActiveButton(dashboardBtn);
-            showDashboard();
-        });
-
-        checkApplicantsBtn.addEventListener('click', () => {
-            setActiveButton(checkApplicantsBtn);
-            window.location.href = 'Ang Silakbo Registered Applicants.html';
-        });
-
-        calendarBtn.addEventListener('click', () => {
-            setActiveButton(calendarBtn);
-            window.location.href = 'Calendar.html';
-        });
-
-        communicationsBtn.addEventListener('click', () => {
-            setActiveButton(communicationsBtn);
-            window.location.href = 'Chat.html';
-        });
-
-        editContentBtn.addEventListener('click', () => {
-            setActiveButton(editContentBtn);
-            window.location.href = 'Silakbo Post.html';
-        });
-
-        reviewArticlesBtn.addEventListener('click', () => {
-            setActiveButton(reviewArticlesBtn);
-            window.location.href = 'Silakbo Articles.html';
-        });
-
-        inquiriesBtn.addEventListener('click', () => {
-            setActiveButton(inquiriesBtn);
-            window.location.href = 'Notifications.html';
-        });
-
-        // Function to set active button
         function setActiveButton(activeButton) {
-            const buttons = [dashboardBtn, checkApplicantsBtn, calendarBtn, communicationsBtn, editContentBtn, reviewArticlesBtn, inquiriesBtn];
+            const buttons = document.querySelectorAll('.sidebar-btn');
             buttons.forEach(button => button.classList.remove('active'));
             activeButton.classList.add('active');
         }
 
-        // Logout functionality
-        logoutBtn.addEventListener('click', () => {
+        document.getElementById('dashboardBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            showDashboard();
+        });
+
+        document.getElementById('checkApplicantsBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            window.location.href = 'Ang Silakbo Registered Applicants.html';
+        });
+
+        document.getElementById('calendarBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            window.location.href = 'Calendar.html';
+        });
+
+        document.getElementById('communicationsBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            window.location.href = 'Chat.html';
+        });
+
+        document.getElementById('editContentBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            window.location.href = 'Silakbo Post.html';
+        });
+
+        document.getElementById('reviewArticlesBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            showReviewArticles();
+        });
+
+        document.getElementById('inquiriesBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            showInquiries();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
             signOut(auth).then(() => {
                 console.log("User signed out successfully");
                 localStorage.removeItem('authToken');
@@ -749,9 +822,5 @@
             });
         });
     </script>
-    
-    <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2024/12/19/04/20241219041230-T4Z2UM4T.js"></script>
-    
 </body>
 </html>
