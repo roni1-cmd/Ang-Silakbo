@@ -13,12 +13,13 @@
             --primary-light: #FF8C61;
             --primary-dark: #E85D2E;
             --secondary-color: #FFB563;
-            --background-color: #F7F7F7;
+            --accent-color: #FFA500;
+            --background-color: #FFF5E6;
             --card-background: #FFFFFF;
             --text-color: #333333;
             --text-light: #666666;
-            --border-color: #E0E0E0;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-color: #FFD1A1;
+            --shadow-color: rgba(255, 107, 53, 0.1);
             --sidebar-width: 250px;
             --header-height: 70px;
             --border-radius: 12px;
@@ -93,7 +94,7 @@
         }
 
         .sidebar-btn:hover, .sidebar-btn.active {
-            background-color: var(--primary-light);
+            background-color: var(--accent-color);
             color: white;
             transform: translateX(5px);
         }
@@ -165,6 +166,7 @@
 
         .notification-icon:hover {
             transform: scale(1.1);
+            color: var(--primary-color);
         }
 
         .notification-count {
@@ -205,6 +207,7 @@
             overflow: hidden;
             opacity: 0;
             transform: translateY(20px);
+            border-left: 4px solid var(--primary-color);
         }
 
         .dashboard-card.fade-in {
@@ -228,6 +231,7 @@
         .dashboard-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 20px var(--shadow-color);
+            background-color: var(--background-color);
         }
 
         .dashboard-card h3 {
@@ -247,7 +251,7 @@
             top: 10px;
             right: 10px;
             font-size: 2rem;
-            color: var(--primary-light);
+            color: var(--primary-color);
             opacity: 0;
             transition: opacity var(--transition-speed) ease;
         }
@@ -283,11 +287,12 @@
         }
 
         .notification-item.unread {
-            background-color: #FFF0E6;
+            background-color: var(--background-color);
         }
 
         .notification-item:hover {
-            background-color: #FFF8F2;
+            background-color: var(--primary-light);
+            color: white;
         }
 
         .section {
@@ -318,7 +323,7 @@
         }
 
         .article-item:hover, .inquiry-item:hover {
-            background-color: #FFF8F2;
+            background-color: var(--background-color);
         }
 
         .article-title, .inquiry-subject {
@@ -463,11 +468,11 @@
 
         function getPersonalizedGreeting(email) {
             const greetings = {
-                'angsilakbo1@uclm.com': 'Hello, Miss Queenie!',
-                'angsilakbo2@uclm.com': 'Hello, Miss June!',
-                'angsilakbo3@uclm.com': 'Hello, Miss Diana!'
+                'angsilakbo1@uclm.com': 'Hello, Miss Queenie! Let us jump right in.',
+                'angsilakbo2@uclm.com': 'Hello, Miss June! Let us get started.',
+                'angsilakbo3@uclm.com': 'Hello, Miss Diana! Let us get to work'
             };
-            return greetings[email] || `Welcome, ${email}!`;
+            return greetings[email] || 'Welcome, ' + email + '!';
         }
 
         function toggleSidebar() {
@@ -843,10 +848,28 @@
                 console.error("Error signing out:", error);
             });
         });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (event) => {
+            if (window.innerWidth <= 767 && sidebar.classList.contains('open') &&
+                !sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                toggleSidebar();
+            }
+        });
+
+        // Close sidebar when window is resized to desktop view
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 767) {
+                sidebar.classList.remove('open');
+                mainContent.classList.remove('sidebar-open');
+                header.classList.remove('sidebar-open');
+            }
+        });
     </script>
     
     <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2024/12/19/04/20241219041230-T4Z2UM4T.js"></script>
+    <script src="https://files.bpcontent.cloud/2024/12/19/04/20241219041230-T4Z2UM4T.js"></script>
     
 </body>
 </html>
+
