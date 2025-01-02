@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silakbo Freedom Wall</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4500;
+            --secondary-color: #FF8717;
+            --background-color: #FAF9F6;
+            --text-color: #1A1A1B;
+            --upvote-color: #FF8b60;
+            --downvote-color: #9494FF;
+            --card-background: #FFFFFF;
+            --border-radius: 16px;
+            --transition-speed: 0.3s;
+        }
+        .dark-mode {
+            --primary-color: #FF4500;
+            --secondary-color: #FF8717;
+            --background-color: #1A1A1B;
+            --text-color: #D7DADC;
+            --upvote-color: #FF8b60;
+            --downvote-color: #9494FF;
+            --card-background: #2D2D2E;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color var(--transition-speed) ease;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        main {
+            flex: 1;
+        }
+        .sidebar {
+            width: 300px;
+        }
+        .card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .username-section, .post-section {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            transition: border-color var(--transition-speed) ease;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: background-color var(--transition-speed) ease, transform 0.1s ease;
+        }
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .post {
+            background-color: var(--card-background);
+            border: 1px solid #e6e6e6;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            display: flex;
+            transition: box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .post:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .post-votes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+        .vote-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            color: #898989;
+            transition: color var(--transition-speed) ease, transform 0.1s ease;
+        }
+        .vote-button:hover {
+            transform: scale(1.1);
+        }
+        .vote-button.upvote.active { color: var(--upvote-color); }
+        .vote-button.downvote.active { color: var(--downvote-color); }
+        .post-content {
+            flex: 1;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: #787C7E;
+        }
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+        .comments {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .comment {
+            background-color: var(--background-color);
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: background-color var(--transition-speed) ease;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .comment:hover {
+            background-color: var(--card-background);
+        }
+        .reply {
+            margin-left: 20px;
+            border-left: 2px solid var(--primary-color);
+            padding-left: 10px;
+            margin-top: 10px;
+        }
+        .error {
+            color: #D8000C;
+            background-color: #FFD2D2;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: var(--border-radius);
+        }
+        .success {
+            color: #270;
+            background-color: #DFF2BF;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: var(--border-radius);
+        }
+        .anonymous-icon {
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+        .rules-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .rules-list li {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        .rules-list li i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        .flair {
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+        .flair-breaking { background-color: #FFE8E0; color: #FF4500; }
+        .flair-opinion { background-color: #E6FFF1; color: #00A86B; }
+        .flair-investigation { background-color: #E6F3FF; color: #0079D3; }
+        .sort-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .sort-option {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #787C7E;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+        .sort-option:hover {
+            background-color: var(--background-color);
+        }
+        .sort-option.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .fade-in {
+            animation: fadeIn var(--transition-speed) ease-in;
+        }
+        .shake {
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+            z-index: 1000;
+        }
+        .floating-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: var(--card-background);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .breaking-news {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .edit-delete-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .edit-delete-buttons button {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: var(--card-background);
+            color: var(--text-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        .notification.show {
+            opacity: 1;
+        }
+        .emoji-picker {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background-color: var(--card-background);
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+        }
+        .emoji-picker.show {
+            display: block;
+        }
+        .emoji-button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s ease;
+        }
+        .emoji-button:hover {
+            transform: scale(1.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                order: -1;
+            }
+            .search-bar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <img src="SILAKBO.png" alt="Silakbo Logo">
+            Silakbo Freedom Wall
+        </a>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search posts...">
+        </div>
+        <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+    </header>
+    <div class="breaking-news">
+        Happy 2025 everyone! 🎉
+    </div>
+
+    <div class="container">
+        <main>
+            <div class="username-section card fade-in">
+                <h2><i class="fas fa-user-circle"></i> Welcome to Silakbo Freedom Wall</h2>
+                <p>Join our community and start sharing your thoughts!</p>
+                <input type="text" id="username" placeholder="Choose a username (min. 3 characters)">
+                <button id="setUsername"><i class="fas fa-sign-in-alt"></i> Set Username</button>
+                <div id="usernameError" class="error"></div>
+                <div id="usernameSuccess" class="success"></div>
+            </div>
+
+            <div class="post-section" style="display: none;">
+                <div class="sort-options fade-in">
+                    <button class="sort-option active" data-sort="new"><i class="fas fa-clock"></i> New</button>
+                    <button class="sort-option" data-sort="top"><i class="fas fa-fire"></i> Top</button>
+                    <button class="sort-option" data-sort="controversial"><i class="fas fa-bolt"></i> Controversial</button>
+                </div>
+
+                <div id="posts"></div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="card fade-in user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h3 id="profileUsername">Anonymous</h3>
+                    <p>Member since <span id="memberSince">Today</span></p>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <h3><i class="fas fa-scroll"></i> Community Rules</h3>
+                <ol class="rules-list">
+                    <li><i class="fas fa-comment"></i> Be respectful to others</li>
+                    <li><i class="fas fa-ban"></i> No hate speech or bullying</li>
+                    <li><i class="fas fa-exclamation-triangle"></i> No explicit content</li>
+                    <li><i class="fas fa-shield-alt"></i> Protect your privacy</li>
+                    <li><i class="fas fa-flag"></i> Report inappropriate content</li>
+                </ol>
+            </div>
+        </aside>
+    </div>
+
+    <button class="floating-button" id="newPostBtn"><i class="fas fa-plus"></i></button>
+
+    <div id="newPostModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create a New Post</h2>
+            <input type="text" id="postTitle" placeholder="Post Title">
+            <textarea id="postContent" placeholder="Write your post here..." rows="4"></textarea>
+            <select id="postFlair">
+                <option value="general">General</option>
+                <option value="question">Question</option>
+                <option value="discussion">Discussion</option>
+            </select>
+            <button id="submitPost"><i class="fas fa-paper-plane"></i> Submit Post</button>
+            <div id="postError" class="error"></div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // Declare variables in global scope
+        let database;
+        let auth;
+        let currentUsername = '';
+        let currentSort = 'new';
+        let userColors = {};
+
+        // Initialize Firebase - Replace with your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // List of explicit words to censor
+        const explicitWords = ['fuck', 'shit', 'ass', 'bitch', 'damn'];
+
+        // Function to censor explicit words
+        function censorText(text) {
+            let censoredText = text;
+            explicitWords.forEach(word => {
+                const regex = new RegExp(word, 'gi');
+                censoredText = censoredText.replace(regex, '*'.repeat(word.length));
+            });
+            return censoredText;
+        }
+
+        // Function to check if text contains explicit words
+        function containsExplicitWords(text) {
+            return explicitWords.some(word => text.toLowerCase().includes(word.toLowerCase()));
+        }
+
+        // Initialize Firebase
+        function initializeFirebase() {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+                auth = firebase.auth();
+                console.log("Firebase initialized successfully");
+                
+                // Sign in anonymously
+                auth.signInAnonymously().catch(error => {
+                    console.error("Error signing in:", error);
+                    document.getElementById('usernameError').textContent = 'Error connecting to service. Please try again later.';
+                });
+
+                return true;
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                document.getElementById('usernameError').textContent = 'Error connecting to database. Please try again later.';
+                return false;
+            }
+        }
+
+        // Initialize Firebase when the page loads
+        if (!initializeFirebase()) {
+            throw new Error('Failed to initialize Firebase');
+        }
+
+        // Function to generate a random color
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Username functionality
+        document.getElementById('setUsername').addEventListener('click', async () => {
+            const username = document.getElementById('username').value.trim();
+            const errorElement = document.getElementById('usernameError');
+            const successElement = document.getElementById('usernameSuccess');
+            
+            try {
+                if (username.length < 3) {
+                    errorElement.textContent = 'Username must be at least 3 characters long';
+                    return;
+                }
+
+                if (containsExplicitWords(username)) {
+                    errorElement.textContent = 'Username contains inappropriate language';
+                    return;
+                }
+
+                currentUsername = username;
+                errorElement.textContent = '';
+                successElement.textContent = 'Username set successfully!';
+                
+                document.querySelector('.username-section').style.display = 'none';
+                document.querySelector('.post-section').style.display = 'block';
+                document.getElementById('profileUsername').textContent = currentUsername;
+                document.getElementById('memberSince').textContent = new Date().toLocaleDateString();
+
+                // Save username to localStorage
+                localStorage.setItem('silakboUsername', currentUsername);
+
+                // Generate and save user color
+                const userColor = getRandomColor();
+                userColors[currentUsername] = userColor;
+                localStorage.setItem('silakboUserColors', JSON.stringify(userColors));
+
+                loadPosts();
+            } catch (error) {
+                console.error("Error setting username:", error);
+                errorElement.textContent = 'Error saving username. Please try again.';
+            }
+        });
+
+        // Post submission
+        document.getElementById('submitPost').addEventListener('click', async () => {
+            if (!currentUsername) {
+                showNotification('Please set a username before posting.', 'error');
+                return;
+            }
+
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const flair = document.getElementById('postFlair').value;
+            const errorElement = document.getElementById('postError');
+
+            try {
+                if (!title || !content) {
+                    errorElement.textContent = 'Post title and content cannot be empty';
+                    return;
+                }
+
+                if (containsExplicitWords(title) || containsExplicitWords(content)) {
+                    errorElement.textContent = 'Post contains inappropriate language';
+                    errorElement.classList.add('shake');
+                    setTimeout(() => errorElement.classList.remove('shake'), 820);
+                    return;
+                }
+
+                const post = {
+                    username: currentUsername,
+                    title: censorText(title),
+                    content: censorText(content),
+                    flair: flair,
+                    timestamp: Date.now(),
+                    comments: {},
+                    upvotes: 0,
+                    downvotes: 0
+                };
+
+                await database.ref('posts').push(post);
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+                errorElement.textContent = '';
+                closeModal();
+                showNotification('Post submitted successfully!', 'success');
+            } catch (error) {
+                console.error("Error submitting post:", error);
+                errorElement.textContent = 'Error submitting post. Please try again.';
+            }
+        });
+
+        // Load and display posts
+        function loadPosts() {
+            const postsDiv = document.getElementById('posts');
+            
+            database.ref('posts')
+                .on('value', 
+                    (snapshot) => {
+                        try {
+                            postsDiv.innerHTML = '';
+                            const posts = snapshot.val() || {};
+
+                            let postsArray = Object.entries(posts);
+
+                            // Sort posts based on current sort option
+                            if (currentSort === 'new') {
+                                postsArray.sort(([, a], [, b]) => b.timestamp - a.timestamp);
+                            } else if (currentSort === 'top') {
+                                postsArray.sort(([, a], [, b]) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+                            } else if (currentSort === 'controversial') {
+                                postsArray.sort(([, a], [, b]) => (b.upvotes + b.downvotes) - (a.upvotes + a.downvotes));
+                            }
+
+                            postsArray.forEach(([postId, post]) => {
+                                const postElement = document.createElement('div');
+                                postElement.className = 'post fade-in';
+                                postElement.setAttribute('data-post-id', postId);
+                                
+                                const date = new Date(post.timestamp);
+                                const userColor = userColors[post.username] || getRandomColor();
+                                postElement.innerHTML = `
+                                    <div class="post-votes">
+                                        <button class="vote-button upvote ${post.userVote === 'up' ? 'active' : ''}" onclick="vote('${postId}', 'up')">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </button>
+                                        <span class="vote-count">${post.upvotes - post.downvotes}</span>
+                                        <button class="vote-button downvote ${post.userVote === 'down' ? 'active' : ''}" onclick="vote('${postId}', 'down')">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="post-content">
+                                        <div class="post-header">
+                                            <span><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${post.username}</span>
+                                            <span>${date.toLocaleString()}</span>
+                                        </div>
+                                        <h3 class="post-title">
+                                            <span class="flair flair-${post.flair}">${post.flair}</span>
+                                            ${post.title}
+                                        </h3>
+                                        <div class="post-body">${post.content}</div>
+                                        <div class="post-footer">
+                                            <button onclick="toggleComments('${postId}')">
+                                                <i class="fas fa-comment"></i> Comments (${Object.keys(post.comments || {}).length})
+                                            </button>
+                                            ${post.username === currentUsername ? `
+                                                <div class="edit-delete-buttons">
+                                                    <button onclick="editPost('${postId}')"><i class="fas fa-edit"></i> Edit</button>
+                                                    <button onclick="deletePost('${postId}')"><i class="fas fa-trash"></i> Delete</button>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                        <div class="comments">
+                                            ${renderComments(post.comments, post.username)}
+                                            <div style="margin-top: 10px;">
+                                                <input type="text" placeholder="Write a comment..." class="comment-input">
+                                                <button onclick="addComment('${postId}')">Comment</button>
+                                                <button onclick="toggleEmojiPicker('${postId}')" class="emoji-button">😀</button>
+                                                <div class="emoji-picker" id="emojiPicker-${postId}">
+                                                    <!-- Add more emojis as needed -->
+                                                    <button onclick="addEmoji('${postId}', '😀')">😀</button>
+                                                    <button onclick="addEmoji('${postId}', '😂')">😂</button>
+                                                    <button onclick="addEmoji('${postId}', '😍')">😍</button>
+                                                    <button onclick="addEmoji('${postId}', '🤔')">🤔</button>
+                                                    <button onclick="addEmoji('${postId}', '👍')">👍</button>
+                                                </div>
+                                                <div class="error comment-error"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                postsDiv.appendChild(postElement);
+                            });
+                        } catch (error) {
+                            console.error("Error rendering posts:", error);
+                            postsDiv.innerHTML = '<div class="error">Error loading posts. Please refresh the page.</div>';
+                        }
+                    },
+                    (error) => {
+                        console.error("Error loading posts:", error);
+                        postsDiv.innerHTML = '<div class="error">Error loading posts. Please check your internet connection and try again.</div>';
+                    }
+                );
+        }
+
+        // Comment functionality
+        function renderComments(comments, postUsername) {
+            if (!comments) return '';
+            let commentHTML = '';
+            Object.entries(comments).forEach(([commentId, comment]) => {
+                const userColor = userColors[comment.username] || getRandomColor();
+                commentHTML += `
+                    <div class="comment" data-comment-id="${commentId}">
+                        <strong><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${comment.username || 'Anonymous'}:</strong> ${comment.content}
+                        <button onclick="toggleReplyForm('${commentId}')">Reply</button>
+                        ${comment.username === currentUsername ? `
+                            <button onclick="editComment('${commentId}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button onclick="deleteComment('${commentId}')"><i class="fas fa-trash"></i> Delete</button>
+                        ` : ''}
+                        <div class="reply-form" style="display: none;">
+                            <input type="text" placeholder="Write a reply..." class="reply-input">
+                            <button onclick="addReply('${commentId}')">Submit Reply</button>
+                            <div class="error reply-error"></div>
+                        </div>
+                        ${renderReplies(comment.replies, comment.username)}
+                    </div>
+                `;
+            });
+            return commentHTML;
+        }
+
+        function renderReplies(replies, commentUsername) {
+            if (!replies) return '';
+            let replyHTML = '<div class="replies">';
+            Object.entries(replies).forEach(([replyId, reply]) => {
+                const userColor = userColors[reply.username] || getRandomColor();
+                replyHTML += `
+                    <div class="reply" data-reply-id="${replyId}">
+                        <strong><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${reply.username || 'Anonymous'}</strong> replied to <strong>${commentUsername}</strong>: ${reply.content}
+                        ${reply.username === currentUsername ? `
+                            <button onclick="editReply('${replyId}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button onclick="deleteReply('${replyId}')"><i class="fas fa-trash"></i> Delete</button>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            replyHTML += '</div>';
+            return replyHTML;
+        }
+
+        async function addComment(postId) {
+            if (!currentUsername) {
+                showNotification('Please set a username before commenting.', 'error');
+                return;
+            }
+
+            const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+            const commentInput = postElement.querySelector('.comment-input');
+            const errorElement = postElement.querySelector('.comment-error');
+            const content = commentInput.value.trim();
+            
+            try {
+                if (!content) {
+                    errorElement.textContent = 'Comment cannot be empty';
+                    return;
+                }
+
+                if (containsExplicitWords(content)) {
+                    errorElement.textContent = 'Comment contains inappropriate language';
+                    errorElement.classList.add('shake');
+                    setTimeout(() => errorElement.classList.remove('shake'), 820);
+                    return;
+                }
+
+                const comment = {
+                    username: currentUsername,
+                    content: censorText(content),
+                    timestamp: Date.now()
+                };
+
+                await database.ref(`posts/${postId}/comments`).push(comment);
+                commentInput.value = '';
+                errorElement.textContent = '';
+                showNotification('Comment added successfully!', 'success');
+            } catch (error) {
+                console.error("Error adding comment:", error);
+                errorElement.textContent = 'Error posting comment. Please try again.';
+            }
+        }
+
+        async function addReply(commentId) {
+            if (!currentUsername) {
+                showNotification('Please set a username before replying.', 'error');
+                return;
+            }
+
+            const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+            const replyInput = commentElement.querySelector('.reply-input');
+            const errorElement = commentElement.querySelector('.reply-error');
+            const content = replyInput.value.trim();
+            
+            try {
+                if (!content) {
+                    errorElement.textContent = 'Reply cannot be empty';
+                    return;
+                }
+
+                if (containsExplicitWords(content)) {
+                    errorElement.textContent = 'Reply contains inappropriate language';
+                    errorElement.classList.add('shake');
+                    setTimeout(() => errorElement.classList.remove('shake'), 820);
+                    return;
+                }
+
+                const reply = {
+                    username: currentUsername,
+                    content: censorText(content),
+                    timestamp: Date.now()
+                };
+
+                const postId = commentElement.closest('.post').getAttribute('data-post-id');
+                await database.ref(`posts/${postId}/comments/${commentId}/replies`).push(reply);
+                replyInput.value = '';
+                errorElement.textContent = '';
+                showNotification('Reply added successfully!', 'success');
+            } catch (error) {
+                console.error("Error adding reply:", error);
+                errorElement.textContent = 'Error posting reply. Please try again.';
+            }
+        }
+
+        // Toggle comments visibility
+        function toggleComments(postId) {
+            const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+            const commentsSection = postElement.querySelector('.comments');
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleReplyForm(commentId) {
+            const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+            const replyForm = commentElement.querySelector('.reply-form');
+            replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Voting functionality
+        async function vote(postId, voteType) {
+            if (!currentUsername) {
+                showNotification('Please set a username before voting.', 'error');
+                return;
+            }
+
+            try {
+                const postRef = database.ref(`posts/${postId}`);
+                const snapshot = await postRef.once('value');
+                const post = snapshot.val();
+
+                if (post.userVote === voteType) {
+                    // User is un-voting
+                    if (voteType === 'up') {
+                        post.upvotes--;
+                    } else {
+                        post.downvotes--;
+                    }
+                    post.userVote = null;
+                } else {
+                    // User is changing vote or voting for the first time
+                    if (post.userVote) {
+                        // Remove previous vote
+                        if (post.userVote === 'up') {
+                            post.upvotes--;
+                        } else {
+                            post.downvotes--;
+                        }
+                    }
+                    // Add new vote
+                    if (voteType === 'up') {
+                        post.upvotes++;
+                    } else {
+                        post.downvotes++;
+                    }
+                    post.userVote = voteType;
+                }
+
+                await postRef.update({
+                    upvotes: post.upvotes,
+                    downvotes: post.downvotes,
+                    userVote: post.userVote
+                });
+
+                const voteCountElement = document.querySelector(`[data-post-id="${postId}"] .vote-count`);
+                voteCountElement.textContent = post.upvotes - post.downvotes;
+
+                // Update vote button styles
+                const upvoteButton = document.querySelector(`[data-post-id="${postId}"] .upvote`);
+                const downvoteButton = document.querySelector(`[data-post-id="${postId}"] .downvote`);
+                upvoteButton.classList.toggle('active', post.userVote === 'up');
+                downvoteButton.classList.toggle('active', post.userVote === 'down');
+
+                showNotification('Vote recorded successfully!', 'success');
+            } catch (error) {
+                console.error("Error voting:", error);
+                showNotification('Error recording vote. Please try again.', 'error');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const posts = document.querySelectorAll('.post');
+            
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                const content = post.querySelector('.post-body').textContent.toLowerCase();
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    post.style.display = 'flex';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('newPostModal');
+        const btn = document.getElementById('newPostBtn');
+        const span = document.getElementsByClassName('close')[0];
+
+        btn.onclick = function() {
+            if (!currentUsername) {
+                showNotification('Please set a username before creating a post.', 'error');
+                return;
+            }
+            modal.style.display = 'block';
+        }
+
+        span.onclick = function() {
+            closeModal();
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('postError').textContent = '';
+        }
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = darkModeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Sort functionality
+        document.querySelectorAll('.sort-option').forEach(button => {
+            button.addEventListener('click', () => {
+                currentSort = button.getAttribute('data-sort');
+                document.querySelectorAll('.sort-option').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                loadPosts();
+            });
+        });
+
+        // Edit post functionality
+        async function editPost(postId) {
+            const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+            const titleElement = postElement.querySelector('.post-title');
+            const contentElement = postElement.querySelector('.post-body');
+            const currentTitle = titleElement.textContent.trim();
+            const currentContent = contentElement.textContent.trim();
+
+            const newTitle = prompt('Edit post title:', currentTitle);
+            if (newTitle === null) return; // User cancelled
+
+            const newContent = prompt('Edit post content:', currentContent);
+            if (newContent === null) return; // User cancelled
+
+            try {
+                if (containsExplicitWords(newTitle) || containsExplicitWords(newContent)) {
+                    showNotification('Post contains inappropriate language', 'error');
+                    return;
+                }
+
+                await database.ref(`posts/${postId}`).update({
+                    title: censorText(newTitle),
+                    content: censorText(newContent)
+                });
+
+                titleElement.textContent = censorText(newTitle);
+                contentElement.textContent = censorText(newContent);
+                showNotification('Post updated successfully!', 'success');
+            } catch (error) {
+                console.error("Error editing post:", error);
+                showNotification('Error editing post. Please try again.', 'error');
+            }
+        }
+
+        // Delete post functionality
+        async function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                try {
+                    await database.ref(`posts/${postId}`).remove();
+                    document.querySelector(`[data-post-id="${postId}"]`).remove();
+                    showNotification('Post deleted successfully!', 'success');
+                } catch (error) {
+                    console.error("Error deleting post:", error);
+                    showNotification('Error deleting post. Please try again.', 'error');
+                }
+            }
+        }
+
+        // Edit comment functionality
+        async function editComment(commentId) {
+            const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+            const contentElement = commentElement.querySelector('strong').nextSibling;
+            const currentContent = contentElement.textContent.trim();
+
+            const newContent = prompt('Edit comment:', currentContent);
+            if (newContent === null) return; // User cancelled
+
+            try {
+                if (containsExplicitWords(newContent)) {
+                    showNotification('Comment contains inappropriate language', 'error');
+                    return;
+                }
+
+                const postId = commentElement.closest('.post').getAttribute('data-post-id');
+                await database.ref(`posts/${postId}/comments/${commentId}`).update({
+                    content: censorText(newContent)
+                });
+
+                contentElement.textContent = `: ${censorText(newContent)}`;
+                showNotification('Comment updated successfully!', 'success');
+            } catch (error) {
+                console.error("Error editing comment:", error);
+                showNotification('Error editing comment. Please try again.', 'error');
+            }
+        }
+
+        // Delete comment functionality
+        async function deleteComment(commentId) {
+            if (confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
+                try {
+                    const postId = document.querySelector(`[data-comment-id="${commentId}"]`).closest('.post').getAttribute('data-post-id');
+                    await database.ref(`posts/${postId}/comments/${commentId}`).remove();
+                    document.querySelector(`[data-comment-id="${commentId}"]`).remove();
+                    showNotification('Comment deleted successfully!', 'success');
+                } catch (error) {
+                    console.error("Error deleting comment:", error);
+                    showNotification('Error deleting comment. Please try again.', 'error');
+                }
+            }
+        }
+
+        // Edit reply functionality
+        async function editReply(replyId) {
+            const replyElement = document.querySelector(`[data-reply-id="${replyId}"]`);
+            const contentElement = replyElement.querySelector('strong:last-of-type').nextSibling;
+            const currentContent = contentElement.textContent.trim();
+
+            const newContent = prompt('Edit reply:', currentContent);
+            if (newContent === null) return; // User cancelled
+
+            try {
+                if (containsExplicitWords(newContent)) {
+                    showNotification('Reply contains inappropriate language', 'error');
+                    return;
+                }
+
+                const postId = replyElement.closest('.post').getAttribute('data-post-id');
+                const commentId = replyElement.closest('.comment').getAttribute('data-comment-id');
+                await database.ref(`posts/${postId}/comments/${commentId}/replies/${replyId}`).update({
+                    content: censorText(newContent)
+                });
+
+                contentElement.textContent = `: ${censorText(newContent)}`;
+                showNotification('Reply updated successfully!', 'success');
+            } catch (error) {
+                console.error("Error editing reply:", error);
+                showNotification('Error editing reply. Please try again.', 'error');
+            }
+        }
+
+        // Delete reply functionality
+        async function deleteReply(replyId) {
+            if (confirm('Are you sure you want to delete this reply? This action cannot be undone.')) {
+                try {
+                    const replyElement = document.querySelector(`[data-reply-id="${replyId}"]`);
+                    const postId = replyElement.closest('.post').getAttribute('data-post-id');
+                    const commentId = replyElement.closest('.comment').getAttribute('data-comment-id');
+                    await database.ref(`posts/${postId}/comments/${commentId}/replies/${replyId}`).remove();
+                    replyElement.remove();
+                    showNotification('Reply deleted successfully!', 'success');
+                } catch (error) {
+                    console.error("Error deleting reply:", error);
+                    showNotification('Error deleting reply. Please try again.', 'error');
+                }
+            }
+        }
+
+        // Notification functionality
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Emoji picker functionality
+        function toggleEmojiPicker(postId) {
+            const emojiPicker = document.getElementById(`emojiPicker-${postId}`);
+            emojiPicker.classList.toggle('show');
+        }
+
+        function addEmoji(postId, emoji) {
+            const commentInput = document.querySelector(`[data-post-id="${postId}"] .comment-input`);
+            commentInput.value += emoji;
+            toggleEmojiPicker(postId);
+        }
+
+        // Load saved username and user colors from localStorage
+        window.addEventListener('load', () => {
+            const savedUsername = localStorage.getItem('silakboUsername');
+            const savedUserColors = localStorage.getItem('silakboUserColors');
+
+            if (savedUsername) {
+                currentUsername = savedUsername;
+                document.querySelector('.username-section').style.display = 'none';
+                document.querySelector('.post-section').style.display = 'block';
+                document.getElementById('profileUsername').textContent = currentUsername;
+                document.getElementById('memberSince').textContent = new Date().toLocaleDateString();
+            }
+
+            if (savedUserColors) {
+                userColors = JSON.parse(savedUserColors);
+            }
+
+            loadPosts();
+        });
+
+        // Initial load of posts
+        loadPosts();
+    </script>
+</body>
+</html>
+
