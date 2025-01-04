@@ -11,6 +11,7 @@
         :root {
             --primary-color: #FF4500;
             --secondary-color: #FF8717;
+            --tertiary-color: #FFA500;
             --background-color: #FAF9F6;
             --text-color: #1A1A1B;
             --upvote-color: #FF8b60;
@@ -22,6 +23,7 @@
         .dark-mode {
             --primary-color: #FF4500;
             --secondary-color: #FF8717;
+            --tertiary-color: #FFA500;
             --background-color: #1A1A1B;
             --text-color: #D7DADC;
             --upvote-color: #FF8b60;
@@ -38,7 +40,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            transition: background-color var(--transition-speed) ease;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
         }
         .container {
             max-width: 1200px;
@@ -62,21 +64,21 @@
             display: flex;
             align-items: center;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             text-decoration: none;
         }
         .logo img {
-            height: 40px;
+            height: 30px;
             margin-right: 10px;
         }
         .search-bar {
             flex-grow: 1;
-            margin: 0 20px;
+            margin: 0 10px;
         }
         .search-bar input {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: none;
             border-radius: 20px;
             background-color: rgba(255, 255, 255, 0.2);
@@ -90,6 +92,9 @@
         }
         .sidebar {
             width: 300px;
+            position: sticky;
+            top: 80px;
+            align-self: flex-start;
         }
         .card {
             background-color: var(--card-background);
@@ -109,6 +114,9 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .username-section {
+            border: 2px solid var(--tertiary-color);
         }
         input[type="text"], textarea {
             width: 100%;
@@ -154,6 +162,7 @@
             padding: 15px;
             border-radius: var(--border-radius);
             display: flex;
+            flex-direction: column;
             transition: box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
             animation: fadeInUp 0.5s ease-out;
         }
@@ -163,10 +172,8 @@
         }
         .post-votes {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            margin-right: 15px;
-            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
         .vote-button {
             background: none;
@@ -182,6 +189,10 @@
         }
         .vote-button.upvote.active { color: var(--upvote-color); }
         .vote-button.downvote.active { color: var(--downvote-color); }
+        .vote-count {
+            margin: 0 5px;
+            font-weight: bold;
+        }
         .post-content {
             flex: 1;
         }
@@ -277,6 +288,8 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
         .sort-option {
             background: none;
@@ -287,6 +300,7 @@
             padding: 5px 10px;
             border-radius: 20px;
             transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            white-space: nowrap;
         }
         .sort-option:hover {
             background-color: var(--background-color);
@@ -359,7 +373,7 @@
             margin: 15% auto;
             padding: 20px;
             border-radius: var(--border-radius);
-            width: 80%;
+            width: 90%;
             max-width: 500px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             animation: fadeInUp 0.5s ease-out;
@@ -391,13 +405,15 @@
             color: white;
             font-weight: bold;
             margin-right: 10px;
+            background-color: var(--tertiary-color);
         }
         .breaking-news {
-            background-color: var(--primary-color);
+            background-color: var(--tertiary-color);
             color: white;
             padding: 10px;
             font-weight: bold;
             text-align: center;
+            animation: fadeIn 0.5s ease-out;
         }
         .edit-delete-buttons {
             display: flex;
@@ -450,16 +466,101 @@
         .emoji-button:hover {
             transform: scale(1.2);
         }
+        .username-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .username-input-group input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .username-requirements {
+            font-size: 0.8rem;
+            color: var(--tertiary-color);
+            margin-top: 5px;
+        }
+        .username-strength {
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .username-strength-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--tertiary-color);
+            transition: width 0.3s ease;
+        }
+        .comment-votes, .reply-votes {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+        .comment-vote-button, .reply-vote-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 2px;
+            color: #898989;
+            transition: color var(--transition-speed) ease, transform 0.1s ease;
+        }
+        .comment-vote-button:hover, .reply-vote-button:hover {
+            transform: scale(1.1);
+        }
+        .comment-vote-button.active, .reply-vote-button.active {
+            color: var(--primary-color);
+        }
+        .real-time-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
         @media (max-width: 768px) {
             .container {
+                padding: 10px;
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
+                position: static;
                 order: -1;
             }
             .search-bar {
                 display: none;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .logo img {
+                height: 25px;
+            }
+            .post {
+                padding: 10px;
+            }
+            .post-title {
+                font-size: 1rem;
+            }
+            .sort-options {
+                justify-content: space-between;
+            }
+            .sort-option {
+                font-size: 0.8rem;
+                padding: 3px 8px;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
             }
         }
     </style>
@@ -484,8 +585,16 @@
             <div class="username-section card fade-in">
                 <h2><i class="fas fa-user-circle"></i> Welcome to Silakbo Freedom Wall</h2>
                 <p>Join our community and start sharing your thoughts!</p>
-                <input type="text" id="username" placeholder="Choose a username (min. 3 characters)">
-                <button id="setUsername"><i class="fas fa-sign-in-alt"></i> Set Username</button>
+                <div class="username-input-group">
+                    <input type="text" id="username" placeholder="Choose a username (min. 3 characters)">
+                    <button id="setUsername"><i class="fas fa-sign-in-alt"></i> Set Username</button>
+                </div>
+                <div class="username-requirements">
+                    Username must be at least 3 characters long and contain only letters, numbers, and underscores.
+                </div>
+                <div class="username-strength">
+                    <div class="username-strength-bar"></div>
+                </div>
                 <div id="usernameError" class="error"></div>
                 <div id="usernameSuccess" class="success"></div>
             </div>
@@ -542,6 +651,7 @@
     </div>
 
     <div id="notification" class="notification"></div>
+    <div id="realTimeNotification" class="real-time-notification" style="display: none;"></div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -624,14 +734,47 @@
         }
 
         // Username functionality
-        document.getElementById('setUsername').addEventListener('click', async () => {
-            const username = document.getElementById('username').value.trim();
+        const usernameInput = document.getElementById('username');
+        const setUsernameButton = document.getElementById('setUsername');
+        const usernameStrengthBar = document.querySelector('.username-strength-bar');
+
+        usernameInput.addEventListener('input', () => {
+            const username = usernameInput.value.trim();
+            const strength = calculateUsernameStrength(username);
+            updateUsernameStrengthBar(strength);
+        });
+
+        function calculateUsernameStrength(username) {
+            if (username.length < 3) return 0;
+            if (username.length < 5) return 33;
+            if (username.length < 8) return 66;
+            return 100;
+        }
+
+        function updateUsernameStrengthBar(strength) {
+            usernameStrengthBar.style.width = `${strength}%`;
+            if (strength < 33) {
+                usernameStrengthBar.style.backgroundColor = '#ff4500';
+            } else if (strength < 66) {
+                usernameStrengthBar.style.backgroundColor = '#ffa500';
+            } else {
+                usernameStrengthBar.style.backgroundColor = '#4CAF50';
+            }
+        }
+
+        setUsernameButton.addEventListener('click', async () => {
+            const username = usernameInput.value.trim();
             const errorElement = document.getElementById('usernameError');
             const successElement = document.getElementById('usernameSuccess');
             
             try {
                 if (username.length < 3) {
                     errorElement.textContent = 'Username must be at least 3 characters long';
+                    return;
+                }
+
+                if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                    errorElement.textContent = 'Username can only contain letters, numbers, and underscores';
                     return;
                 }
 
@@ -697,7 +840,8 @@
                     timestamp: Date.now(),
                     comments: {},
                     upvotes: 0,
-                    downvotes: 0
+                    downvotes: 0,
+                    userColor: userColors[currentUsername]
                 };
 
                 await database.ref('posts').push(post);
@@ -740,7 +884,7 @@
                                 postElement.setAttribute('data-post-id', postId);
                                 
                                 const date = new Date(post.timestamp);
-                                const userColor = userColors[post.username] || getRandomColor();
+                                const userColor = post.userColor || userColors[post.username] || getRandomColor();
                                 postElement.innerHTML = `
                                     <div class="post-votes">
                                         <button class="vote-button upvote ${post.userVote === 'up' ? 'active' : ''}" onclick="vote('${postId}', 'up')">
@@ -773,7 +917,7 @@
                                             ` : ''}
                                         </div>
                                         <div class="comments">
-                                            ${renderComments(post.comments, post.username)}
+                                            ${renderComments(post.comments, postId)}
                                             <div style="margin-top: 10px;">
                                                 <input type="text" placeholder="Write a comment..." class="comment-input">
                                                 <button onclick="addComment('${postId}')">Comment</button>
@@ -806,43 +950,65 @@
         }
 
         // Comment functionality
-        function renderComments(comments, postUsername) {
+        function renderComments(comments, postId) {
             if (!comments) return '';
             let commentHTML = '';
             Object.entries(comments).forEach(([commentId, comment]) => {
-                const userColor = userColors[comment.username] || getRandomColor();
+                const userColor = comment.userColor || userColors[comment.username] || getRandomColor();
                 commentHTML += `
                     <div class="comment" data-comment-id="${commentId}">
-                        <strong><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${comment.username || 'Anonymous'}:</strong> ${comment.content}
-                        <button onclick="toggleReplyForm('${commentId}')">Reply</button>
-                        ${comment.username === currentUsername ? `
-                            <button onclick="editComment('${commentId}')"><i class="fas fa-edit"></i> Edit</button>
-                            <button onclick="deleteComment('${commentId}')"><i class="fas fa-trash"></i> Delete</button>
-                        ` : ''}
-                        <div class="reply-form" style="display: none;">
-                            <input type="text" placeholder="Write a reply..." class="reply-input">
-                            <button onclick="addReply('${commentId}')">Submit Reply</button>
-                            <div class="error reply-error"></div>
+                        <div class="comment-votes">
+                            <button class="comment-vote-button upvote ${comment.userVote === 'up' ? 'active' : ''}" onclick="voteComment('${postId}', '${commentId}', 'up')">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <span class="vote-count">${(comment.upvotes || 0) - (comment.downvotes || 0)}</span>
+                            <button class="comment-vote-button downvote ${comment.userVote === 'down' ? 'active' : ''}" onclick="voteComment('${postId}', '${commentId}', 'down')">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
                         </div>
-                        ${renderReplies(comment.replies, comment.username)}
+                        <div class="comment-content">
+                            <strong><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${comment.username || 'Anonymous'}:</strong> ${comment.content}
+                            <button onclick="toggleReplyForm('${commentId}')">Reply</button>
+                            ${comment.username === currentUsername ? `
+                                <button onclick="editComment('${postId}', '${commentId}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button onclick="deleteComment('${postId}', '${commentId}')"><i class="fas fa-trash"></i> Delete</button>
+                            ` : ''}
+                            <div class="reply-form" style="display: none;">
+                                <input type="text" placeholder="Write a reply..." class="reply-input">
+                                <button onclick="addReply('${postId}', '${commentId}')">Submit Reply</button>
+                                <div class="error reply-error"></div>
+                            </div>
+                            ${renderReplies(comment.replies, postId, commentId)}
+                        </div>
                     </div>
                 `;
             });
             return commentHTML;
         }
 
-        function renderReplies(replies, commentUsername) {
+        function renderReplies(replies, postId, commentId) {
             if (!replies) return '';
             let replyHTML = '<div class="replies">';
             Object.entries(replies).forEach(([replyId, reply]) => {
-                const userColor = userColors[reply.username] || getRandomColor();
+                const userColor = reply.userColor || userColors[reply.username] || getRandomColor();
                 replyHTML += `
                     <div class="reply" data-reply-id="${replyId}">
-                        <strong><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${reply.username || 'Anonymous'}</strong> replied to <strong>${commentUsername}</strong>: ${reply.content}
-                        ${reply.username === currentUsername ? `
-                            <button onclick="editReply('${replyId}')"><i class="fas fa-edit"></i> Edit</button>
-                            <button onclick="deleteReply('${replyId}')"><i class="fas fa-trash"></i> Delete</button>
-                        ` : ''}
+                        <div class="reply-votes">
+                            <button class="reply-vote-button upvote ${reply.userVote === 'up' ? 'active' : ''}" onclick="voteReply('${postId}', '${commentId}', '${replyId}', 'up')">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <span class="vote-count">${(reply.upvotes || 0) - (reply.downvotes || 0)}</span>
+                            <button class="reply-vote-button downvote ${reply.userVote === 'down' ? 'active' : ''}" onclick="voteReply('${postId}', '${commentId}', '${replyId}', 'down')">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                        </div>
+                        <div class="reply-content">
+                            <strong><i class="fas fa-user-circle anonymous-icon" style="color: ${userColor};"></i>${reply.username || 'Anonymous'}</strong>: ${reply.content}
+                            ${reply.username === currentUsername ? `
+                                <button onclick="editReply('${postId}', '${commentId}', '${replyId}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button onclick="deleteReply('${postId}', '${commentId}', '${replyId}')"><i class="fas fa-trash"></i> Delete</button>
+                            ` : ''}
+                        </div>
                     </div>
                 `;
             });
@@ -877,7 +1043,10 @@
                 const comment = {
                     username: currentUsername,
                     content: censorText(content),
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    upvotes: 0,
+                    downvotes: 0,
+                    userColor: userColors[currentUsername]
                 };
 
                 await database.ref(`posts/${postId}/comments`).push(comment);
@@ -890,7 +1059,7 @@
             }
         }
 
-        async function addReply(commentId) {
+        async function addReply(postId, commentId) {
             if (!currentUsername) {
                 showNotification('Please set a username before replying.', 'error');
                 return;
@@ -917,10 +1086,12 @@
                 const reply = {
                     username: currentUsername,
                     content: censorText(content),
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    upvotes: 0,
+                    downvotes: 0,
+                    userColor: userColors[currentUsername]
                 };
 
-                const postId = commentElement.closest('.post').getAttribute('data-post-id');
                 await database.ref(`posts/${postId}/comments/${commentId}/replies`).push(reply);
                 replyInput.value = '';
                 errorElement.textContent = '';
@@ -1005,6 +1176,132 @@
             }
         }
 
+        async function voteComment(postId, commentId, voteType) {
+            if (!currentUsername) {
+                showNotification('Please set a username before voting.', 'error');
+                return;
+            }
+
+            try {
+                const commentRef = database.ref(`posts/${postId}/comments/${commentId}`);
+                const snapshot = await commentRef.once('value');
+                const comment = snapshot.val();
+
+                if (!comment.upvotes) comment.upvotes = 0;
+                if (!comment.downvotes) comment.downvotes = 0;
+
+                if (comment.userVote === voteType) {
+                    // User is un-voting
+                    if (voteType === 'up') {
+                        comment.upvotes--;
+                    } else {
+                        comment.downvotes--;
+                    }
+                    comment.userVote = null;
+                } else {
+                    // User is changing vote or voting for the first time
+                    if (comment.userVote) {
+                        // Remove previous vote
+                        if (comment.userVote === 'up') {
+                            comment.upvotes--;
+                        } else {
+                            comment.downvotes--;
+                        }
+                    }
+                    // Add new vote
+                    if (voteType === 'up') {
+                        comment.upvotes++;
+                    } else {
+                        comment.downvotes++;
+                    }
+                    comment.userVote = voteType;
+                }
+
+                await commentRef.update({
+                    upvotes: comment.upvotes,
+                    downvotes: comment.downvotes,
+                    userVote: comment.userVote
+                });
+
+                const voteCountElement = document.querySelector(`[data-comment-id="${commentId}"] .vote-count`);
+                voteCountElement.textContent = comment.upvotes - comment.downvotes;
+
+                // Update vote button styles
+                const upvoteButton = document.querySelector(`[data-comment-id="${commentId}"] .upvote`);
+                const downvoteButton = document.querySelector(`[data-comment-id="${commentId}"] .downvote`);
+                upvoteButton.classList.toggle('active', comment.userVote === 'up');
+                downvoteButton.classList.toggle('active', comment.userVote === 'down');
+
+                showNotification('Vote recorded successfully!', 'success');
+            } catch (error) {
+                console.error("Error voting on comment:", error);
+                showNotification('Error recording vote. Please try again.', 'error');
+            }
+        }
+
+        async function voteReply(postId, commentId, replyId, voteType) {
+            if (!currentUsername) {
+                showNotification('Please set a username before voting.', 'error');
+                return;
+            }
+
+            try {
+                const replyRef = database.ref(`posts/${postId}/comments/${commentId}/replies/${replyId}`);
+                const snapshot = await replyRef.once('value');
+                const reply = snapshot.val();
+
+                if (!reply.upvotes) reply.upvotes = 0;
+                if (!reply.downvotes) reply.downvotes = 0;
+
+                if (reply.userVote === voteType) {
+                    // User is un-voting
+                    if (voteType === 'up') {
+                        reply.upvotes--;
+                    } else {
+                        reply.downvotes--;
+                    }
+                    reply.userVote = null;
+                } else {
+                    // User is changing vote or voting for the first time
+                    if (reply.userVote) {
+                        // Remove previous vote
+                        if (reply.userVote === 'up') {
+                            reply.upvotes--;
+                        } else {
+                            reply.downvotes--;
+                        }
+                    }
+                    // Add new vote
+                    if (voteType === 'up') {
+                        reply.upvotes++;
+                    } else {
+                        reply.downvotes++;
+                    }
+                    reply.userVote = voteType;
+                }
+
+                await replyRef.update({
+                    upvotes: reply.upvotes,
+                    downvotes: reply.downvotes,
+                    userVote: reply.userVote
+                });
+
+                const voteCountElement = document.querySelector(`[data-reply-id="${replyId}"] .vote-count`);
+                voteCountElement.textContent = reply.upvotes - reply.downvotes;
+
+                // Update vote button styles
+                const upvoteButton = document.querySelector(`[data-reply-id="${replyId}"] .upvote`);
+                const downvoteButton = document.querySelector(`[data-reply-id="${replyId}"] .downvote`);
+                upvoteButton.classList.toggle('active', reply.userVote === 'up');
+                downvoteButton.classList.toggle('active', reply.userVote === 'down');
+
+                showNotification('Vote recorded successfully!', 'success');
+            } catch (error) {
+                console.error("Error voting on reply:", error);
+                showNotification('Error recording vote. Please try again.', 'error');
+            }
+        }
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
@@ -1063,6 +1360,7 @@
                 icon.classList.remove('fa-sun');
                 icon.classList.add('fa-moon');
             }
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
         });
 
         // Sort functionality
@@ -1124,7 +1422,7 @@
         }
 
         // Edit comment functionality
-        async function editComment(commentId) {
+        async function editComment(postId, commentId) {
             const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
             const contentElement = commentElement.querySelector('strong').nextSibling;
             const currentContent = contentElement.textContent.trim();
@@ -1138,7 +1436,6 @@
                     return;
                 }
 
-                const postId = commentElement.closest('.post').getAttribute('data-post-id');
                 await database.ref(`posts/${postId}/comments/${commentId}`).update({
                     content: censorText(newContent)
                 });
@@ -1152,10 +1449,9 @@
         }
 
         // Delete comment functionality
-        async function deleteComment(commentId) {
+        async function deleteComment(postId, commentId) {
             if (confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
                 try {
-                    const postId = document.querySelector(`[data-comment-id="${commentId}"]`).closest('.post').getAttribute('data-post-id');
                     await database.ref(`posts/${postId}/comments/${commentId}`).remove();
                     document.querySelector(`[data-comment-id="${commentId}"]`).remove();
                     showNotification('Comment deleted successfully!', 'success');
@@ -1167,9 +1463,9 @@
         }
 
         // Edit reply functionality
-        async function editReply(replyId) {
+        async function editReply(postId, commentId, replyId) {
             const replyElement = document.querySelector(`[data-reply-id="${replyId}"]`);
-            const contentElement = replyElement.querySelector('strong:last-of-type').nextSibling;
+            const contentElement = replyElement.querySelector('strong').nextSibling;
             const currentContent = contentElement.textContent.trim();
 
             const newContent = prompt('Edit reply:', currentContent);
@@ -1181,8 +1477,6 @@
                     return;
                 }
 
-                const postId = replyElement.closest('.post').getAttribute('data-post-id');
-                const commentId = replyElement.closest('.comment').getAttribute('data-comment-id');
                 await database.ref(`posts/${postId}/comments/${commentId}/replies/${replyId}`).update({
                     content: censorText(newContent)
                 });
@@ -1196,14 +1490,11 @@
         }
 
         // Delete reply functionality
-        async function deleteReply(replyId) {
+        async function deleteReply(postId, commentId, replyId) {
             if (confirm('Are you sure you want to delete this reply? This action cannot be undone.')) {
                 try {
-                    const replyElement = document.querySelector(`[data-reply-id="${replyId}"]`);
-                    const postId = replyElement.closest('.post').getAttribute('data-post-id');
-                    const commentId = replyElement.closest('.comment').getAttribute('data-comment-id');
                     await database.ref(`posts/${postId}/comments/${commentId}/replies/${replyId}`).remove();
-                    replyElement.remove();
+                    document.querySelector(`[data-reply-id="${replyId}"]`).remove();
                     showNotification('Reply deleted successfully!', 'success');
                 } catch (error) {
                     console.error("Error deleting reply:", error);
@@ -1235,10 +1526,40 @@
             toggleEmojiPicker(postId);
         }
 
+        // Real-time notification functionality
+        function showRealTimeNotification(message, postId) {
+            const notification = document.getElementById('realTimeNotification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            notification.onclick = () => {
+                notification.style.display = 'none';
+                const post = document.querySelector(`[data-post-id="${postId}"]`);
+                if (post) {
+                    post.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    post.style.animation = 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both';
+                    setTimeout(() => {
+                        post.style.animation = '';
+                    }, 820);
+                }
+            };
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // Listen for new posts
+        database.ref('posts').limitToLast(1).on('child_added', (snapshot) => {
+            const post = snapshot.val();
+            if (post.username !== currentUsername) {
+                showRealTimeNotification(`New post by ${post.username}: ${post.title}`, snapshot.key);
+            }
+        });
+
         // Load saved username and user colors from localStorage
         window.addEventListener('load', () => {
             const savedUsername = localStorage.getItem('silakboUsername');
             const savedUserColors = localStorage.getItem('silakboUserColors');
+            const savedDarkMode = localStorage.getItem('darkMode');
 
             if (savedUsername) {
                 currentUsername = savedUsername;
@@ -1252,12 +1573,144 @@
                 userColors = JSON.parse(savedUserColors);
             }
 
+            if (savedDarkMode === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.querySelector('i').classList.remove('fa-moon');
+                darkModeToggle.querySelector('i').classList.add('fa-sun');
+            }
+
             loadPosts();
         });
 
-        // Initial load of posts
-        loadPosts();
+        // Implement infinite scrolling
+        let isLoading = false;
+        let lastLoadedPostId = null;
+
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && !isLoading) {
+                loadMorePosts();
+            }
+        });
+
+        async function loadMorePosts() {
+            isLoading = true;
+            try {
+                let query = database.ref('posts').orderByKey();
+                if (lastLoadedPostId) {
+                    query = query.endBefore(lastLoadedPostId);
+                }
+                query = query.limitToLast(10);
+
+                const snapshot = await query.once('value');
+                const posts = snapshot.val();
+
+                if (posts) {
+                    const postsArray = Object.entries(posts);
+                    postsArray.reverse().forEach(([postId, post]) => {
+                        renderPost(postId, post);
+                    });
+                    lastLoadedPostId = postsArray[0][0];
+                }
+            } catch (error) {
+                console.error("Error loading more posts:", error);
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function renderPost(postId, post) {
+            // Implement the rendering logic for a single post
+            // This should be similar to the post rendering in the loadPosts function
+        }
+
+        // Implement a debounce function for search
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Use debounce for search input
+        const debouncedSearch = debounce((e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const posts = document.querySelectorAll('.post');
+            
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                const content = post.querySelector('.post-body').textContent.toLowerCase();
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    post.style.display = 'flex';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }, 300);
+
+        document.getElementById('searchInput').addEventListener('input', debouncedSearch);
+
+        // Implement lazy loading for images
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('img[data-src]');
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, options);
+
+            images.forEach(img => imageObserver.observe(img));
+        }
+
+        // Call lazyLoadImages after loading posts
+        function loadPosts() {
+            // Existing loadPosts logic...
+
+            // After rendering posts
+            lazyLoadImages();
+        }
+
+        // Implement error boundary
+        window.addEventListener('error', function(event) {
+            console.error('Caught in error boundary:', event.error);
+            showNotification('An error occurred. Please refresh the page.', 'error');
+        });
+
+        // Implement offline support
+        window.addEventListener('online', () => {
+            showNotification('You are back online!', 'success');
+            loadPosts(); // Reload posts when coming back online
+        });
+
+        window.addEventListener('offline', () => {
+            showNotification('You are offline. Some features may be unavailable.', 'error');
+        });
+
+        // Service Worker Registration for PWA support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
-
