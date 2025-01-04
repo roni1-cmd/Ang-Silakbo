@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Admin Login</title>
+    <title>SILAKBO Admin Login</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         :root {
-            --primary-color: #ff7e33;
-            --primary-light: #ff9b5b;
-            --primary-dark: #ff6b1a;
-            --text-color: #333;
-            --background-color: #fff5f0;
-            --white: #ffffff;
-            --gray: #666666;
-            --light-gray: #999999;
-            --error-color: #f44336;
-            --success-color: #4CAF50;
+            --primary: #ff6b00;
+            --primary-light: #ff9e40;
+            --primary-dark: #e65100;
+            --secondary: #ff9100;
+            --text: #333;
+            --text-light: #666;
+            --background: #fff5e6;
         }
 
         * {
@@ -31,151 +28,182 @@
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            background-color: var(--background-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--background);
+            padding: 2rem;
             overflow-x: hidden;
         }
 
         .login-container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
             display: flex;
-            background: var(--white);
-            border-radius: 24px;
             overflow: hidden;
-            width: 90%;
-            max-width: 1000px;
-            height: auto;
-            min-height: 600px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(255, 107, 0, 0.1);
             opacity: 0;
             transform: translateY(20px);
-            animation: fadeInUp 0.8s ease-out forwards;
-            position: relative;
-            z-index: 1;
+            animation: fadeInUp 0.5s ease-out forwards;
         }
 
-        .logo {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 80px;
-            height: auto;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.5s forwards;
-            z-index: 2;
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-form {
-            flex: 1;
-            padding: 40px;
-            background: var(--white);
+            width: 50%;
+            padding: 3rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;
         }
 
-        .login-image {
-            flex: 1;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+        .logo {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .welcome-text {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text h1 {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text h1 span {
+            color: var(--primary);
+            font-weight: 700;
             position: relative;
-            overflow: hidden;
+            display: inline-block;
         }
 
-        .login-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .welcome-text h1 span::after {
+            content: '';
             position: absolute;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            color: var(--primary-color);
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.2s forwards;
-        }
-
-        .subtitle {
-            color: var(--gray);
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.4s forwards;
-            font-size: 14px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.6s forwards;
-        }
-
-        .input-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--background-color);
-            background: var(--white);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .welcome-text h1 span:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .welcome-text p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 1rem;
             transition: all 0.3s ease;
+            background: transparent;
         }
 
-        .input-group input:focus {
+        .form-group input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255, 126, 51, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
         }
 
-        .input-group label {
+        .form-group label {
             position: absolute;
-            left: 16px;
+            left: 3rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--light-gray);
+            color: var(--text-light);
             transition: all 0.3s ease;
             pointer-events: none;
-            font-size: 14px;
-        }
-
-        .input-group input:focus + label,
-        .input-group input:not(:placeholder-shown) + label {
-            top: 0;
-            font-size: 12px;
-            color: var(--primary-color);
-            background: var(--white);
+            background: white;
             padding: 0 4px;
         }
 
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            border: none;
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 0.875rem;
+            color: var(--primary);
+            left: 12px;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
             border-radius: 8px;
-            color: var(--white);
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
-            margin-bottom: 20px;
             transition: all 0.3s ease;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.8s forwards;
             position: relative;
             overflow: hidden;
         }
 
-        .login-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 126, 51, 0.2);
+        .btn-login {
+            background: var(--primary);
+            color: white;
+            border: none;
+            flex: 2;
         }
 
-        .login-btn::after {
+        .btn-login:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-login::after {
             content: '';
             position: absolute;
             top: 50%;
@@ -204,155 +232,180 @@
             }
         }
 
-        .login-btn:focus:not(:active)::after {
+        .btn-login:focus:not(:active)::after {
             animation: ripple 1s ease-out;
+        }
+
+        .btn-source {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            flex: 1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-source:hover {
+            background: rgba(255, 107, 0, 0.1);
+        }
+
+        .social {
+            margin-top: auto;
+        }
+
+        .social p {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .social-icons a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--background);
+            margin: 0 0.5rem;
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .design-area {
+            width: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slideshow {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slideshow-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slideshow-image.active {
+            opacity: 1;
+        }
+
+        .credits {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            z-index: 10;
+        }
+
+        #error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--primary-light);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .forgot-password {
             text-align: right;
-            font-size: 14px;
-            color: var(--gray);
+            margin-top: -1rem;
+            margin-bottom: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary);
             text-decoration: none;
+            font-size: 0.875rem;
             transition: color 0.3s ease;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out 1s forwards;
         }
 
-        .forgot-password:hover {
-            color: var(--primary-color);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            color: var(--white);
-            border-radius: 8px;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .notification.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .notification.success {
-            background-color: var(--success-color);
-        }
-
-        .notification.error {
-            background-color: var(--error-color);
-        }
-
-        .moving-circle {
-            position: fixed;
-            border-radius: 50%;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--gray);
-        }
-
-        .password-strength {
-            height: 5px;
-            margin-top: 5px;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .strength-weak { background-color: #ff4d4d; width: 33.33%; }
-        .strength-medium { background-color: #ffa64d; width: 66.66%; }
-        .strength-strong { background-color: #4CAF50; width: 100%; }
-
-        .loading-container {
-            --uib-size: 40px;
-            --uib-color: white;
-            --uib-speed: 1.4s;
-            height: var(--uib-size);
-            width: var(--uib-size);
-            transform-origin: center;
-            overflow: visible;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        .loading-container .car {
-            fill: none;
-            stroke: var(--uib-color);
-            stroke-dasharray: 15, 85;
-            stroke-dashoffset: 0;
-            stroke-linecap: round;
-            animation: travel var(--uib-speed) linear infinite;
-            will-change: stroke-dasharray, stroke-dashoffset;
-            transition: stroke 0.5s ease;
-        }
-
-        .loading-container .track {
-            stroke: var(--uib-color);
-            opacity: 0.1;
-            transition: stroke 0.5s ease;
-        }
-
-        @keyframes travel {
-            0% {
-                stroke-dashoffset: 0;
-            }
-            100% {
-                stroke-dashoffset: -100;
-            }
+        .forgot-password a:hover {
+            color: var(--primary-dark);
         }
 
         .remember-me {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: var(--gray);
+            margin-bottom: 1rem;
         }
 
         .remember-me input {
-            margin-right: 10px;
+            margin-right: 0.5rem;
         }
 
-        .language-selector {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 2;
+        .info-box {
+            background-color: var(--primary-light);
+            color: var(--text);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
         }
 
-        .language-selector select {
-            padding: 5px 10px;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-            background-color: var(--white);
-            color: var(--text-color);
-            font-size: 14px;
-            cursor: pointer;
+        .info-box h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        .info-box p {
+            font-size: 0.875rem;
         }
 
         @media (max-width: 768px) {
@@ -360,81 +413,103 @@
                 flex-direction: column;
             }
 
-            .login-image {
-                display: none;
+            .login-form, .design-area {
+                width: 100%;
+            }
+
+            .design-area {
+                order: -1;
+                height: 200px;
+            }
+
+            .welcome-text h1 {
+                font-size: 2rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn-login, .btn-source {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
             }
 
             .login-form {
-                padding: 30px;
+                padding: 2rem;
             }
 
-            .logo {
-                width: 60px;
-                top: 10px;
-                left: 10px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .subtitle {
-                font-size: 12px;
-                margin-bottom: 20px;
-            }
-
-            .language-selector {
-                top: 10px;
-                right: 10px;
-            }
-
-            .language-selector select {
-                font-size: 12px;
-                padding: 3px 8px;
+            .welcome-text h1 {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <img src="SILAKBO.png" alt="Ang Silakbo Logo" class="logo">
         <div class="login-form">
-            <h1>Welcome Back, Admin</h1>
-            <p class="subtitle">Please log in to access the admin panel.</p>
+            <div class="logo">
+                <img src="SILAKBO.png" alt="SILAKBO Logo">
+                ANG SILAKBO
+            </div>
+            <div class="welcome-text">
+                <h1>Hello, <span>welcome!</span></h1>
+                <p>Enter your details to access your account</p>
+            </div>
             <form id="loginForm">
-                <div class="input-group">
-                    <input type="email" id="username" placeholder=" " required>
-                    <label for="username">Email</label>
+                <div class="form-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder=" " required>
+                    <label for="email">Email address</label>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
                     <input type="password" id="password" placeholder=" " required>
                     <label for="password">Password</label>
-                    <span class="password-toggle" id="passwordToggle">👁️</span>
-                    <div class="password-strength" id="passwordStrength"></div>
                 </div>
                 <div class="remember-me">
-                    <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe">Remember me</label>
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
                 </div>
-                <button type="submit" class="login-btn" id="loginBtn">Log In</button>
+                <div class="forgot-password">
+                    <a href="#" id="forgotPassword">-- .. --- . -. - .. - .- . - .. - .- .</a>
+                </div>
+                <div class="buttons">
+                    <button type="submit" class="btn btn-login">Login</button>
+                    <a href="Project Repository.html" class="btn btn-source">Source Codes</a>
+                </div>
             </form>
-            <a href="Project Repository.html" class="forgot-password" id="sourceCodes">Source Codes</a>
+            <div id="error-message"></div>
+            <div class="social">
+                <p>MORE INFORMATION</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="info-box">
+                <h3>Welcome to ANG SILAKBO Admin</h3>
+                <p>This portal is for authorized personnel only. If you're having trouble logging in, please contact support.</p>
+            </div>
         </div>
-        <div class="login-image">
-            <img src="Editorial Cartoon.jpg" alt="Login illustration 1" class="slide">
-            <img src="Photo 7.jpg" alt="Login illustration 2" class="slide">
-            <img src="Photo 6.jpg" alt="Login illustration 3" class="slide">
-            <img src="image 2.jpg" alt="Login illustration 4" class="slide">
-            <img src="Photo 2.jpg" alt="Login illustration 5" class="slide">
+        <div class="design-area">
+            <div class="slideshow">
+                <img src="Featured 3.jpg" alt="Nature" class="slideshow-image">
+                <img src="Feature 7.jpg" alt="Technology" class="slideshow-image">
+                <img src="Photo 3.jpg" alt="Architecture" class="slideshow-image">
+                <img src="Photo 8.jpg" alt="Business" class="slideshow-image">
+                <img src="Photo 9.jpg" alt="Travel" class="slideshow-image">
+            </div>
+            <div class="credits">ANG SILAKBO 2021. | ALL RIGHTS RESERVED</div>
         </div>
     </div>
-    <div class="notification" id="notification"></div>
-    <div class="language-selector">
-        <select id="languageSelect">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-        </select>
+
+    <div class="loading">
+        <div class="loading-spinner"></div>
     </div>
 
     <script>
@@ -442,216 +517,130 @@
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
             authDomain: "ang-silakbo.firebaseapp.com",
-            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
             projectId: "ang-silakbo",
-            storageBucket: "ang-silakbo.appspot.com",
-            messagingSenderId: "1006400633782",
-            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
-            measurementId: "G-TSDTG2YJ94"
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17"
         };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-        let loginAttempts = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginButton = document.querySelector('.btn-login');
+            const errorMessage = document.getElementById('error-message');
+            const loadingElement = document.querySelector('.loading');
+            const forgotPasswordLink = document.getElementById('forgotPassword');
+            const rememberMeCheckbox = document.getElementById('remember');
+            const slideshowImages = document.querySelectorAll('.slideshow-image');
 
-        // DOM Elements
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const passwordToggle = document.getElementById('passwordToggle');
-        const passwordStrength = document.getElementById('passwordStrength');
-        const rememberMeCheckbox = document.getElementById('rememberMe');
-        const languageSelect = document.getElementById('languageSelect');
+            const errorMessages = [
+                "Oops! That didn't work. Please try again.",
+                "Still having trouble? Double-check your credentials.",
+                "Hmm, this is unusual. Are you sure you have an admin account?",
+                "Multiple failed attempts. Please contact support if you're having issues."
+            ];
 
-        // Login form submission
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = usernameInput.value;
-            const password = passwordInput.value;
-            
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = `
-                <svg class="loading-container" x="0px" y="0px" viewBox="0 0 40 40" height="40" width="40" preserveAspectRatio="xMidYMid meet">
-                    <path class="track" fill="none" stroke-width="4" pathLength="100" d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z"></path>
-                    <path class="car" fill="none" stroke-width="4" pathLength="100" d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z"></path>
-                </svg>
-                Logging in...
-            `;
+            let loginAttempts = 0;
 
-            firebase.auth().signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    showNotification('Login successful!', 'success');
-                    return user.getIdToken();
-                })
-                .then((idToken) => {
-                    localStorage.setItem('authToken', idToken);
-                    if (rememberMeCheckbox.checked) {
-                        localStorage.setItem('rememberedEmail', email);
-                    } else {
-                        localStorage.removeItem('rememberedEmail');
+            function showNextImage(index) {
+                slideshowImages.forEach((img, i) => {
+                    img.classList.remove('active');
+                    if (i === index) {
+                        img.classList.add('active');
                     }
-                    return firebase.database().ref(`admins/${firebase.auth().currentUser.uid}`).once('value');
-                })
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const adminData = snapshot.val();
-                        localStorage.setItem('adminUser', JSON.stringify({uid: firebase.auth().currentUser.uid, adminData}));
+                });
+            }
+
+            function startSlideshow() {
+                let currentIndex = 0;
+                showNextImage(currentIndex);
+
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % slideshowImages.length;
+                    showNextImage(currentIndex);
+                }, 8500);
+            }
+
+            startSlideshow();
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const email = emailInput.value;
+                const password = passwordInput.value;
+                const rememberMe = rememberMeCheckbox.checked;
+                
+                loginButton.textContent = 'Logging in...';
+                loginButton.disabled = true;
+                loadingElement.style.display = 'flex';
+
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // Signed in 
+                        const user = userCredential.user;
+                        loginButton.textContent = 'Login Successful!';
+                        errorMessage.textContent = '';
+                        
+                        // Redirect to admin panel
                         setTimeout(() => {
                             window.location.href = 'Ang Silakbo Admin Panel.html';
                         }, 1500);
-                    } else {
-                        showNotification('You do not have admin privileges.', 'error');
-                        return firebase.auth().signOut();
-                    }
-                })
-                .catch((error) => {
-                    loginAttempts++;
-                    let message;
-                    switch(loginAttempts) {
-                        case 1:
-                            message = "Oops! That didn't work. Please try again.";
-                            break;
-                        case 2:
-                            message = "Still having trouble? Double-check your credentials.";
-                            break;
-                        case 3:
-                            message = "Hmm, this is unusual. Are you sure you have an admin account?";
-                            break;
-                        default:
-                            message = "Multiple failed attempts. Please contact support if you're having issues.";
-                    }
-                    showNotification(message, 'error');
-                })
-                .finally(() => {
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Log In';
-                });
-        });
+                    })
+                    .catch((error) => {
+                        loginButton.textContent = 'Login';
+                        loginAttempts++;
+                        const messageIndex = Math.min(loginAttempts - 1, errorMessages.length - 1);
+                        errorMessage.textContent = errorMessages[messageIndex];
+                    })
+                    .finally(() => {
+                        loginButton.disabled = false;
+                        loadingElement.style.display = 'none';
+                    });
+            });
 
-        // Password visibility toggle
-        passwordToggle.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
-        });
-
-        // Password strength indicator
-        passwordInput.addEventListener('input', function() {
-            const password = this.value;
-            let strength = 0;
-            if (password.match(/[a-z]+/)) strength++;
-            if (password.match(/[A-Z]+/)) strength++;
-            if (password.match(/[0-9]+/)) strength++;
-            if (password.match(/[$@#&!]+/)) strength++;
-
-            switch (strength) {
-                case 0:
-                    passwordStrength.className = 'password-strength';
-                    break;
-                case 1:
-                case 2:
-                    passwordStrength.className = 'password-strength strength-weak';
-                    break;
-                case 3:
-                    passwordStrength.className = 'password-strength strength-medium';
-                    break;
-                case 4:
-                    passwordStrength.className = 'password-strength strength-strong';
-                    break;
-            }
-        });
-
-        // Language selector functionality
-        languageSelect.addEventListener('change', function() {
-            const selectedLanguage = this.value;
-            // Implement language change logic here
-            showNotification(`Language changed to ${selectedLanguage}`, 'success');
-        });
-
-        // Notification function
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            setTimeout(() => {
-                notification.className = 'notification';
-            }, 3000);
-        }
-
-        // Background image slideshow
-        const slides = document.querySelectorAll('.slide');
-        let currentSlide = 0;
-
-        function showSlide(index) {
-            slides[currentSlide].style.opacity = 0;
-            slides[index].style.opacity = 1;
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            let next = (currentSlide + 1) % slides.length;
-            showSlide(next);
-        }
-
-        setInterval(nextSlide, 5000);
-        showSlide(0);
-
-        // Moving circles background
-        function createMovingCircle() {
-            const circle = document.createElement('div');
-            circle.classList.add('moving-circle');
-            
-            const size = Math.random() * 100 + 50;
-            circle.style.width = `${size}px`;
-            circle.style.height = `${size}px`;
-            
-            const startX = Math.random() * window.innerWidth;
-            const startY = Math.random() * window.innerHeight;
-            circle.style.left = `${startX}px`;
-            circle.style.top = `${startY}px`;
-            
-            const hue = Math.random() * 360;
-            circle.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
-            
-            document.body.appendChild(circle);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 2 + 1;
-            let x = startX;
-            let y = startY;
-            
-            function moveCircle() {
-                x += Math.cos(angle) * speed;
-                y += Math.sin(angle) * speed;
-                
-                if (x < -size || x > window.innerWidth + size || y < -size || y > window.innerHeight + size) {
-                    document.body.removeChild(circle);
-                    createMovingCircle();
-                    return;
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const email = emailInput.value;
+                if (email) {
+                    firebase.auth().sendPasswordResetEmail(email)
+                        .then(() => {
+                            alert(`Password reset email sent to ${email}. Please check your inbox.`);
+                        })
+                        .catch((error) => {
+                            alert('Error sending password reset email. Please try again.');
+                        });
+                } else {
+                    alert('Please enter your email address to reset your password.');
                 }
-                
-                circle.style.left = `${x}px`;
-                circle.style.top = `${y}px`;
-                
-                requestAnimationFrame(moveCircle);
-            }
-            
-            moveCircle();
-        }
+            });
 
-        for (let i = 0; i < 10; i++) {
-            createMovingCircle();
-        }
+            // Add animation to welcome text
+            const welcomeSpan = document.querySelector('.welcome-text h1 span');
+            welcomeSpan.addEventListener('mouseover', () => {
+                welcomeSpan.style.transition = 'color 0.3s ease';
+                welcomeSpan.style.color = 'var(--primary-dark)';
+            });
+            welcomeSpan.addEventListener('mouseout', () => {
+                welcomeSpan.style.transition = 'color 0.3s ease';
+                welcomeSpan.style.color = 'var(--primary)';
+            });
 
-        // Check for remembered email
-        const rememberedEmail = localStorage.getItem('rememberedEmail');
-        if (rememberedEmail) {
-            usernameInput.value = rememberedEmail;
-            rememberMeCheckbox.checked = true;
-        }
+            // Add ripple effect to login button
+            loginButton.addEventListener('click', function(e) {
+                let ripple = document.createElement('span');
+                this.appendChild(ripple);
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                setTimeout(() => {
+                    ripple.remove();
+                }, 300);
+            });
+        });
     </script>
 </body>
 </html>
+
