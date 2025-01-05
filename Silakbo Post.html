@@ -13,13 +13,13 @@
     <style>
         :root {
             --primary-color: #FF5722;
-            --primary-light: #FFCCBC;
-            --primary-dark: #E64A19;
+            --primary-light: #FFE0D4;
+            --primary-dark: #CC4A1B;
             --text-color: #333333;
-            --background-color: #FFF3E0;
+            --background-color: #F9F4F0;
             --card-background: #FFFFFF;
-            --danger-color: #D32F2F;
-            --success-color: #388E3C;
+            --danger-color: #FF3B30;
+            --success-color: #34C759;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -34,142 +34,101 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
+        .top-bar {
             background-color: var(--primary-color);
             color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            font-size: 1.5em;
-            font-weight: 700;
+            font-size: 1.4em;
+            font-weight: 600;
         }
 
         .logo i {
             margin-right: 10px;
+            font-size: 1.2em;
         }
 
-        nav ul {
+        .top-bar-actions {
             display: flex;
-            list-style: none;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
         }
 
-        nav ul li {
-            margin-left: 20px;
+        .main-content {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 130px); /* Subtracting top-bar and footer height */
         }
 
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        nav ul li a:hover {
-            color: var(--primary-light);
-        }
-
-        main {
-            padding: 40px 0;
-        }
-
-        h1, h2, h3 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            text-align: center;
-            animation: fadeInDown 0.5s ease-out;
+        .sidebar {
+            width: 300px;
+            background-color: var(--card-background);
+            padding: 25px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
         }
 
         .editor-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .editor-section {
-            flex: 4;
-            background-color: var(--card-background);
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .editor-section h2 {
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
-
-        .suggestions-section {
             flex: 1;
-            background-color: var(--card-background);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            font-size: 0.9em;
             display: flex;
             flex-direction: column;
+            background-color: var(--card-background);
+            margin: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        .suggestions-section h3 {
-            font-size: 1.2em;
-            margin-bottom: 15px;
+        .toolbar {
+            background-color: var(--primary-light);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            border-bottom: 1px solid var(--primary-color);
         }
 
-        .suggestions-section ul {
-            padding-left: 20px;
-            margin-bottom: 20px;
+        .editor-wrapper {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
         }
 
         #editor {
             width: 100%;
-            margin-bottom: 30px;
-            min-height: 400px;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
+            min-height: 500px;
+            border: none;
+            outline: none;
+            resize: none;
         }
 
         .btn {
-            flex: 1;
-            padding: 12px;
+            padding: 10px 15px;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 6px;
             cursor: pointer;
             transition: var(--transition);
-            display: flex;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: 500;
         }
 
         .btn i {
@@ -178,183 +137,36 @@
 
         .btn:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
 
-        #preview {
-            margin-top: 40px;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .article {
-            background-color: var(--card-background);
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            animation: slideInLeft 0.5s ease-out;
-        }
-
-        .article:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .article p {
-            color: var(--primary-dark);
-            font-size: 0.9em;
-            margin-bottom: 15px;
-        }
-
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 150px;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--primary-light);
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .theme-toggle {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(180deg);
-        }
-
-        .dark-mode {
-            --primary-color: #FF7043;
-            --primary-light: #FFCCBC;
-            --primary-dark: #E64A19;
-            --text-color: #F5F5F5;
-            --background-color: #212121;
-            --card-background: #424242;
-        }
-
-        footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 30px 0;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .social-icons a {
-            color: white;
-            font-size: 1.5em;
-            margin-left: 20px;
-            transition: var(--transition);
-        }
-
-        .social-icons a:hover {
-            color: var(--primary-light);
-            transform: translateY(-3px);
-        }
-
-        #helpModal, #searchModal, #aboutModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: var(--card-background);
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 700px;
-            animation: slideInDown 0.5s ease-out;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .close {
-            color: var(--text-color);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close:hover {
+        .sidebar h3 {
+            margin-bottom: 20px;
             color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.2em;
         }
 
-        .search-container {
+        .sidebar ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 15px;
             display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
+            align-items: center;
         }
 
-        #searchInput {
-            width: 70%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid var(--primary-color);
-            border-radius: 5px 0 0 5px;
-            transition: var(--transition);
-        }
-
-        #searchInput:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--primary-light);
-        }
-
-        #searchButton {
-            padding: 12px 24px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0 5px 5px 0;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        #searchButton:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .word-count {
-            text-align: right;
-            margin-top: 15px;
-            font-size: 0.9em;
-            color: var(--text-color);
+        .sidebar li i {
+            margin-right: 10px;
+            color: var(--primary-color);
         }
 
         .tag-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             margin-top: 15px;
         }
 
@@ -363,7 +175,7 @@
             color: var(--primary-dark);
             padding: 5px 12px;
             border-radius: 20px;
-            font-size: 0.8em;
+            font-size: 0.85em;
             font-weight: 500;
             transition: var(--transition);
         }
@@ -373,232 +185,177 @@
             color: white;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        #helpModal, #searchModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .modal-content {
+            background-color: var(--card-background);
+            margin: 10% auto;
+            padding: 35px;
+            border-radius: 12px;
+            width: 60%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .close:hover {
+            color: var(--text-color);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        #searchInput {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        #searchButton {
+            width: 100%;
+        }
+
+        .suggestions-container {
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
         }
 
         @media (max-width: 768px) {
-            .header-content {
+            .main-content {
                 flex-direction: column;
-                text-align: center;
+                height: auto;
             }
 
-            nav ul {
-                margin-top: 20px;
-                flex-direction: column;
-            }
-
-            nav ul li {
-                margin: 10px 0;
-            }
-
-            .button-group {
-                flex-direction: column;
+            .sidebar {
+                width: 100%;
+                margin-bottom: 20px;
             }
 
             .editor-container {
-                flex-direction: column;
-            }
-
-            .editor-section, .suggestions-section {
-                width: 100%;
-            }
-
-            .suggestions-section {
-                order: -1;
-            }
-
-            .social-icons {
-                margin-top: 20px;
-            }
-
-            .social-icons a {
-                margin: 0 10px;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            #searchInput {
-                width: 60%;
+                margin: 0;
+                border-radius: 0;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-feather-alt"></i>
-                <span>ANG SILAKBO WORKSTATION</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="Ang Silakbo Admin Panel.html"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="Silakbo Articles.html"><i class="fas fa-book"></i> Articles</a></li>
-                    <li><a href="#" id="aboutBtn"><i class="fas fa-info-circle"></i> About</a></li>
-                    <li><a href="#" id="helpBtn"><i class="fas fa-question-circle"></i> Help</a></li>
-                    <li><a href="#" id="searchBtn"><i class="fas fa-search"></i> Search</a></li>
-                </ul>
-            </nav>
-            <button id="themeToggle" class="theme-toggle">
-                <i class="fas fa-moon"></i>
-            </button>
+    <div class="top-bar">
+        <div class="logo">
+            <i class="fas fa-feather-alt"></i>
+            <span>ANG SILAKBO WORKSTATION</span>
         </div>
-    </header>
+        <div class="top-bar-actions">
+            <button id="saveButton" class="btn"><i class="fas fa-save"></i> Save</button>
+            <button id="exportButton" class="btn"><i class="fas fa-file-export"></i> Export</button>
+            <button id="helpBtn" class="btn"><i class="fas fa-question-circle"></i> Help</button>
+            <button id="searchBtn" class="btn"><i class="fas fa-search"></i> Search</button>
+            <button id="backToDashboard" class="btn"><i class="fas fa-arrow-left"></i> Dashboard</button>
+        </div>
+    </div>
 
-    <main class="container">
+    <div class="main-content">
+        <div class="sidebar">
+            <h3><i class="fas fa-lightbulb"></i> Writing Suggestions</h3>
+            <div class="suggestions-container">
+                <ul>
+                    <li><i class="fas fa-pen-fancy"></i> Start with a compelling opening</li>
+                    <li><i class="fas fa-palette"></i> Use descriptive language</li>
+                    <li><i class="fas fa-random"></i> Vary sentence structure</li>
+                    <li><i class="fas fa-magic"></i> Include metaphors and similes</li>
+                    <li><i class="fas fa-flag-checkered"></i> End with a powerful conclusion</li>
+                </ul>
+            </div>
+            <h3><i class="fas fa-sitemap"></i> Document Structure</h3>
+            <div class="suggestions-container">
+                <ul>
+                    <li><i class="fas fa-heading"></i> Use clear headings</li>
+                    <li><i class="fas fa-paragraph"></i> Keep paragraphs focused</li>
+                    <li><i class="fas fa-list-ul"></i> Use bullet points for clarity</li>
+                    <li><i class="fas fa-book-open"></i> Include introduction and conclusion</li>
+                    <li><i class="fas fa-link"></i> Use smooth transitions</li>
+                </ul>
+            </div>
+            <h3><i class="fas fa-edit"></i> Editing Tips</h3>
+            <div class="suggestions-container">
+                <ul>
+                    <li><i class="fas fa-volume-up"></i> Read aloud to catch errors</li>
+                    <li><i class="fas fa-spell-check"></i> Use spell-check tools</li>
+                    <li><i class="fas fa-coffee"></i> Take breaks while editing</li>
+                    <li><i class="fas fa-users"></i> Get feedback from peers</li>
+                    <li><i class="fas fa-pencil-alt"></i> Revise for clarity and impact</li>
+                </ul>
+            </div>
+        </div>
         <div class="editor-container">
-            <section class="editor-section">
-                <h2>Create Your Article</h2>
+            <div class="toolbar">
+                <button id="clearButton" class="btn"><i class="fas fa-trash-alt"></i> Clear</button>
+                <button id="refreshButton" class="btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <button id="addTagButton" class="btn"><i class="fas fa-tag"></i> Add Tag</button>
+            </div>
+            <div class="editor-wrapper">
                 <textarea id="editor">Start writing your article here...</textarea>
-                <div class="word-count">Words: <span id="wordCount">0</span></div>
                 <div class="tag-container" id="tagContainer"></div>
-                <div class="button-group">
-                    <button id="saveButton" class="btn"><i class="fas fa-save"></i> Post Article</button>
-                    <button id="clearButton" class="btn"><i class="fas fa-trash-alt"></i> Clear Editor</button>
-                    <button id="refreshButton" class="btn"><i class="fas fa-sync-alt"></i> Refresh Articles</button>
-                    <button id="exportButton" class="btn"><i class="fas fa-file-export"></i> Export as PDF</button>
-                    <button id="addTagButton" class="btn"><i class="fas fa-tag"></i> Add Tag</button>
-                </div>
-            </section>
-            <section class="suggestions-section">
-                <h3>Writing Suggestions</h3>
-                <ul>
-                    <li>Start with a compelling opening line</li>
-                    <li>Use descriptive language to paint vivid images</li>
-                    <li>Vary your sentence structure for better flow</li>
-                    <li>Incorporate metaphors and similes for depth</li>
-                    <li>End with a powerful conclusion that resonates</li>
-                </ul>
-                <h3>Document Structure</h3>
-                <ul>
-                    <li>Use clear headings and subheadings</li>
-                    <li>Keep paragraphs focused on a single idea</li>
-                    <li>Use bullet points or lists for easy readability</li>
-                    <li>Include a strong introduction and conclusion</li>
-                    <li>Use transitions to connect your ideas smoothly</li>
-                </ul>
-                <h3>Editing Tips</h3>
-                <ul>
-                    <li>Read your work aloud to catch errors</li>
-                    <li>Use spell-check and grammar tools</li>
-                    <li>Take breaks between writing and editing</li>
-                    <li>Ask for feedback from trusted peers</li>
-                    <li>Revise for clarity, concision, and impact</li>
-                </ul>
-            </section>
-        </div>
-
-        <section class="preview-section">
-            <h2>Preview of Recent Works</h2>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search articles...">
-                <button id="searchButton"><i class="fas fa-search"></i></button>
-            </div>
-            <div id="preview">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2021 Ang Silakbo. All rights reserved.</p>
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <div id="helpModal" class="modal">
+    <div id="helpModal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Help Guide</h2>
+            <h2><i class="fas fa-info-circle"></i> Help Guide</h2>
             <ul>
-                <li><strong>Write an Article:</strong> Use the text editor to craft your masterpiece. Format your text using the toolbar above the editor.</li>
-                <li><strong>Save Article:</strong> Click the "Save Article" button to store your work securely in our database.</li>
-                <li><strong>Clear Editor:</strong> Use the "Clear Editor" button to start fresh with a blank canvas.</li>
-                <li><strong>Refresh Articles:</strong> Click "Refresh Articles" to see the latest works in the preview section.</li>
-                <li><strong>Export as PDF:</strong> Download your article as a PDF file for easy sharing and printing.</li>
-                <li><strong>Add Tag:</strong> Categorize your work with tags for better organization and searchability.</li>
-                <li><strong>Theme Toggle:</strong> Switch between light and dark modes for comfortable writing at any time of day.</li>
-                <li><strong>Search:</strong> Use the search bar to find specific articles or topics in your collection.</li>
-                <li><strong>Writing Suggestions:</strong> Refer to the suggestions section for tips to enhance your writing skills.</li>
+                <li><i class="fas fa-pen"></i> <strong>Write:</strong> Use the editor to craft your article.</li>
+                <li><i class="fas fa-save"></i> <strong>Save:</strong> Click "Save" to store your work.</li>
+                <li><i class="fas fa-trash-alt"></i> <strong>Clear:</strong> Use "Clear" for a fresh start.</li>
+                <li><i class="fas fa-sync-alt"></i> <strong>Refresh:</strong> Update the editor content.</li>
+                <li><i class="fas fa-file-export"></i> <strong>Export:</strong> Download your article as HTML.</li>
+                <li><i class="fas fa-tag"></i> <strong>Add Tag:</strong> Categorize your work with tags.</li>
+                <li><i class="fas fa-search"></i> <strong>Search:</strong> Find specific articles or topics.</li>
+                <li><i class="fas fa-arrow-left"></i> <strong>Dashboard:</strong> Return to the main admin panel.</li>
             </ul>
         </div>
     </div>
 
-    <div id="searchModal" class="modal">
+    <div id="searchModal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Search Results</h2>
+            <h2><i class="fas fa-search"></i> Search Articles</h2>
+            <input type="text" id="searchInput" placeholder="Enter search term...">
+            <button id="searchButton" class="btn"><i class="fas fa-search"></i> Search</button>
             <div id="searchResults"></div>
         </div>
     </div>
 
-    <div id="aboutModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>About Ang Silakbo Workstation</h2>
-            <p>Key features of our workstation include:</p>
-            <ul>
-                <li>Rich text editor with formatting options</li>
-                <li>Real-time saving and syncing with Firebase</li>
-                <li>Tag system for easy categorization</li>
-                <li>Dark mode for comfortable writing at any time</li>
-                <li>Search functionality to quickly find your work</li>
-                <li>Export options for sharing your creations</li>
-            </ul>
-            <p>Whether you're crafting a photo story, composing a poem, or drafting an article, Ang Silakbo Workstation provides the tools you need to bring your ideas to life.</p>
-        </div>
-    </div>
+    <footer>
+        <p>&copy; 2023 Ang Silakbo Workstation. All rights reserved.</p>
+    </footer>
 
     <script>
         // Initialize Firebase
@@ -620,40 +377,25 @@
         const refreshButton = document.getElementById('refreshButton');
         const exportButton = document.getElementById('exportButton');
         const addTagButton = document.getElementById('addTagButton');
-        const preview = document.getElementById('preview');
-        const themeToggle = document.getElementById('themeToggle');
         const helpBtn = document.getElementById('helpBtn');
-        const helpModal = document.getElementById('helpModal');
         const searchBtn = document.getElementById('searchBtn');
+        const backToDashboard = document.getElementById('backToDashboard');
+        const helpModal = document.getElementById('helpModal');
         const searchModal = document.getElementById('searchModal');
-        const aboutBtn = document.getElementById('aboutBtn');
-        const aboutModal = document.getElementById('aboutModal');
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
         const closeBtns = document.querySelectorAll('.close');
-        const wordCountElement = document.getElementById('wordCount');
         const tagContainer = document.getElementById('tagContainer');
+        const editor = document.getElementById('editor');
 
         tinymce.init({
             selector: '#editor',
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-            height: 500,
-            setup: function(editor) {
-                editor.on('init', function() {
-                    loadArticles();
-                });
-                editor.on('KeyUp', function() {
-                    updateWordCount();
-                });
-            }
+            height: '100%',
+            skin: 'oxide',
+            content_css: 'default'
         });
-
-        function updateWordCount() {
-            const content = tinymce.get('editor').getContent({ format: 'text' });
-            const wordCount = content.trim().split(/\s+/).length;
-            wordCountElement.textContent = wordCount;
-        }
 
         saveButton.addEventListener('click', () => {
             const content = tinymce.get('editor').getContent();
@@ -672,7 +414,6 @@
             db.ref().update(updates)
             .then(() => {
                 showNotification('Article saved successfully!', 'success');
-                loadArticles();
             })
             .catch((error) => {
                 console.error('Error saving article: ', error);
@@ -683,13 +424,12 @@
         clearButton.addEventListener('click', () => {
             tinymce.get('editor').setContent('');
             tagContainer.innerHTML = '';
-            updateWordCount();
             showNotification('Editor cleared', 'success');
         });
 
         refreshButton.addEventListener('click', () => {
-            loadArticles();
-            showNotification('Articles refreshed', 'success');
+            tinymce.get('editor').setContent(tinymce.get('editor').getContent());
+            showNotification('Editor refreshed', 'success');
         });
 
         exportButton.addEventListener('click', () => {
@@ -713,35 +453,6 @@
                 tagContainer.appendChild(tag);
             }
         });
-
-        function loadArticles() {
-            preview.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-            db.ref('articles').once('value')
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    let allArticles = '';
-                    snapshot.forEach((childSnapshot) => {
-                        const article = childSnapshot.val();
-                        allArticles += `
-                            <div class="article">
-                                <p>Last Updated: ${new Date(article.lastUpdated).toLocaleString()}</p>
-                                ${article.content}
-                                <div class="tag-container">
-                                    ${article.tags ? article.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-                                </div>
-                            </div>
-                        `;
-                    });
-                    preview.innerHTML = allArticles;
-                } else {
-                    preview.innerHTML = '<p>No articles yet. Start writing your article!</p>';
-                }
-            })
-            .catch((error) => {
-                console.error('Error loading articles: ', error);
-                showNotification('Error loading articles. Please try again.', 'error');
-            });
-        }
 
         function showNotification(message, type) {
             const notification = document.createElement('div');
@@ -769,14 +480,6 @@
             }, 3000);
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDarkMode = document.body.classList.contains('dark-mode');
-            themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        }
-
-        themeToggle.addEventListener('click', toggleTheme);
-
         helpBtn.addEventListener('click', () => {
             helpModal.style.display = 'block';
         });
@@ -785,15 +488,14 @@
             searchModal.style.display = 'block';
         });
 
-        aboutBtn.addEventListener('click', () => {
-            aboutModal.style.display = 'block';
+        backToDashboard.addEventListener('click', () => {
+            window.location.href = 'Ang Silakbo Admin Panel.html';
         });
 
         closeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 helpModal.style.display = 'none';
                 searchModal.style.display = 'none';
-                aboutModal.style.display = 'none';
             });
         });
 
@@ -803,9 +505,6 @@
             }
             if (event.target == searchModal) {
                 searchModal.style.display = 'none';
-            }
-            if (event.target == aboutModal) {
-                aboutModal.style.display = 'none';
             }
         });
 
@@ -831,7 +530,6 @@
                         }
                     });
                     document.getElementById('searchResults').innerHTML = searchResults || '<p>No matching articles found.</p>';
-                    searchModal.style.display = 'block';
                 } else {
                     showNotification('No articles to search.', 'error');
                 }
@@ -844,3 +542,4 @@
     </script>
 </body>
 </html>
+
