@@ -63,11 +63,21 @@
             
             // Sign out any existing user first
             firebase.auth().signOut().then(() => {
-                // Then sign in with Google
-                firebase.auth().signInWithPopup(provider).catch((error) => {
+                // Then sign in with Google using redirect
+                firebase.auth().signInWithRedirect(provider).catch((error) => {
                     console.error("Error during Google sign in:", error);
                 });
             });
+        });
+
+        // Handle the sign-in redirect
+        firebase.auth().getRedirectResult().then((result) => {
+            if (result.user) {
+                // User signed in successfully
+                console.log("User signed in:", result.user);
+            }
+        }).catch((error) => {
+            console.error("Error after redirect:", error);
         });
 
         logoutButton.addEventListener('click', () => {
