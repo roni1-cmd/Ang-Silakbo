@@ -558,27 +558,31 @@
             update(notificationRef, { read: true });
         }
 
-        function checkAuthAndAdminStatus() {
+        function checkAuthStatus() {
             welcomeMessage.textContent = 'Loading...';
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    const adminRef = ref(db, `admins/${user.uid}`);
-                    get(adminRef).then((snapshot) => {
-                        if (snapshot.exists() && snapshot.val() === true) {
-                            const greeting = getPersonalizedGreeting(user.email);
-                            welcomeMessage.textContent = greeting;
-                            showDashboard();
-                            checkForNewApplications();
-                            fetchNotifications();
-                        } else {
-                            welcomeMessage.textContent = "You don't have admin privileges.";
-                            adminContent.innerHTML = '<p>Access denied. Please contact the system administrator.</p>';
-                        }
-                    }).catch((error) => {
-                        console.error("Error checking admin status:", error);
-                        welcomeMessage.textContent = "Error checking admin status.";
-                        adminContent.innerHTML = '<p>An error occurred. Please try again later.</p>';
-                    });
+                    const allowedEmails = [
+                        'angsilakbo1@uclm.com',
+                        'angsilakbo2@uclm.com',
+                        'angsilakbo3@uclm.com'
+                    ];
+                    
+                    if (allowedEmails.includes(user.email)) {
+                        const greeting = getPersonalizedGreeting(user.email);
+                        welcomeMessage.textContent = greeting;
+                        showDashboard();
+                        checkForNewApplications();
+                        fetchNotifications();
+                    } else {
+                        signOut(auth).then(() => {
+                            welcomeMessage.textContent = "Access denied.";
+                            adminContent.innerHTML = '<p>You are not authorized to access this panel.</p>';
+                            setTimeout(() => {
+                                window.location.href = 'Ang Silakbo Login1.html';
+                            }, 3000);
+                        });
+                    }
                 } else {
                     welcomeMessage.textContent = "Please log in to access the admin panel.";
                     adminContent.innerHTML = '<p>You are not logged in. Redirecting to login page...</p>';
@@ -778,7 +782,7 @@
             });
         }
 
-        checkAuthAndAdminStatus();
+        checkAuthStatus();
 
         notificationIcon.addEventListener('click', () => {
             notificationPanel.style.display = notificationPanel.style.display === 'block' ? 'none' : 'block';
