@@ -7,7 +7,6 @@
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * {
@@ -2509,6 +2508,36 @@
                         <span class="loading-spinner"></span>
                     </button>
                 </div>
+                <script>
+                    function addPost() {
+                        const postTitle = document.getElementById('postTitle').value;
+                        const postContent = document.getElementById('postContent').value;
+                        const tags = Array.from(document.querySelectorAll('.tags .tag')).map(tag => tag.textContent.trim());
+
+                        if (!postTitle || !postContent) {
+                            alert('Title and content are required.');
+                            return;
+                        }
+
+                        const newPostRef = database.ref('posts').push();
+                        newPostRef.set({
+                            title: postTitle,
+                            content: postContent,
+                            tags: tags,
+                            author: auth.currentUser.displayName,
+                            authorId: auth.currentUser.uid,
+                            timestamp: Date.now()
+                        }).then(() => {
+                            document.getElementById('postTitle').value = '';
+                            document.getElementById('postContent').value = '';
+                            document.querySelector('.tags').innerHTML = '';
+                            alert('Post added successfully!');
+                        }).catch(error => {
+                            console.error('Error adding post:', error);
+                            alert('Error adding post. Please try again.');
+                        });
+                    }
+                </script>
             </div>
         </div>
         <div id="posts"></div>
