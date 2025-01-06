@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Admin Post Duty</title>
+    <title>SILAKBO - Admin Post Duty</title>
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -393,6 +393,13 @@
 
         console.log("Firebase initialized");
 
+        // Admin email whitelist
+        const authorizedEmails = [
+            'angsilakbo1@uclm.com',
+            'angsilakbo2@uclm.com',
+            'angsilakbo3@uclm.com'
+        ];
+
         // Listen for authentication state changes
         onAuthStateChanged(auth, (user) => {
             console.log("Auth state changed");
@@ -418,24 +425,24 @@
 
         function checkAdminStatus(user) {
             console.log("Checking admin status for:", user.uid);
-            get(ref(database, 'admins/' + user.uid))
-                .then(snapshot => {
-                    if (snapshot.exists()) {
-                        console.log("User is an admin");
-                        document.getElementById('authStatus').textContent += " (Admin)";
-                    } else {
-                        console.log("User is not an admin");
-                        document.getElementById('authStatus').textContent += " (Not an admin)";
-                    }
-                })
-                .catch(error => {
-                    console.error("Error checking admin status:", error);
-                });
+            if (authorizedEmails.includes(user.email)) {
+                document.getElementById('authStatus').textContent += " (Admin)";
+                return true;
+            } else {
+                document.getElementById('authStatus').textContent += " (Not an admin)";
+                return false;
+            }
         }
 
         document.getElementById('loginButton').addEventListener('click', function() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            
+            if (!authorizedEmails.includes(email)) {
+                alert('Unauthorized email address');
+                return;
+            }
+            
             console.log("Attempting login with email:", email);
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
@@ -443,8 +450,6 @@
                 })
                 .catch((error) => {
                     console.error("Login error:", error);
-                    console.error("Error code:", error.code);
-                    console.error("Error message:", error.message);
                     alert("Login failed: " + error.message);
                 });
         });
@@ -453,8 +458,8 @@
             e.preventDefault();
 
             const user = auth.currentUser;
-            if (!user) {
-                alert('You must be logged in to post a duty.');
+            if (!user || !authorizedEmails.includes(user.email)) {
+                alert('You must be an authorized admin to post a duty.');
                 return;
             }
 
@@ -468,14 +473,7 @@
                 postedBy: adminNames[user.email] || user.email
             };
 
-            get(ref(database, 'admins/' + user.uid))
-                .then(snapshot => {
-                    if (snapshot.exists()) {
-                        return push(ref(database, 'duties'), duty);
-                    } else {
-                        throw new Error('User is not an admin');
-                    }
-                })
+            push(ref(database, 'duties'), duty)
                 .then(() => {
                     console.log('Duty posted successfully!');
                     alert('Duty posted successfully!');
@@ -490,7 +488,6 @@
 
         function fetchStats() {
             const dutiesRef = ref(database, 'duties');
-            const adminsRef = ref(database, 'admins');
 
             get(dutiesRef).then((snapshot) => {
                 if (snapshot.exists()) {
@@ -506,12 +503,7 @@
                 }
             });
 
-            get(adminsRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const activeAdmins = Object.keys(snapshot.val()).length;
-                    document.getElementById('activeAdmins').textContent = activeAdmins;
-                }
-            });
+            document.getElementById('activeAdmins').textContent = authorizedEmails.length;
         }
     </script>
 </body>
