@@ -744,27 +744,70 @@
         // Initial setup: Add members to the database if they don't exist
         function initializeMembers() {
             const positions = [
-                { title: "Photojournalist", count: 10 },
-                { title: "Videographer", count: 5 },
+                { 
+                    title: "Photojournalist", 
+                    members: [
+                        "Mary Adellaine Pagador",
+                        "Precious Empress Sagarino",
+                        "Ruel Jericho Malon",
+                        "Christabelle Opiasa",
+                        "Claire Araneta",
+                        "Trisha Yvoe Angcay",
+                        "Matthew Taborada",
+                        "Khristylle Jade Alcos",
+                        "David Josh U. Jumalon",
+                        "Ian Danrev T. Castillo"
+                    ]
+                },
+                { 
+                    title: "Videographer", 
+                    members: [
+                        "Philip Igot",
+                        "Karylle Abinuman",
+                        "Yezhia Boniel",
+                        "Eirene Jade Bardago",
+                        "DJ Dareal Sabas",
+                        "Marylle Marabiles",
+                        "Joem Cedrick Sungahid",
+                        "Jolisa Marie Yabillo"
+                    ]
+                },
                 { title: "Video Editor", count: 3 },
                 { title: "Broadcaster", count: 25 }
             ];
 
             let memberIndex = 0;
             positions.forEach(position => {
-                for (let i = 1; i <= position.count; i++) {
-                    const memberId = memberIndex.toString();
-                    database.ref('members/' + memberId).once('value', (snapshot) => {
-                        if (!snapshot.exists()) {
-                            database.ref('members/' + memberId).set({
-                                name: `${position.title} ${i}`,
-                                position: position.title,
-                                tasks: null,
-                                completedTasks: 0
-                            });
-                        }
+                if (position.members) {
+                    position.members.forEach((name, i) => {
+                        const memberId = memberIndex.toString();
+                        database.ref('members/' + memberId).once('value', (snapshot) => {
+                            if (!snapshot.exists()) {
+                                database.ref('members/' + memberId).set({
+                                    name: name,
+                                    position: position.title,
+                                    tasks: null,
+                                    completedTasks: 0
+                                });
+                            }
+                        });
+                        memberIndex++;
                     });
-                    memberIndex++;
+                } else {
+                    for (let i = 1; i <= position.count; i++) {
+                        const memberId = memberIndex.toString();
+                        database.ref('members/' + memberId).once('value', (snapshot) => {
+                            if (!snapshot.exists()) {
+                                database.ref('members/' + memberId).set({
+                                    name: `${position.title} ${i}`,
+                                    position: position.title,
+                                    tasks: null,
+                                    completedTasks: 0
+                                });
+                            }
+                        });
+                        memberIndex++;
+                    }
                 }
             });
         }
