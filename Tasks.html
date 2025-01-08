@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo Task Assignment System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #F7C59F;
+            --background-color: #FFF3E0;
+            --text-color: #333;
+            --error-color: #E63946;
+            --success-color: #2ECC71;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            background: var(--white);
+            color: var(--primary-color);
+            border: none;
+            padding: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+            border-radius: 5px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-image {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .task-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        h2 {
+            color: var(--white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .main-content h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        select, input, button, textarea {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            padding: 12px 15px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        select, input, textarea {
+            width: 100%;
+            background-color: var(--white);
+        }
+
+        select {
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--white);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        select option:checked {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        button:hover {
+            background-color: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: var(--error-color);
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+            background-color: rgba(230, 57, 70, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .success {
+            color: var(--success-color);
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            background-color: rgba(46, 204, 113, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .stats {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .stats h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background-color: var(--secondary-color);
+            padding: 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .member {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .member h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .member p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .member button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .nav-header {
+            background-color: var(--white);
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-list {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-list li a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-list li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .section-icon {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .member-tasks {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+        }
+
+        .member-tasks h4 {
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .member-tasks ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .member-tasks li {
+            background-color: var(--white);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .member-tasks li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-description {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .task-due-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .task-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .task-actions button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+
+        .restriction-notice {
+            background-color: var(--error-color);
+            color: var(--white);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInFromRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .slide-in-left {
+            animation: slideInFromLeft 0.5s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInFromRight 0.5s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                transition: left 0.3s ease-in-out;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-list {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .member-tasks li {
+                flex-direction: column;
+            }
+
+            .task-actions {
+                justify-content: flex-start;
+                margin-top: 10px;
+            }
+
+            .task-actions button {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            body {
+                flex-direction: row;
+            }
+
+            .sidebar {
+                width: 350px;
+                position: fixed;
+                height: 100vh;
+            }
+
+            .main-content {
+                margin-left: 350px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-image">
+            <span class="logo-text">Ang Silakbo</span>
+        </div>
+        <h2>Assign Tasks</h2>
+        <div class="task-form">
+            <label for="memberSelect">Select Members:</label>
+            <select id="memberSelect" multiple>
+                <option value="">Loading members...</option>
+            </select>
+            <label for="taskInput">Enter Task:</label>
+            <textarea id="taskInput" placeholder="Enter task description"></textarea>
+            <label for="taskDate">Due Date:</label>
+            <input type="date" id="taskDate" min="">
+            <button onclick="assignTask()"><i class="fas fa-tasks"></i> Assign Task</button>
+        </div>
+        <p class="error" id="errorMessage"></p>
+        <p class="success" id="successMessage"></p>
+        <p class="restriction-notice" id="restrictionNotice"></p>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <nav class="nav-header">
+            <ul class="nav-list">
+                <li><a href="#stats"><i class="fas fa-chart-bar"></i> Statistics</a></li>
+                <li><a href="#photojournalists"><i class="fas fa-camera"></i> Photojournalists</a></li>
+                <li><a href="#videographers"><i class="fas fa-video"></i> Videographers</a></li>
+                <li><a href="#video-editors"><i class="fas fa-film"></i> Video Editors</a></li>
+                <li><a href="#broadcasters"><i class="fas fa-microphone-alt"></i> Broadcasters</a></li>
+            </ul>
+        </nav>
+
+        <div id="stats" class="stats">
+            <h3><i class="fas fa-chart-pie section-icon"></i>Team Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <p class="stat-value" id="totalMembers">0</p>
+                    <p>Total Members</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-value" id="assignedTasks">0</p>
+                    <p>Assigned Tasks</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-value" id="completedTasks">0</p>
+                    <p>Completed Tasks</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-value" id="pendingTasks">0</p>
+                    <p>Pending Tasks</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="photojournalists"><i class="fas fa-camera section-icon"></i>Photojournalists</h2>
+        <div id="photojournalists-grid" class="members-grid"></div>
+
+        <h2 id="videographers"><i class="fas fa-video section-icon"></i>Videographers</h2>
+        <div id="videographers-grid" class="members-grid"></div>
+
+        <h2 id="video-editors"><i class="fas fa-film section-icon"></i>Video Editors</h2>
+        <div id="video-editors-grid" class="members-grid"></div>
+
+        <h2 id="broadcasters"><i class="fas fa-microphone-alt section-icon"></i>Broadcasters</h2>
+        <div id="broadcasters-grid" class="members-grid"></div>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const database = firebase.database();
+
+        // Set minimum date for task assignment to today
+        document.getElementById('taskDate').min = new Date().toISOString().split('T')[0];
+
+        function renderMembers(members) {
+            const memberSelect = document.getElementById("memberSelect");
+            memberSelect.innerHTML = "";
+
+            const grids = {
+                'Photojournalist': document.getElementById("photojournalists-grid"),
+                'Videographer': document.getElementById("videographers-grid"),
+                'Video Editor': document.getElementById("video-editors-grid"),
+                'Broadcaster': document.getElementById("broadcasters-grid")
+            };
+
+            Object.values(grids).forEach(grid => grid.innerHTML = "");
+
+            let assignedTasksCount = 0;
+            let completedTasksCount = 0;
+            let pendingTasksCount = 0;
+
+            Object.keys(members).forEach((memberId) => {
+                const member = members[memberId];
+                const memberDiv = document.createElement("div");
+                memberDiv.className = "member slide-in-left";
+                memberDiv.innerHTML = `
+                    <h3>${member.name}</h3>
+                    <p><strong>Position:</strong> ${member.position}</p>
+                    <div class="member-tasks">
+                        <h4>Tasks:</h4>
+                        <ul>
+                            ${member.tasks ? Object.entries(member.tasks).map(([taskId, task]) => `
+                                <li class="slide-in-right">
+                                    <div class="task-description">${task.description}</div>
+                                    <div class="task-due-date">Due: ${new Date(task.dueDate).toLocaleDateString()}</div>
+                                    <div class="task-actions">
+                                        <button onclick="markTaskDone('${memberId}', '${taskId}')"><i class="fas fa-check"></i> Done</button>
+                                        <button onclick="deleteTask('${memberId}', '${taskId}')"><i class="fas fa-trash"></i> Delete</button>
+                                    </div>
+                                </li>
+                            `).join('') : '<li>No tasks assigned</li>'}
+                        </ul>
+                    </div>
+                `;
+                grids[member.position].appendChild(memberDiv);
+
+                const option = document.createElement("option");
+                option.value = memberId;
+                option.textContent = `${member.name} (${member.position})`;
+                memberSelect.appendChild(option);
+
+                if (member.tasks) {
+                    const taskCount = Object.keys(member.tasks).length;
+                    assignedTasksCount += taskCount;
+                    pendingTasksCount += taskCount;
+                }
+                if (member.completedTasks) {
+                    completedTasksCount += member.completedTasks;
+                }
+            });
+
+            // Update statistics
+            document.getElementById('totalMembers').textContent = Object.keys(members).length;
+            document.getElementById('assignedTasks').textContent = assignedTasksCount;
+            document.getElementById('completedTasks').textContent = completedTasksCount;
+            document.getElementById('pendingTasks').textContent = pendingTasksCount - completedTasksCount;
+        }
+
+        function assignTask() {
+            const memberSelect = document.getElementById("memberSelect");
+            const taskInput = document.getElementById("taskInput");
+            const taskDate = document.getElementById("taskDate");
+            const errorElement = document.getElementById("errorMessage");
+            const successElement = document.getElementById("successMessage");
+            const restrictionNotice = document.getElementById("restrictionNotice");
+            const selectedMembers = Array.from(memberSelect.selectedOptions).map(option => option.value);
+            const newTask = taskInput.value.trim();
+            const dueDate = taskDate.value;
+
+            errorElement.textContent = "";
+            successElement.textContent = "";
+            restrictionNotice.textContent = "";
+
+            if (selectedMembers.length === 0) {
+                errorElement.textContent = "Please select at least one member.";
+                return;
+            }
+
+            if (newTask === "") {
+                errorElement.textContent = "Please enter a task.";
+                return;
+            }
+
+            if (dueDate === "") {
+                errorElement.textContent = "Please select a due date.";
+                return;
+            }
+
+            const updates = {};
+            let errorMessages = [];
+            let assignedCount = 0;
+
+            selectedMembers.forEach(memberId => {
+                database.ref('members/' + memberId).once('value', (snapshot) => {
+                    const member = snapshot.val();
+                    const tasks = member.tasks || {};
+                    const taskCount = Object.keys(tasks).length;
+
+                    if (taskCount < 2) {
+                        const newTaskId = database.ref().push().key;
+                        updates[`members/${memberId}/tasks/${newTaskId}`] = {
+                            description: newTask,
+                            dueDate: dueDate
+                        };
+                        assignedCount++;
+                    } else {
+                        errorMessages.push(`${member.name} already has 2 tasks assigned.`);
+                    }
+                });
+            });
+
+            if (errorMessages.length > 0) {
+                restrictionNotice.textContent = errorMessages.join(" ");
+            }
+
+            if (assignedCount > 0) {
+                database.ref().update(updates, (error) => {
+                    if (error) {
+                        errorElement.textContent = "Error assigning task. Please try again.";
+                    } else {
+                        successElement.textContent = `Task assigned to ${assignedCount} member(s) successfully.`;
+                        taskInput.value = "";
+                        memberSelect.value = "";
+                        taskDate.value = "";
+                    }
+                });
+            }
+        }
+
+        function markTaskDone(memberId, taskId) {
+            database.ref('members/' + memberId).once('value', (snapshot) => {
+                const member = snapshot.val();
+                const completedTasks = (member.completedTasks || 0) + 1;
+                const updates = {
+                    [`members/${memberId}/tasks/${taskId}`]: null,
+                    [`members/${memberId}/completedTasks`]: completedTasks
+                };
+
+                database.ref().update(updates);
+            });
+        }
+
+        function deleteTask(memberId, taskId) {
+            if (confirm("Are you sure you want to delete this task?")) {
+                database.ref(`members/${memberId}/tasks/${taskId}`).remove();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Listen for changes in the database and update the UI
+        database.ref('members').on('value', (snapshot) => {
+            const members = snapshot.val();
+            renderMembers(members);
+        });
+
+        // Initial setup: Add members to the database if they don't exist
+        function initializeMembers() {
+            const positions = [
+                { title: "Photojournalist", count: 10 },
+                { title: "Videographer", count: 5 },
+                { title: "Video Editor", count: 3 },
+                { title: "Broadcaster", count: 25 }
+            ];
+
+            let memberIndex = 0;
+            positions.forEach(position => {
+                for (let i = 1; i <= position.count; i++) {
+                    const memberId = memberIndex.toString();
+                    database.ref('members/' + memberId).once('value', (snapshot) => {
+                        if (!snapshot.exists()) {
+                            database.ref('members/' + memberId).set({
+                                name: `${position.title} ${i}`,
+                                position: position.title,
+                                tasks: null,
+                                completedTasks: 0
+                            });
+                        }
+                    });
+                    memberIndex++;
+                }
+            });
+        }
+
+        // Call initializeMembers function when the page loads
+        initializeMembers();
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
