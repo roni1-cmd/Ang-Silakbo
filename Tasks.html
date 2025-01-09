@@ -3,561 +3,839 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo Task - Assignment System</title>
-     <link rel="icon" href="SILAKBO (1).png">
+    <title>Ang Silako - Production Team Tasking</title>
+    <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #FF6B35;
-            --secondary-color: #F7C59F;
-            --background-color: #FFF3E0;
-            --text-color: #333;
-            --error-color: #E63946;
-            --success-color: #2ECC71;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --secondary-color: #FFA07A;
+            --background-color: #F5F5F5;
+            --text-color: #333333;
+            --card-background: #FFFFFF;
+            --border-color: #E0E0E0;
+            --hover-color: #FF8C61;
+            --error-color: #FF4136;
+            --success-color: #2ECC40;
+            --warning-color: #FFDC00;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
             background-color: var(--background-color);
             color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .dashboard {
             display: flex;
-            flex-direction: column;
             min-height: 100vh;
         }
 
         .sidebar {
+            width: 250px;
             background-color: var(--primary-color);
-            color: var(--white);
             padding: 20px;
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .sidebar-toggle {
-            display: none;
-            background: var(--white);
-            color: var(--primary-color);
-            border: none;
-            padding: 10px;
-            font-size: 1.5em;
-            cursor: pointer;
             position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1001;
-            border-radius: 5px;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 1000;
         }
 
-        .logo-container {
+        .sidebar-header {
             display: flex;
             align-items: center;
-            justify-content: center;
             margin-bottom: 30px;
         }
 
-        .logo-image {
-            width: 50px;
-            height: 50px;
+        .logo {
+            width: 40px;
+            height: 40px;
             margin-right: 10px;
         }
 
-        .logo-text {
-            font-size: 1.5em;
-            font-weight: 700;
+        .sidebar h1 {
+            font-size: 24px;
+            color: white;
+            margin: 0;
         }
 
-        .task-form {
+        .nav-menu {
+            list-style-type: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 15px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-menu a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .main-content {
             flex-grow: 1;
-            padding: 40px;
-            transition: margin-left 0.3s ease-in-out;
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
 
-        h2 {
-            color: var(--white);
+        .card {
+            background-color: var(--card-background);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .main-content h2 {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
             color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-            margin-top: 40px;
+            display: flex;
+            align-items: center;
         }
 
-        select, input, button, textarea {
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            padding: 12px 15px;
-            border: 1px solid var(--secondary-color);
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-
-        select, input, textarea {
-            width: 100%;
-            background-color: var(--white);
-        }
-
-        select {
-            height: 200px;
-            overflow-y: auto;
-        }
-
-        select:focus, input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--white);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-        }
-
-        select option:checked {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        button {
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            cursor: pointer;
-            border: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        button:hover {
-            background-color: var(--white);
-            color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .error {
-            color: var(--error-color);
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-            background-color: rgba(230, 57, 70, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .success {
-            color: var(--success-color);
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-            background-color: rgba(46, 204, 113, 0.1);
-            padding: 10px;
-            border-radius: 8px;
+        .card h2 i {
+            margin-right: 10px;
+            font-size: 24px;
         }
 
         .stats {
-            background-color: var(--white);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-            animation: fadeIn 1s ease-out;
-        }
-
-        .stats h3 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-
-        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
         }
 
         .stat-item {
             text-align: center;
-            background-color: var(--secondary-color);
-            padding: 15px;
-            border-radius: 10px;
-            transition: var(--transition);
+            padding: 20px;
+            background-color: var(--background-color);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary-color);
         }
 
         .stat-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .members-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .member {
-            background-color: var(--white);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            animation: fadeIn 0.5s ease-out;
-            border: 2px solid var(--secondary-color);
-        }
-
-        .member:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .member h3 {
+        .stat-item h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .stat-item i {
+            font-size: 24px;
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .error {
+            color: var(--error-color);
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .task-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .member-tasks {
+            background-color: var(--background-color);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .member-tasks:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .member-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .member-name i {
+            margin-right: 8px;
+        }
+
+        .task-item {
+            background-color: var(--card-background);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item .task-info {
+            flex-grow: 1;
+        }
+
+        .task-item .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .status i {
+            margin-right: 5px;
+        }
+
+        .status.completed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status.pending {
+            background-color: var(--warning-color);
+            color: var(--text-color);
+        }
+
+        .status.overdue {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .calendar-day {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-day:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .calendar-day.today {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.has-task {
+            border: 2px solid var(--primary-color);
+        }
+
+        .calendar-day .day-number {
+            font-size: 18px;
             font-weight: 600;
         }
 
-        .member p {
-            margin-bottom: 10px;
-            color: #555;
+        .calendar-day .day-name {
+            font-size: 12px;
+            margin-top: 5px;
         }
 
-        .member button {
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: var(--card-background);
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: var(--text-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: var(--primary-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
             margin-top: 10px;
         }
 
-        .nav-header {
-            background-color: var(--white);
-            padding: 10px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow);
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
         }
 
-        .nav-list {
-            list-style-type: none;
+        .quick-add {
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .nav-list li a {
-            text-decoration: none;
+        .quick-add input {
+            flex-grow: 1;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 2px solid var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .filter-btn i {
+            margin-right: 5px;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--hover-color);
+            color: white;
+        }
+
+        .task-summary {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-summary h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
             color: var(--primary-color);
-            font-weight: 500;
-            transition: var(--transition);
         }
 
-        .nav-list li a:hover {
-            color: var(--secondary-color);
+        .task-summary ul {
+            list-style-type: none;
         }
 
-        .section-icon {
+        .task-summary li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .task-summary li i {
             margin-right: 10px;
             color: var(--primary-color);
         }
 
-        .member-tasks {
+        #loginForm {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        #loginError {
+            color: var(--error-color);
             margin-top: 10px;
-            padding: 10px;
-            background-color: var(--secondary-color);
-            border-radius: 8px;
+            text-align: center;
         }
 
-        .member-tasks h4 {
-            margin-bottom: 5px;
-            color: var(--primary-color);
+        .search-container {
+            margin-bottom: 20px;
         }
 
-        .member-tasks ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .member-tasks li {
-            background-color: var(--white);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
             transition: all 0.3s ease;
         }
 
-        .member-tasks li:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
         }
 
-        .task-description {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .task-due-date {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .task-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .task-actions button {
-            padding: 5px 10px;
-            font-size: 0.8em;
-        }
-
-        .restriction-notice {
-            background-color: var(--error-color);
-            color: var(--white);
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .loading {
-            text-align: center;
+        .team-chat {
+            background-color: var(--card-background);
+            border-radius: 15px;
             padding: 20px;
-            font-size: 1.2em;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-chat h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
             color: var(--primary-color);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
         }
 
-        @keyframes slideInFromLeft {
-            0% {
-                transform: translateX(-100%);
-                opacity: 0;
+        .chat-message {
+            background-color: var(--background-color);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chat-message .sender {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
             }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
+
+            .sidebar h1 {
+                font-size: 24px;
+                white-space: nowrap;
             }
-        }
 
-        @keyframes slideInFromRight {
-            0% {
-                transform: translateX(100%);
-                opacity: 0;
+            .nav-menu a {
+                padding: 15px;
+                text-align: center;
             }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
+
+            .nav-menu a span {
+                display: none;
             }
-        }
 
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-
-        .slide-in-left {
-            animation: slideInFromLeft 0.5s ease-out;
-        }
-
-        .slide-in-right {
-            animation: slideInFromRight 0.5s ease-out;
+            .main-content {
+                margin-left: 80px;
+            }
         }
 
         @media (max-width: 768px) {
-            body {
+            .dashboard {
                 flex-direction: column;
             }
 
             .sidebar {
-                position: fixed;
-                top: 0;
-                left: -100%;
                 width: 100%;
-                height: 100%;
-                transition: left 0.3s ease-in-out;
+                height: auto;
+                position: static;
+                padding: 10px;
             }
 
-            .sidebar.active {
-                left: 0;
+            .sidebar h1 {
+                font-size: 24px;
+                white-space: normal;
             }
 
-            .sidebar-toggle {
-                display: block;
+            .nav-menu {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .nav-menu li {
+                margin-bottom: 0;
             }
 
             .main-content {
                 margin-left: 0;
-                padding: 20px;
+                padding: 10px;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .stats {
+                grid-template-columns: 1fr 1fr;
             }
 
-            .nav-list {
-                flex-direction: column;
-                align-items: center;
+            .calendar {
+                grid-template-columns: repeat(7, 1fr);
             }
 
-            .member-tasks li {
-                flex-direction: column;
+            .calendar-day {
+                padding: 10px 5px;
             }
 
-            .task-actions {
-                justify-content: flex-start;
-                margin-top: 10px;
+            .calendar-day .day-number {
+                font-size: 14px;
             }
 
-            .task-actions button {
-                width: 100%;
+            .calendar-day .day-name {
+                font-size: 10px;
+            }
+
+            .filter-container {
+                flex-wrap: wrap;
+            }
+
+            .filter-btn {
+                flex: 1 0 calc(50% - 5px);
             }
         }
 
-        @media (min-width: 769px) {
-            body {
-                flex-direction: row;
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
             }
 
-            .sidebar {
-                width: 350px;
-                position: fixed;
-                height: 100vh;
+            .calendar-day {
+                padding: 5px;
             }
 
-            .main-content {
-                margin-left: 350px;
+            .calendar-day .day-number {
+                font-size: 12px;
             }
 
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .members-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            .calendar-day .day-name {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar" id="sidebar">
-        <div class="logo-container">
-            <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-image">
-            <span class="logo-text">ANG SILAKBO</span>
-        </div>
-        <h2>Assign Tasks</h2>
-        <div class="task-form">
-            <label for="memberSelect">Select Members:</label>
-            <select id="memberSelect" multiple>
-                <option value="">Loading members...</option>
-            </select>
-            <label for="taskInput">Enter Task:</label>
-            <textarea id="taskInput" placeholder="Enter task description"></textarea>
-            <label for="taskDate">Due Date:</label>
-            <input type="date" id="taskDate" min="">
-            <button onclick="assignTask()"><i class="fas fa-tasks"></i> Assign Task</button>
-        </div>
-        <p class="error" id="errorMessage"></p>
-        <p class="success" id="successMessage"></p>
-        <p class="restriction-notice" id="restrictionNotice"></p>
-    </div>
-
-    <div class="main-content" id="mainContent">
-        <nav class="nav-header">
-            <ul class="nav-list">
-                <li><a href="#stats"><i class="fas fa-chart-bar"></i> Statistics</a></li>
-                <li><a href="#photojournalists"><i class="fas fa-camera"></i> Photojournalists</a></li>
-                <li><a href="#videographers"><i class="fas fa-video"></i> Videographers</a></li>
-                <li><a href="#video-editors"><i class="fas fa-film"></i> Video Editors</a></li>
-                <li><a href="#broadcasters"><i class="fas fa-microphone-alt"></i> Broadcasters</a></li>
-            </ul>
-        </nav>
-
-        <div id="stats" class="stats">
-            <h3><i class="fas fa-chart-pie section-icon"></i>Team Statistics</h3>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <p class="stat-value" id="totalMembers">0</p>
-                    <p>Total Members</p>
-                </div>
-                <div class="stat-item">
-                    <p class="stat-value" id="assignedTasks">0</p>
-                    <p>Assigned Tasks</p>
-                </div>
-                <div class="stat-item">
-                    <p class="stat-value" id="completedTasks">0</p>
-                    <p>Completed Tasks</p>
-                </div>
-                <div class="stat-item">
-                    <p class="stat-value" id="pendingTasks">0</p>
-                    <p>Pending Tasks</p>
-                </div>
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="SILAKBO.png" alt="Logo" class="logo">
+                <h1>ANG SILAKBO</h1>
             </div>
-        </div>
-
-        <h2 id="photojournalists"><i class="fas fa-camera section-icon"></i>Photojournalists</h2>
-        <div id="photojournalists-grid" class="members-grid"></div>
-
-        <h2 id="videographers"><i class="fas fa-video section-icon"></i>Videographers</h2>
-        <div id="videographers-grid" class="members-grid"></div>
-
-        <h2 id="video-editors"><i class="fas fa-film section-icon"></i>Video Editors</h2>
-        <div id="video-editors-grid" class="members-grid"></div>
-
-        <h2 id="broadcasters"><i class="fas fa-microphone-alt section-icon"></i>Broadcasters</h2>
-        <div id="broadcasters-grid" class="members-grid"></div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#summary" class="active"><i class="fas fa-chart-pie"></i><span>Summary</span></a></li>
+                    <li><a href="#assign-task"><i class="fas fa-tasks"></i><span>Assign Task</span></a></li>
+                    <li><a href="#task-list"><i class="fas fa-list-ul"></i><span>Task List</span></a></li>
+                    <li><a href="#calendar"><i class="far fa-calendar-alt"></i><span>Calendar</span></a></li>
+                    <li><a href="#team-chat"><i class="fas fa-comments"></i><span>Team Chat</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <section id="login" class="card">
+                <h2><i class="fas fa-sign-in-alt"></i>Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i>Login</button>
+                </form>
+                <p id="loginError"></p>
+            </section>
+            <section id="summary" class="card">
+                <h2><i class="fas fa-chart-pie"></i>Summary</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <i class="fas fa-tasks"></i>
+                        <h3 id="totalTasks">0</h3>
+                        <p>Total Tasks</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <h3 id="completedTasks">0</h3>
+                        <p>Completed</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <h3 id="pendingTasks">0</h3>
+                        <p>Pending</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3 id="overdueTasks">0</h3>
+                        <p>Overdue</p>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="taskProgress"></div>
+                </div>
+                <p id="progressText" class="text-center mt-2"></p>
+            </section>
+            <section id="assign-task" class="card" style="display: none;">
+                <h2><i class="fas fa-plus-circle"></i>Assign New Task</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="positionSelect">Position:</label>
+                        <select id="positionSelect" required>
+                            <option value="">Select Position</option>
+                            <option value="Broadcaster">Broadcaster</option>
+                            <option value="Photojournalist">Photojournalist</option>
+                            <option value="Videographer">Videographer</option>
+                            <option value="Video Editor">Video Editor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberSelect">Member:</label>
+                        <select id="memberSelect" required>
+                            <option value="">Select Member</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskInput">Task Description:</label>
+                        <textarea id="taskInput" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDate">Due Date:</label>
+                        <input type="date" id="taskDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskLocation">Location:</label>
+                        <input type="text" id="taskLocation">
+                    </div>
+                    <button type="submit" class="btn"><i class="fas fa-plus"></i>Assign Task</button>
+                </form>
+                <p id="errorMessage" class="error"></p>
+            </section>
+            <section id="task-list" class="card">
+                <h2><i class="fas fa-list-ul"></i>Task List</h2>
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by position or name...">
+                </div>
+                <div class="filter-container">
+                    <button class="filter-btn active" data-filter="all"><i class="fas fa-th-list"></i>All</button>
+                    <button class="filter-btn" data-filter="pending"><i class="fas fa-clock"></i>Pending</button>
+                    <button class="filter-btn" data-filter="completed"><i class="fas fa-check-circle"></i>Completed</button>
+                    <button class="filter-btn" data-filter="overdue"><i class="fas fa-exclamation-triangle"></i>Overdue</button>
+                </div>
+                <div class="quick-add">
+                    <input type="text" id="quickTaskInput" placeholder="Quick add task...">
+                    <button id="quickAddBtn" class="btn"><i class="fas fa-bolt"></i>Add</button>
+                </div>
+                <div class="task-list" id="taskListContainer"></div>
+                <div class="task-summary">
+                    <h3>Task Overview</h3>
+                    <ul>
+                        <li><i class="fas fa-user"></i>Most Active Member: <span id="mostActiveMember">-</span></li>
+                        <li><i class="fas fa-calendar-day"></i>Busiest Day: <span id="busiestDay">-</span></li>
+                        <li><i class="fas fa-chart-line"></i>Completion Rate: <span id="completionRate">-</span></li>
+                    </ul>
+                </div>
+            </section>
+            <section id="calendar" class="card">
+                <h2><i class="far fa-calendar-alt"></i>Calendar</h2>
+                <div class="calendar-header">
+                    <h3 id="currentMonth"></h3>
+                    <div class="calendar-nav">
+                        <button id="prevMonth" class="btn"><i class="fas fa-chevron-left"></i></button>
+                        <button id="nextMonth" class="btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div id="calendarContainer" class="calendar"></div>
+            </section>
+            <section id="team-chat" class="card">
+                <h2><i class="fas fa-comments"></i>Team Chat</h2>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Type your message...">
+                    <button id="sendMessageBtn" class="btn"><i class="fas fa-paper-plane"></i>Send</button>
+                </div>
+            </section>
+            </main>
     </div>
 
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <!-- Add Firebase products that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Task Details</h2>
+            <div id="taskDetails"></div>
+        </div>
+    </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // Your web app's Firebase configuration
+        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
             authDomain: "ang-silakbo.firebaseapp.com",
@@ -569,263 +847,428 @@
             measurementId: "G-TSDTG2YJ94"
         };
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const analytics = firebase.analytics();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const database = firebase.database();
 
-        // Set minimum date for task assignment to today
-        document.getElementById('taskDate').min = new Date().toISOString().split('T')[0];
+        // Member data
+        const members = {
+            Broadcaster: [
+                "Sylvania Kea Empenado", "Chandler Ken Castillano", "John Carmelo Ibasco",
+                "Jazel Malinao", "Ashley Guibay", "Hanz Psyche Baritos", "Febrielle Jacla",
+                "Aries Renz Bandalan", "Richelle Quilang", "Rhoda Amistad", "Vince Viñas",
+                "Heaven Patricia Macol", "Cris Kervin Alfa", "Ron Asnahon", "Samantha Verdun",
+                "Terrence Margaja", "Sharmagne Escobio", "Kharl Jones Almacin", "Rachel Althea T. Ochea",
+                "Hesly Basco", "Joemelle Adriel Surilla", "Yaneca Marie Arong", "Jan Ivan Alolod",
+                "Mishkha lujil Ordineza", "Ella Mae Nicole Camposo"
+            ],
+            Photojournalist: [
+                "Mary Adellaine Pagador", "Precious Empress Sagarino", "Ruel Jericho Malon",
+                "Christabelle Opiasa", "Claire Araneta", "Trisha Yvoe Angcay", "Matthew Taborada",
+                "Khristylle Jade Alcos", "David Josh U. Jumalon", "Ian Danrev T. Castillo",
+                "Jesry De Asis"
+            ],
+            Videographer: [
+                "Philip Igot", "Karylle Abinuman", "Yezhia Boniel", "Eirene Jade Bardago",
+                "DJ Dareal Sabas"
+            ],
+            "Video Editor": [
+                "Marylle Marabiles", "Joem Cedrick Sungahid", "Jolisa Marie Yabillo"
+            ]
+        };
 
-        function renderMembers(members) {
-            const memberSelect = document.getElementById("memberSelect");
-            memberSelect.innerHTML = "";
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Logged in successfully
+                    document.getElementById('login').style.display = 'none';
+                    document.getElementById('assign-task').style.display = 'block';
+                    updateTaskList();
+                    updateCalendar();
+                })
+                .catch((error) => {
+                    // Handle errors
+                    document.getElementById('loginError').textContent = error.message;
+                });
+        });
 
-            const grids = {
-                'Photojournalist': document.getElementById("photojournalists-grid"),
-                'Videographer': document.getElementById("videographers-grid"),
-                'Video Editor': document.getElementById("video-editors-grid"),
-                'Broadcaster': document.getElementById("broadcasters-grid")
-            };
+        // Check auth state
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('assign-task').style.display = 'block';
+                updateTaskList();
+                updateCalendar();
+            } else {
+                // User is signed out
+                document.getElementById('login').style.display = 'block';
+                document.getElementById('assign-task').style.display = 'none';
+            }
+        });
 
-            Object.values(grids).forEach(grid => grid.innerHTML = "");
+        // Populate member select based on position
+        document.getElementById('positionSelect').addEventListener('change', function() {
+            const position = this.value;
+            const memberSelect = document.getElementById('memberSelect');
+            memberSelect.innerHTML = '<option value="">Select Member</option>';
+            if (position) {
+                members[position].forEach(member => {
+                    const option = document.createElement('option');
+                    option.value = member;
+                    option.textContent = member;
+                    memberSelect.appendChild(option);
+                });
+            }
+        });
 
-            let assignedTasksCount = 0;
-            let completedTasksCount = 0;
-            let pendingTasksCount = 0;
+        // Assign task
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const position = document.getElementById('positionSelect').value;
+            const member = document.getElementById('memberSelect').value;
+            const task = document.getElementById('taskInput').value;
+            const date = document.getElementById('taskDate').value;
+            const location = document.getElementById('taskLocation').value;
 
-            Object.keys(members).forEach((memberId) => {
-                const member = members[memberId];
-                const memberDiv = document.createElement("div");
-                memberDiv.className = "member slide-in-left";
-                memberDiv.innerHTML = `
-                    <h3>${member.name}</h3>
-                    <p><strong>Position:</strong> ${member.position}</p>
-                    <div class="member-tasks">
-                        <h4>Tasks:</h4>
-                        <ul>
-                            ${member.tasks ? Object.entries(member.tasks).map(([taskId, task]) => `
-                                <li class="slide-in-right">
-                                    <div class="task-description">${task.description}</div>
-                                    <div class="task-due-date">Due: ${new Date(task.dueDate).toLocaleDateString()}</div>
-                                    <div class="task-actions">
-                                        <button onclick="markTaskDone('${memberId}', '${taskId}')"><i class="fas fa-check"></i> Done</button>
-                                        <button onclick="deleteTask('${memberId}', '${taskId}')"><i class="fas fa-trash"></i> Delete</button>
-                                    </div>
-                                </li>
-                            `).join('') : '<li>No tasks assigned</li>'}
-                        </ul>
+            const memberRef = database.ref('members/' + member.replace(/\./g, ','));
+            memberRef.once('value', snapshot => {
+                const memberData = snapshot.val();
+                if (memberData && Object.keys(memberData).length >= 2) {
+                    document.getElementById('errorMessage').textContent = 'This member already has 2 tasks assigned. Cannot assign more tasks.';
+                } else {
+                    const newTaskRef = memberRef.push();
+                    newTaskRef.set({
+                        position: position,
+                        task: task,
+                        date: date,
+                        location: location,
+                        status: 'Pending'
+                    });
+                    alert('Task assigned successfully');
+                    document.getElementById('taskForm').reset();
+                    document.getElementById('errorMessage').textContent = '';
+                    updateTaskList();
+                    updateCalendar();
+                }
+            });
+        });
+
+        // Quick add task
+        document.getElementById('quickAddBtn').addEventListener('click', function() {
+            const taskInput = document.getElementById('quickTaskInput');
+            const task = taskInput.value.trim();
+            if (task) {
+                const randomMember = getRandomMember();
+                const memberRef = database.ref('members/' + randomMember.replace(/\./g, ','));
+                const newTaskRef = memberRef.push();
+                newTaskRef.set({
+                    position: 'Quick Task',
+                    task: task,
+                    date: new Date().toISOString().split('T')[0],
+                    location: 'Not specified',
+                    status: 'Pending'
+                });
+                taskInput.value = '';
+                updateTaskList();
+                updateCalendar();
+            }
+        });
+
+        function getRandomMember() {
+            const allMembers = Object.values(members).flat();
+            return allMembers[Math.floor(Math.random() * allMembers.length)];
+        }
+
+        // Update task list
+        function updateTaskList(filter = 'all', searchTerm = '') {
+            const taskListContainer = document.getElementById('taskListContainer');
+            taskListContainer.innerHTML = '<p>Loading tasks...</p>';
+
+            database.ref('members').once('value', snapshot => {
+                const data = snapshot.val();
+                taskListContainer.innerHTML = '';
+                let totalTasks = 0;
+                let completedTasks = 0;
+                let pendingTasks = 0;
+                let overdueTasks = 0;
+
+                const memberTasks = {};
+                const memberTaskCounts = {};
+                const dateCounts = {};
+
+                for (let member in data) {
+                    for (let taskId in data[member]) {
+                        const task = data[member][taskId];
+                        const status = getTaskStatus(task);
+                        totalTasks++;
+
+                        if (status === 'Completed') {
+                            completedTasks++;
+                        } else if (status === 'Pending') {
+                            pendingTasks++;
+                        } else if (status === 'Overdue') {
+                            overdueTasks++;
+                        }
+
+                        // Count tasks per member
+                        memberTaskCounts[member] = (memberTaskCounts[member] || 0) + 1;
+
+                        // Count tasks per date
+                        dateCounts[task.date] = (dateCounts[task.date] || 0) + 1;
+
+                        if ((filter === 'all' || status.toLowerCase() === filter) &&
+                            (searchTerm === '' || 
+                             member.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                             task.position.toLowerCase().includes(searchTerm.toLowerCase()))) {
+                            if (!memberTasks[member]) {
+                                memberTasks[member] = [];
+                            }
+                            memberTasks[member].push({ id: taskId, ...task });
+                        }
+                    }
+                }
+
+                for (let member in memberTasks) {
+                    const memberTasksElement = document.createElement('div');
+                    memberTasksElement.className = 'member-tasks';
+                    memberTasksElement.innerHTML = `<div class="member-name"><i class="fas fa-user"></i>${member.replace(/,/g, '.')}</div>`;
+
+                    memberTasks[member].forEach(task => {
+                        const status = getTaskStatus(task);
+                        const taskElement = document.createElement('div');
+                        taskElement.className = 'task-item';
+                        taskElement.innerHTML = `
+                            <div class="task-info">
+                                <strong>${task.task}</strong>
+                                <br>Due: ${task.date}, Location: ${task.location || 'Not specified'}
+                            </div>
+                            <div class="task-actions">
+                                <span class="status ${status.toLowerCase()}">
+                                    <i class="fas fa-${status === 'Completed' ? 'check-circle' : status === 'Pending' ? 'clock' : 'exclamation-triangle'}"></i>
+                                    ${status}
+                                </span>
+                                ${auth.currentUser ? `
+                                <button class="btn" onclick="toggleTaskStatus('${member}', '${task.id}', '${status}')">
+                                    ${status === 'Completed' ? 'Mark Pending' : 'Mark Complete'}
+                                </button>
+                                ` : ''}
+                            </div>
+                        `;
+                        memberTasksElement.appendChild(taskElement);
+                    });
+
+                    taskListContainer.appendChild(memberTasksElement);
+                }
+
+                document.getElementById('totalTasks').textContent = totalTasks;
+                document.getElementById('completedTasks').textContent = completedTasks;
+                document.getElementById('pendingTasks').textContent = pendingTasks;
+                document.getElementById('overdueTasks').textContent = overdueTasks;
+
+                // Update progress bar
+                const progressBar = document.getElementById('taskProgress');
+                const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+                progressBar.style.width = `${progressPercentage}%`;
+                document.getElementById('progressText').textContent = `${completedTasks} of ${totalTasks} tasks completed (${progressPercentage.toFixed(1)}%)`;
+
+                // Update task summary
+                const mostActiveMember = Object.keys(memberTaskCounts).length > 0
+                    ? Object.keys(memberTaskCounts).reduce((a, b) => memberTaskCounts[a] > memberTaskCounts[b] ? a : b)
+                    : 'No active members';
+                const busiestDay = Object.keys(dateCounts).length > 0
+                    ? Object.keys(dateCounts).reduce((a, b) => dateCounts[a] > dateCounts[b] ? a : b)
+                    : 'No tasks scheduled';
+                const completionRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) + '%' : '0%';
+
+                document.getElementById('mostActiveMember').textContent = mostActiveMember.replace ? mostActiveMember.replace(/,/g, '.') : mostActiveMember;
+                document.getElementById('busiestDay').textContent = busiestDay;
+                document.getElementById('completionRate').textContent = completionRate;
+            });
+        }
+
+        function getTaskStatus(task) {
+            if (task.status === 'Completed') return 'Completed';
+            const today = new Date();
+            const dueDate = new Date(task.date);
+            return dueDate < today ? 'Overdue' : 'Pending';
+        }
+
+        function toggleTaskStatus(member, taskId, currentStatus) {
+            if (!auth.currentUser) return; // Prevent non-logged-in users from toggling status
+            const newStatus = currentStatus === 'Completed' ? 'Pending' : 'Completed';
+            database.ref(`members/${member}/${taskId}`).update({ status: newStatus });
+            updateTaskList();
+            updateCalendar();
+        }
+
+        // Calendar functions
+        let currentDate = new Date();
+
+        function updateCalendar() {
+            const calendarContainer = document.getElementById('calendarContainer');
+            const currentMonthElement = document.getElementById('currentMonth');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            currentMonthElement.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            const calendar = generateCalendar(year, month);
+            calendarContainer.innerHTML = calendar;
+
+            database.ref('members').once('value', snapshot => {
+                const data = snapshot.val();
+                for (let member in data) {
+                    for (let taskId in data[member]) {
+                        const task = data[member][taskId];
+                        const taskDate = new Date(task.date);
+                        if (taskDate.getMonth() === month && taskDate.getFullYear() === year) {
+                            const day = taskDate.getDate();
+                            const cell = document.querySelector(`.calendar-day[data-date="${day}"]`);
+                            if (cell) {
+                                cell.classList.add('has-task');
+                                cell.addEventListener('click', () => showTaskDetails(member, taskId, task));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateCalendar(year, month) {
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            let calendarHTML = '';
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            // Add day names
+            for (let i = 0; i < 7; i++) {
+                calendarHTML += `<div class="calendar-day"><span class="day-name">${dayNames[i]}</span></div>`;
+            }
+
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < startingDay; i++) {
+                calendarHTML += '<div class="calendar-day"></div>';
+            }
+
+            // Add days of the month
+            for (let i = 1; i <= daysInMonth; i++) {
+                const date = new Date(year, month, i);
+                const isToday = date.toDateString() === new Date().toDateString();
+                calendarHTML += `
+                    <div class="calendar-day ${isToday ? 'today' : ''}" data-date="${i}">
+                        <span class="day-number">${i}</span>
                     </div>
                 `;
-                grids[member.position].appendChild(memberDiv);
+            }
 
-                const option = document.createElement("option");
-                option.value = memberId;
-                option.textContent = `${member.name} (${member.position})`;
-                memberSelect.appendChild(option);
-
-                if (member.tasks) {
-                    const taskCount = Object.keys(member.tasks).length;
-                    assignedTasksCount += taskCount;
-                    pendingTasksCount += taskCount;
-                }
-                if (member.completedTasks) {
-                    completedTasksCount += member.completedTasks;
-                }
-            });
-
-            // Update statistics
-            document.getElementById('totalMembers').textContent = Object.keys(members).length;
-            document.getElementById('assignedTasks').textContent = assignedTasksCount;
-            document.getElementById('completedTasks').textContent = completedTasksCount;
-            document.getElementById('pendingTasks').textContent = pendingTasksCount - completedTasksCount;
+            return calendarHTML;
         }
 
-        function assignTask() {
-            const memberSelect = document.getElementById("memberSelect");
-            const taskInput = document.getElementById("taskInput");
-            const taskDate = document.getElementById("taskDate");
-            const errorElement = document.getElementById("errorMessage");
-            const successElement = document.getElementById("successMessage");
-            const restrictionNotice = document.getElementById("restrictionNotice");
-            const selectedMembers = Array.from(memberSelect.selectedOptions).map(option => option.value);
-            const newTask = taskInput.value.trim();
-            const dueDate = taskDate.value;
+        function showTaskDetails(member, taskId, task) {
+            const modal = document.getElementById('taskModal');
+            const taskDetails = document.getElementById('taskDetails');
+            taskDetails.innerHTML = `
+                <p><strong>Member:</strong> ${member.replace(/,/g, '.')}</p>
+                <p><strong>Task:</strong> ${task.task}</p>
+                <p><strong>Due Date:</strong> ${task.date}</p>
+                <p><strong>Location:</strong> ${task.location || 'Not specified'}</p>
+                <p><strong>Status:</strong> ${getTaskStatus(task)}</p>
+            `;
+            modal.style.display = 'block';
+        }
 
-            errorElement.textContent = "";
-            successElement.textContent = "";
-            restrictionNotice.textContent = "";
+        // Close modal when clicking on <span> (x)
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
 
-            if (selectedMembers.length === 0) {
-                errorElement.textContent = "Please select at least one member.";
-                return;
-            }
-
-            if (newTask === "") {
-                errorElement.textContent = "Please enter a task.";
-                return;
-            }
-
-            if (dueDate === "") {
-                errorElement.textContent = "Please select a due date.";
-                return;
-            }
-
-            const updates = {};
-            let errorMessages = [];
-            let assignedCount = 0;
-
-            selectedMembers.forEach(memberId => {
-                database.ref('members/' + memberId).once('value', (snapshot) => {
-                    const member = snapshot.val();
-                    const tasks = member.tasks || {};
-                    const taskCount = Object.keys(tasks).length;
-
-                    if (taskCount < 2) {
-                        const newTaskId = database.ref().push().key;
-                        updates[`members/${memberId}/tasks/${newTaskId}`] = {
-                            description: newTask,
-                            dueDate: dueDate
-                        };
-                        assignedCount++;
-                    } else {
-                        errorMessages.push(`${member.name} already has 2 tasks assigned.`);
-                    }
-                });
-            });
-
-            if (errorMessages.length > 0) {
-                restrictionNotice.textContent = errorMessages.join(" ");
-            }
-
-            if (assignedCount > 0) {
-                database.ref().update(updates, (error) => {
-                    if (error) {
-                        errorElement.textContent = "Error assigning task. Please try again.";
-                    } else {
-                        successElement.textContent = `Task assigned to ${assignedCount} member(s) successfully.`;
-                        taskInput.value = "";
-                        memberSelect.value = "";
-                        taskDate.value = "";
-                    }
-                });
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('taskModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
         }
 
-        function markTaskDone(memberId, taskId) {
-            database.ref('members/' + memberId).once('value', (snapshot) => {
-                const member = snapshot.val();
-                const completedTasks = (member.completedTasks || 0) + 1;
-                const updates = {
-                    [`members/${memberId}/tasks/${taskId}`]: null,
-                    [`members/${memberId}/completedTasks`]: completedTasks
-                };
-
-                database.ref().update(updates);
-            });
-        }
-
-        function deleteTask(memberId, taskId) {
-            if (confirm("Are you sure you want to delete this task?")) {
-                database.ref(`members/${memberId}/tasks/${taskId}`).remove();
-            }
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
-
-        // Listen for changes in the database and update the UI
-        database.ref('members').on('value', (snapshot) => {
-            const members = snapshot.val();
-            renderMembers(members);
+        // Calendar navigation
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
         });
 
-        // Initial setup: Add members to the database if they don't exist
-        function initializeMembers() {
-            const positions = [
-                { 
-                    title: "Photojournalist", 
-                    members: [
-                        "Mary Adellaine Pagador",
-                        "Precious Empress Sagarino",
-                        "Ruel Jericho Malon",
-                        "Christabelle Opiasa",
-                        "Claire Araneta",
-                        "Trisha Yvoe Angcay",
-                        "Matthew Taborada",
-                        "Khristylle Jade Alcos",
-                        "David Josh U. Jumalon",
-                        "Ian Danrev T. Castillo"
-                    ]
-                },
-                { 
-                    title: "Videographer", 
-                    members: [
-                        "Philip Igot",
-                        "Karylle Abinuman",
-                        "Yezhia Boniel",
-                        "Eirene Jade Bardago",
-                        "DJ Dareal Sabas",
-                        "Marylle Marabiles",
-                        "Joem Cedrick Sungahid",
-                        "Jolisa Marie Yabillo"
-                    ]
-                },
-                { title: "Video Editor", count: 3 },
-                { title: "Broadcaster", count: 25 }
-            ];
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        });
 
-            let memberIndex = 0;
-            positions.forEach(position => {
-                if (position.members) {
-                    position.members.forEach((name, i) => {
-                        const memberId = memberIndex.toString();
-                        database.ref('members/' + memberId).once('value', (snapshot) => {
-                            if (!snapshot.exists()) {
-                                database.ref('members/' + memberId).set({
-                                    name: name,
-                                    position: position.title,
-                                    tasks: null,
-                                    completedTasks: 0
-                                });
-                            }
-                        });
-                        memberIndex++;
-                    });
-                } else {
-                    for (let i = 1; i <= position.count; i++) {
-                        const memberId = memberIndex.toString();
-                        database.ref('members/' + memberId).once('value', (snapshot) => {
-                            if (!snapshot.exists()) {
-                                database.ref('members/' + memberId).set({
-                                    name: `${position.title} ${i}`,
-                                    position: position.title,
-                                    tasks: null,
-                                    completedTasks: 0
-                                });
-                            }
-                        });
-                        memberIndex++;
-                    }
-                }
-            });
-        }
-
-        // Call initializeMembers function when the page loads
-        initializeMembers();
-
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+        // Task list filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                updateTaskList(this.dataset.filter, document.getElementById('searchInput').value);
             });
         });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value;
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            updateTaskList(activeFilter, searchTerm);
+        });
+
+        // Team Chat functionality
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+
+        function addMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.innerHTML = `<span class="sender">${sender}:</span> ${message}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        sendMessageBtn.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message && auth.currentUser) {
+                const sender = auth.currentUser.email.split('@')[0];
+                database.ref('chat').push({
+                    sender: sender,
+                    message: message,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                chatInput.value = '';
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessageBtn.click();
+            }
+        });
+
+        database.ref('chat').on('child_added', (snapshot) => {
+            const message = snapshot.val();
+            addMessage(message.sender, message.message);
+        });
+
+        // Initial load
+        updateTaskList();
+        updateCalendar();
+
     </script>
 </body>
 </html>
