@@ -575,6 +575,20 @@
             flex-grow: 1;
         }
 
+        .task-log {
+            background-color: var(--background-color);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .task-log-entry {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
         @media (max-width: 1200px) {
             .sidebar {
                 width: 80px;
@@ -820,7 +834,7 @@
                     <button id="sendMessageBtn" class="btn"><i class="fas fa-paper-plane"></i>Send</button>
                 </div>
             </section>
-            </main>
+        </main>
     </div>
 
     <div id="taskModal" class="modal">
@@ -828,6 +842,7 @@
             <span class="close">&times;</span>
             <h2>Task Details</h2>
             <div id="taskDetails"></div>
+            <div id="taskLog"></div>
         </div>
     </div>
 
@@ -864,7 +879,7 @@
             ],
             Photojournalist: [
                 "Mary Adellaine Pagador", "Precious Empress Sagarino", "Ruel Jericho Malon",
-                "Christabelle Opiasa", "Claire Araneta", "Trisha Yvone Angcay", "Matthew Taborada",
+                "Christabelle Opiasa", "Claire Araneta", "Trisha Yvoe Angcay", "Matthew Taborada",
                 "Khristylle Jade Alcos", "David Josh U. Jumalon", "Ian Danrev T. Castillo",
                 "Jesry De Asis"
             ],
@@ -948,7 +963,11 @@
                         task: task,
                         date: date,
                         location: location,
-                        status: 'Pending'
+                        status: 'Pending',
+                        log: [{
+                            action: 'Task Assigned',
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        }]
                     });
                     alert('Task assigned successfully');
                     document.getElementById('taskForm').reset();
@@ -972,7 +991,11 @@
                     task: task,
                     date: new Date().toISOString().split('T')[0],
                     location: 'Not specified',
-                    status: 'Pending'
+                    status: 'Pending',
+                    log: [{
+                        action: 'Task Assigned',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    }]
                 });
                 taskInput.value = '';
                 updateTaskList();
@@ -1057,6 +1080,12 @@
                                 <button class="btn" onclick="toggleTaskStatus('${member}', '${task.id}', '${status}')">
                                     ${status === 'Completed' ? 'Mark Pending' : 'Mark Complete'}
                                 </button>
+                                <button class="btn" onclick="editTask('${member}', '${task.id}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn" onclick="deleteTask('${member}', '${task.id}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
                                 ` : ''}
                             </div>
                         `;
@@ -1086,7 +1115,7 @@
                     : 'No tasks scheduled';
                 const completionRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) + '%' : '0%';
 
-                document.getElementById('mostActiveMember').textContent = mostActiveMember.replace ? mostActiveMember.replace(/,/g, '.') : mostActiveMember;
+                document.getElementById('mostActiveMember').textContent = mostActiveMember.replace(/,/g, '.');
                 document.getElementById('busiestDay').textContent = busiestDay;
                 document.getElementById('completionRate').textContent = completionRate;
             });
@@ -1102,9 +1131,53 @@
         function toggleTaskStatus(member, taskId, currentStatus) {
             if (!auth.currentUser) return; // Prevent non-logged-in users from toggling status
             const newStatus = currentStatus === 'Completed' ? 'Pending' : 'Completed';
-            database.ref(`members/${member}/${taskId}`).update({ status: newStatus });
+            const taskRef = database.ref(`members/${member}/${taskId}`);
+            
+            taskRef.once('value', snapshot => {
+                const task = snapshot.val();
+                const updatedLog = task.log || [];
+                updatedLog.push({
+                    action: `Status changed to ${newStatus}`,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                taskRef.update({ 
+                    status: newStatus,
+                    log: updatedLog
+                });
+            });
+            
             updateTaskList();
             updateCalendar();
+        }
+
+        function editTask(member, taskId) {
+            const taskRef = database.ref(`members/${member}/${taskId}`);
+            taskRef.once('value', snapshot => {
+                const task = snapshot.val();
+                const newTask = prompt('Edit task:', task.task);
+                if (newTask !== null && newTask.trim() !== '') {
+                    const updatedLog = task.log || [];
+                    updatedLog.push({
+                        action: 'Task Edited',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    taskRef.update({ 
+                        task: newTask,
+                        log: updatedLog
+                    });
+                    updateTaskList();
+                    updateCalendar();
+                }
+            });
+        }
+
+        function deleteTask(member, taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                database.ref(`members/${member}/${taskId}`).remove();
+                updateTaskList();
+                updateCalendar();
+            }
         }
 
         // Calendar functions
@@ -1177,6 +1250,8 @@
         function showTaskDetails(member, taskId, task) {
             const modal = document.getElementById('taskModal');
             const taskDetails = document.getElementById('taskDetails');
+            const taskLog = document.getElementById('taskLog');
+            
             taskDetails.innerHTML = `
                 <p><strong>Member:</strong> ${member.replace(/,/g, '.')}</p>
                 <p><strong>Task:</strong> ${task.task}</p>
@@ -1184,6 +1259,20 @@
                 <p><strong>Location:</strong> ${task.location || 'Not specified'}</p>
                 <p><strong>Status:</strong> ${getTaskStatus(task)}</p>
             `;
+            
+            taskLog.innerHTML = '<h3>Task Log</h3>';
+            if (task.log && task.log.length > 0) {
+                const logList = document.createElement('ul');
+                task.log.forEach(entry => {
+                    const logItem = document.createElement('li');
+                    logItem.textContent = `${new Date(entry.timestamp).toLocaleString()}: ${entry.action}`;
+                    logList.appendChild(logItem);
+                });
+                taskLog.appendChild(logList);
+            } else {
+                taskLog.innerHTML += '<p>No log entries available.</p>';
+            }
+            
             modal.style.display = 'block';
         }
 
@@ -1262,8 +1351,17 @@
 
         database.ref('chat').on('child_added', (snapshot) => {
             const message = snapshot.val();
-            addMessage(message.sender, message.message);
+            const senderName = getSenderName(message.sender);
+            addMessage(senderName, message.message);
         });
+
+        function getSenderName(email) {
+            const memberNames = {
+                'angsilakbo1@gmail.com': 'Ron Asnahon',
+                'angsilakbo2@gmail.com': 'Jesry De Asis'
+            };
+            return memberNames[email] || email.split('@')[0];
+        }
 
         // Initial load
         updateTaskList();
@@ -1272,4 +1370,3 @@
     </script>
 </body>
 </html>
-
