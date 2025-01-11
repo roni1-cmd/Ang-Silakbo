@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Writer's Task</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #ff5722;
+            --background-color: #f5f5f5;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            grid-column: 1 / -1;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+
+        select, input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card i {
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-card h3 {
+            font-size: 1.2em;
+            margin: 5px 0;
+            color: var(--secondary-color);
+        }
+
+        .search-bar input {
+            width: 100%;
+        }
+
+        .member-list {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .member-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .member-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-item {
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .task-actions button {
+            flex: 1;
+            padding: 5px;
+            font-size: 0.8em;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .edit-form input {
+            margin-bottom: 5px;
+        }
+
+        .restriction-notice {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .calendar {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .calendar-day:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.has-task {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.has-task:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .weekday-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .weekday-label {
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: var(--border-radius);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        #loginForm, #registerForm {
+            display: none;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons button {
+            flex: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+        }
+
+        .show-notification {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-title">
+                <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
+                <h1><i class="fas fa-tasks"></i> ANG SILAKBO</h1>
+            </div>
+            <div class="auth-buttons">
+                <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button id="registerBtn"><i class="fas fa-user-plus"></i> Register</button>
+                <button id="logoutBtn" style="display: none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <aside class="card">
+            <div id="loginForm">
+                <h2><i class="fas fa-lock"></i> Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </div>
+
+            <div id="registerForm">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Password" required>
+                <button onclick="register()"><i class="fas fa-user-plus"></i> Register</button>
+            </div>
+
+            <div id="taskManagement" style="display: none;">
+                <div class="stats">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="totalMembers">0</h3>
+                        <p>Members</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3 id="assignedTasks">0</h3>
+                        <p>Tasks</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3 id="completedTasks">0</h3>
+                        <p>Completed</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3 id="totalLocations">0</h3>
+                        <p>Locations</p>
+                    </div>
+                </div>
+                
+                <h2><i class="fas fa-plus-circle"></i> Assign New Task</h2>
+                <select id="positionSelect">
+                    <option value="">Select Position</option>
+                </select>
+                <select id="memberSelect">
+                    <option value="">Select Member</option>
+                </select>
+                <textarea id="taskInput" placeholder="Enter task description" rows="3"></textarea>
+                <input type="text" id="locationInput" placeholder="Enter location">
+                <input type="date" id="dateInput">
+                <button onclick="assignTask()"><iHere's the continuation of the text stream from the cut-off point:
+
+date" id="dateInput">
+                <button onclick="assignTask()"><i class="fas fa-paper-plane"></i> Assign Task</button>
+                <div id="restrictionNotice" class="restriction-notice"></div>
+
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search members or tasks...">
+                </div>
+            </div>
+        </aside>
+
+        <main class="card">
+            <div class="calendar">
+                <div class="calendar-header">
+                    <h2 id="currentMonth"></h2>
+                    <div class="calendar-nav">
+                        <button id="prevMonth"><i class="fas fa-chevron-left"></i> Previous</button>
+                        <button id="nextMonth">Next <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="weekday-labels">
+                    <div class="weekday-label">Sun</div>
+                    <div class="weekday-label">Mon</div>
+                    <div class="weekday-label">Tue</div>
+                    <div class="weekday-label">Wed</div>
+                    <div class="weekday-label">Thu</div>
+                    <div class="weekday-label">Fri</div>
+                    <div class="weekday-label">Sat</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+            <div class="member-list" id="memberList"></div>
+        </main>
+    </div>
+
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalDate"></h2>
+            <div id="modalTasks"></div>
+        </div>
+    </div>
+
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCI6Kc5wY3XpTnEGQ4y8mRHA9C_kQ6oK5o",
+            authDomain: "ang-silakbo-8ed47.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-8ed47-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo-8ed47",
+            storageBucket: "ang-silakbo-8ed47.firebasestorage.app",
+            messagingSenderId: "793504945033",
+            appId: "1:793504945033:web:11a87ca1c76daa76494758",
+            measurementId: "G-GDGHBFDJ0G"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        // Initialize members with specific positions and counts
+        const members = {
+            "Editor in Chief": ["Thea Clarisse Mae Inoc"],
+            "Associate Editor": ["Lyka May Jakosalem", "Meya Avenido"],
+            "Managing Editor": ["Noel Bual Jr"],
+            "Feature Editor": ["Natalie Cabillada"],
+            "Feature Writer": ["Dhaine Sabas", "Jamiah Paradiang", "Lyka Fujita", "Jahnine Lorriss Orogo", "Rexe Galigao", "Alliyah Mae Mojica"],
+            "Editorial Editor": ["Wella Joy Socorin"],
+            "Editorial Writer": [" Marj Beatriz Caroline Amorin", "Dweina Cananea", "Kyle Ashley Bejoc", "Lady Marie Maranga "],
+            "Local News Editor": ["Analy Auman"],
+            "Local News Writer": ["Chriss Edward Pascual", "Joy Sagario", "Diana Bridget Pancito", "Rubylyn Agudo", "Jheelnyz Niña Aligway", "Khaila Shane Alegado"],
+            "Sports Editor": ["Jan Marisse Licong"],
+            "Sports Writer": ["Reda Daroy", "Guinevere Rose Taneo", "Frances Vienn Borja", "Kean Ponce"],
+            "Entertainment News Writer": ["Jeniah Shane Ventures", "Aizel Indoy", "Frencess Lee Roche", "Laica Ondot", "Kim Daneca Capuno"],
+            "Layout Artist": ["Hyacinth Kate Meomeo", "Michelle Ann Lagala", "Arvie Guardiario ", "Jeromae Comajig", "Jarhone Abella", "Chaim Fernandez", "Charmel Emiliano", "Clarence Earl Tulod"],
+            "Editorial Cartoonist": ["Eva Joy Talidro", "Nil Ian Rondina", "Denille Amber Malinao"],
+            "Literary Writer": ["Loejeane Dougherty"],
+            "Circulation Manager": ["Ann Niña Dungog"],
+            "Assistant Circulation Manager": ["Relyd Aparece"]
+        };
+
+        let currentUser = null;
+
+        // Populate position select
+        const positionSelect = document.getElementById('positionSelect');
+        for (let position in members) {
+            const option = document.createElement('option');
+            option.value = position;
+            option.textContent = position;
+            positionSelect.appendChild(option);
+        }
+
+        // Populate member select based on position
+        positionSelect.addEventListener('change', function() {
+            const position = this.value;
+            const memberSelect = document.getElementById('memberSelect');
+            memberSelect.innerHTML = '<option value="">Select Member</option>';
+            if (position) {
+                members[position].forEach(member => {
+                    const option = document.createElement('option');
+                    option.value = member;
+                    option.textContent = member;
+                    memberSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Authentication functions
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            showLoadingSpinner();
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    showTaskManagement();
+                    showNotification('Logged in successfully', 'success');
+                })
+                .catch((error) => {
+                    showNotification('Login failed: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    hideLoadingSpinner();
+                });
+        }
+
+        function register() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            showLoadingSpinner();
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    showTaskManagement();
+                    showNotification('Registered successfully', 'success');
+                })
+                .catch((error) => {
+                    showNotification('Registration failed: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    hideLoadingSpinner();
+                });
+        }
+
+        function logout() {
+            showLoadingSpinner();
+            auth.signOut().then(() => {
+                currentUser = null;
+                showLoginForm();
+                showNotification('Logged out successfully', 'success');
+            }).catch((error) => {
+                console.error('Logout failed:', error);
+                showNotification('Logout failed', 'error');
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('taskManagement').style.display = 'none';
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('registerBtn').style.display = 'inline-block';
+            document.getElementById('logoutBtn').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('taskManagement').style.display = 'none';
+        }
+
+        function showTaskManagement() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('taskManagement').style.display = 'block';
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('registerBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+            displayMembers();
+            updateStats();
+            updateCalendar();
+        }
+
+        // Assign task function
+        function assignTask() {
+            if (!currentUser) {
+                showNotification('Please log in to assign tasks.', 'error');
+                return;
+            }
+
+            const position = document.getElementById('positionSelect').value;
+            const member = document.getElementById('memberSelect').value;
+            const task = document.getElementById('taskInput').value;
+            const location = document.getElementById('locationInput').value;
+            const date = document.getElementById('dateInput').value;
+            const restrictionNotice = document.getElementById('restrictionNotice');
+
+            if (!position || !member || !task || !location || !date) {
+                restrictionNotice.textContent = 'Please fill in all fields';
+                return;
+            }
+
+            showLoadingSpinner();
+            const memberRef = database.ref('members/' + member.replace(/\s+/g, '_'));
+            memberRef.once('value').then(snapshot => {
+                const memberData = snapshot.val() || {};
+                const tasks = memberData.tasks || [];
+
+                if (tasks.length >= 2) {
+                    restrictionNotice.textContent = 'This member already has two tasks assigned. Please complete or remove a task before assigning a new one.';
+                    hideLoadingSpinner();
+                    return;
+                }
+
+                tasks.push({ description: task, location: location, date: date, completed: false });
+
+                memberRef.set({
+                    position: position,
+                    tasks: tasks
+                }).then(() => {
+                    restrictionNotice.textContent = 'Task assigned successfully';
+                    restrictionNotice.style.color = '#4CAF50';
+                    document.getElementById('taskInput').value = '';
+                    document.getElementById('locationInput').value = '';
+                    document.getElementById('dateInput').value = '';
+                    displayMembers();
+                    updateStats();
+                    updateCalendar();
+                    showNotification('Task assigned successfully', 'success');
+                }).catch(error => {
+                    console.error("Error details:", error);
+                    restrictionNotice.textContent = 'Error assigning task: ' + error.message;
+                    showNotification('Error assigning task', 'error');
+                }).finally(() => {
+                    hideLoadingSpinner();
+                });
+            });
+        }
+
+        // Display member list and tasks
+        function displayMembers() {
+            const memberList = document.getElementById('memberList');
+            memberList.innerHTML = '<p>Loading member list...</p>';
+
+            showLoadingSpinner();
+            database.ref('members').once('value').then(snapshot => {
+                memberList.innerHTML = '';
+                const data = snapshot.val();
+                if (data) {
+                    for (let member in data) {
+                        if (data[member].tasks && data[member].tasks.length > 0) {
+                            const div = document.createElement('div');
+                            div.className = 'member-card fade-in';
+                            let tasksHtml = '<div class="task-list">';
+                            data[member].tasks.forEach((task, index) => {
+                                const taskStatus = task.completed ? 'Completed' : 'In Progress';
+                                const taskStatusColor = task.completed ? '#4CAF50' : '#FFC107';
+                                tasksHtml += `
+                                    <div class="task-item">
+                                        <h3>Task ${index + 1}</h3>
+                                        <p><strong>Description:</strong> ${task.description}</p>
+                                        <p><strong>Location:</strong> ${task.location}</p>
+                                        <p><strong>Date:</strong> ${task.date}</p>
+                                        <p><strong>Status:</strong> <span style="color: ${taskStatusColor};">${taskStatus}</span></p>
+                                        ${currentUser ? `
+                                            <div class="task-actions">
+                                                <button onclick="toggleTaskStatus('${member}', ${index}, ${!task.completed})">
+                                                    <i class="fas fa-exchange-alt"></i> ${task.completed ? 'Mark as In Progress' : 'Mark as Completed'}
+                                                </button>
+                                                <button onclick="showEditForm('${member}', ${index})">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </button>
+                                                <button onclick="deleteTask('${member}', ${index})">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </button>
+                                            </div>
+                                            <div class="edit-form" id="edit-${member}-${index}">
+                                                <input type="text" id="edit-task-${member}-${index}" value="${task.description}">
+                                                <input type="text" id="edit-location-${member}-${index}" value="${task.location}">
+                                                <input type="date" id="edit-date-${member}-${index}" value="${task.date}">
+                                                <button onclick="updateTask('${member}', ${index})">
+                                                    <i class="fas fa-save"></i> Update
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `;
+                            });
+                            tasksHtml += '</div>';
+                            
+                            div.innerHTML = `
+                                <h3>${member.replace(/_/g, ' ')}</h3>
+                                <p><strong>Position:</strong> ${data[member].position}</p>
+                                ${tasksHtml}
+                            `;
+                            memberList.appendChild(div);
+                        }
+                    }
+                }
+                if (memberList.innerHTML === '') {
+                    memberList.innerHTML = '<p>No tasks assigned to any members.</p>';
+                }
+            }).catch(error => {
+                console.error("Error fetching members:", error);
+                memberList.innerHTML = '<p>Error loading member list: ' + error.message + '</p>';
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+        }
+
+        // Toggle task status
+        function toggleTaskStatus(member, taskIndex, completed) {
+            if (!currentUser) {
+                showNotification('Please log in to update task status.', 'error');
+                return;
+            }
+
+            showLoadingSpinner();
+            const memberRef = database.ref('members/' + member);
+            memberRef.once('value').then(snapshot => {
+                const memberData = snapshot.val();
+                if (memberData && memberData.tasks) {
+                    memberData.tasks[taskIndex].completed = completed;
+                    memberRef.update({ tasks: memberData.tasks }).then(() => {
+                        displayMembers();
+                        updateStats();
+                        updateCalendar();
+                        showNotification('Task status updated successfully', 'success');
+                    });
+                }
+            }).catch(error => {
+                console.error("Error updating task status:", error);
+                showNotification('Error updating task status', 'error');
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+        }
+
+        // Show edit form
+        function showEditForm(member, taskIndex) {
+            if (!currentUser) {
+                showNotification('Please log in to edit tasks.', 'error');
+                return;
+            }
+
+            const editForm = document.getElementById(`edit-${member}-${taskIndex}`);
+            editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Update task
+        function updateTask(member, taskIndex) {
+            if (!currentUser) {
+                showNotification('Please log in to update tasks.', 'error');
+                return;
+            }
+
+            showLoadingSpinner();
+            const taskInput = document.getElementById(`edit-task-${member}-${taskIndex}`);
+            const locationInput = document.getElementById(`edit-location-${member}-${taskIndex}`);
+            const dateInput = document.getElementById(`edit-date-${member}-${taskIndex}`);
+            const memberRef = database.ref('members/' + member);
+            memberRef.once('value').then(snapshot => {
+                const memberData = snapshot.val();
+                if (memberData && memberData.tasks) {
+                    memberData.tasks[taskIndex].description = taskInput.value;
+                    memberData.tasks[taskIndex].location = locationInput.value;
+                    memberData.tasks[taskIndex].date = dateInput.value;
+                    memberRef.update({ tasks: memberData.tasks }).then(() => {
+                        displayMembers();
+                        updateStats();
+                        updateCalendar();
+                        showNotification('Task updated successfully', 'success');
+                    });
+                }
+            }).catch(error => {
+                console.error("Error updating task:", error);
+                showNotification('Error updating task', 'error');
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+        }
+
+        // Delete task
+        function deleteTask(member, taskIndex) {
+            if (!currentUser) {
+                showNotification('Please log in to delete tasks.', 'error');
+                return;
+            }
+
+            if (confirm('Are you sure you want to delete this task?')) {
+                showLoadingSpinner();
+                const memberRef = database.ref('members/' + member);
+                memberRef.once('value').then(snapshot => {
+                    const memberData = snapshot.val();
+                    if (memberData && memberData.tasks) {
+                        memberData.tasks.splice(taskIndex, 1);
+                        if (memberData.tasks.length === 0) {
+                            memberRef.remove().then(() => {
+                                displayMembers();
+                                updateStats();
+                                updateCalendar();
+                                showNotification('Task deleted successfully', 'success');
+                            });
+                        } else {
+                            memberRef.update({ tasks: memberData.tasks }).then(() => {
+                                displayMembers();
+                                updateStats();
+                                updateCalendar();
+                                showNotification('Task deleted successfully', 'success');
+                            });
+                        }
+                    }
+                }).catch(error => {
+                    console.error("Error deleting task:", error);
+                    showNotification('Error deleting task', 'error');
+                }).finally(() => {
+                    hideLoadingSpinner();
+                });
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            showLoadingSpinner();
+            database.ref('members').once('value').then(snapshot => {
+                const data = snapshot.val();
+                const totalMembers = Object.keys(data || {}).length;
+                let assignedTasks = 0;
+                let completedTasks = 0;
+                const locations = new Set();
+
+                if (data) {
+                    Object.values(data).forEach(member => {
+                        if (member.tasks) {
+                            assignedTasks += member.tasks.length;
+                            completedTasks += member.tasks.filter(task => task.completed).length;
+                            member.tasks.forEach(task => locations.add(task.location));
+                        }
+                    });
+                }
+
+                document.getElementById('totalMembers').textContent = totalMembers;
+                document.getElementById('assignedTasks').textContent = assignedTasks;
+                document.getElementById('completedTasks').textContent = completedTasks;
+                document.getElementById('totalLocations').textContent = locations.size;
+            }).catch(error => {
+                console.error("Error updating stats:", error);
+                showNotification('Error updating statistics', 'error');
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const memberDivs = document.querySelectorAll('#memberList > div');
+            memberDivs.forEach(div => {
+                const memberName = div.querySelector('h3').textContent.toLowerCase();
+                const taskDescriptions = Array.from(div.querySelectorAll('.task-item')).map(item => item.textContent.toLowerCase());
+                if (memberName.includes(searchTerm) || taskDescriptions.some(desc => desc.includes(searchTerm))) {
+                    div.style.display = 'block';
+                } else {
+                    div.style.display = 'none';
+                }
+            });
+        });
+
+        // Calendar functionality
+        let currentDate = new Date();
+
+        function updateCalendar() {
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendarGrid.appendChild(document.createElement('div'));
+            }
+
+            showLoadingSpinner();
+            database.ref('members').once('value').then(snapshot => {
+                const data = snapshot.val();
+                const taskDates = new Set();
+
+                if (data) {
+                    Object.values(data).forEach(member => {
+                        if (member.tasks) {
+                            member.tasks.forEach(task => {
+                                if (task.date) {
+                                    taskDates.add(task.date);
+                                }
+                            });
+                        }
+                    });
+                }
+
+                for (let i = 1; i <= lastDay.getDate(); i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('calendar-day');
+                    dayElement.textContent = i;
+
+                    const currentDateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    if (taskDates.has(currentDateString)) {
+                        dayElement.classList.add('has-task');
+                        dayElement.addEventListener('click', () => showTaskDetails(currentDateString));
+                    }
+
+                    calendarGrid.appendChild(dayElement);
+                }
+            }).catch(error => {
+                console.error("Error updating calendar:", error);
+                showNotification('Error updating calendar', 'error');
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+        }
+
+        function showTaskDetails(date) {
+            const modal = document.getElementById('taskModal');
+            const modalDate = document.getElementById('modalDate');
+            const modalTasks = document.getElementById('modalTasks');
+
+            modalDate.textContent = date;
+            modalTasks.innerHTML = '';
+
+            showLoadingSpinner();
+            database.ref('members').once('value').then(snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    Object.entries(data).forEach(([member, memberData]) => {
+                        if (memberData.tasks) {
+                            memberData.tasks.forEach((task, index) => {
+                                if (task.date === date) {
+                                    const taskElement = document.createElement('div');
+                                    taskElement.classList.add('task-item');
+                                    taskElement.innerHTML = `
+                                        <h3>${member.replace(/_/g, ' ')}</h3>
+                                        <p><strong>Task:</strong> ${task.description}</p>
+                                        <p><strong>Location:</strong> ${task.location}</p>
+                                        <p><strong>Status:</strong> ${task.completed ? 'Completed' : 'In Progress'}</p>
+                                    `;
+                                    modalTasks.appendChild(taskElement);
+                                }
+                            });
+                        }
+                    });
+                }
+            }).catch(error => {
+                console.error("Error fetching task details:", error);
+                showNotification('Error fetching task details', 'error');
+            }).finally(() => {
+                hideLoadingSpinner();
+            });
+
+            modal.style.display = 'block';
+        }
+
+        // Close modal when clicking on <span> (x)
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('taskModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        });
+
+        // Event listeners for authentication buttons
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            showLoginForm();
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            showRegisterForm();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            logout();
+        });
+
+        // Check authentication state on page load
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                showTaskManagement();
+            } else {
+                showLoginForm();
+            }
+        });
+
+        // Loading spinner functions
+        function showLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        function hideLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        // Notification functions
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show-notification');
+            setTimeout(() => {
+                notification.classList.remove('show-notification');
+            }, 3000);
+        }
+
+        // Initial calls
+        showLoginForm();
+    </script>
+</body>
+</html>
+
