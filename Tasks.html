@@ -589,6 +589,7 @@
             padding: 10px;
             border-radius: 5px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .team-member:hover {
@@ -632,6 +633,44 @@
 
         .status-completed {
             background-color: var(--primary-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         @media (max-width: 768px) {
@@ -871,6 +910,14 @@
         <span class="notification-badge" id="chatNotificationBadge" style="display: none;">0</span>
     </button>
 
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -946,6 +993,10 @@
         const searchBtn = document.getElementById('searchBtn');
         const teamMembersContainer = document.getElementById('teamMembersContainer');
         const notificationBtn = document.getElementById('notificationBtn');
+        const modal = document.getElementById('taskModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementsByClassName('close')[0];
 
         // Login functionality
         loginForm.addEventListener('submit', function(e) {
@@ -1210,7 +1261,8 @@
                             const cell = document.querySelector(`.calendar-day[data-date="${day}"]`);
                             if (cell) {
                                 cell.classList.add('has-task');
-                                cell.addEventListener('click', () => showTaskDetails(member, taskId, task));
+                                cell.style.backgroundColor = getTaskColor(task);
+                                cell.addEventListener('click', () => showDayTasks(year, month, day));
                             }
                         }
                     }
@@ -1251,15 +1303,46 @@
             return calendarHTML;
         }
 
-        function showTaskDetails(member, taskId, task) {
-            alert(`
-                Member: ${member.replace(/,/g, '.')}
-                Task: ${task.task}
-                Due Date: ${task.date}
-                Location: ${task.location || 'Not specified'}
-                Priority: ${task.priority}
-                Status: ${getTaskStatus(task)}
-            `);
+        function getTaskColor(task) {
+            const status = getTaskStatus(task);
+            switch (status) {
+                case 'Completed':
+                    return '#2ECC40';
+                case 'Overdue':
+                    return '#FF4136';
+                case 'Pending':
+                    return '#FFDC00';
+                default:
+                    return '#FFFFFF';
+            }
+        }
+
+        function showDayTasks(year, month, day) {
+            const date = new Date(year, month, day).toISOString().split('T')[0];
+            database.ref('members').once('value', snapshot => {
+                const data = snapshot.val();
+                let content = '<ul>';
+                let tasksFound = false;
+                for (let member in data) {
+                    for (let taskId in data[member]) {
+                        const task = data[member][taskId];
+                        if (task.date === date) {
+                            tasksFound = true;
+                            content += `
+                                <li>
+                                    <strong>${member.replace(/,/g, '.')}:</strong> ${task.task}<br>
+                                    Status: ${getTaskStatus(task)}
+                                </li>
+                            `;
+                        }
+                    }
+                }
+                if (!tasksFound) {
+                    content += '<li>No tasks for this day</li>';
+                }
+                content += '</ul>';
+                openModal(`Tasks for ${new Date(year, month, day).toDateString()}`, content);
+            });
         }
 
         // Calendar navigation
@@ -1289,7 +1372,7 @@
         sendMessageBtn.addEventListener('click', () => {
             const message = chatInput.value.trim();
             if (message && auth.currentUser) {
-const sender = auth.currentUser.email === "angsilakbo1@uclm.com" ? "Ron Asnahon" : "Jesry De Asis";
+                const sender = auth.currentUser.email === "angsilakbo1@uclm.com" ? "Ron Asnahon" : "Jesry De Asis";
                 database.ref('chat').push({
                     sender: sender,
                     message: message,
@@ -1436,6 +1519,7 @@ const sender = auth.currentUser.email === "angsilakbo1@uclm.com" ? "Ron Asnahon"
                             </div>
                         </div>
                     `;
+                    memberItem.addEventListener('click', () => showMemberTasks(member));
                     memberList.appendChild(memberItem);
                     updateMemberStatus(member, memberItem);
                 });
@@ -1501,6 +1585,47 @@ const sender = auth.currentUser.email === "angsilakbo1@uclm.com" ? "Ron Asnahon"
             alert('Notifications feature coming soon!');
         });
 
+        // Modal functionality
+        function openModal(title, content) {
+            modalTitle.textContent = title;
+            modalContent.innerHTML = content;
+            modal.style.display = "block";
+        }
+
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function showMemberTasks(member) {
+            const memberRef = database.ref('members/' + member.replace(/\./g, ','));
+            memberRef.once('value', snapshot => {
+                const tasks = snapshot.val();
+                let content = '<ul>';
+                if (tasks) {
+                    for (let taskId in tasks) {
+                        const task = tasks[taskId];
+                        content += `
+                            <li>
+                                <strong>${task.task}</strong><br>
+                                Due: ${task.date}<br>
+                                Status: ${getTaskStatus(task)}
+                            </li>
+                        `;
+                    }
+                } else {
+                    content += '<li>No tasks assigned</li>';
+                }
+                content += '</ul>';
+                openModal(`${member}'s Tasks`, content);
+            });
+        }
+
         // Initialize
         updateTaskList();
         updateCalendar();
@@ -1508,4 +1633,3 @@ const sender = auth.currentUser.email === "angsilakbo1@uclm.com" ? "Ron Asnahon"
     </script>
 </body>
 </html>
-
