@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ang Silakbo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+  :root {
+    --primary-color: #FF6B35;
+    --secondary-color: #FFFFFF;
+    --background-color: #F5F7FA;
+    --text-color: #1c1e21;
+    --border-color: #E4E6EB;
+  }
+  body {
+    font-family: 'Poppins', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  header {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  header h1 {
+    color: var(--secondary-color);
+    margin: 0;
+  }
+  #auth-section {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  #auth-section button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  }
+  #auth-section button:hover {
+    background-color: #FFD5C2;
+    transform: translateY(-2px);
+  }
+  .container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  #sidebar {
+    flex: 1;
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+    height: fit-content;
+    position: sticky;
+    top: 80px;
+  }
+  #sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    color: var(--text-color);
+    text-decoration: none;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  #sidebar a:hover {
+    background-color: var(--background-color);
+    transform: translateX(5px);
+  }
+  #sidebar a i {
+    margin-right: 10px;
+    font-size: 1.2em;
+  }
+  #main-content {
+    flex: 3;
+  }
+  #post-form {
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  #post-content {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+  }
+  #submit-post {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  #submit-post:hover {
+    background-color: #FF8C61;
+    transform: translateY(-2px);
+  }
+  .post {
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+  .post:hover {
+    transform: translateY(-3px);
+  }
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .post-header-left {
+    display: flex;
+    align-items: center;
+  }
+  .post-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  .post-header h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+  .post-header p {
+    margin: 0;
+    font-size: 12px;
+    color: #65676b;
+  }
+  .post-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  .post-actions button {
+    background: none;
+    border: none;
+    color: #65676b;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+  }
+  .post-actions button:hover {
+    color: var(--primary-color);
+  }
+  .post-actions button i {
+    margin-right: 5px;
+  }
+  #notifications {
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    z-index: 1000;
+    max-width: 300px;
+  }
+  .notification {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 4.5s forwards;
+  }
+  .comment, .reply {
+    margin-left: 20px;
+    padding: 10px;
+    background-color: #FFE0D0;
+    border-radius: 5px;
+    margin-top: 10px;
+    position: relative;
+  }
+  .comment::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--border-color);
+  }
+  .comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  .comment-header img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  .comment-header h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+  .comment-header p {
+    margin: 0;
+    font-size: 10px;
+    color: #65676b;
+  }
+  .comment-form {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .comment-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-family: 'Poppins', sans-serif;
+    margin-right: 10px;
+  }
+  .comment-submit {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s;
+  }
+  .comment-submit:hover {
+    background-color: #FF8C61;
+  }
+  .delete-comment-btn, .delete-reply-btn, .delete-nested-reply-btn {
+    background: none;
+    border: none;
+    color: #65676b;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  .delete-comment-btn:hover, .delete-reply-btn:hover, .delete-nested-reply-btn:hover {
+    color: var(--primary-color);
+  }
+  #search-bar {
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    margin-right: 10px;
+    font-family: 'Poppins', sans-serif;
+  }
+  #search-btn {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  #search-btn:hover {
+    background-color: #FF8C61;
+    transform: translateY(-2px);
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; }
+  }
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    #sidebar {
+      margin-right: 0;
+      margin-bottom: 20px;
+      position: static;
+    }
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    #auth-section {
+      margin-top: 10px;
+    }
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="greeting"></h1>
+    <div>
+      <input type="text" id="search-bar" placeholder="Search users or posts...">
+      <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="sidebar">
+      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-user"></i> Profile</a>
+      <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+      <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+    </div>
+
+    <div id="main-content">
+      <section id="post-form">
+        <textarea id="post-content" placeholder="What's on your mind?"></textarea>
+        <button id="submit-post"><i class="fas fa-paper-plane"></i> Submit</button>
+      </section>
+
+      <section id="posts">
+        <!-- Posts will be dynamically inserted here -->
+      </section>
+    </div>
+  </div>
+
+  <div id="notifications">
+    <!-- Notifications will be dynamically inserted here -->
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      query, 
+      orderBy, 
+      onSnapshot,
+      where,
+      getDocs,
+      getDoc,
+      doc,
+      deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+      authDomain: "ang-silakbo.firebaseapp.com",
+      projectId: "ang-silakbo",
+      storageBucket: "ang-silakbo.appspot.com",
+      messagingSenderId: "1006400633782",
+      appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+      measurementId: "G-TSDTG2YJ94"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const logoutBtn = document.getElementById('logout-btn');
+    const postForm = document.getElementById('post-form');
+    const postContent = document.getElementById('post-content');
+    const submitPostBtn = document.getElementById('submit-post');
+    const postsSection = document.getElementById('posts');
+    const greeting = document.getElementById('greeting');
+    const searchBar = document.getElementById('search-bar');
+    const searchBtn = document.getElementById('search-btn');
+
+    function generateAvatarUrl(seed) {
+      return `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
+    }
+
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth)
+        .then(() => {
+          window.location.href = 'landing.html';
+        })
+        .catch((error) => alert(error.message));
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        postForm.style.display = 'block';
+        greeting.textContent = `Hi there, ${user.displayName || user.email}`;
+        loadPosts();
+        listenForNotifications(user.uid);
+      } else {
+        window.location.href = 'landing.html';
+      }
+    });
+
+    submitPostBtn.addEventListener('click', () => {
+      const content = postContent.value.trim();
+      if (content) {
+        addDoc(collection(db, 'posts'), {
+          content: content,
+          timestamp: new Date(),
+          userId: auth.currentUser.uid,
+          userName: auth.currentUser.displayName || auth.currentUser.email
+        })
+        .then(() => {
+          postContent.value = '';
+          loadPosts();
+        })
+        .catch((error) => alert(error.message));
+      }
+    });
+
+    function loadPosts() {
+      postsSection.innerHTML = '';
+      const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+      onSnapshot(q, (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const post = doc.data();
+          const postElement = document.createElement('div');
+          postElement.className = 'post';
+          postElement.innerHTML = `
+            <div class="post-header">
+              <div class="post-header-left">
+                <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture">
+                <div>
+                  <h3>${post.userName}</h3>
+                  <p>${new Date(post.timestamp?.toDate()).toLocaleString()}</p>
+                </div>
+              </div>
+              ${post.userId === auth.currentUser.uid ? '<button class="delete-post-btn"><i class="fas fa-trash"></i></button>' : ''}
+            </div>
+            <p>${post.content}</p>
+            <div class="post-actions">
+              <button class="comment-btn"><i class="fas fa-comment"></i> Comment</button>
+            </div>
+            <div class="comments-section"></div>
+            <form class="comment-form">
+              <input type="text" class="comment-input" placeholder="Write a comment...">
+              <button type="submit" class="comment-submit">Send</button>
+            </form>
+          `;
+          postsSection.appendChild(postElement);
+
+          const commentsSection = postElement.querySelector('.comments-section');
+          loadComments(doc.id, commentsSection);
+
+          const commentForm = postElement.querySelector('.comment-form');
+          commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const commentInput = commentForm.querySelector('.comment-input');
+            const commentContent = commentInput.value.trim();
+            if (commentContent) {
+              addComment(doc.id, commentContent);
+              commentInput.value = '';
+            }
+          });
+
+          const deleteBtn = postElement.querySelector('.delete-post-btn');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+              if (confirm('Are you sure you want to delete this post?')) {
+                deletePost(doc.id);
+              }
+            });
+          }
+        });
+      });
+    }
+
+    async function deletePost(postId) {
+      try {
+        await deleteDoc(doc(db, 'posts', postId));
+        console.log('Post deleted successfully');
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post. Please try again.');
+      }
+    }
+
+    async function addComment(postId, content) {
+      try {
+        const postRef = doc(db, 'posts', postId);
+        const postSnapshot = await getDoc(postRef);
+        
+        if (!postSnapshot.exists()) {
+          throw new Error('Post does not exist!');
+        }
+
+        const postData = postSnapshot.data();
+        
+        await addDoc(collection(db, 'posts', postId, 'comments'), {
+          content: content,
+          timestamp: new Date(),
+          userId: auth.currentUser.uid,
+          userName: auth.currentUser.displayName || auth.currentUser.email
+        });
+
+        addNotification(postData.userId, `${auth.currentUser.displayName} commented on your post.`);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function loadComments(postId, commentsSection) {
+      const q = query(collection(db, 'posts', postId, 'comments'), orderBy('timestamp', 'asc'));
+      onSnapshot(q, (querySnapshot) => {
+        commentsSection.innerHTML = '';
+        querySnapshot.forEach((doc) => {
+          const comment = doc.data();
+          const commentElement = document.createElement('div');
+          commentElement.className = 'comment';
+          commentElement.innerHTML = `
+            <div class="comment-header">
+              <img src="${generateAvatarUrl(comment.userId)}" alt="Profile Picture">
+              <div>
+                <h3>${comment.userName}</h3>
+                <p>${new Date(comment.timestamp?.toDate()).toLocaleString()}</p>
+              </div>
+              ${comment.userId === auth.currentUser.uid ? '<button class="delete-comment-btn"><i class="fas fa-trash"></i></button>' : ''}
+            </div>
+            <p>${comment.content}</p>
+            <button class="reply-btn">Reply</button>
+            <div class="replies"></div>
+            <form class="reply-form" style="display: none;">
+              <input type="text" class="reply-input" placeholder="Write a reply...">
+              <button type="submit" class="reply-submit">Send</button>
+            </form>
+          `;
+          commentsSection.appendChild(commentElement);
+
+          const replyBtn = commentElement.querySelector('.reply-btn');
+          const replyForm = commentElement.querySelector('.reply-form');
+          replyBtn.addEventListener('click', () => {
+            replyForm.style.display = replyForm.style.display === 'none' ? 'flex' : 'none';
+          });
+
+          replyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const replyInput = replyForm.querySelector('.reply-input');
+            const replyContent = replyInput.value.trim();
+            if (replyContent) {
+              addReply(postId, doc.id, replyContent);
+              replyInput.value = '';
+              replyForm.style.display = 'none';
+            }
+          });
+
+          const deleteCommentBtn = commentElement.querySelector('.delete-comment-btn');
+          if (deleteCommentBtn) {
+            deleteCommentBtn.addEventListener('click', () => {
+              if (confirm('Are you sure you want to delete this comment?')) {
+                deleteComment(postId, doc.id);
+              }
+            });
+          }
+
+          loadReplies(postId, doc.id, commentElement.querySelector('.replies'));
+        });
+      });
+    }
+
+    async function addReply(postId, commentId, content) {
+      try {
+        const commentRef = doc(db, 'posts', postId, 'comments', commentId);
+        const commentSnapshot = await getDoc(commentRef);
+        
+        if (!commentSnapshot.exists()) {
+          throw new Error('Comment does not exist!');
+        }
+
+        const commentData = commentSnapshot.data();
+        
+        await addDoc(collection(db, 'posts', postId, 'comments', commentId, 'replies'), {
+          content: content,
+          timestamp: new Date(),
+          userId: auth.currentUser.uid,
+          userName: auth.currentUser.displayName || auth.currentUser.email
+        });
+
+        addNotification(commentData.userId, `${auth.currentUser.displayName} replied to your comment.`);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function loadReplies(postId, commentId, repliesSection) {
+      const q = query(collection(db, 'posts', postId, 'comments', commentId, 'replies'), orderBy('timestamp', 'asc'));
+      onSnapshot(q, (querySnapshot) => {
+        repliesSection.innerHTML = '';
+        querySnapshot.forEach((doc) => {
+          const reply = doc.data();
+          const replyElement = document.createElement('div');
+          replyElement.className = 'reply';
+          replyElement.innerHTML = `
+            <div class="comment-header">
+              <img src="${generateAvatarUrl(reply.userId)}" alt="Profile Picture">
+              <div>
+                <h3>${reply.userName}</h3>
+                <p>${new Date(reply.timestamp?.toDate()).toLocaleString()}</p>
+              </div>
+              ${reply.userId === auth.currentUser.uid ? '<button class="delete-reply-btn"><i class="fas fa-trash"></i></button>' : ''}
+            </div>
+            <p>${reply.content}</p>
+            <button class="reply-btn">Reply</button>
+            <div class="nested-replies"></div>
+            <form class="nested-reply-form" style="display: none;">
+              <input type="text" class="nested-reply-input" placeholder="Write a reply...">
+              <button type="submit" class="nested-reply-submit">Send</button>
+            </form>
+          `;
+          repliesSection.appendChild(replyElement);
+
+          const replyBtn = replyElement.querySelector('.reply-btn');
+          const replyForm = replyElement.querySelector('.nested-reply-form');
+          replyBtn.addEventListener('click', () => {
+            replyForm.style.display = replyForm.style.display === 'none' ? 'flex' : 'none';
+          });
+
+          replyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const replyInput = replyForm.querySelector('.nested-reply-input');
+            const replyContent = replyInput.value.trim();
+            if (replyContent) {
+              addNestedReply(postId, commentId, doc.id, replyContent);
+              replyInput.value = '';
+              replyForm.style.display = 'none';
+            }
+          });
+
+          const deleteReplyBtn = replyElement.querySelector('.delete-reply-btn');
+          if (deleteReplyBtn) {
+            deleteReplyBtn.addEventListener('click', () => {
+              if (confirm('Are you sure you want to delete this reply?')) {
+                deleteReply(postId, commentId, doc.id);
+              }
+            });
+          }
+
+          loadNestedReplies(postId, commentId, doc.id, replyElement.querySelector('.nested-replies'));
+        });
+      });
+    }
+
+    async function deleteComment(postId, commentId) {
+      try {
+        await deleteDoc(doc(db, 'posts', postId, 'comments', commentId));
+        console.log('Comment deleted successfully');
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+        alert('Failed to delete comment. Please try again.');
+      }
+    }
+
+    async function deleteReply(postId, commentId, replyId) {
+      try {
+        await deleteDoc(doc(db, 'posts', postId, 'comments', commentId, 'replies', replyId));
+        console.log('Reply deleted successfully');
+      } catch (error) {
+        console.error('Error deleting reply:', error);
+        alert('Failed to delete reply. Please try again.');
+      }
+    }
+
+    async function addNestedReply(postId, commentId, parentReplyId, content) {
+      try {
+        const replyRef = doc(db, 'posts', postId, 'comments', commentId, 'replies', parentReplyId);
+        const replySnapshot = await getDoc(replyRef);
+        
+        if (!replySnapshot.exists()) {
+          throw new Error('Parent reply does not exist!');
+        }
+
+        const replyData = replySnapshot.data();
+        
+        await addDoc(collection(db, 'posts', postId, 'comments', commentId, 'replies', parentReplyId, 'nested_replies'), {
+          content: content,
+          timestamp: new Date(),
+          userId: auth.currentUser.uid,
+          userName: auth.currentUser.displayName || auth.currentUser.email
+        });
+
+        addNotification(replyData.userId, `${auth.currentUser.displayName} replied to your comment.`);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function loadNestedReplies(postId, commentId, replyId, nestedRepliesSection) {
+      const q = query(collection(db, 'posts', postId, 'comments', commentId, 'replies', replyId, 'nested_replies'), orderBy('timestamp', 'asc'));
+      onSnapshot(q, (querySnapshot) => {
+        nestedRepliesSection.innerHTML = '';
+        querySnapshot.forEach((doc) => {
+          const nestedReply = doc.data();
+          const nestedReplyElement = document.createElement('div');
+          nestedReplyElement.className = 'reply nested-reply';
+          nestedReplyElement.innerHTML = `
+            <div class="comment-header">
+              <img src="${generateAvatarUrl(nestedReply.userId)}" alt="Profile Picture">
+              <div>
+                <h3>${nestedReply.userName}</h3>
+                <p>${new Date(nestedReply.timestamp?.toDate()).toLocaleString()}</p>
+              </div>
+              ${nestedReply.userId === auth.currentUser.uid ? '<button class="delete-nested-reply-btn"><i class="fas fa-trash"></i></button>' : ''}
+            </div>
+            <p>${nestedReply.content}</p>
+          `;
+          nestedRepliesSection.appendChild(nestedReplyElement);
+
+          const deleteNestedReplyBtn = nestedReplyElement.querySelector('.delete-nested-reply-btn');
+          if (deleteNestedReplyBtn) {
+            deleteNestedReplyBtn.addEventListener('click', () => {
+              if (confirm('Are you sure you want to delete this reply?')) {
+                deleteNestedReply(postId, commentId, replyId, doc.id);
+              }
+            });
+          }
+        });
+      });
+    }
+
+    async function deleteNestedReply(postId, commentId, replyId, nestedReplyId) {
+      try {
+        await deleteDoc(doc(db, 'posts', postId, 'comments', commentId, 'replies', replyId, 'nested_replies', nestedReplyId));
+        console.log('Nested reply deleted successfully');
+      } catch (error) {
+        console.error('Error deleting nested reply:', error);
+        alert('Failed to delete nested reply. Please try again.');
+      }
+    }
+
+    function addNotification(userId, message) {
+      const notificationsSection = document.getElementById('notifications');
+      const notificationElement = document.createElement('div');
+      notificationElement.className = 'notification';
+      notificationElement.textContent = message;
+      notificationsSection.appendChild(notificationElement);
+      
+      setTimeout(() => {
+        notificationElement.remove();
+      }, 5000);
+    }
+
+    function listenForNotifications(userId) {
+      const q = query(collection(db, 'notifications'), where('userId', '==', userId), orderBy('timestamp', 'desc'));
+      onSnapshot(q, (querySnapshot) => {
+        const notificationsSection = document.getElementById('notifications');
+        notificationsSection.innerHTML = '';
+        querySnapshot.forEach((doc) => {
+          const notification = doc.data();
+          const notificationElement = document.createElement('div');
+          notificationElement.className = 'notification';
+          notificationElement.textContent = notification.message;
+          notificationsSection.appendChild(notificationElement);
+        });
+      });
+    }
+
+    searchBtn.addEventListener('click', async () => {
+      const searchTerm = searchBar.value.trim();
+      if (searchTerm) {
+        try {
+          const usersQuery = query(
+            collection(db, 'users'),
+            where('userName', '>=', searchTerm),
+            where('userName', '<=', searchTerm + '\uf8ff')
+          );
+
+          const postsQuery = query(
+            collection(db, 'posts'),
+            where('content', '>=', searchTerm),
+            where('content', '<=', searchTerm + '\uf8ff')
+          );
+
+          const [usersSnapshot, postsSnapshot] = await Promise.all([
+            getDocs(usersQuery),
+            getDocs(postsQuery)
+          ]);
+
+          const resultsSection = document.createElement('div');
+          resultsSection.innerHTML = '<h3>Search Results:</h3>';
+          
+          usersSnapshot.forEach((userDoc) => {
+            const user = userDoc.data();
+            resultsSection.innerHTML += `<p>👤 User: ${user.userName}</p>`;
+          });
+
+          postsSnapshot.forEach((postDoc) => {
+            const post = postDoc.data();
+            resultsSection.innerHTML += `<p>📝 Post: ${post.content}</p>`;
+          });
+
+          if (usersSnapshot.empty && postsSnapshot.empty) {
+            resultsSection.innerHTML += '<p>No results found</p>';
+          }
+
+          const existingResults = document.querySelector('#main-content .search-results');
+          if (existingResults) existingResults.remove();
+          
+          resultsSection.className = 'search-results';
+          document.getElementById('main-content').appendChild(resultsSection);
+        } catch (error) {
+          alert('Search error: ' + error.message);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+
