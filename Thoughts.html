@@ -424,7 +424,6 @@
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
-      
       z-index: 1000;
     }
     @keyframes fadeIn {
@@ -432,7 +431,11 @@
       to { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeOut {
+      from { opacity: 1; }
       to { opacity: 0; }
+    }
+    .fade-out {
+      animation: fadeOut 0.3s ease-out forwards;
     }
     .like-btn, .dislike-btn {
       background: none;
@@ -522,20 +525,6 @@
         margin-top: 10px;
       }
     }
-    /* Logout animation */
-    @keyframes fadeOutRight {
-      from {
-        opacity: 1;
-        transform: translateX(0);
-      }
-      to {
-        opacity: 0;
-        transform: translateX(100%);
-      }
-    }
-    .logout-animation {
-      animation: fadeOutRight 0.5s ease-out forwards;
-    }
     /* Notifications panel */
     #notifications-panel {
       position: fixed;
@@ -548,6 +537,8 @@
       transition: right 0.3s ease-in-out;
       z-index: 1000;
       overflow-y: auto;
+      padding: 20px;
+      box-sizing: border-box;
     }
     #notifications-panel.show {
       right: 0;
@@ -555,14 +546,46 @@
     .notification-item {
       padding: 10px;
       border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
     }
     .notification-item:last-child {
       border-bottom: none;
+    }
+    .notification-icon {
+      margin-right: 10px;
+      font-size: 1.2em;
+      color: var(--primary-color);
+    }
+    .notification-content {
+      flex-grow: 1;
     }
     .notification-timestamp {
       font-size: 0.8em;
       color: var(--text-color);
       opacity: 0.7;
+    }
+    #close-notifications {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      color: var(--text-color);
+    }
+    #close-notifications:hover {
+      color: var(--primary-color);
+    }
+    #notifications-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    #notifications-header h3 {
+      margin: 0;
     }
   </style>
 </head>
@@ -618,7 +641,10 @@
   </div>
 
   <div id="notifications-panel">
-    <h3>Notifications</h3>
+    <div id="notifications-header">
+      <h3>Notifications</h3>
+      <button id="close-notifications"><i class="fas fa-times"></i></button>
+    </div>
     <div id="notifications-list"></div>
   </div>
 
@@ -708,15 +734,18 @@
       return `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
     }
 
-    logoutBtn.addEventListener('click', () => {
-      document.body.classList.add('logout-animation');
-      setTimeout(() => {
-        signOut(auth)
-          .then(() => {
-            window.location.href = 'Silakbo Freedom Wall.html';
-          })
-          .catch((error) => alert(error.message));
-      }, 500);
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Are you sure you want to log out?')) {
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+          signOut(auth)
+            .then(() => {
+              window.location.href = 'Silakbo Freedom Wall.html';
+            })
+            .catch((error) => alert(error.message));
+        }, 300);
+      }
     });
 
     onAuthStateChanged(auth, (user) => {
@@ -802,7 +831,7 @@
               </button>
               <button class="comment-btn"><i class="fas fa-comment"></i> Comment</button>
             </div>
-            <div class="comments-section">
+            <div class="commentssection">
               <div class="comments-container"></div>
               <form class="comment-form">
                 <input type="text" class="comment-input" placeholder="Write a comment...">
@@ -984,7 +1013,7 @@
       } else {
         // User hasn't disliked, add the dislike
         await updateDoc(postRef, {
-          dislikes: increment(1),
+          likes: increment(1),
           dislikedBy: arrayUnion(userId)
         });
 
@@ -1262,6 +1291,18 @@
       });
     }
 
+    function getNotificationIcon(message) {
+      if (message.includes('commented')) {
+        return '<i class="fas fa-comment notification-icon"></i>';
+      } else if (message.includes('replied')) {
+        return '<i class="fas fa-reply notification-icon"></i>';
+      } else if (message.includes('liked')) {
+        return '<i class="fas fa-thumbs-up notification-icon"></i>';
+      } else {
+        return '<i class="fas fa-bell notification-icon"></i>';
+      }
+    }
+
     function listenForNotifications(userId) {
       const q = query(collection(db, 'notifications'), where('userId', '==', userId), orderBy('timestamp', 'desc'));
       onSnapshot(q, (querySnapshot) => {
@@ -1272,8 +1313,11 @@
           const notificationElement = document.createElement('div');
           notificationElement.className = 'notification-item';
           notificationElement.innerHTML = `
-            <p>${notification.message}</p>
-            <p class="notification-timestamp">${new Date(notification.timestamp.toDate()).toLocaleString()}</p>
+            ${getNotificationIcon(notification.message)}
+            <div class="notification-content">
+              <p>${notification.message}</p>
+              <p class="notification-timestamp">${new Date(notification.timestamp.toDate()).toLocaleString()}</p>
+            </div>
           `;
           notificationsList.appendChild(notificationElement);
         });
@@ -1374,7 +1418,11 @@
 
     notificationsLink.addEventListener('click', (e) => {
       e.preventDefault();
-      notificationsPanel.classList.toggle('show');
+      document.getElementById('notifications-panel').classList.toggle('show');
+    });
+
+    document.getElementById('close-notifications').addEventListener('click', () => {
+      document.getElementById('notifications-panel').classList.remove('show');
     });
 
     cancelEditBtn.addEventListener('click', closeEditPopup);
