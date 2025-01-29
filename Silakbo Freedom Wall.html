@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Ang Silakbo</title>
+    <title>Ang Silakbo - Groups</title>
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             --primary-color: #FF6B35;
             --secondary-color: #ffffff;
+            --text-color: #333333;
+            --background-color: #f5f5f5;
+            --accent-color: #4CAF50;
         }
 
         * {
@@ -20,7 +24,9 @@
         }
 
         body {
-            background-color: #ffffff;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
         .container {
@@ -37,6 +43,12 @@
             width: 100%;
             top: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 107, 53, 0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         nav {
@@ -53,6 +65,11 @@
         .logo img {
             height: 60px;
             vertical-align: middle;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1);
         }
 
         .logo-text {
@@ -67,11 +84,23 @@
             text-decoration: none;
             margin-left: 30px;
             font-weight: 600;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .nav-links a:hover {
-            opacity: 0.8;
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         .hero {
@@ -89,6 +118,9 @@
             justify-content: center;
             max-width: 45%;
             z-index: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
         }
 
         .hero-image {
@@ -102,6 +134,8 @@
             background-size: cover;
             background-position: center;
             z-index: 1;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
         }
 
         .about {
@@ -113,54 +147,247 @@
 
         .about-item {
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--secondary-color);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .about-item.animate {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .about-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
         .about-item img {
             width: 60px;
             height: 60px;
             margin-bottom: 10px;
+            transition: transform 0.3s ease;
         }
 
-        .stats {
+        .about-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .features {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
-            padding: 60px 20px;
-            background-color: rgba(245, 245, 245, 0.8);
         }
 
-        .stat {
+        .feature-item {
+            background-color: var(--secondary-color);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .feature-item.animate {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .cta-section {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 80px 0;
             text-align: center;
         }
 
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .cta-button {
-            background-color: var(--primary-color);
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .google-signin-button {
+            background-color: #FF6B35;
             color: white;
             border: none;
             padding: 15px 30px;
             border-radius: 25px;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .cta-button:hover {
-            background-color: #e69400;
+        .google-signin-button:hover {
+            background-color: #e65400;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(230, 84, 0, 0.3);
+        }
+
+        .google-signin-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .faq-section {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .faq-item.animate {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .faq-question {
+            background-color: var(--secondary-color);
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background-color: #f0f0f0;
+        }
+
+        .faq-answer {
+            padding: 15px;
+            display: none;
+            background-color: #f0f0f0;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .testimonial-section {
+            padding: 80px 0;
+            background-color: var(--secondary-color);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-item {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .testimonial-item.animate {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .testimonial-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
         }
 
         footer {
             background-color: var(--primary-color);
             color: white;
-            padding: 20px 0;
-            text-align: center;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            opacity: 0.8;
+        }
+
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
         }
 
         .contact-popup, .about-section {
@@ -168,7 +395,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.9);
             background: white;
             padding: 30px;
             border-radius: 10px;
@@ -177,6 +404,14 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .contact-popup.show, .about-section.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .contact-popup-overlay, .about-section-overlay {
@@ -188,6 +423,13 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-popup-overlay.show, .about-section-overlay.show {
+            display: block;
+            opacity: 1;
         }
 
         .close-button {
@@ -196,6 +438,54 @@
             top: 20px;
             font-size: 24px;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: rotate(90deg);
+        }
+
+        #contact-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        #contact-form input,
+        #contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #contact-form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        #contact-form button {
+            justify-self: start;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
@@ -216,7 +506,7 @@
                 max-width: 100%;
                 padding: 40px 20px;
                 position: relative;
-                background-color: rgba(255, 255, 255, 0.6);
+                background-color: rgba(255, 255, 255, 0.8);
                 margin-top: 0;
                 border-radius: 0;
             }
@@ -229,36 +519,26 @@
                 height: 40px;
             }
 
+            .logo img {
+                height: 40px;
+            }
+
             .logo-text {
                 font-size: 20px;
             }
 
-            .stats {
+            .features-grid {
                 grid-template-columns: 1fr;
-                background-color: rgba(245, 245, 245, 0.6);
             }
 
-            footer {
-                position: static;
-                margin-top: 20px;
-                padding: 20px 0;
-            }
-
-            .social-links {
-                margin-top: 10px;
-            }
-
-            .social-links a {
-                color: white;
-                text-decoration: none;
-                margin: 0 10px;
+            .footer-content {
+                grid-template-columns: 1fr;
             }
         }
     </style>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    </head>
-    <body>
-    <header>
+</head>
+<body>
+    <header id="header">
         <div class="container">
             <nav>
                 <div class="logo">
@@ -267,7 +547,8 @@
                 </div>
                 <div class="nav-links">
                     <a href="#about" id="about-link">About</a>
-                    <a href="#stats">Descriptions</a>
+                    <a href="#features">Features</a>
+                    <a href="#faq">FAQ</a>
                     <a href="#" id="contact-link">Contact</a>
                 </div>
             </nav>
@@ -277,7 +558,7 @@
     <main>
         <section class="hero">
             <div class="hero-content">
-                <h1></h1>
+                <h1>Welcome to Ang Silakbo</h1>
                 <div class="about">
                     <div class="about-item">
                         <img src="https://img.icons8.com/fluency/96/000000/comments.png" alt="Express">
@@ -293,40 +574,116 @@
                     </div>
                 </div>
                 <p>Ang Silakbo is dedicated to empowering students, giving them a platform to openly express their emotions and genuine feelings, fostering understanding, connection, and courage.</p>
-                <button id="signin-button" class="cta-button">Get Started! Sign In With Google</button>
+                <button id="signin-button" class="google-signin-button">
+                    <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google Logo">
+                    Get Started! Sign In With Google
+                </button>
             </div>
             <div class="hero-image"></div>
         </section>
 
-        <section id="stats" class="stats">
-            <div class="stat">
-                <div class="stat-number">Dynamic</div>
-                <div class="stat-label">User Engagement</div>
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Our Features</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-pen-alt feature-icon"></i>
+                        <h3>Emotion Journaling</h3>
+                        <p>Express your feelings through our intuitive journaling tool.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h3>Support Groups</h3>
+                        <p>Connect with others who understand your experiences.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-brain feature-icon"></i>
+                        <h3>Mindfulness Exercises</h3>
+                        <p>Practice mindfulness with our guided meditation sessions.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3>Mood Tracking</h3>
+                        <p>Monitor your emotional well-being over time.</p>
+                    </div>
+                </div>
             </div>
-            <div class="stat">
-                <div class="stat-number">Resonant</div>
-                <div class="stat-label">Shared Experiences</div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Start Your Journey?</h2>
+                    <p>Join Ang Silakbo today and take the first step towards emotional well-being and personal growth.</p>
+                    <a href="Ang Silakbo Application.html" class="cta-button">Sign Up Now</a>
+                </div>
             </div>
-            <div class="stat">
-                <div class="stat-number">Enduring Satisfaction</div>
-                <div class="stat-label">User Trust</div>
+        </section>
+
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <div class="faq-question">What is Ang Silakbo?</div>
+                    <div class="faq-answer">Ang Silakbo serves as the official student publication of the University of Cebu Lapu-Lapu and Mandaue (UCLM) Senior High School department. Established in 2021, this publication aims to inform and engage the student body by covering a range of topics, including student activities, institutional policies, current events, student welfare, programs, and the department's achievements.                          The publication maintains an active presence on social media, particularly on Facebook, where it shares updates and information relevant to the UCLM community.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Is my information kept confidential?</div>
+                    <div class="faq-answer">We take privacy and confidentiality very seriously. All personal information, including names, contact details, and any other sensitive data, is handled with the highest level of security and discretion. Additionally, all posts, messages, and communications shared within our platform are strictly confidential and will not be disclosed to any third parties without explicit consent. We are committed to ensuring a safe and secure environment for all users, where privacy is respected and protected at all times.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How can I join a support group?</div>
+                    <div class="faq-answer">You can browse through the available groups, explore their descriptions, and choose the ones that best align with your needs, experiences, or personal goals. Whether you're looking for emotional support, shared experiences, or valuable resources, you can join the groups that resonate with you and connect with like-minded individuals in a safe and welcoming environment.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Are the mindfulness exercises guided?</div>
+                    <div class="faq-answer">Yes, we provide a variety of mindfulness exercises designed to suit different preferences and lifestyles. You can choose from guided sessions, where an instructor leads you through techniques such as deep breathing, meditation, and visualization, or opt for self-paced exercises that allow you to practice mindfulness at your own convenience. Whether you prefer structured guidance or the flexibility to explore mindfulness on your own, our offerings are designed to help you cultivate a sense of calm, focus, and overall well-being.</div>
+                </div>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://www.facebook.com/AngSilakboUCLM" target="_blank"><i class="fab fa-facebook"></i> Ang Silakbo</a>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="About Us.html">About Us</a></li>
+                        <li><a href="#features">Features</a></li>
+\                        <li><a href="Chat Request.html" id="footer-contact-link">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/AngSilakboUCLM" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://twitter.com/AngSilakbo" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/angsilakbo" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
             </div>
+            <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
         </div>
     </footer>
 
     <div class="contact-popup" id="contact-popup">
+        <span class="close-button" id="close-contact">&times;</span>
         <h2>Contact Us</h2>
-        <p>For support, contact: <a href="mailto:angsilakbo@gmail.com">angsilakbo@gmail.com</a></p>
-        <p>Phone: +639 615 6121</p>
+        <form id="contact-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" required></textarea>
+            <button type="submit" class="cta-button">Send Message</button>
+        </form>
     </div>
     <div class="contact-popup-overlay" id="contact-popup-overlay"></div>
 
@@ -334,25 +691,12 @@
         <span class="close-button" id="close-about">&times;</span>
         <h2>About Ang Silakbo</h2>
         <p>Ang Silakbo is a revolutionary platform dedicated to emotional well-being and personal growth. Our name, which means "The Outburst" in Filipino, represents our commitment to providing a safe space for individuals to express their emotions freely and authentically.</p>
-        <p>Founded in 2021 by UCLM-SHS Supreme Student Council, Ang Silakbo was born out of the recognition that many people struggle to find outlets for their emotions in today's fast-paced, often impersonal world. We believe that emotional expression is not just important, but essential for mental health and personal development.</p>
         <h3>Our Mission</h3>
-        <p>At Ang Silakbo, our mission is threefold:</p>
-        <ol>
-            <li><strong>Express:</strong> We provide tools and a supportive community that encourages users to articulate their feelings, thoughts, and experiences without fear of judgment.</li>
-            <li><strong>Connect:</strong> We facilitate meaningful connections between individuals who share similar experiences or who can offer support and understanding.</li>
-            <li><strong>Explore:</strong> We offer resources and guided experiences to help users delve deeper into their emotions, fostering self-awareness and personal growth.</li>
-        </ol>
-        <h3>What We Offer</h3>
-        <p>Our platform includes a range of features designed to support emotional well-being:</p>
         <ul>
-            <li>Emotion tracking and journaling tools</li>
-            <li>Peer support groups and forums</li>
-            <li>Guided meditation and mindfulness exercises</li>
-            <li>Educational resources on emotional intelligence and mental health</li>
-            <li>Anonymous sharing options for those who prefer privacy</li>
-            <li>Professional counselor connections for those seeking additional support</li>
+            <li><strong>Express:</strong> Provide tools for articulating feelings without judgment.</li>
+            <li><strong>Connect:</strong> Facilitate meaningful connections between individuals.</li>
+            <li><strong>Explore:</strong> Offer resources for self-awareness and personal growth.</li>
         </ul>
-        <p>At Ang Silakbo, we believe that every emotion has value and that by embracing our full emotional spectrum, we can lead richer, more fulfilling lives. Join us in our mission to create a world where emotional expression is celebrated and supported.</p>
     </div>
     <div class="about-section-overlay" id="about-section-overlay"></div>
 
@@ -387,19 +731,27 @@
 
         // Contact popup functionality
         const contactLink = document.getElementById('contact-link');
+        const footerContactLink = document.getElementById('footer-contact-link');
         const contactPopup = document.getElementById('contact-popup');
         const contactPopupOverlay = document.getElementById('contact-popup-overlay');
+        const closeContact = document.getElementById('close-contact');
 
-        contactLink.addEventListener('click', (e) => {
+        function openContactPopup(e) {
             e.preventDefault();
-            contactPopup.style.display = 'block';
-            contactPopupOverlay.style.display = 'block';
-        });
+            contactPopup.classList.add('show');
+            contactPopupOverlay.classList.add('show');
+        }
 
-        contactPopupOverlay.addEventListener('click', () => {
-            contactPopup.style.display = 'none';
-            contactPopupOverlay.style.display = 'none';
-        });
+        contactLink.addEventListener('click', openContactPopup);
+        footerContactLink.addEventListener('click', openContactPopup);
+
+        function closeContactPopup() {
+            contactPopup.classList.remove('show');
+            contactPopupOverlay.classList.remove('show');
+        }
+
+        contactPopupOverlay.addEventListener('click', closeContactPopup);
+        closeContact.addEventListener('click', closeContactPopup);
 
         // About section functionality
         const aboutLink = document.getElementById('about-link');
@@ -409,17 +761,66 @@
 
         aboutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            aboutSection.style.display = 'block';
-            aboutSectionOverlay.style.display = 'block';
+            aboutSection.classList.add('show');
+            aboutSectionOverlay.classList.add('show');
         });
 
         function closeAboutSection() {
-            aboutSection.style.display = 'none';
-            aboutSectionOverlay.style.display = 'none';
+            aboutSection.classList.remove('show');
+            aboutSectionOverlay.classList.remove('show');
         }
 
         aboutSectionOverlay.addEventListener('click', closeAboutSection);
         closeAbout.addEventListener('click', closeAboutSection);
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Contact form submission
+        const contactForm = document.getElementById('contact-form');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Here you would typically send the form data to a server
+            alert('Thank you for your message. We will get back to you soon!');
+            contactForm.reset();
+            closeContactPopup();
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.about-item, .feature-item, .testimonial-item, .faq-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // FAQ functionality
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+            });
+        });
     </script>
 </body>
 </html>
