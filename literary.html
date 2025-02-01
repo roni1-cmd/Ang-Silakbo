@@ -344,11 +344,29 @@
                 const postElement = document.createElement('div');
                 postElement.className = 'post fade-in';
                 postElement.style.animationDelay = `${index * 0.1}s`;
+                
+                // Replace img tags with responsive styling
+                const content = post.content.replace(/<img/g, 
+                    '<img style="max-width: 100%; height: auto; display: block; margin: 10px auto;"');
+                
                 postElement.innerHTML = `
                     <h2 class="post-title">${post.title}</h2>
                     <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
-                    <div class="post-content">${post.content.substring(0, 150)}...</div>
+                    <div class="post-content" style="transition: all 0.3s ease-out; overflow: hidden; max-height: none;">${content}</div>
+                    <button class="toggle-content" style="background: #E65100; color: white; border: none; padding: 5px 10px; margin-top: 10px; cursor: pointer; border-radius: 4px;">Fold</button>
                 `;
+
+                const contentDiv = postElement.querySelector('.post-content');
+                const toggleButton = postElement.querySelector('.toggle-content');
+                let isFolded = false;
+
+                toggleButton.addEventListener('click', () => {
+                    isFolded = !isFolded;
+                    contentDiv.style.maxHeight = isFolded ? '100px' : '10000px';
+                    contentDiv.style.overflow = isFolded ? 'hidden' : 'visible';
+                    toggleButton.textContent = isFolded ? 'See More' : 'Fold';
+                });
+
                 postsContainer.appendChild(postElement);
             });
         }
