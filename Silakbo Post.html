@@ -3,359 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Editor's Lounge</title>
+    <title>Ang Silakbo - CMS</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tiny.cloud/1/n92j01vjprp9xy96v0uxd2kgqi5vnd50dwm5i47veg2u1bur/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.3/docx.min.js" onload="initializeDocx()"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;700&family=Lora:wght@400;700&family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #E65100;
-            --primary-light: #FFE0D4;
-            --primary-dark: #CC4A1B;
+            --secondary-color: #FFF5E6;
             --text-color: #333333;
-            --background-color: #F9F4F0;
-            --card-background: #FFFFFF;
-            --danger-color: #FF3B30;
-            --success-color: #34C759;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --white: #FFFFFF;
+            --gray: #F0F0F0;
         }
-
-        * {
-            box-sizing: border-box;
+        body, html {
             margin: 0;
             padding: 0;
-        }
-
-        body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
+            background-color: var(--secondary-color);
             color: var(--text-color);
-            line-height: 1.6;
+            height: 100%;
+        }
+        .container {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-
-        .top-bar {
+        header {
             background-color: var(--primary-color);
-            color: white;
-            padding: 15px 30px;
+            color: var(--white);
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .logo {
+        .header-left {
             display: flex;
             align-items: center;
-            font-size: 1.4em;
-            font-weight: 600;
         }
-
-        .logo i {
-            margin-right: 10px;
-            font-size: 1.2em;
+        .header-left img {
+            height: 40px;
+            margin-right: 1rem;
         }
-
-        .top-bar-actions {
-            display: flex;
-            gap: 15px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
         }
-
-        .main-content {
+        .home-icon {
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .home-icon:hover {
+            color: var(--secondary-color);
+        }
+        main {
             display: flex;
             flex: 1;
-            height: calc(100vh - 130px); /* Subtracting top-bar and footer height */
+            padding: 2rem;
+            gap: 2rem;
         }
-
-        .sidebar {
-            width: 300px;
-            background-color: var(--card-background);
-            padding: 25px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-            overflow-y: auto;
-        }
-
         .editor-container {
-            flex: 1;
+            flex: 3;
             display: flex;
             flex-direction: column;
-            background-color: var(--card-background);
-            margin: 20px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            gap: 1rem;
         }
-
-        .toolbar {
-            background-color: var(--primary-light);
-            padding: 15px;
+        .title-category-container {
             display: flex;
-            gap: 15px;
-            border-bottom: 1px solid var(--primary-color);
+            gap: 1rem;
         }
-
-        .editor-wrapper {
+        .title-container {
+            flex: 2;
+        }
+        .category-container {
             flex: 1;
-            padding: 25px;
-            overflow-y: auto;
         }
-
-        #editor {
-            width: 100%;
-            min-height: 500px;
-            border: none;
-            outline: none;
-            resize: none;
-        }
-
-        .btn {
-            padding: 10px 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn i {
-            margin-right: 8px;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .sidebar h3 {
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 1.2em;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar li i {
-            margin-right: 10px;
-            color: var(--primary-color);
-        }
-
-        .tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .tag {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .tag:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        #helpModal, #searchModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background-color: var(--card-background);
-            margin: 10% auto;
-            padding: 35px;
-            border-radius: 12px;
-            width: 60%;
-            max-width: 600px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close:hover {
-            color: var(--text-color);
-        }
-
-        #searchInput {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-
-        #searchButton {
-            width: 100%;
-        }
-
-        .suggestions-container {
-            background-color: var(--primary-light);
+        .sidebar {
+            flex: 1;
+            background-color: var(--white);
+            padding: 1rem;
             border-radius: 8px;
-            padding: 20px;
-            margin-top: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 300px;
+            overflow-y: auto;
+            max-height: calc(100vh - 4rem);
         }
-
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        select, input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #E65C00;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .nav-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #E65C00;
+        }
+        .writing-tips {
+            margin-top: 2rem;
+        }
+        .writing-tips h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
         footer {
             background-color: var(--primary-color);
-            color: white;
+            color: var(--white);
             text-align: center;
-            padding: 20px;
+            padding: 1rem;
+            margin-top: auto;
         }
-
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-                height: auto;
-            }
-
-            .sidebar {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-
-            .editor-container {
-                margin: 0;
-                border-radius: 0;
-            }
+        .icon {
+            margin-right: 0.5rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .font-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--gray);
+            border-radius: 4px;
+        }
+        .font-preview h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="logo">
-            <i class="fas fa-feather-alt"></i>
-            <span>ANG SILAKBO WORKSTATION</span>
-        </div>
-        <div class="top-bar-actions">
-            <button id="saveButton" class="btn"><i class="fas fa-save"></i> Save</button>
-            <button id="exportButton" class="btn"><i class="fas fa-file-export"></i> Export</button>
-            <button id="helpBtn" class="btn"><i class="fas fa-question-circle"></i> Help</button>
-            <button id="searchBtn" class="btn"><i class="fas fa-search"></i> Search</button>
-            <button id="backToDashboard" class="btn"><i class="fas fa-arrow-left"></i> Dashboard</button>
-        </div>
-    </div>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <img src="SILAKBO.png" alt="Silakbo Logo">
+                <h1>ANG SILAKBO WORKSTATION</h1>
+            </div>
+            <a href="Ang Silakbo Admin Panel.html" class="home-icon" title="Go to Admin Panel">
+                <i class="fas fa-home"></i>
+            </a>
+        </header>
 
-    <div class="main-content">
-        <div class="sidebar">
-            <h3><i class="fas fa-lightbulb"></i> Writing Suggestions</h3>
-            <div class="suggestions-container">
-                <ul>
-                    <li><i class="fas fa-pen-fancy"></i> Start with a compelling opening</li>
-                    <li><i class="fas fa-palette"></i> Use descriptive language</li>
-                    <li><i class="fas fa-random"></i> Vary sentence structure</li>
-                    <li><i class="fas fa-magic"></i> Include metaphors and similes</li>
-                    <li><i class="fas fa-flag-checkered"></i> End with a powerful conclusion</li>
-                </ul>
-            </div>
-            <h3><i class="fas fa-sitemap"></i> Document Structure</h3>
-            <div class="suggestions-container">
-                <ul>
-                    <li><i class="fas fa-heading"></i> Use clear headings</li>
-                    <li><i class="fas fa-paragraph"></i> Keep paragraphs focused</li>
-                    <li><i class="fas fa-list-ul"></i> Use bullet points for clarity</li>
-                    <li><i class="fas fa-book-open"></i> Include introduction and conclusion</li>
-                    <li><i class="fas fa-link"></i> Use smooth transitions</li>
-                </ul>
-            </div>
-            <h3><i class="fas fa-edit"></i> Editing Tips</h3>
-            <div class="suggestions-container">
-                <ul>
-                    <li><i class="fas fa-volume-up"></i> Read aloud to catch errors</li>
-                    <li><i class="fas fa-spell-check"></i> Use spell-check tools</li>
-                    <li><i class="fas fa-coffee"></i> Take breaks while editing</li>
-                    <li><i class="fas fa-users"></i> Get feedback from peers</li>
-                    <li><i class="fas fa-pencil-alt"></i> Revise for clarity and impact</li>
-                </ul>
-            </div>
-        </div>
-        <div class="editor-container">
-            <div class="toolbar">
-                <button id="clearButton" class="btn"><i class="fas fa-trash-alt"></i> Clear</button>
-                <button id="refreshButton" class="btn"><i class="fas fa-sync-alt"></i> Refresh</button>
-                <button id="addTagButton" class="btn"><i class="fas fa-tag"></i> Add Tag</button>
-            </div>
-            <div class="editor-wrapper">
-                <textarea id="editor">Start writing your article here...</textarea>
-                <div class="tag-container" id="tagContainer"></div>
-            </div>
-        </div>
-    </div>
+        <main>
+            <div class="editor-container">
+                <div class="title-category-container">
+                    <div class="title-container form-group fade-in">
+                        <label for="title"><i class="fas fa-heading icon"></i>Title:</label>
+                        <input type="text" id="title" required>
+                    </div>
 
-    <div id="helpModal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2><i class="fas fa-info-circle"></i> Help Guide</h2>
-            <ul>
-                <li><i class="fas fa-pen"></i> <strong>Write:</strong> Use the editor to craft your article.</li>
-                <li><i class="fas fa-save"></i> <strong>Save:</strong> Click "Save" to store your work.</li>
-                <li><i class="fas fa-trash-alt"></i> <strong>Clear:</strong> Use "Clear" for a fresh start.</li>
-                <li><i class="fas fa-sync-alt"></i> <strong>Refresh:</strong> Update the editor content.</li>
-                <li><i class="fas fa-file-export"></i> <strong>Export:</strong> Download your article as HTML.</li>
-                <li><i class="fas fa-tag"></i> <strong>Add Tag:</strong> Categorize your work with tags.</li>
-                <li><i class="fas fa-search"></i> <strong>Search:</strong> Find specific articles or topics.</li>
-                <li><i class="fas fa-arrow-left"></i> <strong>Dashboard:</strong> Return to the main admin panel.</li>
-            </ul>
-        </div>
-    </div>
+                    <div class="category-container form-group fade-in">
+                        <label for="category"><i class="fas fa-folder icon"></i>Category:</label>
+                        <select id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="photostory">Photostory</option>
+                            <option value="articles">Articles</option>
+                            <option value="literary">Literary</option>
+                        </select>
+                    </div>
+                </div>
 
-    <div id="searchModal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2><i class="fas fa-search"></i> Search Articles</h2>
-            <input type="text" id="searchInput" placeholder="Enter search term...">
-            <button id="searchButton" class="btn"><i class="fas fa-search"></i> Search</button>
-            <div id="searchResults"></div>
-        </div>
-    </div>
+                <textarea id="editor"></textarea>
+                
+                <button onclick="publishContent()"><i class="fas fa-paper-plane icon"></i>Publish</button>
 
-    <footer>
-        <p>&copy; 2025 Ang Silakbo Workstation.  | All rights reserved.</p>
-    </footer>
+                <div class="export-buttons">
+                    <button onclick="exportToPDF()"><i class="fas fa-file-pdf icon"></i>Export to PDF</button>
+                </div>
+
+                <div class="nav-links fade-in">
+                    <a href="Photostory.html"><i class="fas fa-camera icon"></i>View Photostories</a>
+                    <a href="Artikulo.html"><i class="fas fa-newspaper icon"></i>View Articles</a>
+                    <a href="literary.html"><i class="fas fa-book icon"></i>View Literary Works</a>
+                </div>
+            </div>
+
+            <aside class="sidebar fade-in">
+                <div class="writing-tips">
+                    <h3><i class="fas fa-lightbulb icon"></i>Writing Tips</h3>
+                    <div id="writing-suggestions"></div>
+                </div>
+                <div class="font-preview">
+                    <h4><i class="fas fa-font icon"></i>Font Preview</h4>
+                    <p style="font-family: 'Poppins', sans-serif;">Poppins: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Roboto', sans-serif;">Roboto: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Playfair Display', serif;">Playfair Display: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Montserrat', sans-serif;">Montserrat: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Lora', serif;">Lora: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Merriweather', serif;">Merriweather: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Open Sans', sans-serif;">Open Sans: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Raleway', sans-serif;">Raleway: The quick brown fox jumps over the lazy dog.</p>
+                </div>
+            </aside>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Ang Silakbo Workstation. All rights reserved.</p>
+        </footer>
+    </div>
 
     <script>
         // Initialize Firebase
@@ -364,181 +261,176 @@
             authDomain: "ang-silakbo.firebaseapp.com",
             databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
             projectId: "ang-silakbo",
-            storageBucket: "ang-silakbo.appspot.com",
+            storageBucket: "ang-silakbo.firebasestorage.app",
             messagingSenderId: "1006400633782",
             appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
             measurementId: "G-TSDTG2YJ94"
         };
+
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const db = firebase.firestore();
 
-        const saveButton = document.getElementById('saveButton');
-        const clearButton = document.getElementById('clearButton');
-        const refreshButton = document.getElementById('refreshButton');
-        const exportButton = document.getElementById('exportButton');
-        const addTagButton = document.getElementById('addTagButton');
-        const helpBtn = document.getElementById('helpBtn');
-        const searchBtn = document.getElementById('searchBtn');
-        const backToDashboard = document.getElementById('backToDashboard');
-        const helpModal = document.getElementById('helpModal');
-        const searchModal = document.getElementById('searchModal');
-        const searchInput = document.getElementById('searchInput');
-        const searchButton = document.getElementById('searchButton');
-        const closeBtns = document.querySelectorAll('.close');
-        const tagContainer = document.getElementById('tagContainer');
-        const editor = document.getElementById('editor');
-
+        // Initialize TinyMCE
         tinymce.init({
             selector: '#editor',
-            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-            height: '100%',
-            skin: 'oxide',
-            content_css: 'default'
-        });
-
-        saveButton.addEventListener('click', () => {
-            const content = tinymce.get('editor').getContent();
-            const newArticleKey = db.ref().child('articles').push().key;
-            
-            const articleData = {
-                content: content,
-                lastUpdated: new Date().toISOString(),
-                articleId: newArticleKey,
-                tags: Array.from(tagContainer.children).map(tag => tag.textContent)
-            };
-
-            let updates = {};
-            updates['/articles/' + newArticleKey] = articleData;
-
-            db.ref().update(updates)
-            .then(() => {
-                showNotification('Article saved successfully!', 'success');
-            })
-            .catch((error) => {
-                console.error('Error saving article: ', error);
-                showNotification('Error saving article. Please try again.', 'error');
-            });
-        });
-
-        clearButton.addEventListener('click', () => {
-            tinymce.get('editor').setContent('');
-            tagContainer.innerHTML = '';
-            showNotification('Editor cleared', 'success');
-        });
-
-        refreshButton.addEventListener('click', () => {
-            tinymce.get('editor').setContent(tinymce.get('editor').getContent());
-            showNotification('Editor refreshed', 'success');
-        });
-
-        exportButton.addEventListener('click', () => {
-            const content = tinymce.get('editor').getContent();
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-            element.setAttribute('download', 'article.html');
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-            showNotification('Article exported as HTML', 'success');
-        });
-
-        addTagButton.addEventListener('click', () => {
-            const tagName = prompt('Enter a tag name:');
-            if (tagName) {
-                const tag = document.createElement('span');
-                tag.className = 'tag';
-                tag.textContent = tagName;
-                tagContainer.appendChild(tag);
+            height: 600,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
+                'codesample', 'quickbars'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | image media table emoticons | fontfamily fontsize | help',
+            menubar: 'file edit view insert format tools table help',
+            content_style: 'body { font-family: Poppins, sans-serif; font-size: 14px; }',
+            font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; Poppins=Poppins,sans-serif; Roboto=Roboto,sans-serif; Playfair Display=Playfair Display,serif; Montserrat=Montserrat,sans-serif; Lora=Lora,serif; Merriweather=Merriweather,serif; Open Sans=Open Sans,sans-serif; Raleway=Raleway,sans-serif',
+            font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            images_upload_handler: function (blobInfo, success, failure) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    success(reader.result);
+                };
+                reader.readAsDataURL(blobInfo.blob());
+            },
+            setup: function(editor) {
+                editor.on('init', function() {
+                    editor.getBody().style.backgroundColor = '#FFFFFF';
+                    editor.getBody().style.color = '#333333';
+                });
             }
         });
 
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.left = '50%';
-            notification.style.transform = 'translateX(-50%)';
-            notification.style.padding = '10px 20px';
-            notification.style.borderRadius = '5px';
-            notification.style.color = 'white';
-            notification.style.zIndex = '1000';
-            notification.style.animation = 'fadeInDown 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards';
+        let Document, Packer, Paragraph, HeadingLevel;
 
-            if (type === 'success') {
-                notification.style.backgroundColor = 'var(--success-color)';
-            } else {
-                notification.style.backgroundColor = 'var(--danger-color)';
-            }
-
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 3000);
+        function initializeDocx() {
+            ({ Document, Packer, Paragraph, HeadingLevel } = window.docx);
         }
 
-        helpBtn.addEventListener('click', () => {
-            helpModal.style.display = 'block';
-        });
+        async function publishContent() {
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const content = tinymce.get('editor').getContent();
 
-        searchBtn.addEventListener('click', () => {
-            searchModal.style.display = 'block';
-        });
-
-        backToDashboard.addEventListener('click', () => {
-            window.location.href = 'Ang Silakbo Admin Panel.html';
-        });
-
-        closeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                helpModal.style.display = 'none';
-                searchModal.style.display = 'none';
-            });
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target == helpModal) {
-                helpModal.style.display = 'none';
+            if (!title || !category || !content) {
+                alert('Please fill in all fields');
+                return;
             }
-            if (event.target == searchModal) {
-                searchModal.style.display = 'none';
-            }
-        });
 
-        searchButton.addEventListener('click', () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            db.ref('articles').once('value')
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    let searchResults = '';
-                    snapshot.forEach((childSnapshot) => {
-                        const article = childSnapshot.val();
-                        if (article.content.toLowerCase().includes(searchTerm) || 
-                            (article.tags && article.tags.some(tag => tag.toLowerCase().includes(searchTerm)))) {
-                            searchResults += `
-                                <div class="article">
-                                    <p>Last Updated: ${new Date(article.lastUpdated).toLocaleString()}</p>
-                                    ${article.content}
-                                    <div class="tag-container">
-                                        ${article.tags ? article.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                    document.getElementById('searchResults').innerHTML = searchResults || '<p>No matching articles found.</p>';
-                } else {
-                    showNotification('No articles to search.', 'error');
-                }
-            })
-            .catch((error) => {
-                console.error('Error searching articles: ', error);
-                showNotification('Error searching articles. Please try again.', 'error');
+            try {
+                await db.collection(category).add({
+                    title: title,
+                    content: content,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Content published successfully!');
+                
+                document.getElementById('title').value = '';
+                tinymce.get('editor').setContent('');
+                
+            } catch (error) {
+                console.error('Error publishing content:', error);
+                alert('Error publishing content. Please try again.');
+            }
+        }
+
+        function updateWritingSuggestions() {
+            const category = document.getElementById('category').value;
+            const suggestionsElement = document.getElementById('writing-suggestions');
+            let suggestions = '';
+
+            switch(category) {
+                case 'articles':
+                    suggestions = `
+                        <ul>
+                            <li><i class="fas fa-check icon"></i>Start with a compelling headline</li>
+                            <li><i class="fas fa-check icon"></i>Use subheadings to break up your content</li>
+                            <li><i class="fas fa-check icon"></i>Include relevant facts and statistics</li>
+                            <li><i class="fas fa-check icon"></i>Use quotes from experts or relevant sources</li>
+                            <li><i class="fas fa-check icon"></i>End with a strong conclusion or call-to-action</li>
+                        </ul>
+                    `;
+                    break;
+                case 'literary':
+                    suggestions = `
+                        <ul>
+                            <li><i class="fas fa-check icon"></i>Choose a central theme or message</li>
+                            <li><i class="fas fa-check icon"></i>Develop strong, relatable characters</li>
+                            <li><i class="fas fa-check icon"></i>Use vivid imagery and descriptive language</li>
+                            <li><i class="fas fa-check icon"></i>Experiment with different literary devices</li>
+                            <li><i class="fas fa-check icon"></i>Edit and revise for clarity and impact</li>
+                        </ul>
+                    `;
+                    break;
+                case 'photostory':
+                    suggestions = `
+                        <ul>
+                            <li><i class="fas fa-check icon"></i>Select a series of impactful images</li>
+                            <li><i class="fas fa-check icon"></i>Ensure your images tell a cohesive story</li>
+                            <li><i class="fas fa-check icon"></i>Write concise, engaging captions</li>
+                            <li><i class="fas fa-check icon"></i>Consider the order and flow of your images</li>
+                            <li><i class="fas fa-check icon"></i>Include a brief introduction and conclusion</li>
+                        </ul>
+                    `;
+                    break;
+                default:
+                    suggestions = 'Select a category to see writing suggestions.';
+            }
+
+            suggestionsElement.innerHTML = suggestions;
+        }
+
+        document.getElementById('category').addEventListener('change', updateWritingSuggestions);
+        updateWritingSuggestions();
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const title = document.getElementById('title').value;
+            const content = tinymce.get('editor').getContent();
+            
+            doc.setFontSize(18);
+            doc.text(title, 20, 20);
+            
+            doc.setFontSize(12);
+            const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
+            const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
+            doc.text(splitContent, 20, 30);
+            
+            doc.save(title + '.pdf');
+        }
+
+        function exportToDOC() {
+            const title = document.getElementById('title').value;
+            const content = tinymce.get('editor').getContent();
+            
+            const { Document, Packer, Paragraph, HeadingLevel } = window.docx;
+            
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            text: title,
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            text: content.replace(/<[^>]+>/g, ''),
+                        }),
+                    ],
+                }],
             });
-        });
+            
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, title + ".docx");
+            });
+        }
     </script>
 </body>
 </html>
