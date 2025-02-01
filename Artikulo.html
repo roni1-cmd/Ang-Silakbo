@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo Articles</title>
+    <title>Ang Silakbo - Articles</title>
     <link rel="icon" href="SILAKBO (1).png">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -341,15 +341,22 @@
             postsContainer.innerHTML = '';
 
             posts.forEach((post, index) => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post fade-in';
-                postElement.style.animationDelay = `${index * 0.1}s`;
-                postElement.innerHTML = `
-                    <h2 class="post-title">${post.title}</h2>
-                    <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
-                    <div class="post-content">${post.content.substring(0, 150)}...</div>
-                `;
-                postsContainer.appendChild(postElement);
+            const postElement = document.createElement('div');
+            postElement.className = 'post fade-in';
+            postElement.style.animationDelay = `${index * 0.1}s`;
+            
+            // Process content to make images responsive
+            let processedContent = post.content;
+            if (processedContent.includes('<img')) {
+                processedContent = processedContent.replace(/<img/g, '<img style="max-width: 100%; height: auto;"');
+            }
+
+            postElement.innerHTML = `
+                <h2 class="post-title">${post.title}</h2>
+                <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
+                <div class="post-content">${processedContent}</div>
+            `;
+            postsContainer.appendChild(postElement);
             });
         }
 
