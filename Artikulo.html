@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo Articles</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .header {
+            background-image: url('articles.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+        }
+        .header img {
+            height: 60px;
+            margin-right: 20px;
+        }
+        .header-text {
+            text-align: left;
+        }
+        .header h1 {
+            font-size: 1.8em;
+            margin: 0;
+        }
+        .header-description {
+            font-size: 1em;
+            max-width: 400px;
+            margin: 5px 0 0;
+        }
+        .nav-links {
+            background-color: #E65100;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            margin: 0 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .search-container {
+            padding: 20px;
+            background-color: white;
+        }
+        #search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #E65100;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .posts-container {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        .post {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .post:hover {
+            transform: translateY(-5px);
+        }
+        .post-title {
+            font-size: 24px;
+            color: #E65100;
+            margin-bottom: 10px;
+        }
+        .post-date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .post-content {
+            line-height: 1.6;
+        }
+        .loading, .error, .no-posts {
+            text-align: center;
+            padding: 40px 20px;
+            grid-column: 1 / -1;
+        }
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            border-radius: 8px;
+        }
+        .retry-button {
+            background-color: #E65100;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .retry-button:hover {
+            background-color: #F57C00;
+        }
+        .footer {
+            background-color: #E65100;
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+        }
+        .footer-content {
+            display: flex;
+            align-items: center;
+        }
+        .footer-logo {
+            height: 40px;
+            margin-right: 15px;
+        }
+        .footer-text {
+            text-align: left;
+        }
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        .social-icons a:hover {
+            color: #F57C00;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @media (max-width: 768px) {
+            .header, .footer {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            .header-content, .footer-content {
+                flex-direction: column;
+            }
+            .header img, .footer-logo {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .header-text, .footer-text {
+                text-align: center;
+            }
+            .nav-links a {
+                display: block;
+                margin: 10px 0;
+            }
+            .social-icons {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <header class="header fade-in">
+            <div class="header-content">
+                <img src="SILAKBO.png" alt="SILAKBO Logo">
+                <div class="header-text">
+                    <h1>Ang Silakbo Articles</h1>
+                    <p class="header-description">Exploring ideas through words and stories.</p>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-links fade-in">
+            <a href="photostory.html"><i class="fas fa-camera"></i> Photostories</a>
+            <a href="articles.html"><i class="fas fa-newspaper"></i> Articles</a>
+            <a href="literary.html"><i class="fas fa-book"></i> Literary Works</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> About Us</a>
+        </nav>
+
+        <div class="search-container fade-in">
+            <input type="text" id="search-input" placeholder="Search articles...">
+        </div>
+
+        <div id="posts-container" class="posts-container">
+            <div class="loading">Loading articles...</div>
+        </div>
+
+        <footer class="footer fade-in">
+            <div class="footer-content">
+                <img src="SILAKBO.png" alt="SILAKBO Logo" class="footer-logo">
+                <div class="footer-text">
+                    <p>&copy; 2025 Ang Silakbo Photostories</p>
+                    <p>Pagpapahayag ng Makatotohanang Balita Na May Makabuluhang Damdamin.</p>
+                </div>
+            </div>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook"></i> Ang Silakbo</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        // Initialize Firebase with error handling
+        try {
+            firebase.initializeApp(firebaseConfig);
+        } catch (error) {
+            if (error.code !== 'app/duplicate-app') {
+                showError('Firebase initialization failed. Please refresh the page.');
+                console.error('Firebase initialization error:', error);
+            }
+        }
+
+        const db = firebase.firestore();
+        let allPosts = [];
+        
+        function showError(message) {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = `
+                <div class="error">
+                    <p>${message}</p>
+                    <button class="retry-button" onclick="loadPosts()">Retry</button>
+                </div>
+            `;
+        }
+
+        function showLoading() {
+            document.getElementById('posts-container').innerHTML = `
+                <div class="loading">Loading articles...</div>
+            `;
+        }
+
+        async function loadPosts() {
+            showLoading();
+            
+            try {
+                const snapshot = await db.collection('articles')
+                    .orderBy('timestamp', 'desc')
+                    .get();
+
+                const postsContainer = document.getElementById('posts-container');
+                
+                if (snapshot.empty) {
+                    postsContainer.innerHTML = `
+                        <div class="no-posts fade-in">
+                            <h2>No articles yet</h2>
+                            <p>Be the first to write an article!</p>
+                            <a href="editor.html" style="color: #E65100;">Create Article</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                allPosts = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const date = data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date();
+                    return {
+                        title: data.title || 'Untitled',
+                        date: date,
+                        content: data.content || ''
+                    };
+                });
+
+                displayPosts(allPosts);
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                showError('Failed to load articles. Please try again.');
+            }
+        }
+
+        function displayPosts(posts) {
+            const postsContainer = document.getElementById('posts-container');
+            postsContainer.innerHTML = '';
+
+            posts.forEach((post, index) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post fade-in';
+                postElement.style.animationDelay = `${index * 0.1}s`;
+                postElement.innerHTML = `
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
+                    <div class="post-content">${post.content.substring(0, 150)}...</div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        function searchPosts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const filteredPosts = allPosts.filter(post => 
+                post.title.toLowerCase().includes(searchTerm) || 
+                post.content.toLowerCase().includes(searchTerm)
+            );
+            displayPosts(filteredPosts);
+        }
+
+        // Load posts when the page is ready
+        document.addEventListener('DOMContentLoaded', loadPosts);
+
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('input', searchPosts);
+    </script>
+</body>
+</html>
