@@ -225,6 +225,15 @@
             overflow-y: auto;
             padding: 20px;
             box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            transform: scale(0.9);
+        }
+        .fullscreen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
         }
         .fullscreen .post-content {
             max-width: 800px;
@@ -237,6 +246,19 @@
             font-size: 24px;
             cursor: pointer;
             z-index: 1001;
+            background-color: #E65100;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .close-fullscreen:hover {
+            background-color: #F57C00;
+            transform: rotate(90deg);
         }
         @media (max-width: 768px) {
             .header, .footer {
@@ -452,10 +474,17 @@
             `;
             document.body.appendChild(fullscreenElement);
 
+            // Trigger reflow to enable the transition
+            fullscreenElement.offsetHeight;
+            fullscreenElement.classList.add('active');
+
             const closeButton = fullscreenElement.querySelector('.close-fullscreen');
             closeButton.addEventListener('click', function() {
-                document.body.removeChild(fullscreenElement);
-                history.pushState(null, '', window.location.pathname); // Remove the post ID from the URL
+                fullscreenElement.classList.remove('active');
+                setTimeout(() => {
+                    document.body.removeChild(fullscreenElement);
+                    history.pushState(null, '', window.location.pathname); // Remove the post ID from the URL
+                }, 300); // Wait for the transition to complete
             });
 
             // Update the URL with the post ID
@@ -517,10 +546,14 @@
         window.addEventListener('popstate', function() {
             const fullscreenElement = document.querySelector('.fullscreen');
             if (fullscreenElement) {
-                document.body.removeChild(fullscreenElement);
+                fullscreenElement.classList.remove('active');
+                setTimeout(() => {
+                    document.body.removeChild(fullscreenElement);
+                }, 300); // Wait for the transition to complete
             }
             openSharedPost(); // This will reopen the post if there's a post ID in the URL
         });
     </script>
 </body>
 </html>
+
