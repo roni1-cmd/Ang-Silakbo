@@ -110,6 +110,8 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
+            position: relative;
+            cursor: pointer;
         }
         .post:hover {
             transform: translateY(-5px);
@@ -188,6 +190,54 @@
         .fade-in {
             animation: fadeIn 1s ease-in;
         }
+        .post-menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        .post-menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            z-index: 10;
+        }
+        .post-menu-content a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .post-menu-content a:hover {
+            background-color: #f0f0f0;
+        }
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .fullscreen .post-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .close-fullscreen {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+        }
         @media (max-width: 768px) {
             .header, .footer {
                 flex-direction: column;
@@ -228,8 +278,8 @@
         </header>
 
         <nav class="nav-links fade-in">
-            <a href="Photostory.html"><i class="fas fa-camera"></i> Photostories</a>
-            <a href="Artikulo.html"><i class="fas fa-newspaper"></i> Articles</a>
+            <a href="photostory.html"><i class="fas fa-camera"></i> Photostories</a>
+            <a href="articles.html"><i class="fas fa-newspaper"></i> Articles</a>
             <a href="literary.html"><i class="fas fa-book"></i> Literary Works</a>
             <a href="About Us.html"><i class="fas fa-info-circle"></i> About Us</a>
         </nav>
@@ -323,6 +373,7 @@
                     const data = doc.data();
                     const date = data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date();
                     return {
+                        id: doc.id,
                         title: data.title || 'Untitled',
                         date: date,
                         content: data.content || ''
@@ -330,6 +381,7 @@
                 });
 
                 displayPosts(allPosts);
+                openSharedPost();
             } catch (error) {
                 console.error('Error loading posts:', error);
                 showError('Failed to load articles. Please try again.');
@@ -341,24 +393,116 @@
             postsContainer.innerHTML = '';
 
             posts.forEach((post, index) => {
-            const postElement = document.createElement('div');
-            postElement.className = 'post fade-in';
-            postElement.style.animationDelay = `${index * 0.1}s`;
-            
-            // Process content to make images responsive
-            let processedContent = post.content;
-            if (processedContent.includes('<img')) {
-                processedContent = processedContent.replace(/<img/g, '<img style="max-width: 100%; height: auto;"');
-            }
+                const postElement = document.createElement('div');
+                postElement.className = 'post fade-in';
+                postElement.style.animationDelay = `${index * 0.1}s`;
+                
+                // Process content to make images responsive
+                let processedContent = post.content;
+                if (processedContent.includes('<img')) {
+                    processedContent = processedContent.replace(/<img/g, '<img style="max-width: 100%; height: auto;"');
+                }
 
-            postElement.innerHTML = `
-                <h2 class="post-title">${post.title}</h2>
-                <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
-                <div class="post-content">${processedContent}</div>
-            `;
-            postsContainer.appendChild(postElement);
+                postElement.innerHTML = `
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
+                    <div class="post-content">${processedContent}</div>
+                    <div class="post-menu">
+                        <i class="fas fa-ellipsis-v"></i>
+                        <div class="post-menu-content">
+                            <a href="#" class="share-link" data-id="${post.id}">Share Link</a>
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+
+                // Add click event for fullscreen
+                postElement.addEventListener('click', function(e) {
+                    if (!e.target.closest('.post-menu')) {
+                        openFullscreen(post);
+                    }
+                });
+
+                // Add click event for post menu
+                const menuIcon = postElement.querySelector('.post-menu i');
+                const menuContent = postElement.querySelector('.post-menu-content');
+                menuIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menuContent.style.display = menuContent.style.display === 'block' ? 'none' : 'block';
+                });
+
+                // Add click event for share link
+                const shareLink = postElement.querySelector('.share-link');
+                shareLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sharePost(post);
+                });
             });
         }
+
+        function openFullscreen(post) {
+            const fullscreenElement = document.createElement('div');
+            fullscreenElement.className = 'fullscreen';
+            fullscreenElement.innerHTML = `
+                <div class="close-fullscreen">&times;</div>
+                <h2 class="post-title">${post.title}</h2>
+                <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
+                <div class="post-content">${post.content}</div>
+            `;
+            document.body.appendChild(fullscreenElement);
+
+            const closeButton = fullscreenElement.querySelector('.close-fullscreen');
+            closeButton.addEventListener('click', function() {
+                document.body.removeChild(fullscreenElement);
+                history.pushState(null, '', window.location.pathname); // Remove the post ID from the URL
+            });
+
+            // Update the URL with the post ID
+            history.pushState(null, '', `?post=${post.id}`);
+        }
+
+        function sharePost(post) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?post=${post.id}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: post.title,
+                    text: 'Check out this article!',
+                    url: shareUrl
+                }).then(() => console.log('Successful share'))
+                .catch((error) => console.log('Error sharing:', error));
+            } else {
+                prompt('Copy this link to share:', shareUrl);
+            }
+        }
+
+        // Function to open a specific post from a shared link
+        function openSharedPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+            if (postId) {
+                const post = allPosts.find(p => p.id === postId);
+                if (post) {
+                    openFullscreen(post);
+                }
+            }
+        }
+
+        // Load posts when the page is ready
+        document.addEventListener('DOMContentLoaded', loadPosts);
+
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('input', searchPosts);
+
+        // Close post menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.post-menu')) {
+                document.querySelectorAll('.post-menu-content').forEach(menu => {
+                    menu.style.display = 'none';
+                });
+            }
+        });
 
         function searchPosts() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
@@ -369,11 +513,14 @@
             displayPosts(filteredPosts);
         }
 
-        // Load posts when the page is ready
-        document.addEventListener('DOMContentLoaded', loadPosts);
-
-        // Add event listener for search input
-        document.getElementById('search-input').addEventListener('input', searchPosts);
+        // Listen for popstate events (back/forward navigation)
+        window.addEventListener('popstate', function() {
+            const fullscreenElement = document.querySelector('.fullscreen');
+            if (fullscreenElement) {
+                document.body.removeChild(fullscreenElement);
+            }
+            openSharedPost(); // This will reopen the post if there's a post ID in the URL
+        });
     </script>
 </body>
 </html>
