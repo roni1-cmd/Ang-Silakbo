@@ -25,13 +25,15 @@
             display: flex;
             flex-direction: column;
             width: 100%;
+            margin: 0 auto;
+            background-color: white;
         }
         .header {
             background-image: url('articles.jpg');
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 20px;
+            padding: 40px 20px;
             position: relative;
             display: flex;
             align-items: center;
@@ -100,21 +102,10 @@
             flex: 1;
             padding: 20px;
             background-color: white;
-            display: grid;
-            gap: 20px;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
         .post {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            margin-bottom: 30px;
             position: relative;
-            cursor: pointer;
-        }
-        .post:hover {
-            transform: translateY(-5px);
         }
         .post-title {
             font-size: 24px;
@@ -129,10 +120,26 @@
         .post-content {
             line-height: 1.6;
         }
+        .post-separator {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+            position: relative;
+        }
+        .post-separator::after {
+            content: "ANG SILAKBO";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 0 10px;
+            font-size: 10px;
+            color: #999;
+        }
         .loading, .error, .no-posts {
             text-align: center;
             padding: 40px 20px;
-            grid-column: 1 / -1;
         }
         .error {
             color: #d32f2f;
@@ -260,6 +267,14 @@
             background-color: #F57C00;
             transform: rotate(90deg);
         }
+        .read-more {
+            color: #E65100;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .read-more:hover {
+            text-decoration: underline;
+        }
         @media (max-width: 768px) {
             .header, .footer {
                 flex-direction: column;
@@ -284,6 +299,57 @@
                 justify-content: center;
                 margin-top: 15px;
             }
+        }
+
+        .featured-label {
+            background-color: #E65100;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .post-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .post-tags {
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+
+        .social-share {
+            margin-top: 20px;
+        }
+
+        .social-share button {
+            background-color: #E65100;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin-right: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .social-share button:hover {
+            background-color: #F57C00;
         }
     </style>
 </head>
@@ -398,7 +464,10 @@
                         id: doc.id,
                         title: data.title || 'Untitled',
                         date: date,
-                        content: data.content || ''
+                        content: data.content || '',
+                        image: data.image || '/placeholder.svg?height=300&width=500',
+                        author: data.author || 'Anonymous',
+                        tags: data.tags || []
                     };
                 });
 
@@ -418,17 +487,45 @@
                 const postElement = document.createElement('div');
                 postElement.className = 'post fade-in';
                 postElement.style.animationDelay = `${index * 0.1}s`;
-                
-                // Process content to make images responsive
-                let processedContent = post.content;
-                if (processedContent.includes('<img')) {
-                    processedContent = processedContent.replace(/<img/g, '<img style="max-width: 100%; height: auto;"');
+           
+                let postContent;
+                if (index === 0) {
+                    // Full content for the latest post
+                    postContent = `
+                        <div class="featured-label">Featured</div>
+                        <h2 class="post-title">${post.title}</h2>
+                        <div class="post-meta">
+                            <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
+                            <span class="post-author">By ${post.author || 'Anonymous'}</span>
+                            <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                        </div>
+                        <div class="post-tags">${generateTags(post.tags)}</div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="social-share">
+                            <button onclick="shareOnFacebook('${post.id}')"><i class="fab fa-facebook-f"></i></button>
+                            <button onclick="shareOnTwitter('${post.id}')"><i class="fab fa-twitter"></i></button>
+                            <button onclick="shareOnLinkedIn('${post.id}')"><i class="fab fa-linkedin-in"></i></button>
+                        </div>
+                    `;
+                } else {
+                    // Preview for other posts
+                    let processedContent = post.content.replace(/<[^>]*>/g, '');
+                    const previewText = processedContent.slice(0, 100) + (processedContent.length > 100 ? '...' : '');
+                    postContent = `
+                        <h2 class="post-title">${post.title}</h2>
+                        <div class="post-meta">
+                            <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
+                            <span class="post-author">By ${post.author || 'Anonymous'}</span>
+                            <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                        </div>
+                        <div class="post-tags">${generateTags(post.tags)}</div>
+                        <div class="post-content">${previewText}</div>
+                        <a href="#" class="read-more">Read more</a>
+                    `;
                 }
 
                 postElement.innerHTML = `
-                    <h2 class="post-title">${post.title}</h2>
-                    <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
-                    <div class="post-content">${processedContent}</div>
+                    ${postContent}
                     <div class="post-menu">
                         <i class="fas fa-ellipsis-v"></i>
                         <div class="post-menu-content">
@@ -438,12 +535,28 @@
                 `;
                 postsContainer.appendChild(postElement);
 
+                if (index !== posts.length - 1) {
+                    const separator = document.createElement('hr');
+                    separator.className = 'post-separator';
+                    postsContainer.appendChild(separator);
+                }
+
                 // Add click event for fullscreen
                 postElement.addEventListener('click', function(e) {
-                    if (!e.target.closest('.post-menu')) {
+                    if (!e.target.closest('.post-menu') && !e.target.closest('.read-more')) {
                         openFullscreen(post);
                     }
                 });
+
+                // Add click event for "Read more"
+                const readMoreLink = postElement.querySelector('.read-more');
+                if (readMoreLink) {
+                    readMoreLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openFullscreen(post);
+                    });
+                }
 
                 // Add click event for post menu
                 const menuIcon = postElement.querySelector('.post-menu i');
@@ -469,7 +582,12 @@
             fullscreenElement.innerHTML = `
                 <div class="close-fullscreen">&times;</div>
                 <h2 class="post-title">${post.title}</h2>
-                <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
+                <div class="post-meta">
+                    <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
+                    <span class="post-author">By ${post.author || 'Anonymous'}</span>
+                    <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                </div>
+                <div class="post-tags">${generateTags(post.tags)}</div>
                 <div class="post-content">${post.content}</div>
             `;
             document.body.appendChild(fullscreenElement);
@@ -504,6 +622,33 @@
             } else {
                 prompt('Copy this link to share:', shareUrl);
             }
+        }
+
+        function estimateReadingTime(content) {
+            const wordsPerMinute = 200;
+            const wordCount = content.trim().split(/\s+/).length;
+            return Math.ceil(wordCount / wordsPerMinute);
+        }
+
+        function generateTags(tags) {
+            if (!tags || tags.length === 0) return '';
+            return tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        }
+
+        function shareOnFacebook(postId) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+        }
+
+        function shareOnTwitter(postId) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+            const text = 'Check out this article from Ang Silakbo!';
+            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareOnLinkedIn(postId) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
         }
 
         // Function to open a specific post from a shared link
