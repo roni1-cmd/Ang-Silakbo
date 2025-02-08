@@ -1,1 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - CMS</title>
+    <link rel="icon" href="SILAKBO.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.3/docx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;700&family=Lora:wght@400;700&family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #E65100;
+            --secondary-color: #FFF5E6;
+            --text-color: #333333;
+            --white: #FFFFFF;
+            --gray: #F0F0F0;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 40px;
+            margin-right: 1rem;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .home-icon {
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .home-icon:hover {
+            color: var(--secondary-color);
+        }
+        main {
+            display: flex;
+            flex: 1;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        .editor-container {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .title-category-container {
+            display: flex;
+            gap: 1rem;
+        }
+        .title-container {
+            flex: 2;
+        }
+        .category-container {
+            flex: 1;
+        }
+        .sidebar {
+            flex: 1;
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 300px;
+            overflow-y: auto;
+            max-height: calc(100vh - 4rem);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        select, input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #E65C00;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .nav-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #E65C00;
+        }
+        .writing-tips {
+            margin-top: 2rem;
+        }
+        .writing-tips h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+        .icon {
+            margin-right: 0.5rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .font-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--gray);
+            border-radius: 4px;
+        }
+        .font-preview h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        #published-works {
+            margin-top: 2rem;
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #published-works h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .published-item {
+            border-bottom: 1px solid var(--gray);
+            padding: 1rem 0;
+        }
+        .published-item:last-child {
+            border-bottom: none;
+        }
+        .published-item h3 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+        .published-item p {
+            margin: 0.5rem 0;
+        }
+        .edit-delete-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .search-bar input {
+            flex-grow: 1;
+        }
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .tab {
+            padding: 0.5rem 1rem;
+            background-color: var(--gray);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .tab.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <img src="SILAKBO.png" alt="Silakbo Logo">
+                <h1>ANG SILAKBO WORKSTATION</h1>
+            </div>
+            <a href="Ang Silakbo Admin Panel.html" class="home-icon" title="Go to Admin Panel">
+                <i class="fas fa-home"></i>
+            </a>
+        </header>
+
+        <main>
+            <div class="editor-container">
+                <div class="title-category-container">
+                    <div class="title-container form-group fade-in">
+                        <label for="title"><i class="fas fa-heading icon"></i>Title:</label>
+                        <input type="text" id="title" required>
+                    </div>
+
+                    <div class="category-container form-group fade-in">
+                        <label for="category"><i class="fas fa-folder icon"></i>Category:</label>
+                        <select id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="photostory">Photostory</option>
+                            <option value="articles">Articles</option>
+                            <option value="literary">Literary</option>
+                        </select>
+                    </div>
+                </div>
+
+                <textarea id="editor"></textarea>
+                
+                <button id="publishButton" onclick="publishContent()"><i class="fas fa-paper-plane icon"></i>Publish</button>
+
+                <div class="export-buttons">
+                    <button onclick="exportToPDF()"><i class="fas fa-file-pdf icon"></i>Export to PDF</button>
+                    <button onclick="exportToDOC()"><i class="fas fa-file-word icon"></i>Export to DOC</button>
+                </div>
+
+                <div class="nav-links fade-in">
+                    <a href="Photostory.html"><i class="fas fa-camera icon"></i>View Photostories</a>
+                    <a href="Artikulo.html"><i class="fas fa-newspaper icon"></i>View Articles</a>
+                    <a href="literary.html"><i class="fas fa-book icon"></i>View Literary Works</a>
+                </div>
+            </div>
+
+            <aside class="sidebar fade-in">
+                <div class="writing-tips">
+                    <h3><i class="fas fa-lightbulb icon"></i>Writing Tips</h3>
+                    <div id="writing-suggestions"></div>
+                </div>
+                <div class="font-preview">
+                    <h4><i class="fas fa-font icon"></i>Font Preview</h4>
+                    <p style="font-family: 'Poppins', sans-serif;">Poppins: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Roboto', sans-serif;">Roboto: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Playfair Display', serif;">Playfair Display: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Montserrat', sans-serif;">Montserrat: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Lora', serif;">Lora: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Merriweather', serif;">Merriweather: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Open Sans', sans-serif;">Open Sans: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: 'Raleway', sans-serif;">Raleway: The quick brown fox jumps over the lazy dog.</p>
+                </div>
+            </aside>
+        </main>
+
+        <section id="published-works">
+            <h2><i class="fas fa-list icon"></i>Published Works</h2>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search published works...">
+                <button onclick="searchPublishedWorks()"><i class="fas fa-search icon"></i>Search</button>
+            </div>
+            <div class="tabs">
+                <div class="tab active" onclick="filterPublishedWorks('all')">All</div>
+                <div class="tab" onclick="filterPublishedWorks('photostory')">Photostory</div>
+                <div class="tab" onclick="filterPublishedWorks('articles')">Articles</div>
+                <div class="tab" onclick="filterPublishedWorks('literary')">Literary</div>
+            </div>
+            <div id="published-list"></div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Ang Silakbo Workstation. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#editor',
+            height: 600,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
+                'codesample', 'quickbars'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | image media table emoticons | fontfamily fontsize | help',
+            menubar: 'file edit view insert format tools table help',
+            content_style: 'body { font-family: Poppins, sans-serif; font-size: 14px; }',
+            font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; Poppins=Poppins,sans-serif; Roboto=Roboto,sans-serif; Playfair Display=Playfair Display,serif; Montserrat=Montserrat,sans-serif; Lora=Lora,serif; Merriweather=Merriweather,serif; Open Sans=Open Sans,sans-serif; Raleway=Raleway,sans-serif',
+            font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            images_upload_handler: function (blobInfo, success, failure) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    success(reader.result);
+                };
+                reader.readAsDataURL(blobInfo.blob());
+            },
+            setup: function(editor) {
+                editor.on('init', function() {
+                    editor.getBody().style.backgroundColor = '#FFFFFF';
+                    editor.getBody().style.color = '#333333';
+                });
+            }
+        });
+
+        let currentEditId = null;
+
+        async function publishContent() {
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const content = tinymce.get('editor').getContent();
+
+            if (!title || !category || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                if (currentEditId) {
+                    // Update existing document
+                    await db.collection(category).doc(currentEditId).update({
+                        title: title,
+                        content: content,
+                        lastEdited: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    alert('Content updated successfully!');
+                } else {
+                    // Add new document
+                    await db.collection(category).add({
+                        title: title,
+                        content: content,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    alert('Content published successfully!');
+                }
+
+                // Reset form and currentEditId
+                document.getElementById('title').value = '';
+                document.getElementById('category').value = '';
+                tinymce.get('editor').setContent('');
+                currentEditId = null;
+                document.getElementById('publishButton').innerHTML = '<i class="fas fa-paper-plane icon"></i>Publish';
+
+                loadPublishedWorks();
+            } catch (error) {
+                console.error('Error publishing/updating content:', error);
+                alert('Error publishing/updating content. Please try again.');
+            }
+        }
+
+        function updateWritingSuggestions() {
+            const category = document.getElementById('category').value;
+            const suggestionsElement = document.getElementById('writing-suggestions');
+            let suggestions = '';
+
+            switch(category) {
+                case 'articles':
+                    suggestions = `
+                        <ul>
+                            <li><i class="fas fa-check icon"></i>Start with a compelling headline</li>
+                            <li><i class="fas fa-check icon"></i>Use subheadings to break up your content</li>
+                            <li><i class="fas fa-check icon"></i>Include relevant facts and statistics</li>
+                            <li><i class="fas fa-check icon"></i>Use quotes from experts or relevant sources</li>
+                            <li><i class="fas fa-check icon"></i>End with a strong conclusion or call-to-action</li>
+                        </ul>
+                    `;
+                    break;
+                case 'literary':
+                    suggestions = `
+                        <ul>
+                            <li><i class="fas fa-check icon"></i>Choose a central theme or message</li>
+                            <li><i class="fas fa-check icon"></i>Develop strong, relatable characters</li>
+                            <li><i class="fas fa-check icon"></i>Use vivid imagery and descriptive language</li>
+                            <li><i class="fas fa-check icon"></i>Experiment with different literary devices</li>
+                            <li><i class="fas fa-check icon"></i>Edit and revise for clarity and impact</li>
+                        </ul>
+                    `;
+                    break;
+                case 'photostory':
+                    suggestions = `
+                        <ul>
+                            <li><i class="fas fa-check icon"></i>Select a series of impactful images</li>
+                            <li><i class="fas fa-check icon"></i>Ensure your images tell a cohesive story</li>
+                            <li><i class="fas fa-check icon"></i>Write concise, engaging captions</li>
+                            <li><i class="fas fa-check icon"></i>Consider the order and flow of your images</li>
+                            <li><i class="fas fa-check icon"></i>Include a brief introduction and conclusion</li>
+                        </ul>
+                    `;
+                    break;
+                default:
+                    suggestions = 'Select a category to see writing suggestions.';
+            }
+
+            suggestionsElement.innerHTML = suggestions;
+        }
+
+        document.getElementById('category').addEventListener('change', updateWritingSuggestions);
+        updateWritingSuggestions();
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const title = document.getElementById('title').value;
+            const content = tinymce.get('editor').getContent();
+            
+            doc.setFontSize(18);
+            doc.text(title, 20, 20);
+            
+            doc.setFontSize(12);
+            const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
+            const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
+            doc.text(splitContent, 20, 30);
+            
+            doc.save(title + '.pdf');
+        }
+
+        function exportToDOC() {
+            const title = document.getElementById('title').value;
+            const content = tinymce.get('editor').getContent();
+            
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            text: title,
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            text: content.replace(/<[^>]+>/g, ''),
+                        }),
+                    ],
+                }],
+            });
+            
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, title + ".docx");
+            });
+        }
+
+        let allPublishedWorks = [];
+
+        async function loadPublishedWorks() {
+            const publishedList = document.getElementById('published-list');
+            publishedList.innerHTML = '';
+
+            const categories = ['photostory', 'articles', 'literary'];
+            allPublishedWorks = [];
+
+            for (const category of categories) {
+                const snapshot = await db.collection(category).orderBy('timestamp', 'desc').get();
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    allPublishedWorks.push({
+                        id: doc.id,
+                        category: category,
+                        title: data.title,
+                        content: data.content,
+                        timestamp: data.timestamp
+                    });
+                });
+            }
+
+            displayPublishedWorks(allPublishedWorks);
+        }
+
+        function displayPublishedWorks(works) {
+            const publishedList = document.getElementById('published-list');
+            publishedList.innerHTML = '';
+
+            works.forEach(work => {
+                const publishedItem = document.createElement('div');
+                publishedItem.className = 'published-item';
+                publishedItem.innerHTML = `
+                    <h3>${work.title}</h3>
+                    <p>Category: ${work.category}</p>
+                    <p>Published: ${work.timestamp.toDate().toLocaleString()}</p>
+                    <div class="edit-delete-buttons">
+                        <button onclick="editPublishedWork('${work.category}', '${work.id}')">Edit</button>
+                        <button onclick="deletePublishedWork('${work.category}', '${work.id}')">Delete</button>
+                    </div>
+                `;
+                publishedList.appendChild(publishedItem);
+            });
+        }
+
+        async function editPublishedWork(category, docId) {
+            const doc = await db.collection(category).doc(docId).get();
+            const data = doc.data();
+
+            document.getElementById('title').value = data.title;
+            document.getElementById('category').value = category;
+            tinymce.get('editor').setContent(data.content);
+
+            currentEditId = docId;
+            document.getElementById('publishButton').innerHTML = '<i class="fas fa-save icon"></i>Update';
+
+            // Scroll to the top of the page
+            window.scrollTo(0, 0);
+        }
+
+        async function deletePublishedWork(category, docId) {
+            if (confirm('Are you sure you want to delete this work?')) {
+                try {
+                    await db.collection(category).doc(docId).delete();
+                    alert('Work deleted successfully!');
+                    loadPublishedWorks();
+                } catch (error) {
+                    console.error('Error deleting work:', error);
+                    alert('Error deleting work. Please try again.');
+                }
+            }
+        }
+
+        function searchPublishedWorks() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const filteredWorks = allPublishedWorks.filter(work => 
+                work.title.toLowerCase().includes(searchTerm) || 
+                work.content.toLowerCase().includes(searchTerm)
+            );
+            displayPublishedWorks(filteredWorks);
+        }
+
+        function filterPublishedWorks(category) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (category === 'all') {
+                displayPublishedWorks(allPublishedWorks);
+            } else {
+                const filteredWorks = allPublishedWorks.filter(work => work.category === category);
+                displayPublishedWorks(filteredWorks);
+            }
+        }
+
+        // Load published works when the page loads
+        loadPublishedWorks();
+    </script>
+</body>
+</html>
+
 
