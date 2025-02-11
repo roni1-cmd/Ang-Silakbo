@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANG SILAKBO Interactive Calendar</title>
+  <link rel="icon" href="SILAKBO (1).png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #FF6B35;
+      --secondary-color: #FFFFFF;
+      --text-color: #333333;
+      --background-color: #F7F7F7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      width: 100px;
+      height: auto;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: var(--secondary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .calendar-container {
+      background: var(--secondary-color);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin: 40px auto;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .calendar-header button {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .calendar-header button:hover {
+      background-color: #FF8C61;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    .calendar-day {
+      padding: 15px;
+      text-align: center;
+      border-radius: 10px;
+      background: var(--background-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .calendar-day:hover {
+      background: #FFE0D3;
+      transform: scale(1.05);
+    }
+
+    .has-event {
+      background: #FFD0B5 !important;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--secondary-color);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      max-width: 90%;
+      width: 400px;
+    }
+
+    .modal h3 {
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+
+    .modal input, .modal select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .modal button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+    }
+
+    .btn-primary:hover {
+      background-color: #FF8C61;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: var(--secondary-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: var(--secondary-color);
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+    footer {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+      }
+
+      .calendar-day {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+
+      .calendar-header h2 {
+        font-size: 1.2rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+      }
+
+      .logo {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
+        <h1>ANG SILAKBO Memos</h1>
+        <nav>
+          <ul>
+            <li><a href="#" id="today-btn">Today</a></li>
+            <li><a href="#" id="events-btn">All Events</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button id="prev-month">←</button>
+        <h2 id="current-month"></h2>
+        <button id="next-month">→</button>
+      </div>
+      <div class="calendar-grid" id="calendar"></div>
+    </div>
+  </main>
+
+  <div class="modal" id="event-modal">
+    <h3 id="modal-date"></h3>
+    <div id="event-overview"></div>
+    <select id="event-select" style="display: none;">
+      <option value="">Select an event</option>
+    </select>
+    <input type="text" id="event-title" placeholder="Event title">
+    <button id="add-event" class="btn-primary">Add Event</button>
+    <button id="edit-event" class="btn-primary" style="display: none;">Edit Event</button>
+    <button id="delete-event" class="btn-danger" style="display: none;">Delete Event</button>
+    <button id="close-modal" class="btn-secondary">Close</button>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 SILAKBO Interactive Calendar. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { 
+      getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCI6Kc5wY3XpTnEGQ4y8mRHA9C_kQ6oK5o",
+      authDomain: "ang-silakbo-8ed47.firebaseapp.com",
+      projectId: "ang-silakbo-8ed47",
+      storageBucket: "ang-silakbo-8ed47.appspot.com",
+      messagingSenderId: "793504945033",
+      appId: "1:793504945033:web:11a87ca1c76daa76494758"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentDate = new Date();
+    let selectedDate = null;
+    let selectedEventId = null;
+
+    function renderCalendar(date) {
+      const calendarEl = document.getElementById('calendar');
+      const monthYearEl = document.getElementById('current-month');
+      calendarEl.innerHTML = '';
+
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      monthYearEl.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+
+      const firstDay = new Date(year, month, 1);
+      const startingDay = firstDay.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < startingDay; i++) {
+        calendarEl.appendChild(createDayElement(''));
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayDate = new Date(year, month, day);
+        const dayElement = createDayElement(day);
+        dayElement.dataset.date = dayDate.toISOString();
+        calendarEl.appendChild(dayElement);
+      }
+
+      loadEvents(date);
+    }
+
+    function createDayElement(day) {
+      const div = document.createElement('div');
+      div.className = 'calendar-day';
+      if (day) {
+        div.textContent = day;
+        div.addEventListener('click', () => showEventModal(new Date(div.dataset.date)));
+      }
+      return div;
+    }
+
+    function loadEvents(date) {
+      getDocs(collection(db, 'events')).then(snapshot => {
+        const eventsByDate = {};
+
+        snapshot.forEach(doc => {
+          const event = doc.data();
+          if (!eventsByDate[event.date]) {
+            eventsByDate[event.date] = [];
+          }
+          eventsByDate[event.date].push({ id: doc.id, title: event.title });
+        });
+
+        document.querySelectorAll('.calendar-day').forEach(dayEl => {
+          const dayISO = dayEl.dataset.date;
+          if (eventsByDate[dayISO]) {
+            dayEl.classList.add('has-event');
+          }
+        });
+      });
+    }
+
+    function showEventModal(date) {
+      selectedDate = date.toISOString();
+      document.getElementById('modal-date').textContent = date.toDateString();
+      document.getElementById('event-title').value = "";
+      document.getElementById('event-overview').innerHTML = "Loading events...";
+      
+      const eventSelect = document.getElementById('event-select');
+      eventSelect.innerHTML = '<option value="">Select an event</option>';
+      eventSelect.style.display = 'none';
+      
+      document.getElementById('add-event').style.display = 'inline-block';
+      document.getElementById('edit-event').style.display = 'none';
+      document.getElementById('delete-event').style.display = 'none';
+
+      getDocs(collection(db, 'events')).then(snapshot => {
+        let eventContent = "";
+        let hasEvents = false;
+        snapshot.forEach(doc => {
+          const event = doc.data();
+          if (event.date === selectedDate) {
+            hasEvents = true;
+            eventContent += `<p><strong>${event.title}</strong></p>`;
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = event.title;
+            eventSelect.appendChild(option);
+          }
+        });
+
+        document.getElementById('event-overview').innerHTML = eventContent || "No events.";
+        
+        if (hasEvents) {
+          eventSelect.style.display = 'block';
+          document.getElementById('edit-event').style.display = 'inline-block';
+          document.getElementById('delete-event').style.display = 'inline-block';
+        }
+      });
+
+      document.getElementById('event-modal').style.display = 'block';
+    }
+
+    document.getElementById('add-event').addEventListener('click', () => {
+      const title = document.getElementById('event-title').value;
+      if (title) {
+        addDoc(collection(db, 'events'), {
+          date: selectedDate,
+          title: title
+        }).then(() => {
+          renderCalendar(currentDate);
+          document.getElementById('event-modal').style.display = 'none';
+        });
+      }
+    });
+
+    document.getElementById('edit-event').addEventListener('click', () => {
+      const title = document.getElementById('event-title').value;
+      const eventId = document.getElementById('event-select').value;
+      if (title && eventId) {
+        updateDoc(doc(db, 'events', eventId), {
+          title: title
+        }).then(() => {
+          renderCalendar(currentDate);
+          document.getElementById('event-modal').style.display = 'none';
+        });
+      }
+    });
+
+    document.getElementById('delete-event').addEventListener('click', () => {
+      const eventId = document.getElementById('event-select').value;
+      if (eventId) {
+        deleteDoc(doc(db, 'events', eventId)).then(() => {
+          renderCalendar(currentDate);
+          document.getElementById('event-modal').style.display = 'none';
+        });
+      }
+    });
+
+    document.getElementById('event-select').addEventListener('change', (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      document.getElementById('event-title').value = selectedOption.textContent;
+    });
+
+    document.getElementById('close-modal').addEventListener('click', () => {
+      document.getElementById('event-modal').style.display = 'none';
+    });
+
+    document.getElementById('prev-month').addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar(currentDate);
+    });
+
+    document.getElementById('next-month').addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar(currentDate);
+    });
+
+    document.getElementById('today-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      currentDate = new Date();
+      renderCalendar(currentDate);
+    });
+
+    document.getElementById('events-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAllEvents();
+    });
+
+    function showAllEvents() {
+      getDocs(collection(db, 'events')).then(snapshot => {
+        let allEventsContent = "<h3>All Events</h3>";
+        snapshot.forEach(doc => {
+          const event = doc.data();
+          allEventsContent += `<p><strong>${new Date(event.date).toDateString()}</strong>: ${event.title}</p>`;
+        });
+        
+        const modal = document.getElementById('event-modal');
+        modal.innerHTML = allEventsContent;
+        modal.style.display = 'block';
+      });
+    }
+
+    renderCalendar(currentDate);
+  </script>
+</body>
+</html>
