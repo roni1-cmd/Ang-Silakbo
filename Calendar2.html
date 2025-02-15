@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANG SILAKBO Interactive Calendar</title>
+  <title>ANG SILAKBO - Memos</title>
   <link rel="icon" href="SILAKBO (1).png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
@@ -12,6 +12,10 @@
       --secondary-color: #FFFFFF;
       --text-color: #333333;
       --background-color: #F7F7F7;
+      --event-color-1: #FFD0B5;
+      --event-color-2: #B5D7FF;
+      --event-color-3: #C7FFB5;
+      --event-color-4: #FFB5E8;
     }
 
     * {
@@ -115,18 +119,36 @@
       background: var(--background-color);
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .calendar-day:hover {
-      background: #FFE0D3;
       transform: scale(1.05);
     }
 
     .has-event {
-      background: #FFD0B5 !important;
       font-weight: bold;
       color: var(--primary-color);
     }
+
+    .event-preview {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-color);
+    }
+
+    .event-color-1 { background-color: var(--event-color-1); }
+    .event-color-2 { background-color: var(--event-color-2); }
+    .event-color-3 { background-color: var(--event-color-3); }
+    .event-color-4 { background-color: var(--event-color-4); }
 
     .modal {
       display: none;
@@ -347,6 +369,14 @@
           const dayISO = dayEl.dataset.date;
           if (eventsByDate[dayISO]) {
             dayEl.classList.add('has-event');
+            const eventPreview = document.createElement('div');
+            eventPreview.className = 'event-preview';
+            eventPreview.textContent = eventsByDate[dayISO][0].title;
+            dayEl.appendChild(eventPreview);
+
+            // Add color coding
+            const colorClass = `event-color-${(eventsByDate[dayISO].length % 4) + 1}`;
+            dayEl.classList.add(colorClass);
           }
         });
       });
