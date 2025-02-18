@@ -163,6 +163,8 @@
       z-index: 1000;
       max-width: 90%;
       width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
     }
 
     .modal h3 {
@@ -170,7 +172,7 @@
       color: var(--primary-color);
     }
 
-    .modal input, .modal select {
+    .modal input, .modal select, .modal textarea {
       width: 100%;
       padding: 12px;
       margin-top: 15px;
@@ -214,6 +216,71 @@
 
     .btn-danger:hover {
       background-color: #c82333;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 5px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .time-slot {
+      padding: 5px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .time-slot:hover {
+      background-color: #f0f0f0;
+    }
+
+    .event-color-picker {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .color-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .color-option.selected {
+      border: 2px solid #333;
+    }
+
+    .event-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+    }
+
+    .event-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .event-item:last-child {
+      border-bottom: none;
+    }
+
+    .delete-event {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
     }
 
     footer {
@@ -277,14 +344,20 @@
 
   <div class="modal" id="event-modal">
     <h3 id="modal-date"></h3>
-    <div id="event-overview"></div>
-    <select id="event-select" style="display: none;">
-      <option value="">Select an event</option>
-    </select>
+    <div id="event-list" class="event-list"></div>
+    <button id="view-24h" class="btn-secondary">View 24-hour Timestamp</button>
+    <div id="time-grid" class="time-grid" style="display: none;"></div>
     <input type="text" id="event-title" placeholder="Event title">
+    <input type="time" id="event-time" placeholder="Event time">
+    <textarea id="event-description" placeholder="Event description" rows="3"></textarea>
+    <input type="text" id="event-location" placeholder="Event location">
+    <div class="event-color-picker">
+      <div class="color-option selected" style="background-color: var(--event-color-1);" data-color="1"></div>
+      <div class="color-option" style="background-color: var(--event-color-2);" data-color="2"></div>
+      <div class="color-option" style="background-color: var(--event-color-3);" data-color="3"></div>
+      <div class="color-option" style="background-color: var(--event-color-4);" data-color="4"></div>
+    </div>
     <button id="add-event" class="btn-primary">Add Event</button>
-    <button id="edit-event" class="btn-primary" style="display: none;">Edit Event</button>
-    <button id="delete-event" class="btn-danger" style="display: none;">Delete Event</button>
     <button id="close-modal" class="btn-secondary">Close</button>
   </div>
 
@@ -314,7 +387,7 @@
 
     let currentDate = new Date();
     let selectedDate = null;
-    let selectedEventId = null;
+    let selectedColor = "1";
 
     function renderCalendar(date) {
       const calendarEl = document.getElementById('calendar');
@@ -336,7 +409,7 @@
       for (let day = 1; day <= daysInMonth; day++) {
         const dayDate = new Date(year, month, day);
         const dayElement = createDayElement(day);
-        dayElement.dataset.date = dayDate.toISOString();
+        dayElement.dataset.date = dayDate.toISOString().split('T')[0];
         calendarEl.appendChild(dayElement);
       }
 
@@ -362,106 +435,139 @@
           if (!eventsByDate[event.date]) {
             eventsByDate[event.date] = [];
           }
-          eventsByDate[event.date].push({ id: doc.id, title: event.title });
+          eventsByDate[event.date].push({ id: doc.id, ...event });
         });
 
         document.querySelectorAll('.calendar-day').forEach(dayEl => {
           const dayISO = dayEl.dataset.date;
           if (eventsByDate[dayISO]) {
             dayEl.classList.add('has-event');
-            const eventPreview = document.createElement('div');
-            eventPreview.className = 'event-preview';
-            eventPreview.textContent = eventsByDate[dayISO][0].title;
-            dayEl.appendChild(eventPreview);
-
-            // Add color coding
-            const colorClass = `event-color-${(eventsByDate[dayISO].length % 4) + 1}`;
-            dayEl.classList.add(colorClass);
+            const eventContainer = document.createElement('div');
+            eventContainer.className = 'event-preview';
+            eventsByDate[dayISO].forEach((event, index) => {
+              const eventPreview = document.createElement('div');
+              eventPreview.textContent = `${event.time} - ${event.title}`;
+              eventPreview.className = `event-color-${event.color || (index % 4) + 1}`;
+              eventContainer.appendChild(eventPreview);
+            });
+            dayEl.appendChild(eventContainer);
           }
         });
       });
     }
 
     function showEventModal(date) {
-      selectedDate = date.toISOString();
+      selectedDate = date.toISOString().split('T')[0];
       document.getElementById('modal-date').textContent = date.toDateString();
       document.getElementById('event-title').value = "";
-      document.getElementById('event-overview').innerHTML = "Loading events...";
+      document.getElementById('event-time').value = "";
+      document.getElementById('event-description').value = "";
+      document.getElementById('event-location').value = "";
       
-      const eventSelect = document.getElementById('event-select');
-      eventSelect.innerHTML = '<option value="">Select an event</option>';
-      eventSelect.style.display = 'none';
-      
-      document.getElementById('add-event').style.display = 'inline-block';
-      document.getElementById('edit-event').style.display = 'none';
-      document.getElementById('delete-event').style.display = 'none';
-
-      getDocs(collection(db, 'events')).then(snapshot => {
-        let eventContent = "";
-        let hasEvents = false;
-        snapshot.forEach(doc => {
-          const event = doc.data();
-          if (event.date === selectedDate) {
-            hasEvents = true;
-            eventContent += `<p><strong>${event.title}</strong></p>`;
-            const option = document.createElement('option');
-            option.value = doc.id;
-            option.textContent = event.title;
-            eventSelect.appendChild(option);
-          }
-        });
-
-        document.getElementById('event-overview').innerHTML = eventContent || "No events.";
-        
-        if (hasEvents) {
-          eventSelect.style.display = 'block';
-          document.getElementById('edit-event').style.display = 'inline-block';
-          document.getElementById('delete-event').style.display = 'inline-block';
-        }
-      });
+      loadEventsForDate(selectedDate);
 
       document.getElementById('event-modal').style.display = 'block';
     }
 
+    function loadEventsForDate(date) {
+      const eventList = document.getElementById('event-list');
+      eventList.innerHTML = '';
+
+      getDocs(collection(db, 'events')).then(snapshot => {
+        snapshot.forEach(doc => {
+          const event = doc.data();
+          if (event.date === date) {
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            eventItem.innerHTML = `
+              <span>${event.time} - ${event.title}</span>
+              <button class="delete-event" data-id="${doc.id}">Delete</button>
+            `;
+            eventList.appendChild(eventItem);
+          }
+        });
+
+        // Add event listeners for delete buttons
+        document.querySelectorAll('.delete-event').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const eventId = e.target.dataset.id;
+            deleteEvent(eventId);
+          });
+        });
+      });
+    }
+
+    function deleteEvent(eventId) {
+      deleteDoc(doc(db, 'events', eventId)).then(() => {
+        loadEventsForDate(selectedDate);
+        renderCalendar(currentDate);
+      }).catch((error) => {
+        console.error("Error deleting document: ", error);
+        alert("An error occurred while deleting the event. Please try again.");
+      });
+    }
+
+    function create24HourGrid() {
+      const timeGrid = document.getElementById('time-grid');
+      timeGrid.innerHTML = '';
+      for (let i = 0; i < 24; i++) {
+        const timeSlot = document.createElement('div');
+        timeSlot.className = 'time-slot';
+        timeSlot.textContent = `${i.toString().padStart(2, '0')}:00`;
+        timeSlot.addEventListener('click', () => {
+          document.getElementById('event-time').value = `${i.toString().padStart(2, '0')}:00`;
+          timeGrid.style.display = 'none';
+        });
+        timeGrid.appendChild(timeSlot);
+      }
+    }
+
+    document.getElementById('view-24h').addEventListener('click', () => {
+      const timeGrid = document.getElementById('time-grid');
+      if (timeGrid.style.display === 'none') {
+        create24HourGrid();
+        timeGrid.style.display = 'grid';
+      } else {
+        timeGrid.style.display = 'none';
+      }
+    });
+
+    document.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', (e) => {
+        document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+        e.target.classList.add('selected');
+        selectedColor = e.target.dataset.color;
+      });
+    });
+
     document.getElementById('add-event').addEventListener('click', () => {
       const title = document.getElementById('event-title').value;
-      if (title) {
+      const time = document.getElementById('event-time').value;
+      const description = document.getElementById('event-description').value;
+      const location = document.getElementById('event-location').value;
+
+      if (title && time) {
         addDoc(collection(db, 'events'), {
           date: selectedDate,
-          title: title
+          title: title,
+          time: time,
+          description: description,
+          location: location,
+          color: selectedColor
         }).then(() => {
+          loadEventsForDate(selectedDate);
           renderCalendar(currentDate);
-          document.getElementById('event-modal').style.display = 'none';
+          document.getElementById('event-title').value = "";
+          document.getElementById('event-time').value = "";
+          document.getElementById('event-description').value = "";
+          document.getElementById('event-location').value = "";
+        }).catch((error) => {
+          console.error("Error adding document: ", error);
+          alert("An error occurred while adding the event. Please try again.");
         });
+      } else {
+        alert("Please enter at least a title and time for the event.");
       }
-    });
-
-    document.getElementById('edit-event').addEventListener('click', () => {
-      const title = document.getElementById('event-title').value;
-      const eventId = document.getElementById('event-select').value;
-      if (title && eventId) {
-        updateDoc(doc(db, 'events', eventId), {
-          title: title
-        }).then(() => {
-          renderCalendar(currentDate);
-          document.getElementById('event-modal').style.display = 'none';
-        });
-      }
-    });
-
-    document.getElementById('delete-event').addEventListener('click', () => {
-      const eventId = document.getElementById('event-select').value;
-      if (eventId) {
-        deleteDoc(doc(db, 'events', eventId)).then(() => {
-          renderCalendar(currentDate);
-          document.getElementById('event-modal').style.display = 'none';
-        });
-      }
-    });
-
-    document.getElementById('event-select').addEventListener('change', (e) => {
-      const selectedOption = e.target.options[e.target.selectedIndex];
-      document.getElementById('event-title').value = selectedOption.textContent;
     });
 
     document.getElementById('close-modal').addEventListener('click', () => {
@@ -491,15 +597,35 @@
 
     function showAllEvents() {
       getDocs(collection(db, 'events')).then(snapshot => {
-        let allEventsContent = "<h3>All Events</h3>";
+        let allEventsContent = "<h3>All Events</h3><div class='event-list'>";
         snapshot.forEach(doc => {
           const event = doc.data();
-          allEventsContent += `<p><strong>${new Date(event.date).toDateString()}</strong>: ${event.title}</p>`;
+          allEventsContent += `
+            <div class="event-item">
+              <span><strong>${new Date(event.date).toDateString()} ${event.time}</strong>: ${event.title}</span>
+              <button class="delete-event" data-id="${doc.id}">Delete</button>
+            </div>
+          `;
         });
+        allEventsContent += "</div>";
         
         const modal = document.getElementById('event-modal');
         modal.innerHTML = allEventsContent;
+        modal.innerHTML += '<button id="close-all-events" class="btn-secondary">Close</button>';
         modal.style.display = 'block';
+
+        document.getElementById('close-all-events').addEventListener('click', () => {
+          modal.style.display = 'none';
+        });
+
+        // Add event listeners for delete buttons
+        document.querySelectorAll('.delete-event').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const eventId = e.target.dataset.id;
+            deleteEvent(eventId);
+            showAllEvents(); // Refresh the list after deletion
+          });
+        });
       });
     }
 
