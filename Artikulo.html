@@ -106,6 +106,13 @@
         .post {
             margin-bottom: 30px;
             position: relative;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+        .post:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .post-title {
             font-size: 24px;
@@ -146,16 +153,18 @@
             background-color: #ffebee;
             border-radius: 8px;
         }
-        .retry-button {
+        .retry-button, .load-more-button {
             background-color: #E65100;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
-        .retry-button:hover {
+        .retry-button:hover, .load-more-button:hover {
             background-color: #F57C00;
         }
         .footer {
@@ -367,6 +376,38 @@
         .view-count i {
             color: #E65100;
         }
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .category-filter button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .category-filter button.active {
+            background-color: #E65100;
+            color: white;
+        }
+        .load-more-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .latest-post {
+            border: 2px solid #E65100;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background-color: #fff9f6;
+        }
+        .latest-post .post-title {
+            font-size: 28px;
+        }
     </style>
 </head>
 <body>
@@ -385,8 +426,21 @@
             <input type="text" id="search-input" placeholder="Search articles...">
         </div>
 
+        <div class="category-filter fade-in">
+            <button class="active" data-category="all">All</button>
+            <button data-category="news">News</button>
+            <button data-category="opinion">Opinion</button>
+            <button data-category="feature">Feature</button>
+        </div>
+
+        <div id="latest-post-container" class="latest-post fade-in"></div>
+
         <div id="posts-container" class="posts-container">
             <div class="loading">Loading articles...</div>
+        </div>
+
+        <div class="load-more-container">
+            <button id="load-more" class="load-more-button">Load More</button>
         </div>
 
         <footer class="footer fade-in">
@@ -428,6 +482,9 @@
 
         const db = firebase.firestore();
         let allPosts = [];
+        let lastVisible = null;
+        const postsPerPage = 5;
+        let currentCategory = 'all';
         
         function showError(message) {
             const container = document.getElementById('posts-container');
@@ -445,17 +502,28 @@
             `;
         }
 
-        async function loadPosts() {
-            showLoading();
+        async function loadPosts(loadMore = false) {
+            if (!loadMore) {
+                showLoading();
+            }
             
             try {
-                const snapshot = await db.collection('articles')
-                    .orderBy('timestamp', 'desc')
-                    .get();
+                let query = db.collection('articles').orderBy('timestamp', 'desc');
 
-                const postsContainer = document.getElementById('posts-container');
-                
-                if (snapshot.empty) {
+                if (currentCategory !== 'all') {
+                    query = query.where('category', '==', currentCategory);
+                }
+
+                if (lastVisible && loadMore) {
+                    query = query.startAfter(lastVisible);
+                }
+
+                query = query.limit(postsPerPage);
+
+                const snapshot = await query.get();
+
+                if (snapshot.empty && !loadMore) {
+                    const postsContainer = document.getElementById('posts-container');
                     postsContainer.innerHTML = `
                         <div class="no-posts fade-in">
                             <h2>No articles yet</h2>
@@ -463,10 +531,11 @@
                             <a href="editor.html" style="color: #E65100;">Create Article</a>
                         </div>
                     `;
+                    document.getElementById('load-more').style.display = 'none';
                     return;
                 }
 
-                allPosts = snapshot.docs.map(doc => {
+                const newPosts = snapshot.docs.map(doc => {
                     const data = doc.data();
                     const date = data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date();
                     return {
@@ -477,64 +546,77 @@
                         image: data.image || '/placeholder.svg?height=300&width=500',
                         author: data.author || 'Anonymous',
                         tags: data.tags || [],
-                        views: data.views || 0
+                        views: data.views || 0,
+                        category: data.category || 'Uncategorized'
                     };
                 });
 
-                displayPosts(allPosts);
-                openSharedPost();
+                if (loadMore) {
+                    allPosts = [...allPosts, ...newPosts];
+                } else {
+                    allPosts = newPosts;
+                    displayLatestPost(newPosts[0]);
+                }
+
+                displayPosts(newPosts.slice(loadMore ? 0 : 1), loadMore);
+
+                lastVisible = snapshot.docs[snapshot.docs.length - 1];
+                
+                document.getElementById('load-more').style.display = snapshot.docs.length < postsPerPage ? 'none' : 'block';
+
             } catch (error) {
                 console.error('Error loading posts:', error);
                 showError('Failed to load articles. Please try again.');
             }
         }
 
-        function displayPosts(posts) {
+        function displayLatestPost(post) {
+            const latestPostContainer = document.getElementById('latest-post-container');
+            latestPostContainer.innerHTML = `
+                <div class="featured-label">Latest Article</div>
+                <h2 class="post-title">${post.title}</h2>
+                <div class="post-meta">
+                    <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
+                    <span class="post-author">By ${post.author || 'Anonymous'}</span>
+                    <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                    <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
+                    <span class="post-category">${post.category}</span>
+                </div>
+                <div class="post-tags">${generateTags(post.tags)}</div>
+                <div class="post-content">${post.content}</div>
+                <div class="social-share">
+                    <button onclick="shareOnFacebook('${post.id}')"><i class="fab fa-facebook-f"></i> Share</button>
+                    <button onclick="shareOnTwitter('${post.id}')"><i class="fab fa-twitter"></i> Tweet</button>
+                    <button onclick="shareOnLinkedIn('${post.id}')"><i class="fab fa-linkedin-in"></i> Share</button>
+                </div>
+            `;
+        }
+
+        function displayPosts(posts, append = false) {
             const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = '';
+            
+            if (!append) {
+                postsContainer.innerHTML = '';
+            }
 
             posts.forEach((post, index) => {
                 const postElement = document.createElement('div');
                 postElement.className = 'post fade-in';
                 postElement.style.animationDelay = `${index * 0.1}s`;
            
-                let postContent;
-                if (index === 0) {
-                    // Full content for the latest post
-                    postContent = `
-                        <div class="featured-label">Featured</div>
-                        <h2 class="post-title">${post.title}</h2>
-                        <div class="post-meta">
-                            <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
-                            <span class="post-author">By ${post.author || 'Anonymous'}</span>
-                            <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
-                            <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
-                        </div>
-                        <div class="post-tags">${generateTags(post.tags)}</div>
-                        <div class="post-content">${post.content}</div>
-                        <div class="social-share">
-                            <button onclick="shareOnFacebook('${post.id}')"><i class="fab fa-facebook-f"></i></button>
-                            <button onclick="shareOnTwitter('${post.id}')"><i class="fab fa-twitter"></i></button>
-                            <button onclick="shareOnLinkedIn('${post.id}')"><i class="fab fa-linkedin-in"></i></button>
-                        </div>
-                    `;
-                } else {
-                    // Preview for other posts
-                    let processedContent = post.content.replace(/<[^>]*>/g, '');
-                    const previewText = processedContent.slice(0, 100) + (processedContent.length > 100 ? '...' : '');
-                    postContent = `
-                        <h2 class="post-title">${post.title}</h2>
-                        <div class="post-meta">
-                            <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
-                            <span class="post-author">By ${post.author || 'Anonymous'}</span>
-                            <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
-                            <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
-                        </div>
-                        <div class="post-tags">${generateTags(post.tags)}</div>
-                        <div class="post-content">${previewText}</div>
-                        <a href="#" class="read-more">Read more</a>
-                    `;
-                }
+                let postContent = `
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-meta">
+                        <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
+                        <span class="post-author">By ${post.author || 'Anonymous'}</span>
+                        <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                        <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
+                        <span class="post-category">${post.category}</span>
+                    </div>
+                    <div class="post-tags">${generateTags(post.tags)}</div>
+                    <div class="post-content">${truncateContent(post.content, 150)}</div>
+                    <a href="#" class="read-more">Read more</a>
+                `;
 
                 postElement.innerHTML = `
                     ${postContent}
@@ -546,12 +628,6 @@
                     </div>
                 `;
                 postsContainer.appendChild(postElement);
-
-                if (index !== posts.length - 1) {
-                    const separator = document.createElement('hr');
-                    separator.className = 'post-separator';
-                    postsContainer.appendChild(separator);
-                }
 
                 // Add click event for fullscreen
                 postElement.addEventListener('click', function(e) {
@@ -588,6 +664,12 @@
             });
         }
 
+        function truncateContent(content, maxLength) {
+            let processedContent = content.replace(/<[^>]*>/g, '');
+            if (processedContent.length <= maxLength) return processedContent;
+            return processedContent.slice(0, maxLength) + '...';
+        }
+
         async function openFullscreen(post) {
             const fullscreenElement = document.createElement('div');
             fullscreenElement.className = 'fullscreen';
@@ -599,6 +681,7 @@
                     <span class="post-author">By ${post.author || 'Anonymous'}</span>
                     <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
                     <span class="view-count"><i class="fas fa-eye"></i> ${post.views + 1}</span>
+                    <span class="post-category">${post.category}</span>
                 </div>
                 <div class="post-tags">${generateTags(post.tags)}</div>
                 <div class="post-content">${post.content}</div>
@@ -691,12 +774,39 @@
                 const post = allPosts.find(p => p.id === postId);
                 if (post) {
                     await openFullscreen(post);
+                } else {
+                    // If the post is not in allPosts, fetch it from Firestore
+                    try {
+                        const doc = await db.collection('articles').doc(postId).get();
+                        if (doc.exists) {
+                            const data = doc.data();
+                            const post = {
+                                id: doc.id,
+                                title: data.title || 'Untitled',
+                                date: data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date(),
+                                content: data.content || '',
+                                image: data.image || '/placeholder.svg?height=300&width=500',
+                                author: data.author || 'Anonymous',
+                                tags: data.tags || [],
+                                views: data.views || 0,
+                                category: data.category || 'Uncategorized'
+                            };
+                            await openFullscreen(post);
+                        } else {
+                            console.log('No such document!');
+                        }
+                    } catch (error) {
+                        console.error('Error getting document:', error);
+                    }
                 }
             }
         }
 
         // Load posts when the page is ready
-        document.addEventListener('DOMContentLoaded', loadPosts);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPosts();
+            openSharedPost();
+        });
 
         // Add event listener for search input
         document.getElementById('search-input').addEventListener('input', searchPosts);
@@ -729,6 +839,20 @@
                 }, 300); // Wait for the transition to complete
             }
             openSharedPost(); // This will reopen the post if there's a post ID in the URL
+        });
+
+        // Add event listener for Load More button
+        document.getElementById('load-more').addEventListener('click', () => loadPosts(true));
+
+        // Add event listeners for category filter buttons
+        document.querySelectorAll('.category-filter button').forEach(button => {
+            button.addEventListener('click', function() {
+                currentCategory = this.dataset.category;
+                document.querySelectorAll('.category-filter button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                lastVisible = null;
+                loadPosts();
+            });
         });
     </script>
 </body>
