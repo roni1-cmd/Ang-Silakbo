@@ -279,42 +279,41 @@
         }
         @media (max-width: 768px) {
             .header, .footer {
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
             }
             .header-content, .footer-content {
-            flex-direction: column;
+                flex-direction: column;
             }
             .header img {
-            height: 40px;
-            width: auto;
-            margin-right: 0;
-            margin-bottom: 10px;
+                height: 40px;
+                width: auto;
+                margin-right: 0;
+                margin-bottom: 10px;
             }
             .footer-logo {
-            height: 30px;
-            width: auto;
-            margin-right: 0;
-            margin-bottom: 10px;
+                height: 30px;
+                width: auto;
+                margin-right: 0;
+                margin-bottom: 10px;
             }
             .header-text, .footer-text {
-            text-align: center;
+                text-align: center;
             }
             .nav-links a {
-            display: block;
-            margin: 10px 0;
+                display: block;
+                margin: 10px 0;
             }
             .social-icons {
-            justify-content: center;
-            margin-top: 15px;
+                justify-content: center;
+                margin-top: 15px;
             }
             img {
-            max-width: 100%;
-            height: auto;
+                max-width: 100%;
+                height: auto;
             }
         }
-
         .featured-label {
             background-color: #E65100;
             color: white;
@@ -324,7 +323,6 @@
             display: inline-block;
             margin-bottom: 10px;
         }
-
         .post-meta {
             display: flex;
             flex-wrap: wrap;
@@ -332,12 +330,11 @@
             margin-bottom: 10px;
             font-size: 0.9em;
             color: #666;
+            align-items: center;
         }
-
         .post-tags {
             margin-bottom: 15px;
         }
-
         .tag {
             background-color: #f0f0f0;
             color: #333;
@@ -346,11 +343,9 @@
             font-size: 0.8em;
             margin-right: 5px;
         }
-
         .social-share {
             margin-top: 20px;
         }
-
         .social-share button {
             background-color: #E65100;
             color: white;
@@ -361,9 +356,16 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
         .social-share button:hover {
             background-color: #F57C00;
+        }
+        .view-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .view-count i {
+            color: #E65100;
         }
     </style>
 </head>
@@ -378,13 +380,6 @@
                 </div>
             </div>
         </header>
-
-        <nav class="nav-links fade-in">
-            <a href="photostory.html"><i class="fas fa-camera"></i> Photostories</a>
-            <a href="articles.html"><i class="fas fa-newspaper"></i> Articles</a>
-            <a href="literary.html"><i class="fas fa-book"></i> Literary Works</a>
-            <a href="About Us.html"><i class="fas fa-info-circle"></i> About Us</a>
-        </nav>
 
         <div class="search-container fade-in">
             <input type="text" id="search-input" placeholder="Search articles...">
@@ -481,7 +476,8 @@
                         content: data.content || '',
                         image: data.image || '/placeholder.svg?height=300&width=500',
                         author: data.author || 'Anonymous',
-                        tags: data.tags || []
+                        tags: data.tags || [],
+                        views: data.views || 0
                     };
                 });
 
@@ -512,6 +508,7 @@
                             <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
                             <span class="post-author">By ${post.author || 'Anonymous'}</span>
                             <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                            <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
                         </div>
                         <div class="post-tags">${generateTags(post.tags)}</div>
                         <div class="post-content">${post.content}</div>
@@ -531,6 +528,7 @@
                             <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
                             <span class="post-author">By ${post.author || 'Anonymous'}</span>
                             <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                            <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
                         </div>
                         <div class="post-tags">${generateTags(post.tags)}</div>
                         <div class="post-content">${previewText}</div>
@@ -590,7 +588,7 @@
             });
         }
 
-        function openFullscreen(post) {
+        async function openFullscreen(post) {
             const fullscreenElement = document.createElement('div');
             fullscreenElement.className = 'fullscreen';
             fullscreenElement.innerHTML = `
@@ -600,6 +598,7 @@
                     <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
                     <span class="post-author">By ${post.author || 'Anonymous'}</span>
                     <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+                    <span class="view-count"><i class="fas fa-eye"></i> ${post.views + 1}</span>
                 </div>
                 <div class="post-tags">${generateTags(post.tags)}</div>
                 <div class="post-content">${post.content}</div>
@@ -621,6 +620,25 @@
 
             // Update the URL with the post ID
             history.pushState(null, '', `?post=${post.id}`);
+
+            // Increment view count
+            await incrementViewCount(post.id);
+        }
+
+        async function incrementViewCount(postId) {
+            try {
+                const postRef = db.collection('articles').doc(postId);
+                await postRef.update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                });
+                // Update the local post object
+                const postIndex = allPosts.findIndex(p => p.id === postId);
+                if (postIndex !== -1) {
+                    allPosts[postIndex].views++;
+                }
+            } catch (error) {
+                console.error('Error incrementing view count:', error);
+            }
         }
 
         function sharePost(post) {
@@ -666,13 +684,13 @@
         }
 
         // Function to open a specific post from a shared link
-        function openSharedPost() {
+        async function openSharedPost() {
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('post');
             if (postId) {
                 const post = allPosts.find(p => p.id === postId);
                 if (post) {
-                    openFullscreen(post);
+                    await openFullscreen(post);
                 }
             }
         }
