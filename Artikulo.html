@@ -404,9 +404,33 @@
             padding: 20px;
             margin-bottom: 30px;
             background-color: #fff9f6;
+            position: relative;
         }
         .latest-post .post-title {
             font-size: 28px;
+            margin-bottom: 15px;
+        }
+        .latest-post .post-content {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .latest-post .post-menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .latest-post .read-more {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #E65100;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .latest-post .read-more:hover {
+            background-color: #F57C00;
         }
     </style>
 </head>
@@ -573,24 +597,60 @@
         function displayLatestPost(post) {
             const latestPostContainer = document.getElementById('latest-post-container');
             latestPostContainer.innerHTML = `
-                <div class="featured-label">Latest Article</div>
-                <h2 class="post-title">${post.title}</h2>
-                <div class="post-meta">
-                    <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
-                    <span class="post-author">By ${post.author || 'Anonymous'}</span>
-                    <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
-                    <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
-                    <span class="post-category">${post.category}</span>
-                </div>
-                <div class="post-tags">${generateTags(post.tags)}</div>
-                <div class="post-content">${post.content}</div>
-                <div class="social-share">
-                    <button onclick="shareOnFacebook('${post.id}')"><i class="fab fa-facebook-f"></i> Share</button>
-                    <button onclick="shareOnTwitter('${post.id}')"><i class="fab fa-twitter"></i> Tweet</button>
-                    <button onclick="shareOnLinkedIn('${post.id}')"><i class="fab fa-linkedin-in"></i> Share</button>
-                </div>
-            `;
-        }
+        <div class="featured-label">Latest Article</div>
+        <h2 class="post-title">${post.title}</h2>
+        <div class="post-meta">
+            <span class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</span>
+            <span class="post-author">By ${post.author || 'Anonymous'}</span>
+            <span class="post-reading-time">${estimateReadingTime(post.content)} min read</span>
+            <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
+            <span class="post-category">${post.category}</span>
+        </div>
+        <div class="post-tags">${generateTags(post.tags)}</div>
+        <div class="post-content">${post.content}</div>
+        <a href="#" class="read-more">View Full Screen</a>
+        <div class="social-share">
+            <button onclick="shareOnFacebook('${post.id}')"><i class="fab fa-facebook-f"></i> Share</button>
+            <button onclick="shareOnTwitter('${post.id}')"><i class="fab fa-twitter"></i> Tweet</button>
+            <button onclick="shareOnLinkedIn('${post.id}')"><i class="fab fa-linkedin-in"></i> Share</button>
+        </div>
+        <div class="post-menu">
+            <i class="fas fa-ellipsis-v"></i>
+            <div class="post-menu-content">
+                <a href="#" class="share-link" data-id="${post.id}">Share Link</a>
+            </div>
+        </div>
+    `;
+
+    // Add click event for fullscreen
+    const readMoreLink = latestPostContainer.querySelector('.read-more');
+    if (readMoreLink) {
+        readMoreLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openFullscreen(post);
+        });
+    }
+
+    // Add click event for post menu
+    const menuIcon = latestPostContainer.querySelector('.post-menu i');
+    const menuContent = latestPostContainer.querySelector('.post-menu-content');
+    menuIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menuContent.style.display = menuContent.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Add click event for share link
+    const shareLink = latestPostContainer.querySelector('.share-link');
+    shareLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        sharePost(post);
+    });
+
+    // Increment view count for the latest post
+    incrementViewCount(post.id);
+}
 
         function displayPosts(posts, append = false) {
             const postsContainer = document.getElementById('posts-container');
@@ -768,39 +828,40 @@
 
         // Function to open a specific post from a shared link
         async function openSharedPost() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('post');
-            if (postId) {
-                const post = allPosts.find(p => p.id === postId);
-                if (post) {
-                    await openFullscreen(post);
-                } else {
-                    // If the post is not in allPosts, fetch it from Firestore
-                    try {
-                        const doc = await db.collection('articles').doc(postId).get();
-                        if (doc.exists) {
-                            const data = doc.data();
-                            const post = {
-                                id: doc.id,
-                                title: data.title || 'Untitled',
-                                date: data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date(),
-                                content: data.content || '',
-                                image: data.image || '/placeholder.svg?height=300&width=500',
-                                author: data.author || 'Anonymous',
-                                tags: data.tags || [],
-                                views: data.views || 0,
-                                category: data.category || 'Uncategorized'
-                            };
-                            await openFullscreen(post);
-                        } else {
-                            console.log('No such document!');
-                        }
-                    } catch (error) {
-                        console.error('Error getting document:', error);
-                    }
-                }
-            }
-        }
+   const urlParams = new URLSearchParams(window.location.search);
+   const postId = urlParams.get('post');
+   
+   if (postId) {
+       const post = allPosts.find(p => p.id === postId);
+       if (post) {
+           await openFullscreen(post);
+       } else {
+           // If the post is not in allPosts, fetch it from Firestore
+           try {
+               const doc = await db.collection('articles').doc(postId).get();
+               if (doc.exists) {
+                   const data = doc.data();
+                   const post = {
+                       id: doc.id,
+                       title: data.title || 'Untitled',
+                       date: data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date(),
+                       content: data.content || '',
+                       image: data.image || '/placeholder.svg?height=300&width=500',
+                       author: data.author || 'Anonymous',
+                       tags: data.tags || [],
+                       views: data.views || 0,
+                       category: data.category || 'Uncategorized'
+                   };
+                   await openFullscreen(post);
+               } else {
+                   console.log('No such document!');
+               }
+           } catch (error) {
+               console.error('Error getting document:', error);
+           }
+       }
+   }
+}
 
         // Load posts when the page is ready
         document.addEventListener('DOMContentLoaded', () => {
@@ -857,3 +918,4 @@
     </script>
 </body>
 </html>
+
