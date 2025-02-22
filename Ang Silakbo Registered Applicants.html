@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Registered Applicants</title>
+    <title>Silakbo Applicants Dashboard</title>
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #E65100;
-            --primary-light: #FF8C61;
-            --primary-dark: #E85D2E;
-            --secondary-color: #FFB563;
-            --tertiary-color: #FFD5C2;
-            --background-color: #FFFFFF;
-            --text-color: #333333;
-            --text-light: #666666;
-            --card-background: #FFF5EE;
-            --border-color: #FFE0D1;
-            --shadow-color: rgba(255, 107, 53, 0.1);
-            --border-radius: 15px;
+            --secondary-color: #E65100;
+            --accent-color: #E65100;
+            --background-color: #ECF0F1;
+            --text-color: #2C3E50;
+            --text-light: #7F8C8D;
+            --card-background: #FFFFFF;
+            --border-color: #BDC3C7;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --success-color: #2ECC71;
+            --danger-color: #E74C3C;
+            --warning-color: #F39C12;
+            --border-radius: 8px;
             --transition-speed: 0.3s;
         }
 
@@ -35,110 +36,183 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
         }
 
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-            font-size: 2.5rem;
+        .sidebar-logo {
+            font-size: 1.5rem;
             font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
         }
 
-        .stats {
+        .sidebar-nav {
+            list-style-type: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition-speed);
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background-color: var(--secondary-color);
+        }
+
+        .sidebar-nav i {
+            margin-right: 0.75rem;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 1.5rem;
+            background-color: var(--card-background);
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 20px var(--shadow-color);
-            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 30px var(--shadow-color);
+            box-shadow: 0 6px 8px var(--shadow-color);
         }
 
         .stat-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .stat-card h3 i {
-            margin-right: 0.75rem;
-            font-size: 1.3rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
         }
 
         .stat-card p {
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .search-container {
+            flex-grow: 1;
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
         }
 
         #searchInput {
             flex-grow: 1;
             padding: 0.75rem 1rem;
             font-size: 1rem;
-            border: 2px solid var(--primary-color);
-            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
             outline: none;
-            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-        }
-
-        #searchInput:focus {
-            border-color: var(--primary-dark);
-            box-shadow: 0 0 0 3px var(--shadow-color);
         }
 
         #searchBtn {
             padding: 0.75rem 1.5rem;
-            background-color: var(--primary-color);
+            background-color: var(--accent-color);
             color: white;
             border: none;
-            border-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
             cursor: pointer;
-            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
-            font-weight: 600;
+            transition: background-color var(--transition-speed);
         }
 
         #searchBtn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
+            background-color: #2980B9;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filter-group select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: white;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980B9;
         }
 
         .table-container {
             background-color: var(--card-background);
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 20px var(--shadow-color);
-            overflow-x: auto;
-            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            overflow: hidden;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
         }
 
         th, td {
@@ -148,43 +222,34 @@
         }
 
         th {
-            background-color: var(--primary-color);
+            background-color: var(--secondary-color);
             color: white;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         tr:nth-child(even) {
-            background-color: var(--tertiary-color);
-        }
-
-        tr:hover {
-            background-color: var(--border-color);
+            background-color: #F8F9FA;
         }
 
         .pagination {
             display: flex;
             justify-content: center;
             gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
+            margin-top: 1.5rem;
         }
 
         .pagination button {
-            padding: 0.75rem 1.5rem;
-            background-color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            background-color: var(--accent-color);
             color: white;
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
-            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
-            font-weight: 600;
+            transition: background-color var(--transition-speed);
         }
 
         .pagination button:hover:not(:disabled) {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
+            background-color: #2980B9;
         }
 
         .pagination button:disabled {
@@ -192,117 +257,11 @@
             cursor: not-allowed;
         }
 
-        .back-btn, .send-emails-btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            margin-bottom: 1.5rem;
-            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
-            font-weight: 600;
-        }
-
-        .back-btn:hover, .send-emails-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .send-emails-btn {
-            margin-left: 1rem;
-            background-color: var(--secondary-color);
-        }
-
         #message {
             text-align: center;
-            margin: 1.5rem 0;
-            font-weight: 600;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-
-        .loading::after {
-            content: "";
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--tertiary-color);
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-        }
-
-        .filter-group label {
-            margin-right: 0.75rem;
-            white-space: nowrap;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .filter-group select {
-            padding: 0.75rem;
-            border: 2px solid var(--primary-color);
-            border-radius: var(--border-radius);
-            background-color: white;
-            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            flex-grow: 1;
-            font-size: 1rem;
-        }
-
-        .filter-group select:focus {
-            border-color: var(--primary-dark);
-            box-shadow: 0 0 0 3px var(--shadow-color);
-            outline: none;
-        }
-
-        .export-btn {
-            padding: 0.75rem 1.5rem;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
-            font-weight: 600;
-        }
-
-        .export-btn:hover {
-            background-color: var(--primary-color);
-            transform: translateY(-2px);
+            margin: 1rem 0;
+            font-weight: 500;
+            color: var(--accent-color);
         }
 
         .modal {
@@ -313,18 +272,17 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
             background-color: var(--card-background);
             margin: 10% auto;
             padding: 2rem;
-            border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
             width: 90%;
-            max-width: 600px;
-            box-shadow: 0 12px 30px var(--shadow-color);
+            max-width: 500px;
+            box-shadow: 0 4px 6px var(--shadow-color);
         }
 
         .close {
@@ -333,174 +291,139 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            transition: color var(--transition-speed) ease;
         }
 
-        .close:hover,
-        .close:focus {
-            color: var(--primary-color);
-        }
-
-        #applicantDetails {
-            margin-top: 1.5rem;
+        .close:hover {
+            color: var(--text-color);
         }
 
         #applicantDetails h2 {
-            color: var(--primary-color);
             margin-bottom: 1rem;
-            font-size: 1.8rem;
+            color: var(--accent-color);
         }
 
         #applicantDetails p {
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
         }
 
         @media (max-width: 768px) {
-            .container {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
                 padding: 1rem;
             }
 
-            h1 {
-                font-size: 2rem;
+            .sidebar-nav {
+                display: flex;
+                justify-content: space-around;
             }
 
-            .stat-card h3 {
-                font-size: 1rem;
+            .sidebar-nav li {
+                margin-bottom: 0;
             }
 
-            .stat-card p {
-                font-size: 1.5rem;
+            .main-content {
+                padding: 1rem;
             }
 
-            #searchInput, #searchBtn, .filter-group, .export-btn {
-                width: 100%;
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .filters {
+            .controls {
                 flex-direction: column;
             }
 
-            .filter-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-group label {
-                margin-bottom: 0.5rem;
-            }
-
-            th, td {
-                padding: 0.75rem;
-            }
-
-            .pagination {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .pagination button {
+            .search-container, .filter-group {
                 width: 100%;
-                margin-bottom: 0.5rem;
-            }
-
-            .back-btn, .send-emails-btn {
-                display: block;
-                width: 100%;
-                margin-bottom: 1rem;
-                margin-left: 0;
-                text-align: center;
-            }
-
-            .modal-content {
-                margin: 20% auto;
-                width: 95%;
-                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="Ang Silakbo Admin Panel.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Admin Panel
-        </a>
-        <a href="Application Manager.html" class="send-emails-btn">
-            <i class="fas fa-envelope"></i> SEND EMAILS FOR APPROVAL
-        </a>
-        <h1><i class="fas fa-users"></i> Silakbo Applicants</h1>
-        
-        <div class="stats fade-in">
+    <nav class="sidebar">
+        <ul class="sidebar-nav">
+            <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="Application Manager.html"><i class="fas fa-users"></i> Applicants</a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">Applicants Dashboard</h1>
+            <button class="btn btn-primary" id="exportBtn"><i class="fas fa-file-export"></i> Export to CSV</button>
+        </header>
+
+        <section class="stats-grid">
             <div class="stat-card">
-                <h3><i class="fas fa-user-plus"></i> Total Applicants</h3>
+                <h3>Total Applicants</h3>
                 <p id="totalApplicants">0</p>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-briefcase"></i> Unique Positions</h3>
+                <h3>Unique Positions</h3>
                 <p id="uniquePositions">0</p>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-calendar-alt"></i> Latest Application</h3>
+                <h3>Latest Application</h3>
                 <p id="latestApplication">N/A</p>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-chart-line"></i> Application Rate</h3>
+                <h3>Application Rate</h3>
                 <p id="applicationRate">0/day</p>
             </div>
-        </div>
+        </section>
 
-        <div class="search-container fade-in">
-            <input type="text" id="searchInput" placeholder="Search by name, email, or position...">
-            <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
-        </div>
-
-        <div class="filters fade-in">
-            <div class="filter-group">
-                <label for="positionFilter">Position:</label>
-                <select id="positionFilter">
-                    <option value="">All</option>
-                </select>
+        <section class="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search applicants...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
             </div>
             <div class="filter-group">
-                <label for="experienceFilter">Experience:</label>
+                <select id="positionFilter">
+                    <option value="">All Positions</option>
+                </select>
                 <select id="experienceFilter">
-                    <option value="">All</option>
+                    <option value="">All Experience</option>
                     <option value="0-1">0-1 years</option>
                     <option value="1-3">1-3 years</option>
                     <option value="3-5">3-5 years</option>
                     <option value="5+">5+ years</option>
                 </select>
             </div>
-            <button id="exportBtn" class="export-btn"><i class="fas fa-file-export"></i> Export to CSV</button>
-        </div>
+        </section>
 
-        <div id="message" class="fade-in"></div>
+        <div id="message"></div>
 
-        <div class="table-container fade-in">
+        <section class="table-container">
             <table id="applicantDataTable">
                 <thead>
                     <tr>
-                        <th><i class="fas fa-user"></i> Name</th>
-                        <th><i class="fas fa-envelope"></i> Email</th>
-                        <th><i class="fas fa-phone"></i> Phone</th>
-                        <th><i class="fas fa-briefcase"></i> Position</th>
-                        <th><i class="fas fa-star"></i> Experience</th>
-                        <th><i class="fas fa-calendar-day"></i> Application Date</th>
-                        <th><i class="fas fa-info-circle"></i> Details</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Position</th>
+                        <th>Experience</th>
+                        <th>Application Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="applicantDataBody">
                     <!-- Data will be inserted here -->
                 </tbody>
             </table>
-        </div>
+        </section>
 
-        <div class="pagination fade-in">
-            <button id="prevPage"><i class="fas fa-chevron-left"></i> Previous</button>
+        <div class="pagination">
+            <button id="prevPage">Previous</button>
             <span id="pageInfo">Page 1 of 1</span>
-            <button id="nextPage">Next <i class="fas fa-chevron-right"></i></button>
+            <button id="nextPage">Next</button>
         </div>
-    </div>
+    </main>
 
     <div id="applicantModal" class="modal">
         <div class="modal-content">
@@ -549,14 +472,11 @@
 
         function showMessage(msg, isError = false) {
             messageElement.textContent = msg;
-            messageElement.style.color = isError ? 'red' : 'var(--primary-color)';
-            messageElement.classList.remove('fade-in');
-            void messageElement.offsetWidth;
-            messageElement.classList.add('fade-in');
+            messageElement.style.color = isError ? 'var(--danger-color)' : 'var(--accent-color)';
         }
 
         function showLoading() {
-            tableBody.innerHTML = '<tr><td colspan="7"><div class="loading"></div></td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6"><div class="loading">Loading...</div></td></tr>';
         }
 
         onAuthStateChanged(auth, (user) => {
@@ -609,20 +529,18 @@
             } else {
                 paginatedApplicants.forEach(applicant => {
                     const row = tableBody.insertRow();
-                    row.className = 'fade-in';
                     row.insertCell().textContent = applicant.name;
                     row.insertCell().textContent = applicant.email;
-                    row.insertCell().textContent = applicant.phone;
                     row.insertCell().textContent = applicant.position;
                     row.insertCell().textContent = applicant.experience;
-                    row.insertCell().textContent = new Date(applicant.timestamp).toLocaleString();
+                    row.insertCell().textContent = new Date(applicant.timestamp).toLocaleDateString();
                     
-                    const detailsCell = row.insertCell();
-                    const detailsBtn = document.createElement('button');
-                    detailsBtn.textContent = 'View';
-                    detailsBtn.className = 'details-btn';
-                    detailsBtn.onclick = () => showApplicantDetails(applicant);
-                    detailsCell.appendChild(detailsBtn);
+                    const actionsCell = row.insertCell();
+                    const viewBtn = document.createElement('button');
+                    viewBtn.textContent = 'View';
+                    viewBtn.className = 'btn btn-primary';
+                    viewBtn.onclick = () => showApplicantDetails(applicant);
+                    actionsCell.appendChild(viewBtn);
                 });
                 showMessage(`Showing ${startIndex + 1}-${Math.min(endIndex, filteredApplicants.length)} of ${filteredApplicants.length} applicants`);
             }
@@ -654,7 +572,7 @@
 
         function populateFilters() {
             const positions = [...new Set(allApplicants.map(a => a.position))];
-            positionFilter.innerHTML = '<option value="">All</option>' + 
+            positionFilter.innerHTML = '<option value="">All Positions</option>' + 
                 positions.map(p => `<option value="${p}">${p}</option>`).join('');
         }
 
