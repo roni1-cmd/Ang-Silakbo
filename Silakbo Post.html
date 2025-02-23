@@ -3,599 +3,971 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Page Not Found</title>
+    <title>Ang Silakbo Workstation</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.3/docx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #E65100;
-            --secondary-color: #FF6347;
+            --primary-light: #FF8A50;
+            --primary-dark: #B23C00;
+            --secondary-color: #FFF3E0;
             --text-color: #333333;
-            --bg-color: #FFFFFF;
-            --accent-color: #4ECDC4;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+            --dark-gray: #4A4A4A;
+            --border-color: #E0E0E0;
         }
-
-        * {
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--gray);
             color: var(--text-color);
-            line-height: 1.6;
+            height: 100%;
+        }
+        .container {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-
         header {
             background-color: var(--primary-color);
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
+            color: var(--white);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .logo {
+        .header-left {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
         }
-
-        .logo img {
-            width: 40px;
-            height: auto;
+        .header-left img {
+            height: 40px;
+            margin-right: 1rem;
+            filter: brightness(0) invert(1);
         }
-
-        .logo h1 {
+        header h1 {
+            margin: 0;
             font-size: 1.5rem;
-            color: white;
-        }
-
-        nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: white;
             font-weight: 600;
+            color: var(--white);
+        }
+        .home-icon {
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
             transition: color 0.3s ease;
         }
-
-        nav a:hover {
+        .home-icon:hover {
             color: var(--secondary-color);
         }
-
+        nav {
+            background-color: var(--primary-dark);
+            padding: 0.5rem 2rem;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin-right: 1rem;
+        }
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
         main {
+            display: flex;
+            flex: 1;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        .content-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
+            gap: 2rem;
         }
-
-        .animated-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .animated-background::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg at 50% 50%, var(--primary-color), var(--secondary-color), var(--accent-color), var(--primary-color));
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-container {
-            padding: 2rem;
-            width: 100%;
-            text-align: center;
+        .editor-container, #published-works, #analytics-container, #settings-container {
+            background-color: var(--white);
             border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
         }
-
-        .error-code {
-            font-size: 5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .error-image {
-            width: 150px;
-            margin-bottom: 1.5rem;
-        }
-
-        .error-title {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .error-message {
-            margin-bottom: 1.5rem;
-        }
-
-        .cta-buttons {
+        .title-category-container {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
+            gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
-
-        .button {
+        .title-container {
+            flex: 2;
+        }
+        .category-container {
+            flex: 1;
+        }
+        .sidebar {
+            width: 300px;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            align-self: flex-start;
+            position: sticky;
+            top: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        select, input, .search-bar input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+        select:focus, input:focus, .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        button {
+            background-color: var(--primary-color);
+            color: var(--white);
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .nav-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: var(--primary-dark);
+        }
+        .writing-tips {
+            margin-bottom: 2rem;
+        }
+        .writing-tips h3, .font-preview h4 {
+            color: var(--primary-color);
+            margin-top: 0;
             font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
         }
-
-        .button:hover {
-            transform: translateY(-2px);
-        }
-
-        .button-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .button-primary:hover {
-            background-color: #ff9400;
-        }
-
-        .button-secondary {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .button-secondary:hover {
-            background-color: #ff5233;
-        }
-
-        .additional-links {
-            font-size: 0.9rem;
-        }
-
-        .additional-links a {
-            color: var(--accent-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .additional-links a:hover {
-            color: #3db5ac;
-        }
-
-        .search-container {
-            margin-top: 2rem;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .search-container form {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .search-container input {
-            flex-grow: 1;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .search-container button {
-            padding: 0.5rem 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .search-container button:hover {
-            background-color: #ff9400;
-        }
-
-        .popular-pages {
-            margin-top: 2rem;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .popular-pages h3 {
-            text-align: center;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        .popular-pages ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .popular-pages li {
-            margin-bottom: 0.5rem;
-        }
-
-        .popular-pages a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .popular-pages a:hover {
-            color: var(--primary-color);
-        }
-
-        .report-issue {
-            margin-top: 2rem;
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .language-selector {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-        }
-
-        .language-selector select {
-            padding: 0.25rem;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .newsletter-signup {
-            margin-top: 2rem;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .newsletter-signup form {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .newsletter-signup input {
-            flex-grow: 1;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .newsletter-signup button {
-            padding: 0.5rem 1rem;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .newsletter-signup button:hover {
-            background-color: #3db5ac;
-        }
-
-        .recently-viewed {
-            margin-top: 2rem;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .recently-viewed h3 {
-            text-align: center;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        .recently-viewed ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .recently-viewed li {
-            margin-bottom: 0.5rem;
-        }
-
         footer {
             background-color: var(--primary-color);
-            padding: 2rem 1rem;
-            color: white;
+            color: var(--white);
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
         }
-
-        .footer-content {
+        .icon {
+            margin-right: 0.5rem;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .font-preview {
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-radius: 4px;
+        }
+        .export-buttons {
             display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
-
-        .footer-section {
-            flex: 1;
-            min-width: 200px;
+        #published-works h2, #analytics-container h2, #settings-container h2 {
+            color: var(--primary-color);
+            margin-top: 0;
         }
-
-        .footer-section h4 {
-            margin-bottom: 1rem;
+        .published-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
         }
-
-        .footer-section ul {
-            list-style-type: none;
-            padding: 0;
+        .published-item:last-child {
+            border-bottom: none;
         }
-
-        .footer-section li {
-            margin-bottom: 0.5rem;
+        .published-item h3 {
+            margin: 0;
+            color: var(--primary-color);
         }
-
-        .footer-section a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s ease;
+        .published-item p {
+            margin: 0.5rem 0;
         }
-
-        .footer-section a:hover {
-            color: var(--secondary-color);
-        }
-
-        .social-links {
+        .edit-delete-buttons {
+            display: flex;
+            gap: 0.5rem;
             margin-top: 1rem;
         }
-
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            transition: color 0.3s ease;
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
-
-        .social-links a:hover {
-            color: var(--secondary-color);
+        .search-bar input {
+            flex-grow: 1;
         }
-
-        .copyright {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.9rem;
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            nav {
-                margin-top: 1rem;
-                flex-wrap: wrap;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .button {
-                width: 100%;
-            }
-
-            .footer-content {
-                flex-direction: column;
-            }
-
-            .language-selector {
-                position: static;
-                margin-top: 1rem;
-                text-align: center;
-            }
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--gray);
+            border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-
-        .hamburger div {
-            width: 25px;
-            height: 3px;
-            background-color: white;
-            margin: 3px 0;
-            transition: 0.4s;
+        .tab.active {
+            background-color: var(--primary-color);
+            color: var(--white);
         }
-
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            nav {
-                display: none;
-                width: 100%;
-            }
-
-            nav.show {
-                display: flex;
-                flex-direction: column;
-            }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        .main-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .main-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .main-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        #published-works, #analytics-container, #settings-container {
+            display: none;
+        }
+        .breadcrumb {
+            background-color: var(--secondary-color);
+            padding: 0.5rem 2rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .breadcrumb span {
+            color: var(--dark-gray);
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .analytics-card {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .analytics-card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .analytics-card p {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .settings-card {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .settings-card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .writing-tips-content {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+        .writing-tips-content h4 {
+            color: var(--primary-color);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .writing-tips-content ul {
+            padding-left: 1.5rem;
+        }
+        .writing-tips-content li {
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                <img src="SILAKBO.png" alt="SILAKBO Logo">
-                <h1>ANG SILAKBO</h1>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <img src="SILAKBO.png" alt="Silakbo Logo">
+                <h1>ANG SILAKBO WORKSTATION</h1>
             </div>
-            <div class="hamburger" onclick="toggleMenu()">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <nav id="main-nav">
-                <a href="index.html">Home</a>
-                <a href="about.html">About</a>
-                <a href="services.html">Services</a>
-                <a href="contact.html">Contact</a>
-            </nav>
-        </div>
-    </header>
+            <a href="Ang Silakbo Admin Panel.html" class="home-icon" title="Go to Admin Panel">
+                <i class="fas fa-home"></i>
+            </a>
+        </header>
 
-    <main>
-      
-        <div class="error-container">
-            <div class="error-code">404</div>
-            <img src="error gif.gif" alt="Error Illustration" class="error-image">
-            <h2 class="error-title">Oops! Page Not Found</h2>
-            <p class="error-message" id="error-message">
-                We're sorry, but the page you're looking for doesn't exist or has been moved.
-            </p>
-            <div class="cta-buttons">
-                <button class="button button-primary" onclick="window.location.href='index.html'">
-                    Go to Homepage
-                </button>
-                <button class="button button-secondary" onclick="window.history.back()">
-                    Go Back
-                </button>
-            </div>
-            <div class="additional-links">
-                <p>You might also want to check our <a href="faq.html">FAQ</a> or <a href="contact.html">contact us</a> for help.</p>
-            </div>
-        </div>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showTab('editor')"><i class="fas fa-pen-to-square"></i> Editor</a></li>
+                <li><a href="#" onclick="showTab('published')"><i class="fas fa-book"></i> Published Works</a></li>
+                <li><a href="#" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#" onclick="showTab('settings')"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
 
-       
-        <div class="report-issue">
-            <button class="button button-secondary" onclick="reportIssue()">Report This Issue</button>
-        </div>
+        <main>
+            <div class="content-area">
+                <div class="breadcrumb">
+                    <a href="#">Home</a> / <span id="current-page">Editor</span>
+                </div>
 
-       
-        </div>
-    </main>
+                <div class="main-tabs">
+                    <div class="main-tab active" onclick="showTab('editor')">Editor</div>
+                    <div class="main-tab" onclick="showTab('published')">Published Works</div>
+                    <div class="main-tab" onclick="showTab('analytics')">Analytics</div>
+                    <div class="main-tab" onclick="showTab('settings')">Settings</div>
+                </div>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    <li><a href="terms-of-service.html">Terms of Service</a></li>
-                    <li><a href="sitemap.html">Sitemap</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Connect With Us</h4>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook"> ANG SILAKBO</i></a>
+                <div id="editor-container" class="editor-container">
+                    <div class="title-category-container">
+                        <div class="title-container form-group fade-in">
+                            <label for="title"><i class="fas fa-heading icon"></i>Title</label>
+                            <input type="text" id="title" required placeholder="Enter title">
+                        </div>
+
+                        <div class="category-container form-group fade-in">
+                            <label for="category"><i class="fas fa-folder icon"></i>Category</label>
+                            <select id="category" required>
+                                <option value="">Select a category</option>
+                                <option value="photostory">Photostory</option>
+                                <option value="articles">Articles</option>
+                                <option value="literary">Literary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group fade-in">
+                        <label for="author"><i class="fas fa-user icon"></i>Author</label>
+                        <input type="text" id="author" required placeholder="Enter author's name">
+                    </div>
+
+                    <textarea id="editor"></textarea>
                     
+                    <div class="action-buttons">
+                        <button id="publish-button" onclick="handlePublish()"><i class="fas fa-paper-plane icon"></i>Publish</button>
+
+                        <div class="export-buttons">
+                            <button onclick="exportToPDF()"><i class="fas fa-file-pdf icon"></i>Export to PDF</button>
+                            <button onclick="exportToDOC()"><i class="fas fa-file-word icon"></i>Export to DOC</button>
+                        </div>
+                    </div>
+
+                    <div class="nav-links fade-in">
+                        <a href="Photostory.html"><i class="fas fa-camera icon"></i>View Photostories</a>
+                        <a href="Artikulo.html"><i class="fas fa-newspaper icon"></i>View Articles</a>
+                        <a href="literary.html"><i class="fas fa-book icon"></i>View Literary Works</a>
+                    </div>
+                </div>
+
+                <div id="published-works">
+                    <h2><i class="fas fa-list icon"></i>Published Works</h2>
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="Search published works...">
+                        <button onclick="searchPublishedWorks()"><i class="fas fa-search icon"></i>Search</button>
+                    </div>
+                    <div class="tabs">
+                        <div class="tab active" onclick="filterPublishedWorks('all')">All</div>
+                        <div class="tab" onclick="filterPublishedWorks('photostory')">Photostory</div>
+                        <div class="tab" onclick="filterPublishedWorks('articles')">Articles</div>
+                        <div class="tab" onclick="filterPublishedWorks('literary')">Literary</div>
+                    </div>
+                    <div id="published-list"></div>
+                </div>
+
+                <div id="analytics-container">
+                    <h2><i class="fas fa-chart-line icon"></i>Analytics</h2>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>Total Published Works</h3>
+                            <p id="total-works">0</p>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Most Popular Category</h3>
+                            <p id="popular-category">-</p>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Average Word Count</h3>
+                            <p id="avg-word-count">0</p>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Publications This Month</h3>
+                            <p id="publications-month">0</p>
+                        </div>
+                    </div>
+                    <canvas id="category-chart"></canvas>
+                </div>
+
+                <div id="settings-container">
+                    <h2><i class="fas fa-cog icon"></i>Settings</h2>
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3>Editor Settings</h3>
+                            <div class="form-group">
+                                <label for="editor-theme">Editor Theme</label>
+                                <select id="editor-theme" onchange="changeEditorTheme()">
+                                    <option value="default">Default</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="light">Light</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="font-size">Font Size</label>
+                                <input type="number" id="font-size" min="12" max="24" value="14" onchange="changeFontSize()">
+                            </div>
+                        </div>
+                        <div class="settings-card">
+                            <h3>Notification Settings</h3>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="email-notifications" checked>
+                                    Email Notifications
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="push-notifications">
+                                    Push Notifications
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="saveSettings()">Save Settings</button>
                 </div>
             </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
-        </div>
-    </footer>
+
+            <aside class="sidebar fade-in">
+                <div class="writing-tips">
+                    <h3><i class="fas fa-lightbulb icon"></i>Writing Tips</h3>
+                    <div id="writing-suggestions" class="writing-tips-content">
+                        <h4>General Tips</h4>
+                        <ul>
+                            <li>Know your audience and write with them in mind.</li>
+                            <li>Create an outline before you start writing.</li>
+                            <li>Use active voice for more engaging content.</li>
+                            <li>Be concise and avoid unnecessary words.</li>
+                            <li>Proofread and edit your work multiple times.</li>
+                        </ul>
+                        <h4>Category-Specific Tips</h4>
+                        <div id="category-tips"></div>
+                    </div>
+                </div>
+                <div class="font-preview">
+                    <h4><i class="fas fa-font icon"></i>Font Preview</h4>
+                    <p style="font-family: 'Poppins', sans-serif;">Poppins: The quick brown fox jumps over the lazy dog.</p>
+                    <p style="font-family: Arial, sans-serif;">Arial: The quick brown fox jumps over the lazy dog.</p>
+                </div>
+            </aside>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Ang Silakbo Workstation. All rights reserved.</p>
+        </footer>
+    </div>
 
     <script>
-        function toggleMenu() {
-            const nav = document.getElementById('main-nav');
-            nav.classList.toggle('show');
-        }
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.firebasestorage.app",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
 
-        function changeLanguage(lang) {
-            // Implement language change logic here
-            console.log('Language changed to:', lang);
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        function reportIssue() {
-            // Implement issue reporting logic here
-            alert('Thank you for reporting this issue. We will look into it.');
-        }
-
-        function subscribeNewsletter() {
-            // Implement newsletter subscription logic here
-            alert('Thank you for subscribing to our newsletter!');
-            return false; // Prevent form submission
-        }
-
-        // Custom 404 message generator
-        const messages = [
-            "Oops! This page seems to have vanished into thin air.",
-            "Houston, we have a problem. This page is lost in space.",
-            "Looks like this page took a wrong turn at Albuquerque.",
-            "This page is playing hide and seek. It's winning.",
-            "We've looked high and low, but this page is nowhere to be found."
-        ];
-
-        document.getElementById('error-message').textContent = messages[Math.floor(Math.random() * messages.length)];
-
-        // Recently viewed pages (simulated)
-        const recentlyViewed = [
-            { title: "Home Page", url: "index.html" },
-            { title: "About Us", url: "about.html" },
-            { title: "Our Services", url: "services.html" }
-        ];
-
-        const recentList = document.getElementById('recently-viewed-list');
-        recentlyViewed.forEach(page => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = page.url;
-            a.textContent = page.title;
-            li.appendChild(a);
-            recentList.appendChild(li);
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#editor',
+            height: 600,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family: Poppins, sans-serif; font-size: 14px; }',
+            skin: 'oxide',
+            content_css: 'default'
         });
+
+        let currentEditId = null;
+        let currentEditCategory = null;
+
+        async function handlePublish() {
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const author = document.getElementById('author').value;
+            const content = tinymce.get('editor').getContent();
+
+            if (!title || !category || !author || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (currentEditId) {
+                await updatePublishedWork(currentEditId, currentEditCategory, title, category, author, content);
+            } else {
+                await publishContent(title, category, author, content);
+            }
+
+            resetEditor();
+            loadPublishedWorks();
+        }
+
+        async function publishContent(title, category, author, content) {
+            try {
+                await db.collection(category).add({
+                    title: title,
+                    author: author,
+                    content: content,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Content published successfully!');
+            } catch (error) {
+                console.error('Error publishing content:', error);
+                alert('Error publishing content. Please try again.');
+            }
+        }
+
+        async function updatePublishedWork(docId, oldCategory, title, newCategory, author, content) {
+            try {
+                if (oldCategory === newCategory) {
+                    await db.collection(oldCategory).doc(docId).update({
+                        title: title,
+                        author: author,
+                        content: content,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    // Delete from old category and add to new category
+                    await db.collection(oldCategory).doc(docId).delete();
+                    await db.collection(newCategory).add({
+                        title: title,
+                        author: author,
+                        content: content,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert('Work updated successfully!');
+                currentEditId = null;
+                currentEditCategory = null;
+                document.getElementById('publish-button').innerHTML = '<i class="fas fa-paper-plane icon"></i>Publish';
+            } catch (error) {
+                console.error('Error updating work:', error);
+                alert('Error updating work. Please try again.');
+            }
+        }
+
+        function resetEditor() {
+            document.getElementById('title').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('author').value = '';
+            tinymce.get('editor').setContent('');
+            currentEditId = null;
+            currentEditCategory = null;
+            document.getElementById('publish-button').innerHTML = '<i class="fas fa-paper-plane icon"></i>Publish';
+        }
+
+        function updateWritingSuggestions() {
+            const category = document.getElementById('category').value;
+            const categoryTipsElement = document.getElementById('category-tips');
+            let tips = '';
+
+            switch(category) {
+                case 'articles':
+                    tips = `
+                        <h4>Article Writing Tips</h4>
+                        <ul>
+                            <li>Start with a compelling headline that grabs attention.</li>
+                            <li>Use subheadings to break up your content and improve readability.</li>
+                            <li>Include relevant facts, statistics, and quotes to support your points.</li>
+                            <li>Use transition words to improve the flow between paragraphs.</li>
+                            <li>End with a strong conclusion or call-to-action.</li>
+                            <li>Research thoroughly and cite your sources.</li>
+                            <li>Use storytelling techniques to engage your readers.</li>
+                        </ul>
+                    `;
+                    break;
+                case 'literary':
+                    tips = `
+                        <h4>Literary Writing Tips</h4>
+                        <ul>
+                            <li>Develop a strong, central theme or message for your work.</li>
+                            <li>Create complex, relatable characters with depth and motivation.</li>
+                            <li>Use vivid imagery and descriptive language to paint a picture in the reader's mind.</li>
+                            <li>Experiment with different literary devices like metaphors, similes, and personification.</li>
+                            <li>Pay attention to pacing and structure in your narrative.</li>
+                            <li>Show, don't tell: use actions and dialogue to reveal character traits and emotions.</li>
+                            <li>Edit ruthlessly, focusing on clarity and impact in your writing.</li>
+                        </ul>
+                    `;
+                    break;
+                case 'photostory':
+                    tips = `
+                        <h4>Photostory Tips</h4>
+                        <ul>
+                            <li>Select a series of impactful, high-quality images that tell a cohesive story.</li>
+                            <li>Ensure your images have a logical sequence and flow.</li>
+                            <li>Write concise, engaging captions that complement the images without stating the obvious.</li>
+                            <li>Consider the composition and framing of each photograph.</li>
+                            <li>Use a mix of wide, medium, and close-up shots to add variety.</li>
+                            <li>Include a brief introduction and conclusion to set the context and wrap up the story.</li>
+                            <li>Pay attention to color schemes and visual themes across your images.</li>
+                        </ul>
+                    `;
+                    break;
+                default:
+                    tips = 'Select a category to see specific writing tips.';
+            }
+
+            categoryTipsElement.innerHTML = tips;
+        }
+
+        document.getElementById('category').addEventListener('change', updateWritingSuggestions);
+        updateWritingSuggestions();
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const content = tinymce.get('editor').getContent();
+            
+            doc.setFontSize(18);
+            doc.text(title, 20, 20);
+            
+            doc.setFontSize(14);
+            doc.text(`By ${author}`, 20, 30);
+            
+            doc.setFontSize(12);
+            const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
+            const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
+            doc.text(splitContent, 20, 40);
+            
+            doc.save(title + '.pdf');
+        }
+
+        function exportToDOC() {
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const content = tinymce.get('editor').getContent();
+            
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            text: title,
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            text: `By ${author}`,
+                            heading: HeadingLevel.HEADING_2,
+                        }),
+                        new Paragraph({
+                            text: content.replace(/<[^>]+>/g, ''),
+                        }),
+                    ],
+                }],
+            });
+            
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, title + ".docx");
+            });
+        }
+
+        let allPublishedWorks = [];
+
+        async function loadPublishedWorks() {
+            const publishedList = document.getElementById('published-list');
+            publishedList.innerHTML = '';
+
+            const categories = ['photostory', 'articles', 'literary'];
+            allPublishedWorks = [];
+
+            for (const category of categories) {
+                const snapshot = await db.collection(category).orderBy('timestamp', 'desc').get();
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    allPublishedWorks.push({
+                        id: doc.id,
+                        category: category,
+                        title: data.title,
+                        author: data.author,
+                        content: data.content,
+                        timestamp: data.timestamp
+                    });
+                });
+            }
+
+            displayPublishedWorks(allPublishedWorks);
+            updateAnalytics();
+        }
+
+        function displayPublishedWorks(works) {
+            const publishedList = document.getElementById('published-list');
+            publishedList.innerHTML = '';
+
+            works.forEach(work => {
+                const publishedItem = document.createElement('div');
+                publishedItem.className = 'published-item';
+                publishedItem.innerHTML = `
+                    <h3>${work.title}</h3>
+                    <p>Author: ${work.author}</p>
+                    <p>Category: ${work.category}</p>
+                    <p>Published: ${work.timestamp.toDate().toLocaleString()}</p>
+                    <div class="edit-delete-buttons">
+                        <button onclick="editPublishedWork('${work.category}', '${work.id}')">Edit</button>
+                        <button onclick="deletePublishedWork('${work.category}', '${work.id}')">Delete</button>
+                    </div>
+                `;
+                publishedList.appendChild(publishedItem);
+            });
+        }
+
+        async function editPublishedWork(category, docId) {
+            const doc = await db.collection(category).doc(docId).get();
+            const data = doc.data();
+
+            document.getElementById('title').value = data.title;
+            document.getElementById('category').value = category;
+            document.getElementById('author').value = data.author;
+            tinymce.get('editor').setContent(data.content);
+
+            currentEditId = docId;
+            currentEditCategory = category;
+            document.getElementById('publish-button').innerHTML = '<i class="fas fa-save icon"></i>Update';
+
+            showTab('editor');
+            window.scrollTo(0, 0);
+        }
+
+        async function deletePublishedWork(category, docId) {
+            if (confirm('Are you sure you want to delete this work?')) {
+                try {
+                    await db.collection(category).doc(docId).delete();
+                    alert('Work deleted successfully!');
+                    loadPublishedWorks();
+                } catch (error) {
+                    console.error('Error deleting work:', error);
+                    alert('Error deleting work. Please try again.');
+                }
+            }
+        }
+
+        function searchPublishedWorks() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const filteredWorks = allPublishedWorks.filter(work => 
+                work.title.toLowerCase().includes(searchTerm) || 
+                work.author.toLowerCase().includes(searchTerm) ||
+                work.content.toLowerCase().includes(searchTerm)
+            );
+            displayPublishedWorks(filteredWorks);
+        }
+
+        function filterPublishedWorks(category) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (category === 'all') {
+                displayPublishedWorks(allPublishedWorks);
+            } else {
+                const filteredWorks = allPublishedWorks.filter(work => work.category === category);
+                displayPublishedWorks(filteredWorks);
+            }
+        }
+
+        function showTab(tabName) {
+            const editorContainer = document.getElementById('editor-container');
+            const publishedWorks = document.getElementById('published-works');
+            const analyticsContainer = document.getElementById('analytics-container');
+            const settingsContainer = document.getElementById('settings-container');
+            const tabs = document.querySelectorAll('.main-tab');
+            const currentPage = document.getElementById('current-page');
+
+            editorContainer.style.display = 'none';
+            publishedWorks.style.display = 'none';
+            analyticsContainer.style.display = 'none';
+            settingsContainer.style.display = 'none';
+
+            if (tabName === 'editor') {
+                editorContainer.style.display = 'block';
+                currentPage.textContent = 'Editor';
+            } else if (tabName === 'published') {
+                publishedWorks.style.display = 'block';
+                loadPublishedWorks();
+                currentPage.textContent = 'Published Works';
+            } else if (tabName === 'analytics') {
+                analyticsContainer.style.display = 'block';
+                updateAnalytics();
+                currentPage.textContent = 'Analytics';
+            } else if (tabName === 'settings') {
+                settingsContainer.style.display = 'block';
+                currentPage.textContent = 'Settings';
+            }
+
+            tabs.forEach(tab => {
+                if (tab.textContent.toLowerCase().includes(tabName)) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+
+        function updateAnalytics() {
+            const totalWorks = allPublishedWorks.length;
+            document.getElementById('total-works').textContent = totalWorks;
+
+            const categoryCounts = allPublishedWorks.reduce((acc, work) => {
+                acc[work.category] = (acc[work.category] || 0) + 1;
+                return acc;
+            }, {});
+
+            const popularCategory = Object.keys(categoryCounts).reduce((a, b) => 
+                categoryCounts[a] > categoryCounts[b] ? a : b
+            );
+            document.getElementById('popular-category').textContent = popularCategory;
+
+            const avgWordCount = Math.round(allPublishedWorks.reduce((sum, work) => 
+                sum + work.content.split(' ').length, 0
+            ) / totalWorks);
+            document.getElementById('avg-word-count').textContent = avgWordCount;
+
+            const now = new Date();
+            const thisMonth = now.getMonth();
+            const thisYear = now.getFullYear();
+            const publicationsThisMonth = allPublishedWorks.filter(work => {
+                const pubDate = work.timestamp.toDate();
+                return pubDate.getMonth() === thisMonth && pubDate.getFullYear() === thisYear;
+            }).length;
+            document.getElementById('publications-month').textContent = publicationsThisMonth;
+
+            // Create a pie chart for category distribution
+            const ctx = document.getElementById('category-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(categoryCounts),
+                    datasets: [{
+                        data: Object.values(categoryCounts),
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Category Distribution'
+                    }
+                }
+            });
+        }
+
+        function changeEditorTheme() {
+            const theme = document.getElementById('editor-theme').value;
+            tinymce.get('editor').setTheme(theme);
+        }
+
+        function changeFontSize() {
+            const fontSize = document.getElementById('font-size').value;
+            tinymce.get('editor').getBody().style.fontSize = fontSize + 'px';
+        }
+
+        function saveSettings() {
+            const editorTheme = document.getElementById('editor-theme').value;
+            const fontSize = document.getElementById('font-size').value;
+            const emailNotifications = document.getElementById('email-notifications').checked;
+            const pushNotifications = document.getElementById('push-notifications').checked;
+
+            // Here you would typically save these settings to a database or local storage
+            console.log('Settings saved:', { editorTheme, fontSize, emailNotifications, pushNotifications });
+            alert('Settings saved successfully!');
+        }
+
+        // Load published works when the page loads
+        loadPublishedWorks();
     </script>
 </body>
 </html>
