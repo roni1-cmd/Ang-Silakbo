@@ -1,1542 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ang Silakbo - Forums</title>
-  <link rel="icon" href="SILAKBO (1).png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: #E65100;
-      --secondary-color: #FFFFFF;
-      --background-color: #F5F7FA;
-      --text-color: #1c1e21;
-      --border-color: #E4E6EB;
-      --accent-color: #4E9F3D;
-      --error-color: #D32F2F;
-    }
-    body {
-      font-family: 'Poppins', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--background-color);
-      color: var(--text-color);
-    }
-    header {
-      background-color: var(--primary-color);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    header h1 {
-      color: var(--secondary-color);
-      margin: 0;
-    }
-    #auth-section {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    #auth-section button {
-      margin: 5px;
-      padding: 8px 16px;
-      background-color: var(--secondary-color);
-      color: var(--primary-color);
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      transition: background-color 0.3s, color 0.3s, transform 0.3s;
-    }
-    #auth-section button:hover {
-      background-color: #FFD5C2;
-      transform: translateY(-2px);
-    }
-    .container {
-      display: flex;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    #sidebar {
-      flex: 1;
-      background-color: var(--secondary-color);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin-right: 20px;
-      height: fit-content;
-      position: sticky;
-      top: 80px;
-    }
-    #sidebar a {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      color: var(--text-color);
-      text-decoration: none;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    #sidebar a:hover {
-      background-color: var(--background-color);
-      transform: translateX(5px);
-    }
-    #sidebar a i {
-      margin-right: 10px;
-      font-size: 1.2em;
-    }
-    #main-content {
-      flex: 3;
-    }
-    #post-form {
-      background-color: var(--secondary-color);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
-      width: 100%;
-    }
-    #post-form:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    }
-    #post-content {
-      width: 100%;
-      height: 100px;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      margin-bottom: 15px;
-      font-family: 'Poppins', sans-serif;
-      resize: vertical;
-      transition: border-color 0.3s ease;
-      box-sizing: border-box;
-      min-height: 100px;
-      max-height: 300px;
-    }
-    #post-content:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-    #submit-post {
-      padding: 10px 20px;
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    #submit-post:hover {
-      background-color: #FF8C61;
-      transform: translateY(-2px);
-    }
-    .post {
-      background-color: var(--secondary-color);
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s;
-    }
-    .post:hover {
-      transform: translateY(-3px);
-    }
-    .post-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .post-header-left {
-      display: flex;
-      align-items: center;
-    }
-    .post-header img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .post-header h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-    .post-header p {
-      margin: 0;
-      font-size: 12px;
-      color: #65676b;
-    }
-    .post-actions {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
-    }
-    .post-actions button {
-      background: none;
-      border: none;
-      color: #65676b;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      transition: color 0.3s;
-      display: flex;
-      align-items: center;
-    }
-    .post-actions button:hover {
-      color: var(--primary-color);
-    }
-    .post-actions button i {
-      margin-right: 5px;
-    }
-    #notifications {
-      position: fixed;
-      top: 70px;
-      right: 10px;
-      z-index: 1000;
-      max-width: 300px;
-    }
-    .notification {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 5px;
-      animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 4.5s forwards;
-    }
-    .comment, .reply {
-      margin-left: 20px;
-      padding: 15px;
-      background-color: #FFE0D0;
-      border-radius: 15px;
-      margin-top: 10px;
-      position: relative;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
-    .comment:hover, .reply:hover {
-      transform: translateY(-2px);
-    }
-    .comment::before, .reply::before {
-      content: '';
-      position: absolute;
-      left: -10px;
-      top: 20px;
-      width: 0;
-      height: 0;
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 10px solid #FFE0D0;
-    }
-    .comment-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-    .comment-header img {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .comment-header h3 {
-      margin: 0;
-      font-size: 14px;
-    }
-    .comment-header p {
-      margin: 0;
-      font-size: 10px;
-      color: #65676b;
-    }
-    .comment-form, .reply-form {
-      margin-top: 15px;
-      display: flex;
-      align-items: center;
-    }
-    .comment-input, .reply-input {
-      flex-grow: 1;
-      padding: 10px 15px;
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      font-family: 'Poppins', sans-serif;
-      margin-right: 10px;
-      transition: border-color 0.3s ease;
-    }
-    .comment-input:focus, .reply-input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-    .comment-submit, .reply-submit {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      border-radius: 20px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    .comment-submit:hover, .reply-submit:hover {
-      background-color: #FF8C61;
-      transform: translateY(-2px);
-    }
-    .delete-post-btn, .delete-comment-btn, .delete-reply-btn, .delete-nested-reply-btn, .edit-post-btn, .edit-comment-btn, .edit-reply-btn {
-      background: none;
-      border: none;
-      color: #65676b;
-      cursor: pointer;
-      font-size: 14px;
-      margin-left: 10px;
-      transition: color 0.3s;
-    }
-    .delete-post-btn:hover, .delete-comment-btn:hover, .delete-reply-btn:hover, .delete-nested-reply-btn:hover, .edit-post-btn:hover, .edit-comment-btn:hover, .edit-reply-btn:hover {
-      color: var(--primary-color);
-    }
-    #search-bar {
-      padding: 8px;
-      border-radius: 20px;
-      border: 1px solid var(--border-color);
-      margin-right: 10px;
-      font-family: 'Poppins', sans-serif;
-    }
-    #search-btn {
-      padding: 8px 16px;
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    #search-btn:hover {
-      background-color: #FF8C61;
-      transform: translateY(-2px);
-    }
-    #post-title {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-      font-family: 'Poppins', sans-serif;
-      box-sizing: border-box;
-    }
-    .reply-btn {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      border-radius: 20px;
-      padding: 5px 15px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.9rem;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    .reply-btn:hover {
-      background-color: #FF8C61;
-      transform: translateY(-2px);
-    }
-    .comments-section {
-      display: none;
-    }
-    .comments-section.show {
-      display: block;
-    }
-    .reply-line {
-      position: absolute;
-      left: -15px;
-      top: 40px;
-      bottom: 0;
-      width: 2px;
-      background-color: #FF6B35;
-      border-radius: 2px;
-    }
-    .reply-line::before {
-      content: '';
-      position: absolute;
-      top: -5px;
-      left: -4px;
-      width: 10px;
-      height: 10px;
-      background-color: #FF6B35;
-      border-radius: 50%;
-    }
-    .edit-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1001;
-    }
-    .edit-popup.show {
-      display: block;
-    }
-    .edit-popup input, .edit-popup textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-      font-family: 'Poppins', sans-serif;
-    }
-    .edit-popup button {
-      padding: 10px 20px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      margin-right: 10px;
-    }
-    .edit-popup button:hover {
-      background-color: #FF8C61;
-    }
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-    .fade-out {
-      animation: fadeOut 0.3s ease-out forwards;
-    }
-    .like-btn, .dislike-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      color: #65676b;
-      transition: color 0.3s;
-    }
-    .like-btn:hover, .dislike-btn:hover {
-      color: var(--primary-color);
-    }
-    .like-btn.active {
-      color: var(--accent-color);
-    }
-    .dislike-btn.active {
-      color: var(--error-color);
-    }
-    .like-count, .dislike-count {
-      font-size: 14px;
-      margin-left: 5px;
-    }
-    #category-select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--secondary-color);
-    }
-    .tag {
-      display: inline-block;
-      background-color: var(--accent-color);
-      color: var(--secondary-color);
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 12px;
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-    #profile-section {
-      background-color: var(--secondary-color);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-    #profile-picture {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-    #upload-picture {
-      display: none;
-    }
-    #upload-picture-label {
-      display: inline-block;
-      padding: 8px 16px;
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-size: 14px;
-      transition: background-color 0.3s;
-    }
-    #upload-picture-label:hover {
-      background-color: #FF8C61;
-    }
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        padding-bottom: 80px;
-        padding-top: 120px;
-        margin-top: 0;
-      }
-      #sidebar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: 0;
-        padding: 8px;
-        background: var(--secondary-color);
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-        z-index: 999;
-        height: 70px;
-      }
-      #sidebar a {
-        margin: 0;
-        padding: 5px;
-        flex-direction: column;
-        font-size: 0.8em;
-        text-align: center;
-        width: 25%;
-      }
-      #sidebar a i {
-        margin: 0 0 3px 0;
-        font-size: 1.3em;
-      }
-      header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        background: var(--primary-color);
-        z-index: 1001;
-        height: auto;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-      header h1 {
-        font-size: 1.2em;
-        margin: 0 0 8px 0;
-      }
-      header div {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-      }
-      #main-content {
-        margin-top: 20px;
-        padding: 15px;
-        width: 100%;
-        box-sizing: border-box;
-        position: relative;
-        z-index: 1;
-        min-height: calc(100vh - 180px);
-      }
-      #post-form {
-        margin-top: 0;
-      }
-      #search-bar {
-        width: calc(100% - 80px);
-        max-width: 300px;
-        margin: 0 8px;
-        padding: 6px 12px;
-      }
-      #search-btn {
-        padding: 6px 12px;
-        font-size: 0.9em;
-      }
-      #auth-section {
-        margin-top: 0;
-      }
-    }
-    /* Notifications panel */
-    #notifications-panel {
-      position: fixed;
-      top: 0;
-      right: -300px;
-      width: 300px;
-      height: 100%;
-      background-color: var(--secondary-color);
-      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-      transition: right 0.3s ease-in-out;
-      z-index: 2000;
-      overflow-y: auto;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    #notifications-panel.show {
-      right: 0;
-    }
-    .notification-item {
-      padding: 10px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-    }
-    .notification-item:last-child {
-      border-bottom: none;
-    }
-    .notification-icon {
-      margin-right: 10px;
-      font-size: 1.2em;
-      color: var(--primary-color);
-    }
-    .notification-content {
-      flex-grow: 1;
-    }
-    .notification-timestamp {
-      font-size: 0.8em;
-      color: var(--text-color);
-      opacity: 0.7;
-    }
-    #close-notifications {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      font-size: 1.2em;
-      cursor: pointer;
-      color: var(--text-color);
-    }
-    #close-notifications:hover {
-      color: var(--primary-color);
-    }
-    #notifications-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      padding-top: 20px;
-    }
-    #notifications-header h3 {
-      margin: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Forums</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-color: #E65100;
+            --secondary-color: #FFFFFF;
+            --background-color: #F0F2F5;
+            --text-color: #1c1e21;
+            --border-color: #E4E6EB;
+            --accent-color: #4E9F3D;
+            --error-color: #D32F2F;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--secondary-color);
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-top: 60px;
+        }
+
+        .sidebar {
+            width: 300px;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .post-form, .post {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .post-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .post-form button {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .post-form button:hover {
+            background-color: #D84315;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .post-info h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .post-info p {
+            font-size: 12px;
+            color: #65676B;
+        }
+
+        .post-content {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .post-actions button {
+            background: none;
+            border: none;
+            color: #65676B;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .post-actions button:hover {
+            color: var(--primary-color);
+        }
+
+        .comments-section {
+            margin-top: 10px;
+        }
+
+        .comment {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #F0F2F5;
+            border-radius: 8px;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 500;
+            margin-right: 5px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+        }
+
+        .comment-form {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .comment-submit {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .maintenance-banner {
+            background: linear-gradient(135deg, #FF6B6B, #E65100);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        .maintenance-banner h2 {
+            margin-bottom: 10px;
+        }
+
+        .maintenance-progress {
+            width: 200px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+
+        .maintenance-progress-bar {
+            width: 75%;
+            height: 100%;
+            background: white;
+            border-radius: 5px;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .community-stats {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .community-stats h3 {
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+
+            .main-content {
+                margin-top: 120px;
+            }
+        }
     </style>
 </head>
 <body>
-  <header>
-    <h1 id="greeting"></h1>
-    <div>
-      <input type="text" id="search-bar" placeholder="Search users or posts...">
-      <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">Ang Silakbo</a>
+            <nav>
+                <a href="#" id="home-link">Home</a>
+                <a href="#" id="profile-link">Profile</a>
+                <a href="#" id="notifications-link">Notifications</a>
+                <a href="#" id="logout-btn">Log Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="maintenance-banner">
+        <h2>Site Maintenance in Progress</h2>
+        <p>We're working on improving your experience. Some features may be temporarily unavailable.</p>
+        <div class="maintenance-progress">
+            <div class="maintenance-progress-bar"></div>
+        </div>
+        <p>Expected completion: March 3, 2024</p>
     </div>
-  </header>
 
-  <div class="container">
-    <div id="sidebar">
-      <a href="#" id="home-link"><i class="fas fa-home"></i> Home</a>
-      <a href="#" id="profile-link"><i class="fas fa-user"></i> Profile</a>
-      <a href="#" id="notifications-link"><i class="fas fa-bell"></i> Notifications</a>
-      <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
-    </div>
-
-    <div id="main-content">
-      <section id="profile-section" style="display: none;">
-        <img id="profile-picture" src="/placeholder.svg" alt="Profile Picture">
-        <input type="file" id="upload-picture" accept="image/*">
-        <label for="upload-picture" id="upload-picture-label">Upload Picture</label>
-        <h2 id="profile-name"></h2>
-        <p id="profile-email"></p>
-        <p id="profile-posts-count"></p>
-      </section>
-
-      <section id="post-form">
-        <select id="category-select">
-          <option value="">Select a category</option>
-          <option value="general">General</option>
-          <option value="technology">Technology</option>
-          <option value="sports">Sports</option>
-          <option value="entertainment">Entertainment</option>
-        </select>
-        <input type="text" id="post-title" placeholder="Post Title">
-        <textarea id="post-content" placeholder="What's on your mind?"></textarea>
-        <input type="text" id="post-tags" placeholder="Add tags (comma-separated)">
-        <button id="submit-post"><i class="fas fa-paper-plane"></i> Submit</button>
-      </section>
-
-      <section id="posts">
-        <!-- Posts will be dynamically inserted here -->
-      </section>
-    </div>
-  </div>
-
-  <div id="notifications">
-    <!-- Notifications will be dynamically inserted here -->
-  </div>
-
-  <div id="notifications-panel">
-    <div id="notifications-header">
-      <h3>Notifications</h3>
-      <button id="close-notifications"><i class="fas fa-times"></i></button>
-    </div>
-    <div id="notifications-list"></div>
-  </div>
-
-  <div id="edit-popup" class="edit-popup">
-    <input type="text" id="edit-title" placeholder="Edit title">
-    <textarea id="edit-content" placeholder="Edit content"></textarea>
-    <button id="save-edit">Save</button>
-    <button id="cancel-edit">Cancel</button>
-  </div>
-
-  <div id="overlay" class="overlay"></div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-    import { 
-          getFirestore, 
-          collection, 
-          addDoc, 
-          query, 
-          orderBy, 
-          onSnapshot,
-          where,
-          getDocs,
-          getDoc,
-          doc,
-          deleteDoc,
-          updateDoc,
-          increment,
-          arrayUnion,
-          arrayRemove,
-          writeBatch
-    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-    import { 
-      getStorage, 
-      ref, 
-      uploadBytes, 
-      getDownloadURL 
-    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
-      authDomain: "ang-silakbo.firebaseapp.com",
-      projectId: "ang-silakbo",
-      storageBucket: "ang-silakbo.appspot.com",
-      messagingSenderId: "1006400633782",
-      appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
-      measurementId: "G-TSDTG2YJ94"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-
-    const logoutBtn = document.getElementById('logout-btn');
-    const postForm = document.getElementById('post-form');
-    const postContent = document.getElementById('post-content');
-    const submitPostBtn = document.getElementById('submit-post');
-    const postsSection = document.getElementById('posts');
-    const greeting = document.getElementById('greeting');
-    const searchBar = document.getElementById('search-bar');
-    const searchBtn = document.getElementById('search-btn');
-    const editPopup = document.getElementById('edit-popup');
-    const editTitle = document.getElementById('edit-title');
-    const editContent = document.getElementById('edit-content');
-    const saveEditBtn = document.getElementById('save-edit');
-    const cancelEditBtn = document.getElementById('cancel-edit');
-    const overlay = document.getElementById('overlay');
-    const categorySelect = document.getElementById('category-select');
-    const postTags = document.getElementById('post-tags');
-    const profileSection = document.getElementById('profile-section');
-    const profilePicture = document.getElementById('profile-picture');
-    const uploadPicture = document.getElementById('upload-picture');
-    const profileName = document.getElementById('profile-name');
-    const profileEmail = document.getElementById('profile-email');
-    const profilePostsCount = document.getElementById('profile-posts-count');
-    const homeLink = document.getElementById('home-link');
-    const profileLink = document.getElementById('profile-link');
-    const notificationsLink = document.getElementById('notifications-link');
-    const notificationsPanel = document.getElementById('notifications-panel');
-
-    function generateAvatarUrl(seed) {
-      return `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
-    }
-
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (confirm('Are you sure you want to log out?')) {
-        document.body.classList.add('fade-out');
-        setTimeout(() => {
-          signOut(auth)
-            .then(() => {
-              window.location.href = 'Silakbo Freedom Wall.html';
-            })
-            .catch((error) => alert(error.message));
-        }, 300);
-      }
-    });
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        postForm.style.display = 'block';
-        greeting.textContent = `Hi there, ${user.displayName || user.email}!`;
-        loadPosts();
-        listenForNotifications(user.uid);
-        updateProfileInfo(user);
-      } else {
-        window.location.href = 'Silakbo Freedom Wall.html';
-      }
-    });
-
-    submitPostBtn.addEventListener('click', () => {
-      const title = document.getElementById('post-title').value.trim();
-      const content = postContent.value.trim();
-      const category = categorySelect.value;
-      const tags = postTags.value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-      if (title && content && category) {
-        addDoc(collection(db, 'posts'), {
-          title: title,
-          content: content,
-          category: category,
-          tags: tags,
-          timestamp: new Date(),
-          userId: auth.currentUser.uid,
-          userName: auth.currentUser.displayName || auth.currentUser.email,
-          likes: 0,
-          dislikes: 0,
-          likedBy: [],
-          dislikedBy: []
-        })
-        .then(() => {
-          document.getElementById('post-title').value = '';
-          postContent.value = '';
-          categorySelect.value = '';
-          postTags.value = '';
-          loadPosts();
-        })
-        .catch((error) => alert(error.message));
-      }
-    });
-
-    let unsubscribePosts = null;
-
-    let currentQuery = null;
-    function loadPosts(userId = null) {
-      // Unsubscribe from previous listener if exists
-      if (unsubscribePosts) {
-        unsubscribePosts();
-        unsubscribePosts = null;
-      }
-
-      // If the query is the same as the current one, don't reload
-      const queryString = userId ? `user-${userId}` : 'all';
-      if (queryString === currentQuery) {
-        return;
-      }
-      currentQuery = queryString;
-      
-      let q;
-      if (userId) {
-        q = query(collection(db, 'posts'), where('userId', '==', userId), orderBy('timestamp', 'desc'));
-      } else {
-        q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
-      }
-      unsubscribePosts = onSnapshot(q, (querySnapshot) => {
-        postsSection.innerHTML = ''; // Clear posts section before rendering
-        querySnapshot.forEach((doc) => {
-          const post = doc.data();
-          const postElement = document.createElement('div');
-          postElement.className = 'post';
-          postElement.innerHTML = `
-            <div class="post-header">
-              <div class="post-header-left">
-                <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" />
-                <div>
-                  <h3 class="user-name" data-user-id="${post.userId}">${post.userName}</h3>
-                  <p>${new Date(post.timestamp?.toDate()).toLocaleString()}</p>
+    <div class="container">
+        <main class="main-content">
+            <div class="post-form">
+                <textarea id="post-content" placeholder="What's on your mind?"></textarea>
+                <button id="submit-post">Post</button>
+            </div>
+            <div id="posts"></div>
+        </main>
+        <aside class="sidebar">
+            <div class="community-stats">
+                <h3>Community Stats</h3>
+                <div class="stat-item">
+                    <span>Active Users</span>
+                    <span>1,234</span>
                 </div>
-              </div>
-              <div class="post-actions">
-                ${post.userId === auth.currentUser.uid ? '<button class="edit-post-btn"><i class="fas fa-edit"></i></button><button class="delete-post-btn"><i class="fas fa-trash"></i></button>' : ''}
-              </div>
+                <div class="stat-item">
+                    <span>Posts Today</span>
+                    <span>567</span>
+                </div>
+                <div class="stat-item">
+                    <span>New Members</span>
+                    <span>89</span>
+                </div>
             </div>
-            <h2 class="post-title">${post.title}</h2>
-            <p class="post-content">${post.content}</p>
-            <p class="post-category">Category: ${post.category}</p>
-            <div class="post-tags">
-              ${post.tags ? post.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-            </div>
-            <div class="post-actions">
-              <button class="like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'active' : ''}" data-post-id="${doc.id}">
-                <i class="fas fa-thumbs-up"></i> <span class="like-count">${post.likes || 0}</span>
-              </button>
-              <button class="dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'active' : ''}" data-post-id="${doc.id}">
-                <i class="fas fa-thumbs-down"></i> <span class="dislike-count">${post.dislikes || 0}</span>
-              </button>
-              <button class="comment-btn"><i class="fas fa-comment"></i> Comment</button>
-            </div>
-            <div class="comments-section">
-              <div class="comments-container"></div>
-              <form class="comment-form">
-                <input type="text" class="comment-input" placeholder="Write a comment..." />
-                <button type="submit" class="comment-submit">Send</button>
-              </form>
-            </div>
-          `;
-          postsSection.appendChild(postElement);
+        </aside>
+    </div>
 
-          const userName = postElement.querySelector('.user-name');
-          userName.addEventListener('click', (e) => {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            query, 
+            orderBy, 
+            onSnapshot,
+            serverTimestamp,
+            updateDoc,
+            doc,
+            arrayUnion,
+            arrayRemove
+        } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+            authDomain: "ang-silakbo.firebaseapp.com",
+            projectId: "ang-silakbo",
+            storageBucket: "ang-silakbo.appspot.com",
+            messagingSenderId: "1006400633782",
+            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+            measurementId: "G-TSDTG2YJ94"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const logoutBtn = document.getElementById('logout-btn');
+        const postContent = document.getElementById('post-content');
+        const submitPostBtn = document.getElementById('submit-post');
+        const postsContainer = document.getElementById('posts');
+
+        function getRandomAvatar(userId) {
+            return `https://api.dicebear.com/9.x/adventurer/svg?seed=${userId}`;
+        }
+
+        logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            profileSection.style.display = 'block';
-            postForm.style.display = 'none';
-            postsSection.style.display = 'block';
-            loadPosts(e.target.dataset.userId);
-          });
-
-          const commentsSection = postElement.querySelector('.comments-section');
-          const commentBtn = postElement.querySelector('.comment-btn');
-          commentBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            commentsSection.classList.toggle('show');
-            if (commentsSection.classList.contains('show')) {
-              loadComments(doc.id, commentsSection);
-            }
-          });
-
-          const commentForm = postElement.querySelector('.comment-form');
-          commentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const commentInput = commentForm.querySelector('.comment-input');
-            const commentContent = commentInput.value.trim();
-            if (commentContent) {
-              addComment(doc.id, commentContent);
-              commentInput.value = '';
-            }
-          });
-
-          const deleteBtn = postElement.querySelector('.delete-post-btn');
-          if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
-              if (confirm('Are you sure you want to delete this post?')) {
-                deletePost(doc.id);
-              }
+            signOut(auth).then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
             });
-          }
+        });
 
-          const editBtn = postElement.querySelector('.edit-post-btn');
-          if (editBtn) {
-            editBtn.addEventListener('click', () => {
-              showEditPopup(doc.id, post.title, post.content);
-            });
-          }
+        submitPostBtn.addEventListener('click', () => {
+            const content = postContent.value.trim();
+            if (content) {
+                addDoc(collection(db, 'posts'), {
+                    content: content,
+                    timestamp: serverTimestamp(),
+                    userId: auth.currentUser.uid,
+                    userName: auth.currentUser.displayName || auth.currentUser.email,
+                    userAvatar: getRandomAvatar(auth.currentUser.uid),
+                    likes: 0
+                }).then(() => {
+                    postContent.value = '';
+                }).catch((error) => {
+                    console.error('Error adding post:', error);
+                });
+            }
+        });
 
-          const likeBtn = postElement.querySelector('.like-btn');
-          const dislikeBtn = postElement.querySelector('.dislike-btn');
-          
-          likeBtn.addEventListener('click', async () => {
-            if (likeBtn.disabled) return;
-            likeBtn.disabled = true;
-            dislikeBtn.disabled = true;
-            
-            try {
-              const userId = auth.currentUser.uid;
-              const likeCount = likeBtn.querySelector('.like-count');
-              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
-              const isLiked = likeBtn.classList.contains('active');
-              const isDisliked = dislikeBtn.classList.contains('active');
+        function createPostElement(post, postId) {
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <img src="${post.userAvatar}" alt="User Avatar" class="post-avatar">
+                    <div class="post-info">
+                        <h3>${post.userName}</h3>
+                        <p>${post.timestamp ? new Date(post.timestamp.toDate()).toLocaleString() : 'Just now'}</p>
+                    </div>
+                </div>
+                <p class="post-content">${post.content}</p>
+                <div class="post-actions">
+                    <button class="like-btn" data-post-id="${postId}">
+                        <i class="fas fa-thumbs-up"></i> Like (${post.likes})
+                    </button>
+                    <button class="comment-btn" data-post-id="${postId}">
+                        <i class="fas fa-comment"></i> Comment
+                    </button>
+                </div>
+                <div class="comments-section" style="display:none;">
+                    <div class="comments-container"></div>
+                    <form class="comment-form">
+                        <input type="text" class="comment-input" placeholder="Write a comment...">
+                        <button type="submit" class="comment-submit">Send</button>
+                    </form>
+                </div>
+            `;
 
-              // Server update first
-              await handleLike(doc.id);
+            const likeBtn = postElement.querySelector('.like-btn');
+            likeBtn.addEventListener('click', () => handleLike(postId));
 
-              // UI update after successful server update
-              if (isLiked) {
-                likeCount.textContent = parseInt(likeCount.textContent) - 1;
-                likeBtn.classList.remove('active');
-              } else {
-                likeCount.textContent = parseInt(likeCount.textContent) + 1;
-                likeBtn.classList.add('active');
-                if (isDisliked) {
-                  dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-                  dislikeBtn.classList.remove('active');
+            const commentBtn = postElement.querySelector('.comment-btn');
+            const commentsSection = postElement.querySelector('.comments-section');
+            commentBtn.addEventListener('click', () => {
+                commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+                if (commentsSection.style.display === 'block') {
+                    loadComments(postId, commentsSection.querySelector('.comments-container'));
                 }
-              }
-            } catch (error) {
-              console.error('Error updating like:', error);
-              alert('Failed to update like. Please try again.');
-            } finally {
-              likeBtn.disabled = false;
-              dislikeBtn.disabled = false;
-            }
-          });
+            });
 
-          dislikeBtn.addEventListener('click', async () => {
-            if (dislikeBtn.disabled) return;
-            dislikeBtn.disabled = true;
-            likeBtn.disabled = true;
-            
-            try {
-              const userId = auth.currentUser.uid;
-              const likeCount = likeBtn.querySelector('.like-count');
-              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
-              const isLiked = likeBtn.classList.contains('active');
-              const isDisliked = dislikeBtn.classList.contains('active');
-
-              // Server update first
-              await handleDislike(doc.id);
-
-              // UI update after successful server update
-              if (isDisliked) {
-                dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-                dislikeBtn.classList.remove('active');
-              } else {
-                dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
-                dislikeBtn.classList.add('active');
-                if (isLiked) {
-                  likeCount.textContent = parseInt(likeCount.textContent) - 1;
-                  likeBtn.classList.remove('active');
+            const commentForm = postElement.querySelector('.comment-form');
+            commentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const commentInput = commentForm.querySelector('.comment-input');
+                const commentContent = commentInput.value.trim();
+                if (commentContent) {
+                    addComment(postId, commentContent);
+                    commentInput.value = '';
                 }
-              }
-            } catch (error) {
-              console.error('Error updating dislike:', error);
-              alert('Failed to update dislike. Please try again.');
-            } finally {
-              dislikeBtn.disabled = false;
-              likeBtn.disabled = false;
+            });
+
+            return postElement;
+        }
+
+        function loadPosts() {
+            const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+            onSnapshot(q, (querySnapshot) => {
+                postsContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = createPostElement(post, doc.id);
+                    postsContainer.appendChild(postElement);
+                });
+            });
+        }
+
+        async function handleLike(postId) {
+            const postRef = doc(db, 'posts', postId);
+            const postDoc = await getDoc(postRef);
+            const post = postDoc.data();
+            const userId = auth.currentUser.uid;
+
+            if (post.likedBy && post.likedBy.includes(userId)) {
+                await updateDoc(postRef, {
+                    likes: post.likes - 1,
+                    likedBy: arrayRemove(userId)
+                });
+            } else {
+                await updateDoc(postRef, {
+                    likes: post.likes + 1,
+                    likedBy: arrayUnion(userId)
+                });
             }
-          });
-
-        });
-      });
-    }
-
-    async function handleLike(postId) {
-      const postRef = doc(db, 'posts', postId);
-      const postDoc = await getDoc(postRef);
-      const post = postDoc.data();
-      const userId = auth.currentUser.uid;
-      const batch = writeBatch(db);
-
-      if (post.likedBy.includes(userId)) {
-        // User has already liked, remove the like
-        batch.update(postRef, {
-          likes: increment(-1),
-          likedBy: arrayRemove(userId)
-        });
-      } else {
-        // User hasn't liked, add the like
-        batch.update(postRef, {
-          likes: increment(1),
-          likedBy: arrayUnion(userId)
-        });
-
-        // If the user had previously disliked, remove the dislike
-        if (post.dislikedBy.includes(userId)) {
-          batch.update(postRef, {
-            dislikes: increment(-1),
-            dislikedBy: arrayRemove(userId)
-          });
-        }
-      }
-
-      await batch.commit();
-    }
-
-    async function handleDislike(postId) {
-      const postRef = doc(db, 'posts', postId);
-      const postDoc = await getDoc(postRef);
-      const post = postDoc.data();
-      const userId = auth.currentUser.uid;
-
-      const batch = writeBatch(db);
-
-      if (post.dislikedBy.includes(userId)) {
-        // User has already disliked, remove the dislike
-        batch.update(postRef, {
-          dislikes: increment(-1),
-          dislikedBy: arrayRemove(userId)
-        });
-      } else {
-        // User hasn't disliked, add the dislike
-        batch.update(postRef, {
-          dislikes: increment(1),
-          dislikedBy: arrayUnion(userId)
-        });
-
-        // If the user had previously liked, remove the like
-        if (post.likedBy.includes(userId)) {
-          batch.update(postRef, {
-            likes: increment(-1),
-            likedBy: arrayRemove(userId)
-          });
-        }
-      }
-
-      await batch.commit();
-    }
-
-    function showEditPopup(postId, title, content) {
-      editTitle.value = title;
-      editContent.value = content;
-      editPopup.classList.add('show');
-      overlay.style.display = 'block';
-
-      saveEditBtn.onclick = () => {
-        updatePost(postId, editTitle.value, editContent.value);
-        closeEditPopup();
-      };
-    }
-
-    function closeEditPopup() {
-      editPopup.classList.remove('show');
-      overlay.style.display = 'none';
-    }
-
-    async function deletePost(postId) {
-      try {
-        await deleteDoc(doc(db, 'posts', postId));
-        console.log('Post deleted successfully');
-      } catch (error) {
-        console.error('Error deleting post:', error);
-        alert('Failed to delete post. Please try again.');
-      }
-    }
-
-    async function updatePost(postId, newTitle, newContent) {
-      try {
-        await updateDoc(doc(db, 'posts', postId), {
-          title: newTitle,
-          content: newContent
-        });
-        console.log('Post updated successfully');
-      } catch (error) {
-        console.error('Error updating post:', error);
-        alert('Failed to update post. Please try again.');
-      }
-    }
-
-    async function addComment(postId, content) {
-      try {
-        const postRef = doc(db, 'posts', postId);
-        const postSnapshot = await getDoc(postRef);
-
-        if (!postSnapshot.exists()) {
-          throw new Error('Post does not exist!');
         }
 
-        const postData = postSnapshot.data();
-
-        await addDoc(collection(db, 'posts', postId, 'comments'), {
-          content: content,
-          timestamp: new Date(),
-          userId: auth.currentUser.uid,
-          userName: auth.currentUser.displayName || auth.currentUser.email
-        });
-
-        // Add notification for the post owner
-        if (postData.userId !== auth.currentUser.uid) {
-          addNotification(postData.userId, auth.currentUser.displayName || auth.currentUser.email + ' commented on your post.');
+        async function addComment(postId, content) {
+            const commentRef = collection(db, 'posts', postId, 'comments');
+            await addDoc(commentRef, {
+                content: content,
+                timestamp: serverTimestamp(),
+                userId: auth.currentUser.uid,
+                userName: auth.currentUser.displayName || auth.currentUser.email,
+                userAvatar: getRandomAvatar(auth.currentUser.uid)
+            });
         }
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-    const unsubscribeMap = new Map();
 
-    function loadComments(postId, commentsSection) {
-      // Unsubscribe from previous listener for this postId if exists
-      if (unsubscribeMap.has(postId)) {
-        unsubscribeMap.get(postId)();
-      }
+        function loadComments(postId, commentsContainer) {
+            const q = query(collection(db, 'posts', postId, 'comments'), orderBy('timestamp', 'asc'));
+            onSnapshot(q, (querySnapshot) => {
+                commentsContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment';
+                    commentElement.innerHTML = `
+                        <img src="${comment.userAvatar}" alt="User Avatar" class="comment-avatar">
+                        <div class="comment-content">
+                            <span class="comment-author">${comment.userName}</span>
+                            <span class="comment-text">${comment.content}</span>
+                        </div>
+                    `;
+                    commentsContainer.appendChild(commentElement);
+                });
+            });
+        }
 
-      const commentsContainer = commentsSection.querySelector('.comments-container');
-      const q = query(collection(db, 'posts', postId, 'comments'), orderBy('timestamp', 'asc'));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        commentsContainer.innerHTML = '';
-        querySnapshot.forEach((doc) => {
-          const comment = doc.data();
-          const commentElement = document.createElement('div');
-          commentElement.className = 'comment';
-          const editDeleteButtons = comment.userId === auth.currentUser.uid ? 
-            '<button class="edit-comment-btn"><i class="fas fa-edit"></i></button><button class="delete-comment-btn"><i class="fas fa-trash"></i></button>' : 
-            '';
-          commentElement.innerHTML = 
-            '<div class="comment-outer-wrapper">' +
-              '<div class="comment-wrapper">' +
-                '<div class="comment-content-wrapper">' +
-                  '<div class="comment-header">' +
-                    '<img src="' + generateAvatarUrl(comment.userId) + '" alt="Profile Picture" />' +
-                    '<div>' +
-                      '<h3>' + comment.userName + '</h3>' +
-                      '<p>' + new Date(comment.timestamp?.toDate()).toLocaleString() + '</p>' +
-                    '</div>' +
-                    editDeleteButtons +
-                  '</div>' +
-                  '<p class="comment-content">' + comment.content + '</p>' +
-                  '<button class="reply-btn">Reply</button>' +
-                  '<div class="replies"></div>' +
-                  '<form class="reply-form" style="display: none;">' +
-                    '<input type="text" class="reply-input" placeholder="Write a reply..." />' +
-                    '<button type="submit" class="reply-submit">Send</button>' +
-                  '</form>' +
-                '</div>' +
-              '</div>' +
-            '</div>';
-          commentsContainer.appendChild(commentElement);
-
-          const replyBtn = commentElement.querySelector('.reply-btn');
-          const replyForm = commentElement.querySelector('.reply-form');
-          replyBtn.addEventListener('click', () => {
-            replyForm.style.display = replyForm.style.display === 'none' ? 'flex' : 'none';
-          });
-
-          replyForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const replyInput = replyForm.querySelector('.reply-input');
-            const replyContent = replyInput.value.trim();
-            if (replyContent) {
-              addReply(postId, doc.id, replyContent);
-              replyInput.value = '';
-              replyForm.style.display = 'none';
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadPosts();
+            } else {
+                window.location.href = 'login.html';
             }
-          });
-
-          const deleteCommentBtn = commentElement.querySelector('.delete-comment-btn');
-          if (deleteCommentBtn) {
-            deleteCommentBtn.addEventListener('click', () => {
-              if (confirm('Are you sure you want to delete this comment?')) {
-                deleteComment(postId, doc.id);
-              }
-            });
-          }
-
-          const editCommentBtn = commentElement.querySelector('.edit-comment-btn');
-          if (editCommentBtn) {
-            editCommentBtn.addEventListener('click', () => {
-              const commentContent = commentElement.querySelector('.comment-content');
-              const currentContent = commentContent.textContent;
-              showEditPopup(doc.id, '', currentContent);
-              saveEditBtn.onclick = () => {
-                updateComment(postId, doc.id, editContent.value);
-                closeEditPopup();
-              };
-            });
-          }
-
-          loadReplies(postId, doc.id, commentElement.querySelector('.replies'));
         });
-      });
-    }
-
-    async function addReply(postId, commentId, content) {
-      try {
-        const commentRef = doc(db, 'posts', postId, 'comments', commentId);
-        const commentSnapshot = await getDoc(commentRef);
-
-        if (!commentSnapshot.exists()) {
-          throw new Error('Comment does not exist!');
-        }
-
-        const commentData = commentSnapshot.data();
-
-        await addDoc(collection(db, 'posts', postId, 'comments', commentId, 'replies'), {
-          content: content,
-          timestamp: new Date(),
-          userId: auth.currentUser.uid,
-          userName: auth.currentUser.displayName || auth.currentUser.email
-        });
-
-        addNotification(commentData.userId, (auth.currentUser.displayName || auth.currentUser.email) + ' replied to your comment.');
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
-    function loadReplies(postId, commentId, repliesSection) {
-      const q = query(collection(db, 'posts', postId, 'comments', commentId, 'replies'), orderBy('timestamp', 'asc'));
-      onSnapshot(q, (querySnapshot) => {
-        repliesSection.innerHTML = '';
-        querySnapshot.forEach((doc) => {
-          const reply = doc.data();
-          const replyElement = document.createElement('div');
-          replyElement.className = 'reply';
-          replyElement.innerHTML = 
-            '<div class="reply-line"></div>' +
-            '<div class="comment-header">' +
-              '<img src="' + generateAvatarUrl(reply.userId) + '" alt="Profile Picture">' +
-              '<div>' +
-                '<h3>' + reply.userName + '</h3>' +
-                '<p>' + new Date(reply.timestamp?.toDate()).toLocaleString() + '</p>' +
-              '</div>' +
-              (reply.userId === auth.currentUser.uid ? '<button class="edit-reply-btn"><i class="fas fa-edit"></i></button><button class="delete-reply-btn"><i class="fas fa-trash"></i></button>' : '') +
-            '</div>' +
-            '<p class="reply-content">' + reply.content + '</p>';
-          repliesSection.appendChild(replyElement);
-
-          const deleteReplyBtn = replyElement.querySelector('.delete-reply-btn');
-          if (deleteReplyBtn) {
-            deleteReplyBtn.addEventListener('click', () => {
-              if (confirm('Are you sure you want to delete this reply?')) {
-                deleteReply(postId, commentId, doc.id);
-              }
-            });
-          }
-
-          const editReplyBtn = replyElement.querySelector('.edit-reply-btn');
-          if (editReplyBtn) {
-            editReplyBtn.addEventListener('click', () => {
-              const replyContent = replyElement.querySelector('.reply-content');
-              const currentContent = replyContent.textContent;
-              showEditPopup(doc.id, '', currentContent);
-              saveEditBtn.onclick = () => {
-                updateReply(postId, commentId, doc.id, editContent.value);
-                closeEditPopup();
-              };
-            });
-          }
-        });
-      });
-    }
-
-    async function deleteComment(postId, commentId) {
-      try {
-        await deleteDoc(doc(db, 'posts', postId, 'comments', commentId));
-        console.log('Comment deleted successfully');
-      } catch (error) {
-        console.error('Error deleting comment:', error);
-        alert('Failed to delete comment. Please try again.');
-      }
-    }
-
-    async function updateComment(postId, commentId, newContent) {
-      try {
-        await updateDoc(doc(db, 'posts', postId, 'comments', commentId), {
-          content: newContent
-        });
-        console.log('Comment updated successfully');
-      } catch (error) {
-        console.error('Error updating comment:', error);
-        alert('Failed to update comment. Please try again.');
-      }
-    }
-
-    async function deleteReply(postId, commentId, replyId) {
-      try {
-        await deleteDoc(doc(db, 'posts', postId, 'comments', commentId, 'replies', replyId));
-        console.log('Reply deleted successfully');
-      } catch (error) {
-        console.error('Error deleting reply:', error);
-        alert('Failed to delete reply. Please try again.');
-      }
-    }
-
-    async function updateReply(postId, commentId, replyId, newContent) {
-      try {
-        await updateDoc(doc(db, 'posts', postId, 'comments', commentId, 'replies', replyId), {
-          content: newContent
-        });
-        console.log('Reply updated successfully');
-      } catch (error) {
-        console.error('Error updating reply:', error);
-        alert('Failed to update reply. Please try again.');
-      }
-    }
-
-    function addNotification(userId, message) {
-      addDoc(collection(db, 'notifications'), {
-        userId: userId,
-        message: message,
-        timestamp: new Date(),
-        read: false
-      }).then(() => {
-        console.log('Notification added successfully');
-      }).catch((error) => {
-        console.error('Error adding notification:', error);
-      });
-    }
-
-    function getNotificationIcon(message) {
-      if (message.includes('commented')) {
-        return '<i class="fas fa-comment notification-icon"></i>';
-      } else if (message.includes('replied')) {
-        return '<i class="fas fa-reply notification-icon"></i>';
-      } else if (message.includes('liked')) {
-        return '<i class="fas fa-thumbs-up notification-icon"></i>';
-      } else {
-        return '<i class="fas fa-bell notification-icon"></i>';
-      }
-    }
-
-    function listenForNotifications(userId) {
-      const q = query(collection(db, 'notifications'), where('userId', '==', userId), orderBy('timestamp', 'desc'));
-      onSnapshot(q, (querySnapshot) => {
-        const notificationsList = document.getElementById('notifications-list');
-        notificationsList.innerHTML = '';
-        querySnapshot.forEach((doc) => {
-          const notification = doc.data();
-          const notificationElement = document.createElement('div');
-          notificationElement.className = 'notification-item';
-          notificationElement.innerHTML = 
-            getNotificationIcon(notification.message) +
-            '<div class="notification-content">' +
-              '<p>' + notification.message + '</p>' +
-              '<p class="notification-timestamp">' + new Date(notification.timestamp.toDate()).toLocaleString() + '</p>' +
-            '</div>';
-          notificationsList.appendChild(notificationElement);
-        });
-      });
-    }
-
-    searchBtn.addEventListener('click', function() {
-      const searchTerm = searchBar.value.trim();
-      if (searchTerm) {
-        Promise.resolve().then(async () => {
-          try {
-            const usersQuery = query(
-              collection(db, 'users'),
-              where('userName', '>=', searchTerm),
-              where('userName', '<=', searchTerm + '\uf8ff')
-            );
-
-            const postsQuery = query(
-              collection(db, 'posts'),
-              where('content', '>=', searchTerm),
-              where('content', '<=', searchTerm + '\uf8ff')
-            );
-
-            const [usersSnapshot, postsSnapshot] = await Promise.all([
-              getDocs(usersQuery),
-              getDocs(postsQuery)
-            ]);
-
-            const resultsSection = document.createElement('div');
-            resultsSection.innerHTML = '<h3>Search Results:</h3>';
-
-            usersSnapshot.forEach((userDoc) => {
-              const user = userDoc.data();
-              resultsSection.innerHTML += '<p>User: ' + user.userName + '</p>';
-            });
-
-            postsSnapshot.forEach((postDoc) => {
-              const post = postDoc.data();
-              resultsSection.innerHTML += '<p>Post: ' + post.content + '</p>';
-            });
-
-            if (usersSnapshot.empty && postsSnapshot.empty) {
-              resultsSection.innerHTML += '<p>No results found</p>';
-            }
-
-            const existingResults = document.querySelector('#main-content .search-results');
-            if (existingResults) existingResults.remove();
-
-            resultsSection.className = 'search-results';
-            document.getElementById('main-content').appendChild(resultsSection);
-          } catch (error) {
-            alert('Search error: ' + error.message);
-          }
-        });
-      }
-    });
-
-    function updateProfileInfo(user) {
-      profileName.textContent = user.displayName || 'Anonymous';
-      profileEmail.textContent = user.email;
-      profilePicture.src = user.photoURL || generateAvatarUrl(user.uid);
-
-      const q = query(collection(db, 'posts'), where('userId', '==', user.uid));
-      getDocs(q).then((querySnapshot) => {
-        profilePostsCount.textContent = 'Posts: ' + querySnapshot.size;
-      });
-    }
-
-    uploadPicture.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const storageRef = ref(storage, 'profile_pictures/' + auth.currentUser.uid);
-        uploadBytes(storageRef, file).then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((downloadURL) => {
-            auth.currentUser.updateProfile({
-              photoURL: downloadURL
-            }).then(() => {
-              profilePicture.src = downloadURL;
-            });
-          });
-        });
-      }
-    });
-
-    homeLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      profileSection.style.display = 'none';
-      postForm.style.display = 'block';
-      postsSection.style.display = 'block';
-      loadPosts();
-    });
-
-    profileLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      profileSection.style.display = 'block';
-      postForm.style.display = 'none';
-      postsSection.style.display = 'block';
-      loadPosts(auth.currentUser.uid);
-    });
-
-    notificationsLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.getElementById('notifications-panel').classList.toggle('show');
-    });
-
-    document.getElementById('close-notifications').addEventListener('click', () => {
-      document.getElementById('notifications-panel').classList.remove('show');
-    });
-
-    cancelEditBtn.addEventListener('click', closeEditPopup);
-
-    overlay.addEventListener('click', closeEditPopup);
-  </script>
+    </script>
 </body>
 </html>
-
