@@ -409,11 +409,6 @@
                         <input type="text" id="author" required placeholder="Enter author's name">
                     </div>
 
-                    <div class="form-group fade-in">
-                        <label for="photographer"><i class="fas fa-camera icon"></i>Photojournalist<label>
-                        <input type="text" id="photographer" placeholder="Enter photographer's name (if applicable)">
-                    </div>
-
                     <textarea id="editor"></textarea>
                     
                     <div class="action-buttons">
@@ -578,30 +573,28 @@
             const title = document.getElementById('title').value;
             const category = document.getElementById('category').value;
             const author = document.getElementById('author').value;
-            const photographer = document.getElementById('photographer').value;
             const content = tinymce.get('editor').getContent();
 
             if (!title || !category || !author || !content) {
-                alert('Please fill in all required fields');
+                alert('Please fill in all fields');
                 return;
             }
 
             if (currentEditId) {
-                await updatePublishedWork(currentEditId, currentEditCategory, title, category, author, photographer, content);
+                await updatePublishedWork(currentEditId, currentEditCategory, title, category, author, content);
             } else {
-                await publishContent(title, category, author, photographer, content);
+                await publishContent(title, category, author, content);
             }
 
             resetEditor();
             loadPublishedWorks();
         }
 
-        async function publishContent(title, category, author, photographer, content) {
+        async function publishContent(title, category, author, content) {
             try {
                 await db.collection(category).add({
                     title: title,
                     author: author,
-                    photographer: photographer,
                     content: content,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -613,13 +606,12 @@
             }
         }
 
-        async function updatePublishedWork(docId, oldCategory, title, newCategory, author, photographer, content) {
+        async function updatePublishedWork(docId, oldCategory, title, newCategory, author, content) {
             try {
                 if (oldCategory === newCategory) {
                     await db.collection(oldCategory).doc(docId).update({
                         title: title,
                         author: author,
-                        photographer: photographer,
                         content: content,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
@@ -629,7 +621,6 @@
                     await db.collection(newCategory).add({
                         title: title,
                         author: author,
-                        photographer: photographer,
                         content: content,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
@@ -649,7 +640,6 @@
             document.getElementById('title').value = '';
             document.getElementById('category').value = '';
             document.getElementById('author').value = '';
-            document.getElementById('photographer').value = '';
             tinymce.get('editor').setContent('');
             currentEditId = null;
             currentEditCategory = null;
@@ -720,7 +710,6 @@
             
             const title = document.getElementById('title').value;
             const author = document.getElementById('author').value;
-            const photographer = document.getElementById('photographer').value;
             const content = tinymce.get('editor').getContent();
             
             doc.setFontSize(18);
@@ -729,14 +718,10 @@
             doc.setFontSize(14);
             doc.text(`By ${author}`, 20, 30);
             
-            if (photographer) {
-                doc.text(`Photographer: ${photographer}`, 20, 40);
-            }
-            
             doc.setFontSize(12);
             const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
             const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
-            doc.text(splitContent, 20, photographer ? 50 : 40);
+            doc.text(splitContent, 20, 40);
             
             doc.save(title + '.pdf');
         }
@@ -744,7 +729,6 @@
         function exportToDOC() {
             const title = document.getElementById('title').value;
             const author = document.getElementById('author').value;
-            const photographer = document.getElementById('photographer').value;
             const content = tinymce.get('editor').getContent();
             
             const doc = new Document({
@@ -759,10 +743,6 @@
                             text: `By ${author}`,
                             heading: HeadingLevel.HEADING_2,
                         }),
-                        photographer ? new Paragraph({
-                            text: `Photographer: ${photographer}`,
-                            heading: HeadingLevel.HEADING_3,
-                        }) : null,
                         new Paragraph({
                             text: content.replace(/<[^>]+>/g, ''),
                         }),
@@ -794,7 +774,6 @@
                         category: category,
                         title: data.title,
                         author: data.author,
-                        photographer: data.photographer,
                         content: data.content,
                         timestamp: data.timestamp
                     });
@@ -815,7 +794,6 @@
                 publishedItem.innerHTML = `
                     <h3>${work.title}</h3>
                     <p>Author: ${work.author}</p>
-                    ${work.photographer ? `<p>Photographer: ${work.photographer}</p>` : ''}
                     <p>Category: ${work.category}</p>
                     <p>Published: ${work.timestamp.toDate().toLocaleString()}</p>
                     <div class="edit-delete-buttons">
@@ -834,7 +812,6 @@
             document.getElementById('title').value = data.title;
             document.getElementById('category').value = category;
             document.getElementById('author').value = data.author;
-            document.getElementById('photographer').value = data.photographer || '';
             tinymce.get('editor').setContent(data.content);
 
             currentEditId = docId;
@@ -863,7 +840,6 @@
             const filteredWorks = allPublishedWorks.filter(work => 
                 work.title.toLowerCase().includes(searchTerm) || 
                 work.author.toLowerCase().includes(searchTerm) ||
-                (work.photographer && work.photographer.toLowerCase().includes(searchTerm)) ||
                 work.content.toLowerCase().includes(searchTerm)
             );
             displayPublishedWorks(filteredWorks);
