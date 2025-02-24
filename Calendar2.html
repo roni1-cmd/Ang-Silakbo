@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Memos</title>
+    <title>SILAKBO Calendar</title>
     <link rel="icon" href="SILAKBO.png">
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -313,21 +313,6 @@
             transition: all 0.5s ease;
         }
 
-        #weather-widget {
-            background-color: var(--secondary-color);
-            color: var(--background-color);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        #weather-widget:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
         #quote-widget {
             background-color: var(--accent-color);
             color: var(--background-color);
@@ -379,6 +364,14 @@
                 <div class="form-group">
                     <label for="eventTitle"><i class="fas fa-heading"></i> Title:</label>
                     <input type="text" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventStart"><i class="fas fa-clock"></i> Start:</label>
+                    <input type="datetime-local" id="eventStart" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventEnd"><i class="fas fa-clock"></i> End:</label>
+                    <input type="datetime-local" id="eventEnd" required>
                 </div>
                 <div class="form-group">
                     <label for="eventColor"><i class="fas fa-palette"></i> Color:</label>
@@ -489,7 +482,6 @@
             calendar.render();
             loadEvents();
             setupColorDropdown();
-            fetchWeather();
             fetchQuote();
         });
 
@@ -503,6 +495,8 @@
             if (event) {
                 title.innerHTML = '<i class="fas fa-edit"></i> Edit Event';
                 form.eventTitle.value = event.title;
+                form.eventStart.value = event.start.toISOString().slice(0, 16);
+                form.eventEnd.value = event.end ? event.end.toISOString().slice(0, 16) : '';
                 form.eventDescription.value = event.extendedProps.description || '';
                 form.eventLocation.value = event.extendedProps.location || '';
                 form.eventReminder.value = event.extendedProps.reminder || 'none';
@@ -511,6 +505,8 @@
             } else {
                 title.innerHTML = '<i class="fas fa-plus-circle"></i> Add Event';
                 form.reset();
+                form.eventStart.value = start.slice(0, 16);
+                form.eventEnd.value = end.slice(0, 16);
                 selectColor(colors[0].value);
                 deleteBtn.style.display = 'none';
             }
@@ -555,8 +551,8 @@
             const form = e.target;
             const eventData = {
                 title: form.eventTitle.value,
-                start: currentEvent ? currentEvent.start : calendar.view.activeStart,
-                end: currentEvent ? currentEvent.end : calendar.view.activeEnd,
+                start: form.eventStart.value,
+                end: form.eventEnd.value,
                 backgroundColor: document.querySelector('.color-dropdown .button').style.backgroundColor,
                 description: form.eventDescription.value,
                 location: form.eventLocation.value,
@@ -663,21 +659,6 @@
             var b = parseInt(hexcolor.substr(4,2),16);
             var yiq = ((r*299)+(g*587)+(b*114))/1000;
             return (yiq >= 128) ? 'black' : 'white';
-        }
-
-        function fetchWeather() {
-            // Replace with actual API call
-            setTimeout(() => {
-                const weatherWidget = document.getElementById('weather-widget');
-                if (weatherWidget) {
-                    weatherWidget.innerHTML = `
-                        <h3>Weather</h3>
-                        <p>Sunny, 25°C</p>
-                    `;
-                } else {
-                    console.error('Weather widget element not found');
-                }
-            }, 1000);
         }
 
         function fetchQuote() {
