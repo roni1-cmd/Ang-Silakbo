@@ -578,14 +578,24 @@
                 box-shadow: none;
                 display: none;
                 padding-left: 20px;
+                background-color: #f8f8f8;
+                border-radius: 4px;
             }
             
             .nav-menu li:hover .dropdown-menu {
                 display: none;
             }
             
-            .dropdown-active .dropdown-menu {
+            .dropdown-active > .dropdown-menu {
                 display: block;
+            }
+            
+            .dropdown-icon {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
             }
             
             .mobile-menu-icon {
@@ -780,7 +790,7 @@
                 <li><a href="Exec order.html"><i class="fas fa-file-alt"></i> <span class="nav-label">Executive Order</span></a></li>
                 <li><a href="#" id="volitrixLink"><i class="fas fa-headset"></i> <span class="nav-label">Volitrix</span></a></li>                <li><a href="Duties.html"><i class="fas fa-users"></i> <span class="nav-label">Roles</span></a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-icon"><i class="fas fa-book"></i> <span class="nav-label">Narratives</span></a>
+                    <a href="#" class="dropdown-icon" style="display: flex; align-items: center;"><i class="fas fa-book"></i> <span class="nav-label">Narratives</span></a>
                     <ul class="dropdown-menu">
                         <li><a href="Artikulo.html">Articles</a></li>
                         <li><a href="#">Coming Soon</a></li>
@@ -815,7 +825,7 @@
                 </div>
                 <div class="slide" style="background-image: url('Feature 41.jpg');">
                     <div class="slide-content">
-                        <p class="slide-text">The much-anticipated FYI Month’s Cultural Festival Dance and Festival Queen Competition concluded with an exciting showcase of talent, culture, and creativity. STEM PM emerged as the champion with their vibrant portrayal of the Panagtagbo Festival of Mandaue, captivating the audience with their energy and artistry. STEM AM secured first place with a stunning performance representing the Sugat Kabanhawan Festival of Minglanilla, while HUMSS/GAS 11 claimed second place, bringing the spirit of the Sinulog Festival of Cebu City to life. The event celebrated the rich traditions of Cebu, highlighting the students’ dedication, passion, and cultural pride.</p>
+                        <p class="slide-text">SThe much-anticipated FYI Month’s Cultural Festival Dance and Festival Queen Competition concluded with an exciting showcase of talent, culture, and creativity. STEM PM emerged as the champion with their vibrant portrayal of the Panagtagbo Festival of Mandaue, captivating the audience with their energy and artistry. STEM AM secured first place with a stunning performance representing the Sugat Kabanhawan Festival of Minglanilla, while HUMSS/GAS 11 claimed second place, bringing the spirit of the Sinulog Festival of Cebu City to life. The event celebrated the rich traditions of Cebu, highlighting the students’ dedication, passion, and cultural pride.</p>
                         <a href="https://angsilakbo.netlify.app/artikulo?post=Bd10FTHQibai7Ik7LQDc" class="read-more">READ MORE</a>
                     </div>
                 </div>
@@ -862,7 +872,7 @@
         </section>
 
         <section class="section salik-salitaan">
-            <h2 class="section-title">Silak-Salitaan</h2>
+            <h2 class="section-title">Salik-Salitaan</h2>
             <div class="salik-content">
                 <div class="salik-item">
                     <img src="Saliksalitaan1.jpg" alt="Student Voices">
@@ -989,17 +999,33 @@
             const rightArrow = document.querySelector('.arrow-right');
             const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
             const navMenu = document.querySelector('.nav-menu');
-            const dropdowns = document.querySelectorAll('.dropdown');
-            const searchBox = document.querySelector('.search-box');
-            const navLabels = document.querySelectorAll('.nav-label');
-            let currentSlide = 0;
+            // Handle dropdown menu on mobile
+            document.querySelectorAll('.dropdown-icon').forEach(dropdownIcon => {
+                dropdownIcon.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        const dropdownMenu = this.nextElementSibling;
+                        this.parentElement.classList.toggle('dropdown-active');
+                        if (dropdownMenu.style.display === 'block') {
+                            dropdownMenu.style.display = 'none';
+                        } else {
+                            dropdownMenu.style.display = 'block';
+                        }
+                    }
+                });
+            });
             
+            let currentSlide = 0;
+            const searchBox = document.querySelector('.search-box');
+
+            // Handle dropdown menu on mobile
             // Mobile menu toggle
             mobileMenuIcon.addEventListener('click', function() {
                 navMenu.classList.toggle('active');
             });
-            
-            // Handle dropdown menu on mobile
+
+            // Dropdowns for mobile
+            const dropdowns = document.querySelectorAll('.dropdown');
             dropdowns.forEach(dropdown => {
                 dropdown.addEventListener('click', function(e) {
                     if (window.innerWidth <= 768) {
@@ -1007,6 +1033,13 @@
                         this.classList.toggle('dropdown-active');
                     }
                 });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!navMenu.contains(e.target) && !mobileMenuIcon.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                }
             });
             
             // Set up slide width based on container
@@ -1065,8 +1098,12 @@
                 const navMenu = document.querySelector('.nav-menu');
                 const dropdownIcons = document.querySelectorAll('.dropdown-icon');
 
-                // Make search box longer
-                searchBox.style.width = '600px'; // Increased width when focused
+                // Make search box longer based on screen width
+                if (window.innerWidth <= 768) {
+                    searchBox.style.width = '100px'; // Mobile width when focused
+                } else {
+                    searchBox.style.width = '600px'; // Desktop width when focused
+                }
 
                 // Animate labels
                 navLabels.forEach(label => {
