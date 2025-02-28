@@ -1,0 +1,2692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Data Center Task Manager</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ApexCharts for Advanced Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- AOS for Scroll Animations -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #E64A19;
+            --primary-dark: #BF360C;
+            --primary-light: #FF7043;
+            --primary-lighter: #FFCCBC;
+            --success: #2ecc71;
+            --success-light: #d5f5e3;
+            --warning: #f39c12;
+            --warning-light: #f9e79f;
+            --danger: #e74c3c;
+            --danger-light: #f5b7b1;
+            --neutral: #34495e;
+            --neutral-light: #d7dbdd;
+            --background: #f8f9fa;
+            --card: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+            --text-lighter: #999999;
+            --border: #e0e0e0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --transition-slow: all 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeInLeft 0.5s ease-out;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: fadeInRight 0.5s ease-out;
+        }
+
+        .theme-toggle, .notification-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .theme-toggle:hover, .notification-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Dashboard Summary */
+        .dashboard-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary-card:hover::before {
+            width: 8px;
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .summary-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            background-color: rgba(230, 74, 25, 0.1);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .summary-card:hover .summary-icon {
+            transform: scale(1.1);
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .summary-card:hover .summary-value {
+            transform: scale(1.05);
+        }
+
+        .summary-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .summary-trend {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .trend-icon {
+            margin-right: 0.25rem;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin-top: 0.75rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1s ease-in-out;
+        }
+
+        .progress-stable .progress-value {
+            background-color: var(--success);
+        }
+
+        .progress-unstable .progress-value {
+            background-color: var(--warning);
+        }
+
+        .progress-maintenance .progress-value {
+            background-color: var(--danger);
+        }
+
+        .progress-closure .progress-value {
+            background-color: var(--neutral);
+        }
+
+        /* Tabs */
+        .tab-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .tab-button {
+            background-color: var(--card);
+            color: var(--text);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-light);
+            transition: var(--transition);
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        .tab-button:hover::before {
+            left: 0;
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tab-button.active::before {
+            left: 0;
+            opacity: 0;
+        }
+
+        .tab-indicator {
+            position: absolute;
+            bottom: -5px;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .refresh-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .refresh-button:hover {
+            transform: rotate(180deg);
+        }
+
+        /* Status Table */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .status-table th, .status-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-table th {
+            font-weight: 600;
+            color: var(--text);
+            position: sticky;
+            top: 0;
+            background-color: var(--card);
+            z-index: 10;
+        }
+
+        .status-table tr {
+            transition: var(--transition);
+        }
+
+        .status-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transform: translateX(5px);
+        }
+
+        .status {
+            font-weight: 500;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            text-align: center;
+            display: inline-block;
+            min-width: 120px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .status:hover::before {
+            transform: translateX(0);
+        }
+
+        .status.stable {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+
+        .status.unstable {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .status.maintenance {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .status.closure {
+            background-color: var(--neutral-light);
+            color: var(--neutral);
+        }
+
+        /* Icons */
+        .icon {
+            margin-right: 0.75rem;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        tr:hover .icon {
+            transform: scale(1.2);
+        }
+
+        /* Graph Container */
+        .graph-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            padding: 1rem;
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background-color: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            height: 300px;
+        }
+
+        .chart-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .chart-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .chart-body {
+            padding: 1rem;
+            height: calc(100% - 45px);
+        }
+
+        /* History Tab */
+        .history-list {
+            list-style: none;
+            padding: 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transform: translateX(5px);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .history-item:hover .history-icon {
+            transform: scale(1.1);
+        }
+
+        .history-icon.stable {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+
+        .history-icon.unstable {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .history-icon.maintenance {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .history-icon.closure {
+            background-color: var(--neutral-light);
+            color: var(--neutral);
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Settings Tab */
+        .settings-form {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(230, 74, 25, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Server Rack Visualization */
+        .server-rack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .rack-unit {
+            background-color: #2c3e50;
+            border-radius: 4px;
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rack-unit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            transition: var(--transition);
+        }
+
+        .rack-unit:hover {
+            transform: translateX(5px);
+        }
+
+        .rack-unit:hover::before {
+            width: 8px;
+        }
+
+        .rack-unit.stable::before {
+            background-color: var(--success);
+        }
+
+        .rack-unit.unstable::before {
+            background-color: var(--warning);
+        }
+
+        .rack-unit.maintenance::before {
+            background-color: var(--danger);
+        }
+
+        .rack-unit.closure::before {
+            background-color: var(--neutral);
+        }
+
+        .rack-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .status-indicator.stable {
+            background-color: var(--success);
+        }
+
+        .status-indicator.unstable {
+            background-color: var(--warning);
+        }
+
+        .status-indicator.maintenance {
+            background-color: var(--danger);
+        }
+
+        .status-indicator.closure {
+            background-color: var(--neutral);
+        }
+
+        .rack-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .rack-name {
+            font-weight: 600;
+        }
+
+        .rack-info {
+            font-size: 0.8rem;
+            color: #bdc3c7;
+        }
+
+        .rack-metrics {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .rack-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Network Map */
+        .network-map {
+            height: 400px;
+            position: relative;
+            background-color: #1a1a2e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .node.server {
+            background-color: var(--primary);
+        }
+
+        .node.router {
+            background-color: var(--success);
+        }
+
+        .node.storage {
+            background-color: var(--warning);
+        }
+
+        .node.client {
+            background-color: var(--neutral);
+        }
+
+        .node-label {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .node:hover + .node-label {
+            opacity: 1;
+        }
+
+        .connection {
+            position: absolute;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform-origin: 0 0;
+            z-index: 5;
+        }
+
+        .connection.active {
+            background-color: rgba(255, 255, 255, 0.6);
+            animation: pulse-connection 1.5s infinite;
+        }
+
+        @keyframes pulse-connection {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            animation: fadeIn 0.5s;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-lighter);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+        }
+
+        /* Dark Mode */
+        body.dark {
+            --background: #121212;
+            --card: #1e1e1e;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --text-lighter: #707070;
+            --border: #333333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark .status-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        body.dark .history-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .toast {
+            background-color: var(--card);
+            color: var(--text);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+            max-width: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            animation: toast-timer 3s linear forwards;
+        }
+
+        @keyframes toast-timer {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        .toast-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .toast-success .toast-icon {
+            color: var(--success);
+        }
+
+        .toast-warning .toast-icon {
+            color: var(--warning);
+        }
+
+        .toast-error .toast-icon {
+            color: var(--danger);
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: fixed;
+            top: 60px;
+            right: -350px;
+            width: 350px;
+            height: calc(100vh - 60px);
+            background-color: var(--card);
+            box-shadow: var(--shadow-lg);
+            z-index: 90;
+            transition: var(--transition);
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .notification-panel.active {
+            right: 0;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-title {
+            font-weight: 600;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .notification-close:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .notification-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .notification-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background-color: var(--background);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            transform: translateX(-5px);
+            background-color: var(--primary-lighter);
+        }
+
+        .notification-item.unread {
+            border-left: 3px solid var(--primary);
+        }
+
+        .notification-content {
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+            text-align: right;
+        }
+
+        /* Mobile Compatibility */
+        @media (max-width: 768px) {
+            .dashboard-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .status-table th, .status-table td {
+                padding: 0.75rem 1rem;
+            }
+
+            .status {
+                min-width: 100px;
+                font-size: 0.8rem;
+            }
+
+            .graph-container {
+                height: 300px;
+            }
+
+            .tab-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .summary-value {
+                font-size: 1.5rem;
+            }
+
+            .chart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .notification-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        /* Animations for AOS */
+        [data-aos] {
+            opacity: 0;
+            transition-property: opacity, transform;
+        }
+
+        [data-aos="fade-up"] {
+            transform: translateY(20px);
+        }
+
+        [data-aos="fade-down"] {
+            transform: translateY(-20px);
+        }
+
+        [data-aos="fade-left"] {
+            transform: translateX(20px);
+        }
+
+        [data-aos="fade-right"] {
+            transform: translateX(-20px);
+        }
+
+        [data-aos="zoom-in"] {
+            transform: scale(0.9);
+        }
+
+        [data-aos].aos-animate {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            color: var(--primary-lighter);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-server"></i>
+                <h1>Ang Silakbo - Data Center Task Manager</h1>
+            </div>
+            <div class="header-actions">
+                <button class="notification-toggle" id="notificationToggle">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </button>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Dashboard Summary -->
+        <div class="dashboard-summary">
+            <div class="summary-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="summary-header">
+                    <div class="summary-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="summary-value" id="stableCount">0</div>
+                <div class="summary-label">Stable Components</div>
+                <div class="summary-trend trend-up">
+                    <i class="fas fa-arrow-up trend-icon"></i>
+                    <span>5% from last period</span>
+                </div>
+                <div class="progress-container progress-stable">
+                    <div class="progress-label">
+                        <span>Stability Rate</span>
+                        <span id="stablePercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" id="stableProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="summary-header">
+                    <div class="summary-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="summary-value" id="unstableCount">0</div>
+                <div class="summary-label">Unstable Components</div>
+                <div class="summary-trend trend-down">
+                    <i class="fas fa-arrow-down trend-icon"></i>
+                    <span>2% from last period</span>
+                </div>
+                <div class="progress-container progress-unstable">
+                    <div class="progress-label">
+                        <span>Instability Rate</span>
+                        <span id="unstablePercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" id="unstableProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="summary-header">
+                    <div class="summary-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                </div>
+                <div class="summary-value" id="maintenanceCount">0</div>
+                <div class="summary-label">Under Maintenance</div>
+                <div class="summary-trend trend-up">
+                    <i class="fas fa-arrow-up trend-icon"></i>
+                    <span>3% from last period</span>
+                </div>
+                <div class="progress-container progress-maintenance">
+                    <div class="progress-label">
+                        <span>Maintenance Rate</span>
+                        <span id="maintenancePercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" id="maintenanceProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="summary-header">
+                    <div class="summary-icon">
+                        <i class="fas fa-power-off"></i>
+                    </div>
+                </div>
+                <div class="summary-value" id="closureCount">0</div>
+                <div class="summary-label">Closed Components</div>
+                <div class="summary-trend trend-down">
+                    <i class="fas fa-arrow-down trend-icon"></i>
+                    <span>1% from last period</span>
+                </div>
+                <div class="progress-container progress-closure">
+                    <div class="progress-label">
+                        <span>Closure Rate</span>
+                        <span id="closurePercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-value" id="closureProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-container">
+            <button class="tab-button active" onclick="switchTab('status')">
+                <i class="fas fa-table icon"></i>Data Center Status
+            </button>
+            <button class="tab-button" onclick="switchTab('graph')">
+                <i class="fas fa-chart-line icon"></i>Live Graph
+            </button>
+            <button class="tab-button" onclick="switchTab('visualization')">
+                <i class="fas fa-network-wired icon"></i>Visualization
+            </button>
+            <button class="tab-button" onclick="switchTab('history')">
+                <i class="fas fa-history icon"></i>Status History
+            </button>
+            <button class="tab-button" onclick="switchTab('activity')">
+                <i class="fas fa-stream icon"></i>Activity
+            </button>
+            <button class="tab-button" onclick="switchTab('settings')">
+                <i class="fas fa-cog icon"></i>Settings
+            </button>
+            <div class="tab-indicator" id="tabIndicator"></div>
+        </div>
+
+        <!-- Data Center Status Tab -->
+        <div id="status-tab" class="tab-content active">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Component Status</span>
+                    <button class="refresh-button" id="refreshStatus">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <table class="status-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Status</th>
+                            <th>Last Updated</th>
+                            <th>Uptime</th>
+                            <th>Load</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statusTableBody">
+                        <tr>
+                            <td><i class="fas fa-server icon"></i>Applicants Server</td>
+                            <td><span id="applicants-server-status" class="status stable">Stable</span></td>
+                            <td>Just now</td>
+                            <td>99.9%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 45%; background-color: var(--success);"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-calendar-alt icon"></i>Calendar</td>
+                            <td><span id="calendar-status" class="status stable">Stable</span></td>
+                            <td>Just now</td>
+                            <td>99.9%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 30%; background-color: var(--success);"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-question-circle icon"></i>Inquiries - Chat Requests</td>
+                            <td><span id="inquiries-status" class="status stable">Stable</span></td>
+                            <td>Just now</td>
+                            <td>99.9%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 65%; background-color: var(--warning);"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-comments icon"></i>Communications - Messaging</td>
+                            <td><span id="communications-status" class="status stable">Stable</span></td>
+                            <td>Just now</td>
+                            <td>99.9%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 80%; background-color: var(--danger);"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-edit icon"></i>Workstation - Articles Section</td>
+                            <td><span id="edit-content-status" class="status stable">Stable</span></td>
+                            <td>Just now</td>
+                            <td>99.9%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 25%; background-color: var(--success);"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-sticky-note icon"></i>Memos</td>
+                            <td><span id="memos-status" class="status stable">Stable</span></td>
+                            <td>Just now</td>
+                            <td>99.9%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 50%; background-color: var(--warning);"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Live Graph Tab -->
+        <div id="graph-tab" class="tab-content">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Real-Time Status Monitoring</span>
+                    <button class="refresh-button" id="refreshGraph">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="graph-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container" data-aos="fade-up" data-aos-delay="200">
+                <div class="chart-card">
+                    <div class="chart-header">Status Distribution</div>
+                    <div class="chart-body">
+                        <div id="statusPieChart"></div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">Load Average (24h)</div>
+                    <div class="chart-body">
+                        <div id="loadAreaChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Tab -->
+        <div id="visualization-tab" class="tab-content">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Server Rack Visualization</span>
+                </div>
+                <div class="card-body">
+                    <div class="server-rack" id="serverRack">
+                        <!-- Server rack units will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-header">
+                    <span>Network Map</span>
+                </div>
+                <div class="card-body">
+                    <div class="network-map" id="networkMap">
+                        <!-- Network nodes and connections will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="history-tab" class="tab-content">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Status Change History</span>
+                </div>
+                <ul class="history-list" id="historyList">
+                    <!-- History items will be added dynamically -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Activity Tab -->
+        <div id="activity-tab" class="tab-content">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Recent Activity</span>
+                </div>
+                <div class="card-body">
+                    <div class="activity-feed" id="activityFeed">
+                        <!-- Activity items will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Dashboard Settings</span>
+                </div>
+                <form class="settings-form" id="settingsForm">
+                    <div class="form-group">
+                        <label class="form-label" for="updateInterval">Update Interval (minutes)</label>
+                        <input type="number" class="form-control" id="updateInterval" min="15" max="120" value="15">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="graphDataPoints">Graph Data Points</label>
+                        <input type="number" class="form-control" id="graphDataPoints" min="5" max="50" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="notificationLevel">Notification Level</label>
+                        <select class="form-control form-select" id="notificationLevel">
+                            <option value="all">All Status Changes</option>
+                            <option value="issues">Issues Only (Unstable & Maintenance)</option>
+                            <option value="critical">Critical Only (Maintenance & Closure)</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="theme">Theme Preference</label>
+                        <select class="form-control form-select" id="theme">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System Preference</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="animationsEnabled">Animations</label>
+                        <select class="form-control form-select" id="animationsEnabled">
+                            <option value="enabled">Enabled</option>
+                            <option value="reduced">Reduced</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <div class="notification-title">Notifications</div>
+            <button class="notification-close" id="notificationClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="notification-list" id="notificationList">
+            <!-- Notifications will be added dynamically -->
+        </ul>
+    </div>
+
+    <div class="toast-container" id="toastContainer">
+        <!-- Toast notifications will be added dynamically -->
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="ToS.html" class="footer-link">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize AOS
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true
+            });
+        });
+
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const notificationToggle = document.getElementById('notificationToggle');
+        const notificationPanel = document.getElementById('notificationPanel');
+        const notificationClose = document.getElementById('notificationClose');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const notificationList = document.getElementById('notificationList');
+        const refreshStatus = document.getElementById('refreshStatus');
+        const refreshGraph = document.getElementById('refreshGraph');
+        const statusTableBody = document.getElementById('statusTableBody');
+        const historyList = document.getElementById('historyList');
+        const activityFeed = document.getElementById('activityFeed');
+        const settingsForm = document.getElementById('settingsForm');
+        const toastContainer = document.getElementById('toastContainer');
+        const stableCount = document.getElementById('stableCount');
+        const unstableCount = document.getElementById('unstableCount');
+        const maintenanceCount = document.getElementById('maintenanceCount');
+        const closureCount = document.getElementById('closureCount');
+        const stablePercentage = document.getElementById('stablePercentage');
+        const unstablePercentage = document.getElementById('unstablePercentage');
+        const maintenancePercentage = document.getElementById('maintenancePercentage');
+        const closurePercentage = document.getElementById('closurePercentage');
+        const stableProgress = document.getElementById('stableProgress');
+        const unstableProgress = document.getElementById('unstableProgress');
+        const maintenanceProgress = document.getElementById('maintenanceProgress');
+        const closureProgress = document.getElementById('closureProgress');
+        const serverRack = document.getElementById('serverRack');
+        const networkMap = document.getElementById('networkMap');
+        const tabIndicator = document.getElementById('tabIndicator');
+
+        // Status Mapping
+        const statusMap = {
+            0: { text: 'Stable', class: 'stable', icon: 'check-circle' },
+            1: { text: 'Unstable', class: 'unstable', icon: 'exclamation-triangle' },
+            2: { text: 'Maintenance', class: 'maintenance', icon: 'tools' },
+            3: { text: 'Closure', class: 'closure', icon: 'power-off' }
+        };
+
+        // Components
+        const components = [
+            { id: 'applicants-server', name: 'Applicants Server', icon: 'server', type: 'server' },
+            { id: 'calendar', name: 'Calendar', icon: 'calendar-alt', type: 'application' },
+            { id: 'inquiries', name: 'Inquiries', icon: 'question-circle', type: 'application' },
+            { id: 'communications', name: 'Communications', icon: 'comments', type: 'application' },
+            { id: 'edit-content', name: 'Edit Content', icon: 'edit', type: 'application' },
+            { id: 'memos', name: 'Memos', icon: 'sticky-note', type: 'application' }
+        ];
+
+        // Settings
+        let settings = {
+            updateInterval: 15, // minutes
+            graphDataPoints: 10,
+            notificationLevel: 'all',
+            theme: 'light',
+            animationsEnabled: 'enabled'
+        };
+
+        // Status History
+        let statusHistory = [];
+        
+        // Activity History
+        let activityHistory = [];
+
+        // Notifications
+        let notifications = [
+            {
+                id: 1,
+                title: 'System Update',
+                content: 'System will undergo maintenance in 24 hours.',
+                time: new Date(Date.now() - 30 * 60000),
+                read: false
+            },
+            {
+                id: 2,
+                title: 'Status Alert',
+                content: 'Communications server experiencing high load.',
+                time: new Date(Date.now() - 120 * 60000),
+                read: false
+            },
+            {
+                id: 3,
+                title: 'New Feature',
+                content: 'Network visualization map has been added to the dashboard.',
+                time: new Date(Date.now() - 240 * 60000),
+                read: false
+            }
+        ];
+
+        // Theme Toggle
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            showToast(isDark ? 'Dark mode enabled' : 'Light mode enabled', 'success');
+        });
+
+        // Notification Panel Toggle
+        notificationToggle.addEventListener('click', () => {
+            notificationPanel.classList.toggle('active');
+            updateNotificationBadge();
+        });
+
+        notificationClose.addEventListener('click', () => {
+            notificationPanel.classList.remove('active');
+        });
+
+        // Update Notification Badge
+        function updateNotificationBadge() {
+            const unreadCount = notifications.filter(n => !n.read).length;
+            notificationBadge.textContent = unreadCount;
+            
+            if (unreadCount === 0) {
+                notificationBadge.style.display = 'none';
+            } else {
+                notificationBadge.style.display = 'flex';
+            }
+        }
+
+        // Populate Notification List
+        function populateNotifications() {
+            notificationList.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                notificationList.innerHTML = '<li class="notification-item">No notifications</li>';
+                return;
+            }
+            
+            notifications.forEach(notification => {
+                const notificationItem = document.createElement('li');
+                notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                notificationItem.dataset.id = notification.id;
+                
+                notificationItem.innerHTML = `
+                    <div class="notification-content">${notification.content}</div>
+                    <div class="notification-time">${formatTimeAgo(notification.time)}</div>
+                `;
+                
+                notificationItem.addEventListener('click', () => {
+                    markNotificationAsRead(notification.id);
+                    notificationItem.classList.remove('unread');
+                });
+                
+                notificationList.appendChild(notificationItem);
+            });
+        }
+
+        // Mark Notification as Read
+        function markNotificationAsRead(id) {
+            const notification = notifications.find(n => n.id === id);
+            if (notification) {
+                notification.read = true;
+                updateNotificationBadge();
+            }
+        }
+
+        // Format Time Ago
+        function formatTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval > 1) return interval + ' years ago';
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + ' months ago';
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + ' days ago';
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + ' hours ago';
+            
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) return interval + ' minutes ago';
+            
+            return 'just now';
+        }
+
+        // Tabs Functionality
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            const activeButton = document.querySelector(`.tab-button[onclick="switchTab('${tabName}')"]`);
+            activeButton.classList.add('active');
+            
+            // Update tab indicator
+            const buttonRect = activeButton.getBoundingClientRect();
+            const containerRect = document.querySelector('.tab-container').getBoundingClientRect();
+            
+            tabIndicator.style.width = `${buttonRect.width}px`;
+            tabIndicator.style.left = `${buttonRect.left - containerRect.left}px`;
+        }
+
+        // Function to update status
+        function updateStatus() {
+            let stableCounter = 0;
+            let unstableCounter = 0;
+            let maintenanceCounter = 0;
+            let closureCounter = 0;
+
+            components.forEach(component => {
+                const statusElement = document.getElementById(`${component.id}-status`);
+                const randomStatus = Math.floor(Math.random() * 4); // Random status (0-3)
+                const oldStatus = statusElement ? statusElement.textContent : null;
+                const newStatus = statusMap[randomStatus].text;
+                
+                // Update status element
+                if (statusElement) {
+                    statusElement.textContent = newStatus;
+                    statusElement.className = `status ${statusMap[randomStatus].class}`;
+                }
+
+                // Update counters
+                if (randomStatus === 0) stableCounter++;
+                else if (randomStatus === 1) unstableCounter++;
+                else if (randomStatus === 2) maintenanceCounter++;
+                else if (randomStatus === 3) closureCounter++;
+
+                // Add to history if status changed
+                if (oldStatus && oldStatus !== newStatus) {
+                    addToHistory(component, randomStatus);
+                    addToActivity(`${component.name} status changed from ${oldStatus} to ${newStatus}`);
+                    
+                    // Show notification based on settings
+                    if (shouldNotify(randomStatus)) {
+                        showToast(`${component.name} status changed to ${newStatus}`, 
+                            randomStatus === 0 ? 'success' : 
+                            randomStatus === 1 ? 'warning' : 'error');
+                        
+                        // Add to notifications
+                        addNotification(`Status Change: ${component.name}`, 
+                            `${component.name} status changed from ${oldStatus} to ${newStatus}`);
+                    }
+                }
+            });
+
+            // Update summary counters
+            stableCount.textContent = stableCounter;
+            unstableCount.textContent = unstableCounter;
+            maintenanceCount.textContent = maintenanceCounter;
+            closureCount.textContent = closureCounter;
+            
+            // Calculate percentages
+            const total = components.length;
+            const stablePercent = Math.round((stableCounter / total) * 100);
+            const unstablePercent = Math.round((unstableCounter / total) * 100);
+            const maintenancePercent = Math.round((maintenanceCounter / total) * 100);
+            const closurePercent = Math.round((closureCounter / total) * 100);
+            
+            // Update progress bars
+            stablePercentage.textContent = `${stablePercent}%`;
+            unstablePercentage.textContent = `${unstablePercent}%`;
+            maintenancePercentage.textContent = `${maintenancePercent}%`;
+            closurePercentage.textContent = `${closurePercent}%`;
+            
+            stableProgress.style.width = `${stablePercent}%`;
+            unstableProgress.style.width = `${unstablePercent}%`;
+            maintenanceProgress.style.width = `${maintenancePercent}%`;
+            closureProgress.style.width = `${closurePercent}%`;
+
+            // Update last updated time
+            const cells = statusTableBody.querySelectorAll('tr td:nth-child(3)');
+            cells.forEach(cell => {
+                cell.textContent = 'Just now';
+            });
+            
+            // Update server rack visualization
+            updateServerRack();
+            
+            // Update network map
+            updateNetworkMap();
+        }
+
+        // Function to add status change to history
+        function addToHistory(component, statusCode) {
+            const time = new Date();
+            const historyItem = {
+                component: component,
+                status: statusCode,
+                time: time
+            };
+            
+            statusHistory.unshift(historyItem); // Add to beginning
+            
+            // Limit history to 50 items
+            if (statusHistory.length > 50) {
+                statusHistory.pop();
+            }
+            
+            updateHistoryUI();
+        }
+
+        // Function to update history UI
+        function updateHistoryUI() {
+            historyList.innerHTML = '';
+            
+            statusHistory.forEach(item => {
+                const status = statusMap[item.status];
+                const timeString = formatTime(item.time);
+                
+                const historyItem = document.createElement('li');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-icon ${status.class}">
+                        <i class="fas fa-${status.icon}"></i>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-title">${item.component.name} changed to ${status.text}</div>
+                        <div class="history-time">${timeString}</div>
+                    </div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+            
+            if (statusHistory.length === 0) {
+                historyList.innerHTML = '<li class="history-item">No status changes recorded yet.</li>';
+            }
+        }
+
+        // Function to add activity
+        function addToActivity(message, icon = 'info-circle') {
+            const time = new Date();
+            const activityItem = {
+                message: message,
+                icon: icon,
+                time: time
+            };
+            
+            activityHistory.unshift(activityItem);
+            
+            // Limit activity to 50 items
+            if (activityHistory.length > 50) {
+                activityHistory.pop();
+            }
+            
+            updateActivityUI();
+        }
+
+        // Function to update activity UI
+        function updateActivityUI() {
+            activityFeed.innerHTML = '';
+            
+            activityHistory.forEach(item => {
+                const timeString = formatTime(item.time);
+                
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas fa-${item.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${item.message}</div>
+                        <div class="activity-time">${timeString}</div>
+                    </div>
+                `;
+                
+                activityFeed.appendChild(activityItem);
+            });
+            
+            if (activityHistory.length === 0) {
+                activityFeed.innerHTML = '<div class="activity-item">No activity recorded yet.</div>';
+            }
+        }
+
+        // Function to add notification
+        function addNotification(title, content) {
+            const notification = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                time: new Date(),
+                read: false
+            };
+            
+            notifications.unshift(notification);
+            
+            // Limit notifications to 50
+            if (notifications.length > 50) {
+                notifications.pop();
+            }
+            
+            updateNotificationBadge();
+            populateNotifications();
+        }
+
+        // Function to format time
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        // Function to check if notification should be shown based on settings
+        function shouldNotify(statusCode) {
+            switch(settings.notificationLevel) {
+                case 'all':
+                    return true;
+                case 'issues':
+                    return statusCode === 1 || statusCode === 2;
+                case 'critical':
+                    return statusCode === 2 || statusCode === 3;
+                case 'none':
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
+        // Function to show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = 'check-circle';
+            if (type === 'warning') icon = 'exclamation-triangle';
+            if (type === 'error') icon = 'exclamation-circle';
+            
+            toast.innerHTML = `
+                <i class="fas fa-${icon} toast-icon"></i>
+                <div>${message}</div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Remove toast after animation completes
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Function to update server rack visualization
+        function updateServerRack() {
+            serverRack.innerHTML = '';
+            
+            components.forEach(component => {
+                const statusElement = document.getElementById(`${component.id}-status`);
+                let statusClass = 'stable';
+                
+                if (statusElement) {
+                    const statusText = statusElement.textContent;
+                    // Find status class from text
+                    for (const [key, value] of Object.entries(statusMap)) {
+                        if (value.text === statusText) {
+                            statusClass = value.class;
+                            break;
+                        }
+                    }
+                }
+                
+                const rackUnit = document.createElement('div');
+                rackUnit.className = `rack-unit ${statusClass}`;
+                
+                // Generate random metrics
+                const cpu = Math.floor(Math.random() * 100);
+                const memory = Math.floor(Math.random() * 100);
+                const storage = Math.floor(Math.random() * 100);
+                
+                rackUnit.innerHTML = `
+                    <div class="rack-details">
+                        <div class="rack-name">${component.name}</div>
+                        <div class="rack-info">${component.type.toUpperCase()} • ID: ${component.id}</div>
+                    </div>
+                    <div class="rack-metrics">
+                        <div class="rack-metric">
+                            <i class="fas fa-microchip"></i> ${cpu}%
+                        </div>
+                        <div class="rack-metric">
+                            <i class="fas fa-memory"></i> ${memory}%
+                        </div>
+                        <div class="rack-metric">
+                            <i class="fas fa-hdd"></i> ${storage}%
+                        </div>
+                    </div>
+                    <div class="rack-status">
+                        <div class="status-indicator ${statusClass}"></div>
+                        <span>${statusElement ? statusElement.textContent : 'Unknown'}</span>
+                    </div>
+                `;
+                
+                serverRack.appendChild(rackUnit);
+            });
+        }
+
+        // Function to update network map
+        function updateNetworkMap() {
+            networkMap.innerHTML = '';
+            
+            // Create nodes
+            const nodes = [
+                { id: 'router', type: 'router', x: 50, y: 50, label: 'Main Router' },
+                { id: 'server1', type: 'server', x: 150, y: 100, label: 'Applicants Server' },
+                { id: 'server2', type: 'server', x: 250, y: 50, label: 'Calendar Server' },
+                { id: 'storage', type: 'storage', x: 200, y: 200, label: 'Storage Array' },
+                { id: 'client1', type: 'client', x: 100, y: 250, label: 'Client 1' },
+                { id: 'client2', type: 'client', x: 300, y: 150, label: 'Client 2' }
+            ];
+            
+            // Create connections
+            const connections = [
+                { from: 'router', to: 'server1', active: Math.random() > 0.3 },
+                { from: 'router', to: 'server2', active: Math.random() > 0.3 },
+                { from: 'router', to: 'storage', active: Math.random() > 0.3 },
+                { from: 'server1', to: 'storage', active: Math.random() > 0.3 },
+                { from: 'server2', to: 'storage', active: Math.random() > 0.3 },
+                { from: 'router', to: 'client1', active: Math.random() > 0.3 },
+                { from: 'router', to: 'client2', active: Math.random() > 0.3 }
+            ];
+            
+            // Draw connections
+            connections.forEach(connection => {
+                const fromNode = nodes.find(node => node.id === connection.from);
+                const toNode = nodes.find(node => node.id === connection.to);
+                
+                if (fromNode && toNode) {
+                    const dx = toNode.x - fromNode.x;
+                    const dy = toNode.y - fromNode.y;
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    
+                    const connectionEl = document.createElement('div');
+                    connectionEl.className = `connection ${connection.active ? 'active' : ''}`;
+                    connectionEl.style.width = `${length}px`;
+                    connectionEl.style.left = `${fromNode.x}px`;
+                    connectionEl.style.top = `${fromNode.y}px`;
+                    connectionEl.style.transform = `rotate(${angle}deg)`;
+                    
+                    networkMap.appendChild(connectionEl);
+                }
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const nodeEl = document.createElement('div');
+                nodeEl.className = `node ${node.type}`;
+                nodeEl.style.left = `${node.x}px`;
+                nodeEl.style.top = `${node.y}px`;
+                
+                let icon = 'server';
+                if (node.type === 'router') icon = 'network-wired';
+                if (node.type === 'storage') icon = 'database';
+                if (node.type === 'client') icon = 'desktop';
+                
+                nodeEl.innerHTML = `<i class="fas fa-${icon}"></i>`;
+                
+                const labelEl = document.createElement('div');
+                labelEl.className = 'node-label';
+                labelEl.style.left = `${node.x}px`;
+                labelEl.style.top = `${node.y + 45}px`;
+                labelEl.textContent = node.label;
+                
+                networkMap.appendChild(nodeEl);
+                networkMap.appendChild(labelEl);
+            });
+        }
+
+        // Orange Color Scheme for Graph
+        const orangeColors = [
+            '#E64A19', // Primary
+            '#FF7043', // Primary Light
+            '#BF360C', // Primary Dark
+            '#FF9800', // Orange
+            '#F57C00', // Dark Orange
+            '#FFB74D'  // Light Orange
+        ];
+
+        // High-DPI Canvas Setup
+        const canvas = document.getElementById('statusChart');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dimensions based on container size
+        function resizeCanvas() {
+            const container = document.querySelector('.graph-container');
+            const dpr = window.devicePixelRatio || 1; // Device pixel ratio
+            canvas.width = container.clientWidth * dpr;
+            canvas.height = container.clientHeight * dpr;
+            canvas.style.width = container.clientWidth + 'px';
+            canvas.style.height = container.clientHeight + 'px';
+            ctx.scale(dpr, dpr); // Scale context for high-DPI displays
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Real-Time Graph Configuration
+        const statusChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels
+                datasets: components.map((component, index) => ({
+                    label: component.name,
+                    data: [],
+                    borderColor: orangeColors[index % orangeColors.length],
+                    backgroundColor: `${orangeColors[index % orangeColors.length]}33`, // 20% opacity
+                    borderWidth: 2,
+                    tension: 0.2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 3,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                return statusMap[value]?.text || '';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                animations: {
+                    tension: {
+                        duration: 1000,
+                        easing: 'linear'
+                    }
+                }
+            }
+        });
+
+        // Initialize Pie Chart
+        let statusPieChart;
+        function initPieChart() {
+            const pieOptions = {
+                chart: {
+                    type: 'donut',
+                    height: '100%',
+                    fontFamily: 'Poppins, sans-serif',
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800,
+                        animateGradually: {
+                            enabled: true,
+                            delay: 150
+                        },
+                        dynamicAnimation: {
+                            enabled: true,
+                            speed: 350
+                        }
+                    }
+                },
+                series: [0, 0, 0, 0],
+                labels: ['Stable', 'Unstable', 'Maintenance', 'Closure'],
+                colors: ['#2ecc71', '#f39c12', '#e74c3c', '#34495e'],
+                legend: {
+                    position: 'bottom'
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '55%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    show: true,
+                                    fontSize: '22px',
+                                    fontWeight: 600
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '16px',
+                                    formatter: function(val) {
+                                        return val;
+                                    }
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'Total',
+                                    formatter: function(w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            height: 250
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            
+            statusPieChart = new ApexCharts(document.getElementById('statusPieChart'), pieOptions);
+            statusPieChart.render();
+        }
+
+        // Initialize Area Chart
+        let loadAreaChart;
+        function initAreaChart() {
+            const areaOptions = {
+                chart: {
+                    type: 'area',
+                    height: '100%',
+                    fontFamily: 'Poppins, sans-serif',
+                    toolbar: {
+                        show: false
+                    },
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800
+                    }
+                },
+                series: [{
+                    name: 'Server Load',
+                    data: generateRandomData(24)
+                }],
+                colors: ['#E64A19'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.2,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 3
+                },
+                xaxis: {
+                    categories: generateHourLabels(24),
+                    labels: {
+                        rotate: 0
+                    }
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100,
+                    labels: {
+                        formatter: function(val) {
+                            return val + '%';
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + '% load';
+                        }
+                    }
+                }
+            };
+            
+            loadAreaChart = new ApexCharts(document.getElementById('loadAreaChart'), areaOptions);
+            loadAreaChart.render();
+        }
+
+        // Generate random data for area chart
+        function generateRandomData(count) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                data.push(Math.floor(Math.random() * 60) + 20); // Random between 20-80
+            }
+            return data;
+        }
+
+        // Generate hour labels for area chart
+        function generateHourLabels(count) {
+            const labels = [];
+            const now = new Date();
+            now.setHours(now.getHours() - count + 1);
+            
+            for (let i = 0; i < count; i++) {
+                const hour = new Date(now);
+                hour.setHours(hour.getHours() + i);
+                labels.push(hour.getHours() + ':00');
+            }
+            
+            return labels;
+        }
+
+        // Function to update graph data
+        function updateGraph() {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            statusChart.data.labels.push(time);
+
+            // Update line chart
+            components.forEach((component, index) => {
+                const statusElement = document.getElementById(`${component.id}-status`);
+                let statusValue = 0; // Default to stable
+                
+                if (statusElement) {
+                    const statusText = statusElement.textContent;
+                    // Find status code from text
+                    for (const [key, value] of Object.entries(statusMap)) {
+                        if (value.text === statusText) {
+                            statusValue = parseInt(key);
+                            break;
+                        }
+                    }
+                } else {
+                    // If element not found, generate random status
+                    statusValue = Math.floor(Math.random() * 4);
+                }
+                
+                statusChart.data.datasets[index].data.push(statusValue);
+            });
+
+            // Limit data points
+            if (statusChart.data.labels.length > settings.graphDataPoints) {
+                statusChart.data.labels.shift();
+                statusChart.data.datasets.forEach(dataset => dataset.data.shift());
+            }
+
+            statusChart.update();
+            
+            // Update pie chart
+            if (statusPieChart) {
+                const stableVal = parseInt(stableCount.textContent);
+                const unstableVal = parseInt(unstableCount.textContent);
+                const maintenanceVal = parseInt(maintenanceCount.textContent);
+                const closureVal = parseInt(closureCount.textContent);
+                
+                statusPieChart.updateSeries([stableVal, unstableVal, maintenanceVal, closureVal]);
+            }
+            
+            // Update area chart with new random data
+            if (loadAreaChart) {
+                loadAreaChart.updateSeries([{
+                    data: generateRandomData(24)
+                }]);
+            }
+        }
+
+        // Settings form submission
+        settingsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newInterval = parseInt(document.getElementById('updateInterval').value);
+            const newDataPoints = parseInt(document.getElementById('graphDataPoints').value);
+            const newNotificationLevel = document.getElementById('notificationLevel').value;
+            const newTheme = document.getElementById('theme').value;
+            const newAnimations = document.getElementById('animationsEnabled').value;
+            
+            // Validate inputs
+            if (newInterval < 15) {
+                showToast('Update interval must be at least 15 minutes', 'error');
+                return;
+            }
+            
+            // Update settings
+            settings.updateInterval = newInterval;
+            settings.graphDataPoints = newDataPoints;
+            settings.notificationLevel = newNotificationLevel;
+            settings.theme = newTheme;
+            settings.animationsEnabled = newAnimations;
+            
+            // Apply theme
+            if (newTheme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else if (newTheme === 'light') {
+                document.body.classList.remove('dark');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            // Apply animation settings
+            if (newAnimations === 'disabled') {
+                AOS.init({ disable: true });
+            } else if (newAnimations === 'reduced') {
+                AOS.init({ duration: 400, once: true });
+            } else {
+                AOS.init({ duration: 800, once: false });
+            }
+            
+            // Clear existing intervals and set new one
+            clearInterval(updateIntervalId);
+            updateIntervalId = setInterval(updateAll, settings.updateInterval * 60 * 1000);
+            
+            showToast('Settings saved successfully', 'success');
+            addToActivity('Settings updated', 'cog');
+        });
+
+        // Function to update all data
+        function updateAll() {
+            updateStatus();
+            updateGraph();
+            addToActivity('Dashboard data refreshed', 'sync-alt');
+        }
+
+        // Event listeners for refresh buttons
+        refreshStatus.addEventListener('click', function() {
+            this.innerHTML = '<div class="loading"></div>';
+            setTimeout(() => {
+                updateStatus();
+                this.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                showToast('Status data refreshed', 'success');
+                addToActivity('Status data manually refreshed', 'sync-alt');
+            }, 800);
+        });
+
+        refreshGraph.addEventListener('click', function() {
+            this.innerHTML = '<div class="loading"></div>';
+            setTimeout(() => {
+                updateGraph();
+                this.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                showToast('Graph data refreshed', 'success');
+                addToActivity('Graph data manually refreshed', 'chart-line');
+            }, 800);
+        });
+
+        // Initialize uptime values
+        function initUptimeValues() {
+            const cells = statusTableBody.querySelectorAll('tr td:nth-child(4)');
+            cells.forEach(cell => {
+                // Generate random uptime between 95% and 100%
+                const uptime = (95 + Math.random() * 5).toFixed(1) + '%';
+                cell.textContent = uptime;
+            });
+        }
+
+        // Initialize tab indicator
+        function initTabIndicator() {
+            const activeButton = document.querySelector('.tab-button.active');
+            const buttonRect = activeButton.getBoundingClientRect();
+            const containerRect = document.querySelector('.tab-container').getBoundingClientRect();
+            
+            tabIndicator.style.width = `${buttonRect.width}px`;
+            tabIndicator.style.left = `${buttonRect.left - containerRect.left}px`;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize UI elements
+            initUptimeValues();
+            initTabIndicator();
+            populateNotifications();
+            updateNotificationBadge();
+            
+            // Initialize charts
+            initPieChart();
+            initAreaChart();
+            
+            // Initial update
+            updateAll();
+            
+            // Add initial activity
+            addToActivity('Dashboard initialized', 'play-circle');
+            
+            // Set interval for updates (default: 15 minutes)
+            updateIntervalId = setInterval(updateAll, settings.updateInterval * 60 * 1000);
+            
+            // Show welcome toast
+            setTimeout(() => {
+                showToast('Welcome to Data Center Task Manager', 'success');
+            }, 1000);
+            
+            // Add window resize event listener
+            window.addEventListener('resize', function() {
+                resizeCanvas();
+                initTabIndicator();
+                statusChart.resize();
+                if (statusPieChart) statusPieChart.render();
+                if (loadAreaChart) loadAreaChart.render();
+            });
+        });
+    </script>
+</body>
+</html>
