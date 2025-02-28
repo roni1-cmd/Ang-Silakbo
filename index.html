@@ -1534,21 +1534,23 @@
             }
             
             .nav-menu {
-                display: none;
                 position: fixed;
                 top: 60px;
-                left: 0;
-                right: 0;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 60px);
                 background: var(--bg-white);
                 flex-direction: column;
                 padding: 20px;
                 box-shadow: var(--shadow-md);
                 z-index: 1000;
-                height: calc(100vh - 60px);
                 overflow-y: auto;
+                transition: left 0.3s ease-in-out;
+                display: none;
             }
             
             .nav-menu.active {
+                left: 0;
                 display: flex;
             }
             
@@ -2125,11 +2127,15 @@
             });
             
             // Mobile menu toggle
-            mobileMenuIcon.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-                this.innerHTML = navMenu.classList.contains('active') ? 
-                    '<i class="fas fa-times"></i>' : 
-                    '<i class="fas fa-bars"></i>';
+            mobileMenuIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navMenu.style.display = 'flex';
+                setTimeout(() => {
+                    navMenu.classList.toggle('active');
+                    this.innerHTML = navMenu.classList.contains('active') ? 
+                        '<i class="fas fa-times"></i>' : 
+                        '<i class="fas fa-bars"></i>';
+                }, 10);
             });
 
             // Dropdowns for mobile
