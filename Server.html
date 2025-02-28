@@ -979,6 +979,143 @@
             color: var(--text-lighter);
         }
 
+        /* AI Automation Repairs Tab */
+        .repair-list {
+            list-style: none;
+            padding: 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .repair-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: var(--transition);
+            animation: fadeIn 0.5s;
+        }
+
+        .repair-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transform: translateX(5px);
+        }
+
+        .repair-item:last-child {
+            border-bottom: none;
+        }
+
+        .repair-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: var(--transition);
+            background-color: var(--primary-lighter);
+            color: var(--primary);
+        }
+
+        .repair-item:hover .repair-icon {
+            transform: scale(1.1);
+        }
+
+        .repair-content {
+            flex: 1;
+        }
+
+        .repair-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .repair-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .repair-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .repair-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .repair-duration {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .repair-description {
+            font-size: 0.9rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .repair-details {
+            background-color: var(--background);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .repair-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .repair-tag.fix {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+
+        .repair-tag.maintenance {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .repair-tag.optimization {
+            background-color: var(--primary-lighter);
+            color: var(--primary-dark);
+        }
+
+        .repair-tag.security {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .repair-progress {
+            height: 4px;
+            width: 100%;
+            background-color: var(--border);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .repair-progress-value {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
         /* Dark Mode */
         body.dark {
             --background: #121212;
@@ -1398,6 +1535,9 @@
             <button class="tab-button" onclick="switchTab('activity')">
                 <i class="fas fa-stream icon"></i>Activity
             </button>
+            <button class="tab-button" onclick="switchTab('ai-repairs')">
+                <i class="fas fa-robot icon"></i>AI Automation Repairs
+            </button>
             <button class="tab-button" onclick="switchTab('settings')">
                 <i class="fas fa-cog icon"></i>Settings
             </button>
@@ -1595,6 +1735,23 @@
             </div>
         </div>
 
+        <!-- AI Automation Repairs Tab -->
+        <div id="ai-repairs-tab" class="tab-content">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header">
+                    <span>Volitrix AI Automation Repairs</span>
+                    <button class="refresh-button" id="refreshRepairs">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <ul class="repair-list" id="repairList">
+                        <!-- Repair items will be added dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <!-- Settings Tab -->
         <div id="settings-tab" class="tab-content">
             <div class="card" data-aos="fade-up">
@@ -1685,9 +1842,11 @@
         const notificationList = document.getElementById('notificationList');
         const refreshStatus = document.getElementById('refreshStatus');
         const refreshGraph = document.getElementById('refreshGraph');
+        const refreshRepairs = document.getElementById('refreshRepairs');
         const statusTableBody = document.getElementById('statusTableBody');
         const historyList = document.getElementById('historyList');
         const activityFeed = document.getElementById('activityFeed');
+        const repairList = document.getElementById('repairList');
         const settingsForm = document.getElementById('settingsForm');
         const toastContainer = document.getElementById('toastContainer');
         const stableCount = document.getElementById('stableCount');
@@ -1724,6 +1883,15 @@
             { id: 'memos', name: 'Memos', icon: 'sticky-note', type: 'application' }
         ];
 
+
+        // AI Repair Types
+        const repairTypes = [
+            { type: 'fix', icon: 'wrench', label: 'Fix' },
+            { type: 'maintenance', icon: 'tools', label: 'Maintenance' },
+            { type: 'optimization', icon: 'tachometer-alt', label: 'Optimization' },
+            { type: 'security', icon: 'shield-alt', label: 'Security' }
+        ];
+
         // Settings
         let settings = {
             updateInterval: 1.5, // minutes
@@ -1738,6 +1906,9 @@
         
         // Activity History
         let activityHistory = [];
+
+        // AI Repair History
+        let repairHistory = [];
 
         // Notifications
         let notifications = [
@@ -1919,6 +2090,12 @@
                         addNotification(`Status Change: ${component.name}`, 
                             `${component.name} status changed from ${oldStatus} to ${newStatus}`);
                     }
+
+                    // Add to AI repairs if status improved
+                    if ((oldStatus === 'Unstable' || oldStatus === 'Maintenance' || oldStatus === 'Closure') && 
+                        (newStatus === 'Stable' || (oldStatus === 'Closure' && newStatus === 'Maintenance'))) {
+                        addAIRepair(component, oldStatus, newStatus);
+                    }
                 }
             });
 
@@ -1957,6 +2134,125 @@
             
             // Update network map
             updateNetworkMap();
+        }
+
+        // Function to add AI repair record
+        function addAIRepair(component, oldStatus, newStatus) {
+            const time = new Date();
+            const repairType = repairTypes[Math.floor(Math.random() * repairTypes.length)];
+            const duration = Math.floor(Math.random() * 120) + 10; // 10-130 seconds
+            
+            // Generate repair description
+            let description;
+            if (oldStatus === 'Unstable' && newStatus === 'Stable') {
+                description = `Volitrix detected instability in ${component.name} and applied automated fixes to restore normal operation.`;
+            } else if (oldStatus === 'Maintenance' && newStatus === 'Stable') {
+                description = `Volitrix completed maintenance procedures on ${component.name} and restored it to full functionality.`;
+            } else if (oldStatus === 'Closure' && newStatus === 'Stable') {
+                description = `Volitrix performed a full recovery of ${component.name} from closed state to stable operation.`;
+            } else if (oldStatus === 'Closure' && newStatus === 'Maintenance') {
+                description = `Volitrix initiated recovery procedures on ${component.name} and transitioned it from closed to maintenance state.`;
+            }
+            
+            // Generate repair details
+            const details = generateRepairDetails(component, repairType.type, oldStatus, newStatus);
+            
+            const repairItem = {
+                component: component,
+                oldStatus: oldStatus,
+                newStatus: newStatus,
+                repairType: repairType,
+                time: time,
+                duration: duration,
+                description: description,
+                details: details,
+                progress: 100
+            };
+            
+            repairHistory.unshift(repairItem); // Add to beginning
+            
+            // Limit history to 50 items
+            if (repairHistory.length > 50) {
+                repairHistory.pop();
+            }
+            
+            updateRepairUI();
+            
+            // Add to activity
+            addToActivity(`Volitrix AI repaired ${component.name}`, 'robot');
+            
+            // Show notification
+            showToast(`Volitrix AI repaired ${component.name}`, 'success');
+        }
+
+        // Generate repair details based on component and repair type
+        function generateRepairDetails(component, repairType, oldStatus, newStatus) {
+            const details = [];
+            
+            if (repairType === 'fix') {
+                details.push(`Identified fault in ${component.type} subsystem`);
+                details.push(`Applied patch v${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 100)}`);
+                details.push(`Restarted ${component.name} services`);
+                details.push(`Verified system integrity: PASS`);
+            } else if (repairType === 'maintenance') {
+                details.push(`Performed routine maintenance on ${component.name}`);
+                details.push(`Cleared cache and temporary files`);
+                details.push(`Optimized database connections`);
+                details.push(`Updated configuration parameters`);
+            } else if (repairType === 'optimization') {
+                details.push(`Analyzed performance bottlenecks`);
+                details.push(`Optimized resource allocation`);
+                details.push(`Reduced response time by ${Math.floor(Math.random() * 40) + 10}%`);
+                details.push(`Applied load balancing adjustments`);
+            } else if (repairType === 'security') {
+                details.push(`Detected potential security vulnerability`);
+                details.push(`Applied security patch to ${component.name}`);
+                details.push(`Updated firewall rules`);
+                details.push(`Performed integrity check: SECURE`);
+            }
+            
+            return details;
+        }
+
+        // Function to update repair UI
+        function updateRepairUI() {
+            repairList.innerHTML = '';
+            
+            repairHistory.forEach(item => {
+                const repairItem = document.createElement('li');
+                repairItem.className = 'repair-item';
+                
+                repairItem.innerHTML = `
+                    <div class="repair-icon">
+                        <i class="fas fa-${item.repairType.icon}"></i>
+                    </div>
+                    <div class="repair-content">
+                        <div class="repair-header">
+                            <div>
+                                <div class="repair-title">${item.component.name} - ${item.oldStatus} to ${item.newStatus}</div>
+                                <span class="repair-tag ${item.repairType.type}">${item.repairType.label}</span>
+                            </div>
+                            <div class="repair-meta">
+                                <div class="repair-time">${formatTime(item.time)}</div>
+                                <div class="repair-duration">${item.duration}s</div>
+                            </div>
+                        </div>
+                        <div class="repair-description">${item.description}</div>
+                        <div class="repair-details">
+                            ${item.details.map(detail => `<div>• ${detail}</div>`).join('')}
+                        </div>
+                        <div class="repair-progress">
+                            <div class="repair-progress-value" style="width: ${item.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                repairList.appendChild(repairItem);
+            });
+            
+            if (repairHistory.length === 0) {
+                repairList.innerHTML = '<li class="repair-item">No AI repairs recorded yet. Volitrix is monitoring systems.</li>';
+            }
         }
 
         // Function to add status change to history
@@ -2559,7 +2855,7 @@
         settingsForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const newInterval = parseInt(document.getElementById('updateInterval').value);
+            const newInterval = parseFloat(document.getElementById('updateInterval').value);
             const newDataPoints = parseInt(document.getElementById('graphDataPoints').value);
             const newNotificationLevel = document.getElementById('notificationLevel').value;
             const newTheme = document.getElementById('theme').value;
@@ -2611,6 +2907,158 @@
             addToActivity('Dashboard data refreshed', 'sync-alt');
         }
 
+        // Function to generate AI repairs periodically
+        function generateAIRepairs() {
+            // Check if there are any unstable or maintenance components
+            const unstableComponents = components.filter(component => {
+                const statusElement = document.getElementById(`${component.id}-status`);
+                if (statusElement) {
+                    const statusText = statusElement.textContent;
+                    return statusText === 'Unstable' || statusText === 'Maintenance' || statusText === 'Closure';
+                }
+                return false;
+            });
+            
+            // If there are unstable components, randomly select one to repair
+            if (unstableComponents.length > 0) {
+                const randomComponent = unstableComponents[Math.floor(Math.random() * unstableComponents.length)];
+                const statusElement = document.getElementById(`${randomComponent.id}-status`);
+                const oldStatus = statusElement.textContent;
+                
+                // Determine new status (improvement)
+                let newStatus;
+                if (oldStatus === 'Unstable') {
+                    newStatus = 'Stable';
+                } else if (oldStatus === 'Maintenance') {
+                    newStatus = Math.random() > 0.3 ? 'Stable' : 'Unstable';
+                } else if (oldStatus === 'Closure') {
+                    newStatus = Math.random() > 0.7 ? 'Maintenance' : 'Unstable';
+                }
+                
+                // Update status
+                statusElement.textContent = newStatus;
+                statusElement.className = `status ${getStatusClassFromText(newStatus)}`;
+                
+                // Add to history
+                addToHistory(randomComponent, getStatusCodeFromText(newStatus));
+                
+                // Add to activity
+                addToActivity(`Volitrix AI improved ${randomComponent.name} from ${oldStatus} to ${newStatus}`, 'robot');
+                
+                // Add to AI repairs
+                addAIRepair(randomComponent, oldStatus, newStatus);
+                
+                // Show notification
+                showToast(`Volitrix AI improved ${randomComponent.name} to ${newStatus}`, 'success');
+                
+                // Update counters and visualizations
+                updateCounters();
+                updateServerRack();
+                updateNetworkMap();
+            } else {
+                // If no unstable components, randomly create an optimization repair
+                const randomComponent = components[Math.floor(Math.random() * components.length)];
+                const repairType = repairTypes.find(type => type.type === 'optimization');
+                const time = new Date();
+                const duration = Math.floor(Math.random() * 60) + 5; // 5-65 seconds
+                
+                const description = `Volitrix performed proactive optimization on ${randomComponent.name} to improve performance.`;
+                const details = [
+                    `Analyzed system performance metrics`,
+                    `Optimized resource allocation`,
+                    `Improved response time by ${Math.floor(Math.random() * 20) + 5}%`,
+                    `Updated configuration parameters`
+                ];
+                
+                const repairItem = {
+                    component: randomComponent,
+                    oldStatus: 'Stable',
+                    newStatus: 'Stable',
+                    repairType: repairType,
+                    time: time,
+                    duration: duration,
+                    description: description,
+                    details: details,
+                    progress: 100
+                };
+                
+                repairHistory.unshift(repairItem);
+                
+                // Limit history to 50 items
+                if (repairHistory.length > 50) {
+                    repairHistory.pop();
+                }
+                
+                updateRepairUI();
+                
+                // Add to activity
+                addToActivity(`Volitrix AI optimized ${randomComponent.name}`, 'robot');
+            }
+        }
+
+        // Helper function to get status class from text
+        function getStatusClassFromText(statusText) {
+            for (const [key, value] of Object.entries(statusMap)) {
+                if (value.text === statusText) {
+                    return value.class;
+                }
+            }
+            return 'stable'; // Default
+        }
+
+        // Helper function to get status code from text
+        function getStatusCodeFromText(statusText) {
+            for (const [key, value] of Object.entries(statusMap)) {
+                if (value.text === statusText) {
+                    return parseInt(key);
+                }
+            }
+            return 0; // Default to stable
+        }
+
+        // Function to update counters
+        function updateCounters() {
+            let stableCounter = 0;
+            let unstableCounter = 0;
+            let maintenanceCounter = 0;
+            let closureCounter = 0;
+            
+            components.forEach(component => {
+                const statusElement = document.getElementById(`${component.id}-status`);
+                if (statusElement) {
+                    const statusText = statusElement.textContent;
+                    if (statusText === 'Stable') stableCounter++;
+                    else if (statusText === 'Unstable') unstableCounter++;
+                    else if (statusText === 'Maintenance') maintenanceCounter++;
+                    else if (statusText === 'Closure') closureCounter++;
+                }
+            });
+            
+            // Update summary counters
+            stableCount.textContent = stableCounter;
+            unstableCount.textContent = unstableCounter;
+            maintenanceCount.textContent = maintenanceCounter;
+            closureCount.textContent = closureCounter;
+            
+            // Calculate percentages
+            const total = components.length;
+            const stablePercent = Math.round((stableCounter / total) * 100);
+            const unstablePercent = Math.round((unstableCounter / total) * 100);
+            const maintenancePercent = Math.round((maintenanceCounter / total) * 100);
+            const closurePercent = Math.round((closureCounter / total) * 100);
+            
+            // Update progress bars
+            stablePercentage.textContent = `${stablePercent}%`;
+            unstablePercentage.textContent = `${unstablePercent}%`;
+            maintenancePercentage.textContent = `${maintenancePercent}%`;
+            closurePercentage.textContent = `${closurePercent}%`;
+            
+            stableProgress.style.width = `${stablePercent}%`;
+            unstableProgress.style.width = `${unstablePercent}%`;
+            maintenanceProgress.style.width = `${maintenancePercent}%`;
+            closureProgress.style.width = `${closurePercent}%`;
+        }
+
         // Event listeners for refresh buttons
         refreshStatus.addEventListener('click', function() {
             this.innerHTML = '<div class="loading"></div>';
@@ -2629,6 +3077,16 @@
                 this.innerHTML = '<i class="fas fa-sync-alt"></i>';
                 showToast('Graph data refreshed', 'success');
                 addToActivity('Graph data manually refreshed', 'chart-line');
+            }, 800);
+        });
+
+        refreshRepairs.addEventListener('click', function() {
+            this.innerHTML = '<div class="loading"></div>';
+            setTimeout(() => {
+                generateAIRepairs();
+                this.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                showToast('AI repairs data refreshed', 'success');
+                addToActivity('AI repairs manually triggered', 'robot');
             }, 800);
         });
 
@@ -2653,6 +3111,9 @@
         }
 
         // Initialize
+        let updateIntervalId;
+        let aiRepairIntervalId;
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize UI elements
             initUptimeValues();
@@ -2673,6 +3134,9 @@
             // Set interval for updates (default: 1.5 minutes)
             updateIntervalId = setInterval(updateAll, settings.updateInterval * 60 * 1000);
             
+            // Set interval for AI repairs (every 2 minutes)
+            aiRepairIntervalId = setInterval(generateAIRepairs, 2 * 60 * 1000);
+            
             // Show welcome toast
             setTimeout(() => {
                 showToast('Welcome to Data Center Task Manager', 'success');
@@ -2690,4 +3154,3 @@
     </script>
 </body>
 </html>
-
