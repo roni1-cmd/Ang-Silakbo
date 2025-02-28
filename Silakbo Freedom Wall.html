@@ -754,6 +754,47 @@
             opacity: 1;
         }
 
+        /* Terms of Service Popup */
+        .tos-popup {
+            text-align: left;
+        }
+
+        .tos-popup h2 {
+            text-align: center;
+        }
+
+        .tos-content {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .tos-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .tos-actions .btn {
+            min-width: 120px;
+        }
+
+        .detailed-tos-link {
+            color: var(--primary-color);
+            text-decoration: underline;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .detailed-tos-link:hover {
+            color: var(--primary-dark);
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -1042,6 +1083,30 @@
     </div>
     <div class="popup-overlay" id="about-section-overlay"></div>
 
+    <!-- Terms of Service Popup -->
+    <div class="popup tos-popup" id="tos-popup">
+        <span class="close-button" id="close-tos">&times;</span>
+        <h2>Terms of Service</h2>
+        <div class="tos-content">
+            <p>Welcome to Ang Silakbo! By using our platform, you agree to the following terms and conditions:</p>
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing or using Ang Silakbo Forums, you agree to be bound by these Terms of Service and all applicable laws and regulations.</p>
+            <h3>2. User Conduct</h3>
+            <p>You agree to use Ang Silakbo Forums in a manner consistent with all applicable laws and regulations. You are responsible for all activity that occurs under your account.</p>
+            <h3>3. Privacy</h3>
+            <p>Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your information.</p>
+            <h3>4. Content Guidelines</h3>
+            <p>Users must not post content that is harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable.</p>
+            <h3>5. Termination</h3>
+            <p>We reserve the right to terminate or suspend your account at our sole discretion, without notice, for conduct that we believe violates these Terms of Service or is harmful to other users or us.</p>
+        </div>
+        <div class="tos-actions">
+            <a href="ToS.html" class="detailed-tos-link" target="_blank">Read Detailed Terms of Service</a>
+            <button id="accept-tos" class="btn btn-primary">I Accept</button>
+        </div>
+    </div>
+    <div class="popup-overlay" id="tos-popup-overlay"></div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
@@ -1063,13 +1128,31 @@
         document.getElementById('signin-button').addEventListener('click', () => {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    // Successful login
-                    window.location.href = 'Thoughts.html';
+                    // Show Terms of Service popup instead of redirecting immediately
+                    document.getElementById('tos-popup').classList.add('show');
+                    document.getElementById('tos-popup-overlay').classList.add('show');
+                    document.body.style.overflow = 'hidden';
                 }).catch((error) => {
                     console.error("Error during sign in:", error);
                     alert("An error occurred during sign in. Please try again.");
                 });
         });
+
+        // Accept Terms of Service and proceed to Thoughts.html
+        document.getElementById('accept-tos').addEventListener('click', () => {
+            closeTosPopup();
+            window.location.href = 'Thoughts.html';
+        });
+
+        // Close Terms of Service popup
+        document.getElementById('close-tos').addEventListener('click', closeTosPopup);
+        document.getElementById('tos-popup-overlay').addEventListener('click', closeTosPopup);
+
+        function closeTosPopup() {
+            document.getElementById('tos-popup').classList.remove('show');
+            document.getElementById('tos-popup-overlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
 
         // Header scroll effect
         const header = document.getElementById('header');
@@ -1214,4 +1297,3 @@
     </script>
 </body>
 </html>
-
