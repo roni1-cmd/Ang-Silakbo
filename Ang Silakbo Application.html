@@ -11,13 +11,21 @@
     <style>
         :root {
             --primary-color: #E65100;
+            --primary-light: #FF8A50;
+            --primary-dark: #B23C00;
             --secondary-color: #FFC38B;
+            --secondary-light: #FFE0C2;
             --accent-color: #1E3D59;
+            --accent-light: #2C5A85;
             --text-color: #333333;
+            --text-light: #666666;
             --bg-color: #F5F5F5;
             --white: #FFFFFF;
             --error-color: #FF4136;
             --success-color: #2ECC40;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
         }
 
         * {
@@ -31,6 +39,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
@@ -39,21 +48,115 @@
             padding: 0 20px;
         }
 
+        section {
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--accent-color);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        section h2:after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Decorative Elements */
+        .shape-divider {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            z-index: 1;
+        }
+
+        .shape-divider svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 70px;
+        }
+
+        .shape-divider .shape-fill {
+            fill: var(--white);
+        }
+
+        .bg-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--primary-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        /* Header Styles */
         header {
             background-color: var(--white);
-            color: var(--primary-color);
             padding: 1rem 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
         }
 
         header.scrolled {
-            padding: 0.5rem 0;
-            background: rgba(255, 255, 255, 0.95);
+            padding: 0.7rem 0;
+            background: rgba(255, 255, 255, 0.98);
         }
 
         header .container {
@@ -74,26 +177,41 @@
             width: 40px;
             height: 40px;
             margin-right: 10px;
+            transition: var(--transition);
+        }
+
+        header.scrolled .logo img {
+            width: 35px;
+            height: 35px;
         }
 
         nav ul {
             display: flex;
             list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 1.5rem;
+            gap: 2rem;
         }
 
         nav ul li a {
-            color: var(--primary-color);
-            text-decoration: none;
+            color: var(--accent-color);
             font-weight: 500;
-            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
         }
 
-        nav ul li a:hover {
-            color: var(--accent-color);
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover:after,
+        nav ul li a.active:after {
+            width: 100%;
         }
 
         .menu-toggle {
@@ -103,17 +221,15 @@
             color: var(--primary-color);
         }
 
-        main {
-            padding-top: 80px;
-        }
-
+        /* Hero Section */
         .hero {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: var(--white);
             text-align: center;
-            padding: 8rem 0 4rem;
+            padding: 12rem 0 8rem;
             position: relative;
             overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
         }
 
         .hero::before {
@@ -132,60 +248,120 @@
         .hero-content {
             position: relative;
             z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: var(--white);
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .hero p {
             font-size: 1.2rem;
             max-width: 600px;
-            margin: 0 auto 2rem;
+            margin: 0 auto 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .cta-button {
             display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--white);
-            padding: 0.8rem 2rem;
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: 1rem 2.5rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: all 0.5s ease;
+            z-index: -1;
+            border-radius: 50px;
         }
 
         .cta-button:hover {
+            color: var(--white);
+        }
+
+        .cta-button:hover:before {
+            width: 100%;
+        }
+
+        .hero-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Application Section */
+        .application-section {
+            padding: 6rem 0;
             background-color: var(--white);
-            color: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
         }
 
         .join-team-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+            position: relative;
+            z-index: 2;
         }
 
         #applicationForm {
-            flex: 1;
-            min-width: 300px;
-            margin-right: 2rem;
             background-color: var(--white);
             padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-top: 5px solid var(--primary-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #applicationForm:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .form-group {
@@ -196,28 +372,30 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: var(--primary-color);
+            color: var(--accent-color);
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            background-color: #f9f9f9;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(255,91,0,0.2);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
+            background-color: var(--white);
         }
 
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
 
         button {
@@ -225,19 +403,39 @@
             color: var(--white);
             border: none;
             padding: 1rem 2rem;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             width: 100%;
             margin-top: 1rem;
+            box-shadow: 0 4px 10px rgba(230, 81, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--primary-dark);
+            transition: all 0.5s ease;
+            z-index: -1;
+            border-radius: 8px;
+        }
+
+        button:hover:before {
+            width: 100%;
         }
 
         button:hover {
-            background: var(--accent-color);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(30,61,89,0.4);
+            box-shadow: 0 6px 15px rgba(230, 81, 0, 0.3);
         }
 
         #message {
@@ -245,20 +443,22 @@
             font-weight: 600;
             text-align: center;
             padding: 1rem;
-            border-radius: 10px;
+            border-radius: 8px;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.5s ease;
         }
 
         .success {
-            background-color: var(--success-color);
-            color: var(--white);
+            background-color: rgba(46, 204, 64, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
         }
 
         .error {
-            background-color: var(--error-color);
-            color: var(--white);
+            background-color: rgba(255, 65, 54, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
         }
 
         .input-group {
@@ -278,78 +478,261 @@
             padding-left: 2.5rem;
         }
 
+        /* Benefits Section */
         .benefits {
-            flex: 1;
-            min-width: 300px;
             background-color: var(--white);
             padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-top: 5px solid var(--accent-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .benefits:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         }
 
         .benefits h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--primary-color);
+            text-align: left;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+        }
+
+        .benefits h2:after {
+            left: 0;
+            transform: none;
         }
 
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
 
         .benefit-item {
-            text-align: center;
-            padding: 2rem;
+            text-align: left;
+            padding: 1.5rem;
             background-color: var(--bg-color);
             border-radius: 10px;
-            transition: all 0.3s ease;
-            border: 2px solid var(--primary-color);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
         }
 
         .benefit-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255,91,0,0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .benefit-item i {
-            font-size: 3rem;
+            font-size: 2rem;
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            background-color: rgba(230, 81, 0, 0.1);
+            padding: 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            height: 60px;
+            transition: all 0.3s ease;
         }
 
-        .faq-section {
-            padding: 4rem 0;
+        .benefit-item:hover i {
+            background-color: var(--primary-color);
+            color: var(--white);
+            transform: rotateY(180deg);
+        }
+
+        .benefit-content {
+            flex: 1;
+        }
+
+        .benefit-item h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .benefit-item p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Positions Section */
+        .positions-section {
+            background-color: var(--bg-color);
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .positions-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(230, 81, 0, 0.05), rgba(30, 61, 89, 0.05));
+            z-index: 0;
+        }
+
+        .positions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .position-card {
             background-color: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .position-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .position-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .position-header i {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .position-card:hover .position-header i {
+            transform: scale(1.2);
+            opacity: 0.5;
+        }
+
+        .position-header h3 {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .position-body {
+            padding: 1.5rem;
+        }
+
+        .position-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .position-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .apply-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .apply-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: all 0.5s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        .apply-btn:hover {
+            color: var(--white);
+        }
+
+        .apply-btn:hover:before {
+            width: 100%;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 6rem 0;
+            background-color: var(--white);
+            position: relative;
         }
 
         .faq-container {
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .faq-item {
             margin-bottom: 1.5rem;
-            border: 1px solid var(--secondary-color);
-            border-radius: 10px;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
             overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
 
         .faq-question {
             background-color: var(--bg-color);
-            padding: 1rem;
+            padding: 1.2rem 1.5rem;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 600;
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .faq-item.active .faq-question {
+            background-color: var(--accent-light);
+            color: var(--white);
         }
 
         .faq-answer {
-            padding: 1rem;
-            display: none;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-answer-inner {
+            padding: 1.5rem;
         }
 
         .faq-question::after {
@@ -364,47 +747,160 @@
         }
 
         .faq-item.active .faq-answer {
-            display: block;
+            max-height: 500px;
         }
 
+        /* Testimonial Section */
         .testimonial-section {
             background-color: var(--bg-color);
-            padding: 4rem 0;
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(230, 81, 0, 0.05), rgba(30, 61, 89, 0.05));
+            z-index: 0;
         }
 
         .testimonial-container {
+            position: relative;
+            z-index: 1;
             max-width: 800px;
             margin: 0 auto;
         }
 
         .testimonial-item {
             background-color: var(--white);
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-item::before {
+            content: '\f10d';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -15px;
+            left: 30px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-item:hover::before {
+            transform: scale(1.1) rotate(10deg);
         }
 
         .testimonial-content {
             font-style: italic;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            line-height: 1.8;
         }
 
         .testimonial-author {
             font-weight: 600;
             color: var(--primary-color);
+            display: flex;
+            align-items: center;
         }
 
-        .newsletter-section {
+        .testimonial-author::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        /* Contact Section */
+        .contact-section {
             background-color: var(--accent-color);
             color: var(--white);
-            padding: 4rem 0;
+            padding: 6rem 0;
+            position: relative;
         }
 
-        .newsletter-container {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2129&q=80') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .contact-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .contact-info h2 {
+            color: var(--white);
+            margin-bottom: 2rem;
+        }
+
+        .contact-info h2:after {
+            background-color: var(--primary-color);
+        }
+
+        .contact-info p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .contact-details {
+            list-style: none;
+        }
+
+        .contact-details li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-details li:hover {
+            transform: translateX(5px);
+        }
+
+        .contact-details i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            width: 30px;
         }
 
         .newsletter-form {
@@ -414,46 +910,211 @@
 
         .newsletter-form input {
             flex: 1;
-            padding: 0.75rem;
+            padding: 1rem;
             border: none;
-            border-radius: 5px 0 0 5px;
+            border-radius: 8px 0 0 8px;
         }
 
         .newsletter-form button {
             background-color: var(--primary-color);
             color: var(--white);
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0 5px 5px 0;
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin-top: 0;
+            width: auto;
         }
 
-        .newsletter-form button:hover {
-            background-color: var(--secondary-color);
+        .social-links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
         }
 
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px) rotate(10deg);
+        }
+
+        /* Footer */
         footer {
             background-color: var(--primary-color);
             color: var(--white);
             text-align: center;
-            padding: 2rem 0;
-            margin-top: 4rem;
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .social-links a {
-            color: var(--white);
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2129&q=80') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .footer-logo span {
             font-size: 1.5rem;
-            margin: 0 10px;
-            transition: color 0.3s ease;
+            font-weight: 700;
+            color: var(--white);
         }
 
-        .social-links a:hover {
-            color: var(--accent-color);
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-light);
+            transform: translateY(-3px);
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .footer-social a:hover {
+            background-color: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-3px) rotate(10deg);
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .join-team-container {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
             .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -466,6 +1127,9 @@
                 width: 100%;
                 background-color: var(--white);
                 box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 1rem 0;
+                gap: 0;
+                z-index: 1000;
             }
 
             nav ul.show {
@@ -474,16 +1138,25 @@
 
             nav ul li {
                 margin: 0;
-                text-align: center;
+                width: 100%;
             }
 
             nav ul li a {
                 display: block;
-                padding: 1rem;
+                padding: 1rem 2rem;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            nav ul li a:after {
+                display: none;
             }
 
             .menu-toggle {
                 display: block;
+            }
+
+            .hero {
+                padding: 10rem 0 6rem;
             }
 
             .hero h1 {
@@ -494,32 +1167,48 @@
                 font-size: 1rem;
             }
 
-            .join-team-container {
+            .footer-links {
                 flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            section {
+                padding: 4rem 0;
+            }
+
+            .hero {
+                padding: 8rem 0 5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
             }
 
             #applicationForm,
             .benefits {
-                width: 100%;
-                margin-right: 0;
-                margin-bottom: 2rem;
+                padding: 2rem;
             }
 
-            .newsletter-form {
+            .benefit-item {
                 flex-direction: column;
+                align-items: flex-start;
             }
 
-            .newsletter-form input,
-            .newsletter-form button {
-                width: 100%;
-                border-radius: 5px;
+            .benefit-item i {
                 margin-bottom: 1rem;
+            }
+
+            .testimonial-item {
+                padding: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <header>
+    <header id="header">
         <div class="container">
             <div class="logo">
                 <img src="SILAKBO.png" alt="Silakbo Logo">
@@ -527,10 +1216,12 @@
             </div>
             <nav>
                 <ul id="menu">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#applicationForm">Apply</a></li>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#positions">Positions</a></li>
+                    <li><a href="#apply">Apply</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
                     <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div class="menu-toggle" id="menuToggle">
@@ -542,177 +1233,320 @@
 
     <main>
         <section id="home" class="hero">
+            <div class="hero-badge">Est. 2021</div>
             <div class="hero-content">
                 <div class="container">
                     <h1 data-aos="fade-up">Shape the Future of Media</h1>
                     <p data-aos="fade-up" data-aos-delay="200">Join Ang Silakbo and be part of a passionate community dedicated to delivering impactful journalism and creative content.</p>
-                    <a href="#applicationForm" class="cta-button" data-aos="fade-up" data-aos-delay="400">Apply Now</a>
+                    <a href="#apply" class="cta-button" data-aos="fade-up" data-aos-delay="400">Apply Now</a>
                 </div>
             </div>
         </section>
 
-        <div class="container">
-            <div class="join-team-container">
-                <form id="applicationForm" data-aos="fade-up">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <div class="input-group">
-                                <i class="fas fa-user"></i>
-                                <input type="text" id="name" name="name" required>
+        <section id="positions" class="positions-section">
+            <div class="bg-dots"></div>
+            <div class="container">
+                <h2 data-aos="fade-up">Available Positions</h2>
+                <div class="positions-container">
+                    <div class="position-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="position-header">
+                            <i class="fas fa-edit"></i>
+                            <h3>Editorial Team</h3>
+                            <p>Shape our publication's voice</p>
+                        </div>
+                        <div class="position-body">
+                            <p>Join our editorial team to guide the direction of our content. Positions include Feature News Editor, Editorial Editor, Local News Editor, Sports News Editor, and Entertainment News Editor.</p>
+                        </div>
+                        <div class="position-footer">
+                            <a href="#apply" class="apply-btn">Apply Now</a>
+                        </div>
+                    </div>
+                    
+                    <div class="position-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="position-header">
+                            <i class="fas fa-paint-brush"></i>
+                            <h3>Visual Artists</h3>
+                            <p>Create stunning visuals</p>
+                        </div>
+                        <div class="position-body">
+                            <p>Express your creativity through visual storytelling. We're seeking Layout Artists, Editorial Cartoonists, and Photojournalists to bring our stories to life.</p>
+                        </div>
+                        <div class="position-footer">
+                            <a href="#apply" class="apply-btn">Apply Now</a>
+                        </div>
+                    </div>
+                    
+                    <div class="position-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="position-header">
+                            <i class="fas fa-video"></i>
+                            <h3>Production Team</h3>
+                            <p>Capture moments that matter</p>
+                        </div>
+                        <div class="position-body">
+                            <p>Join our multimedia team to create compelling visual content. Positions include Videographers, Video Editors, and Broadcasters who can engage our audience.</p>
+                        </div>
+                        <div class="position-footer">
+                            <a href="#apply" class="apply-btn">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="shape-divider">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                </svg>
+            </div>
+        </section>
+
+        <section id="apply" class="application-section">
+            <div class="container">
+                <h2 data-aos="fade-up">Join Our Team</h2>
+                <div class="join-team-container">
+                    <form id="applicationForm" data-aos="fade-up">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <div class="input-group">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="name" name="name" placeholder="Your full name" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <div class="input-group">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="email" name="email" placeholder="Your email address" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <div class="input-group">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="position">Position</label>
+                                <div class="input-group">
+                                    <i class="fas fa-briefcase"></i>
+                                    <select id="position" name="position" required>
+                                        <option value="" disabled selected>Select Position</option>
+                                        <option value="Feature News Editor">Feature News Editor</option>
+                                        <option value="Editorial Editor">Editorial Editor</option>
+                                        <option value="Local News Editor">Local News Editor</option>
+                                        <option value="Sports News Editor">Sports News Editor</option>
+                                        <option value="Entertainment News Editor">Entertainment News Editor</option>
+                                        <option value="Entertainment News Writer">Entertainment News Writer</option>
+                                        <option value="Literary Writer">Literary Writer</option>
+                                        <option value="Layout Artist">Layout Artist</option>
+                                        <option value="Editorial Cartoonist">Editorial Cartoonist</option>
+                                        <option value="Photojournalist">Photojournalist</option>
+                                        <option value="Videographer">Videographer</option>
+                                        <option value="Video Editor">Video Editor</option>
+                                        <option value="Broadcaster">Broadcaster</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email Address</label>
+                            <label for="experience">Experience</label>
+                            <textarea id="experience" name="experience" placeholder="Tell us about your relevant experience and skills" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="portfolio">Portfolio URL (Optional)</label>
                             <div class="input-group">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" id="email" name="email" required>
+                                <i class="fas fa-link"></i>
+                                <input type="url" id="portfolio" name="portfolio" placeholder="Link to your portfolio or work samples">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone">Phone Number</label>
+                            <label for="referral">How did you hear about us?</label>
                             <div class="input-group">
-                                <i class="fas fa-phone"></i>
-                                <input type="tel" id="phone" name="phone" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="position">Position</label>
-                            <div class="input-group">
-                                <i class="fas fa-briefcase"></i>
-                                <select id="position" name="position" required>
-                                    <option value="" disabled selected>Select Position</option>
-                                    <option value="Feature News Editor">Feature News Editor</option>
-                                    <option value="Editorial Editor">Editorial Editor</option>
-                                    <option value="Local News Editor">Local News Editor</option>
-                                    <option value="Sports News Editor">Sports News Editor</option>
-                                    <option value="Entertainment News Editor">Entertainment News Editor</option>
-                                    <option value="Entertainment News Writer">Entertainment News Writer</option>
-                                    <option value="Literary Writer">Literary Writer</option>
-                                    <option value="Layout Artist">Layout Artist</option>
-                                    <option value="Editorial Cartoonist">Editorial Cartoonist</option>
-                                    <option value="Photojournalist">Photojournalist</option>
-                                    <option value="Videographer">Videographer</option>
-                                    <option value="Video Editor">Video Editor</option>
-                                    <option value="Broadcaster">Broadcaster</option>
+                                <i class="fas fa-bullhorn"></i>
+                                <select id="referral" name="referral" required>
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="Website">Our Website</option>
+                                    <option value="Social Media">Social Media</option>
+                                    <option value="Friend">Friend or Colleague</option>
+                                    <option value="Job Board">Teachers and Faculty Members</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="experience">Experience</label>
-                        <textarea id="experience" name="experience" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="portfolio">Portfolio URL (Optional)</label>
-                        <div class="input-group">
-                            <i class="fas fa-link"></i>
-                            <input type="url" id="portfolio" name="portfolio">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="referral">How did you hear about us?</label>
-                        <div class="input-group">
-                            <i class="fas fa-bullhorn"></i>
-                            <select id="referral" name="referral" required>
-                                <option value="" disabled selected>Select an option</option>
-                                <option value="Website">Our Website</option>
-                                <option value="Social Media">Social Media</option>
-                                <option value="Friend">Friend or Colleague</option>
-                                <option value="Job Board">Teachers and Faculty Members</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit">Submit Application</button>
-                </form>
+                        <button type="submit">Submit Application</button>
+                    </form>
 
-                <section class="benefits" data-aos="fade-up">
-                    <h2>Why Join Ang Silakbo?</h2>
-                    <div class="benefits-grid">
-                        <div class="benefit-item" data-aos="fade-up" data-aos-delay="100">
-                            <i class="fas fa-users"></i>
-                            <h3>Collaborative Environment</h3>
-                            <p>Work with a team of passionate professionals</p>
+                    <section id="benefits" class="benefits" data-aos="fade-up">
+                        <h2>Why Join Ang Silakbo?</h2>
+                        <div class="benefits-grid">
+                            <div class="benefit-item" data-aos="fade-up" data-aos-delay="100">
+                                <i class="fas fa-users"></i>
+                                <div class="benefit-content">
+                                    <h3>Collaborative Environment</h3>
+                                    <p>Work with a team of passionate professionals who share your dedication to quality journalism and creative expression.</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item" data-aos="fade-up" data-aos-delay="200">
+                                <i class="fas fa-rocket"></i>
+                                <div class="benefit-content">
+                                    <h3>Career Growth</h3>
+                                    <p>Develop valuable skills and gain experience that will enhance your resume and prepare you for future opportunities.</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item" data-aos="fade-up" data-aos-delay="300">
+                                <i class="fas fa-lightbulb"></i>
+                                <div class="benefit-content">
+                                    <h3>Creative Freedom</h3>
+                                    <p>Express your ideas and innovate in a supportive environment that values fresh perspectives and original thinking.</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item" data-aos="fade-up" data-aos-delay="400">
+                                <i class="fas fa-globe"></i>
+                                <div class="benefit-content">
+                                    <h3>Make an Impact</h3>
+                                    <p>Contribute to meaningful journalism that informs, inspires, and makes a difference in your school community.</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="benefit-item" data-aos="fade-up" data-aos-delay="200">
-                            <i class="fas fa-rocket"></i>
-                            <h3>Career Growth</h3>
-                            <p>Opportunities for professional development</p>
-                        </div>
-                        <div class="benefit-item" data-aos="fade-up" data-aos-delay="300">
-                            <i class="fas fa-lightbulb"></i>
-                            <h3>Creative Freedom</h3>
-                            <p>Express your ideas and innovate</p>
-                        </div>
-                        <div class="benefit-item" data-aos="fade-up" data-aos-delay="400">
-                            <i class="fas fa-globe"></i>
-                            <h3>Make an Impact</h3>
-                            <p>Contribute to meaningful journalism</p>
-                        </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
+                <div id="message"></div>
             </div>
-            <div id="message"></div>
-        </div>
+        </section>
 
         <section id="faq" class="faq-section">
+            <div class="bg-dots"></div>
             <div class="container">
                 <h2 data-aos="fade-up">Frequently Asked Questions</h2>
                 <div class="faq-container">
                     <div class="faq-item" data-aos="fade-up">
                         <div class="faq-question">What is Ang Silakbo?</div>
-                        <div class="faq-answer">Ang Silakbo is the official student publication of the University of Cebu Lapu-Lapu and Mandaue (UCLM) Senior High School department. Established in 2021, the publication aims to create awareness and inform the public about the actions of the student body, policies, current issues, students' welfare, programs, official activities, as well as the SHS department's achievements.</div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Ang Silakbo is the official student publication of the University of Cebu Lapu-Lapu and Mandaue (UCLM) Senior High School department. Established in 2021, the publication aims to create awareness and inform the public about the actions of the student body, policies, current issues, students' welfare, programs, official activities, as well as the SHS department's achievements.
+                            </div>
+                        </div>
                     </div>
                     <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
                         <div class="faq-question">Who can apply to join Ang Silakbo?</div>
-                        <div class="faq-answer">We welcome applications from students who are enrolled in University of Cebu Lapu-Lapu and Mandaue Senior High School Department, that are passionate about journalism, writing, photography, videography, and other media-related fields. Whether you're a beginner or have prior experience, we encourage you to apply.</div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                We welcome applications from students who are enrolled in University of Cebu Lapu-Lapu and Mandaue Senior High School Department, that are passionate about journalism, writing, photography, videography, and other media-related fields. Whether you're a beginner or have prior experience, we encourage you to apply.
+                            </div>
+                        </div>
                     </div>
                     <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
                         <div class="faq-question">What positions are available?</div>
-                        <div class="faq-answer">We offer a wide range of positions for individuals passionate about journalism, media, and creative storytelling. These include Feature News Editor, Editorial Editor, Local News Editor, Sports News Editor, and Entertainment News Writer, each responsible for covering different aspects of news and storytelling. For those interested in creative and visual content, we have roles such as Literary Writer, Layout Artist, Editorial Cartoonist, Photojournalist, Videographer, and Video Editor. Additionally, aspiring broadcasters can join our team to deliver engaging and informative content. Whether your strength lies in writing, design, photography, videography, or broadcasting, there’s a position suited for you. Check our application form for the full list of available roles and become part of our dynamic team.</div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                We offer a wide range of positions for individuals passionate about journalism, media, and creative storytelling. These include Feature News Editor, Editorial Editor, Local News Editor, Sports News Editor, and Entertainment News Writer, each responsible for covering different aspects of news and storytelling. For those interested in creative and visual content, we have roles such as Literary Writer, Layout Artist, Editorial Cartoonist, Photojournalist, Videographer, and Video Editor. Additionally, aspiring broadcasters can join our team to deliver engaging and informative content. Whether your strength lies in writing, design, photography, videography, or broadcasting, there's a position suited for you.
+                            </div>
+                        </div>
                     </div>
                     <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
                         <div class="faq-question">How can I apply?</div>
-                        <div class="faq-answer">To apply, simply complete the application form available on this page, ensuring that all provided information is accurate and up to date. Be sure to include details about your experience, skills, and the specific position you’re interested in to help us better understand your qualifications. Once we receive your application, our team will carefully review it and assess how your strengths align with our available roles. If your application meets our criteria, we will contact you with the next steps in the selection process. We appreciate your interest and look forward to the possibility of working with you!</div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                To apply, simply complete the application form available on this page, ensuring that all provided information is accurate and up to date. Be sure to include details about your experience, skills, and the specific position you're interested in to help us better understand your qualifications. Once we receive your application, our team will carefully review it and assess how your strengths align with our available roles. If your application meets our criteria, we will contact you with the next steps in the selection process.
+                            </div>
+                        </div>
                     </div>
                     <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
                         <div class="faq-question">What happens after I submit my application?</div>
-                        <div class="faq-answer">After you submit your application, our team will carefully review your qualifications and experience to determine if they align with our requirements. If your profile is a good fit for the position, we will reach out to you to schedule an interview and discuss the next steps in the selection process. Be sure to check your email regularly for updates regarding your application status, as all important notifications and further instructions will be sent there. We appreciate your interest and look forward to the possibility of welcoming you to our team!</div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                After you submit your application, our team will carefully review your qualifications and experience to determine if they align with our requirements. If your profile is a good fit for the position, we will reach out to you to schedule an interview and discuss the next steps in the selection process. Be sure to check your email regularly for updates regarding your application status, as all important notifications and further instructions will be sent there.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="testimonial-section">
+        <section id="testimonials" class="testimonial-section">
             <div class="container">
                 <h2 data-aos="fade-up">What Our Team Says</h2>
                 <div class="testimonial-container">
-                    <div class="testimonial-item" data-aos="fade-up">
+                    <div class="testimonial-item float" data-aos="fade-up">
                         <div class="testimonial-content">
-                            "Being the Editor-in-Chief of Ang Silakbo has been a transformative experience, shaping me in ways I couldn't have imagined.  It's not just about deadlines and article, it's about amplifying student voices and fostering a vibrant school community.  This role has ignited a passion for journalism and storytelling within me, pushing me to hone my writing, editing, and leadership skills.  I've learned the importance of accuracy, integrity, and ethical reporting, understanding the power that words hold.  Collaborating with a talented team has taught me the value of teamwork, communication, and constructive feedback.  Navigating challenges, from tight deadlines to controversial topics, has strengthened my problem-solving abilities and resilience. Ang Silakbo has not only enriched my academic journey but has also instilled in me a deep appreciation for the power of student journalism to inform, engage, and inspire change within our school.  It's an experience I will carry with me long after I graduate. Always and always, by the students, for the students."
+                            "Being the Editor-in-Chief of Ang Silakbo has been a transformative experience, shaping me in ways I couldn't have imagined. It's not just about deadlines and articles, it's about amplifying student voices and fostering a vibrant school community. This role has ignited a passion for journalism and storytelling within me, pushing me to hone my writing, editing, and leadership skills. Always and always, by the students, for the students."
                         </div>
-                        <div class="testimonial-author">- Thea Clarisse Mae Inoc, Ang Silakbo Editor In Chief A.Y. 2024-2025</div>
+                        <div class="testimonial-author">Thea Clarisse Mae Inoc, Editor In Chief A.Y. 2024-2025</div>
                     </div>
-                    <div class="testimonial-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-item float" data-aos="fade-up" data-aos-delay="100">
                         <div class="testimonial-content">
-                            "Ang Silakbo Publication has made a huge impact on me, helping me learn and grow as a writer and an individual. Becoming an Associate Editor was not something I initially looked forward to, but as time passed, I realized how much it had to offer. I gained new experiences, met amazing people, and improved my communication skills, which allowed me to express my thoughts more clearly and work better with others. This publication became more than just a responsibility—it became a place where I could learn, create, and connect. More importantly, my role helped sharpen my critical thinking. Whether it was choosing interesting topics, improving articles, or giving helpful feedback to writers, every task challenged me to think more deeply. Each piece we published was not just about writing—it was about sharing ideas, inspiring others, and making a difference."
+                            "Ang Silakbo Publication has made a huge impact on me, helping me learn and grow as a writer and an individual. Becoming an Associate Editor was not something I initially looked forward to, but as time passed, I realized how much it had to offer. I gained new experiences, met amazing people, and improved my communication skills, which allowed me to express my thoughts more clearly and work better with others."
                         </div>
-                        <div class="testimonial-author">- Lyka May Jakosalem, Ang Silakbo Associate Editor A.Y. 2024-2025</div>
+                        <div class="testimonial-author">Lyka May Jakosalem, Associate Editor A.Y. 2024-2025</div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <div class="contact-container">
+                    <div class="contact-info" data-aos="fade-up">
+                        <h2>Get In Touch</h2>
+                        <p>Have questions about joining Ang Silakbo? We're here to help! Reach out to us through any of the following channels.</p>
+                        <ul class="contact-details">
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>angsilakbouclm@gmail.com</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <span>+63 123 456 7890</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>University of Cebu Lapu-Lapu and Mandaue, Philippines</span>
+                            </li>
+                        </ul>
+                        <div class="social-links">
+                            <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="newsletter-container" data-aos="fade-up" data-aos-delay="200">
+                        <h3>Subscribe to Our Newsletter</h3>
+                        <p>Stay updated with our latest news, events, and opportunities.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Your email address" required>
+                            <button type="submit">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer id="contact">
+    <footer>
         <div class="container">
-            <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook"></i> Ang Silakbo</a>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="SILAKBO.png" alt="Silakbo Logo">
+                    <span>ANG SILAKBO</span>
+                </div>
+                <p>The official student publication of the University of Cebu Lapu-Lapu and Mandaue (UCLM) Senior High School department.</p>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#positions">Positions</a>
+                    <a href="#apply">Apply</a>
+                    <a href="#benefits">Benefits</a>
+                    <a href="#faq">FAQ</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <p class="copyright">&copy; 2025 Ang Silakbo. All rights reserved.</p>
             </div>
-            <p>Contact us: angsilakbouclm@gmail.com | +63 123 456 7890</p>
         </div>
     </footer>
 
@@ -744,6 +1578,8 @@
             const menuToggle = document.getElementById('menuToggle');
             const menu = document.getElementById('menu');
             const faqItems = document.querySelectorAll('.faq-item');
+            const header = document.getElementById('header');
+            const navLinks = document.querySelectorAll('nav ul li a');
 
             // Initialize AOS
             AOS.init({
@@ -759,11 +1595,13 @@
 
             // FAQ toggle
             faqItems.forEach(item => {
-                item.addEventListener('click', () => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
                     item.classList.toggle('active');
                 });
             });
 
+            // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
 
@@ -836,26 +1674,45 @@
                 });
             });
 
-            // Header scroll effect
+            // Active navigation link on scroll
             window.addEventListener('scroll', () => {
-                const header = document.querySelector('header');
+                // Header scroll effect
                 if (window.scrollY > 100) {
                     header.classList.add('scrolled');
                 } else {
                     header.classList.remove('scrolled');
                 }
+
+                // Update active nav link
+                const scrollPosition = window.scrollY;
+                
+                document.querySelectorAll('section').forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
             });
 
             // Newsletter form submission
             const newsletterForm = document.querySelector('.newsletter-form');
-            newsletterForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = this.querySelector('input[type="email"]').value;
-                // Here you would typically send this email to your server or newsletter service
-                console.log('Newsletter signup:', email);
-                alert('Thank you for subscribing to our newsletter!');
-                this.reset();
-            });
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    // Here you would typically send this email to your server or newsletter service
+                    alert('Thank you for subscribing to our newsletter!');
+                    this.reset();
+                });
+            }
         });
     </script>
 </body>
