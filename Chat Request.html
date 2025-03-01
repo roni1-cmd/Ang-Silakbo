@@ -3,19 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - inquiries</title>
+    <title>Ang Silakbo - Inquiries</title>
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #ff6600;
+            --primary-light: #ff8533;
+            --primary-dark: #e65c00;
             --secondary-color: #ff8533;
             --background-color: #f9f9f9;
+            --card-background: #ffffff;
             --text-color: #333333;
+            --text-light: #666666;
             --border-color: #e0e0e0;
             --success-color: #4CAF50;
+            --warning-color: #FFC107;
             --error-color: #f44336;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
         }
 
         * {
@@ -29,504 +42,1421 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: calc(100vh - 73px); /* 73px is header height */
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .main-container {
+                flex-direction: row;
+            }
+        }
+
+        /* Header */
         .header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 0;
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
+            gap: 0.75rem;
         }
 
         .logo img {
             width: 40px;
             height: 40px;
-            margin-right: 10px;
         }
 
         .logo h1 {
             font-size: 1.5rem;
-            color: white;
             font-weight: 600;
+            color: var(--primary-color);
         }
 
         .nav-menu {
-            display: flex;
-            gap: 1.5rem;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-menu {
+                display: flex;
+                gap: 1.5rem;
+            }
         }
 
         .nav-menu a {
-            color: white;
+            color: var(--text-color);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: color var(--transition-normal);
         }
 
         .nav-menu a:hover {
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
 
-        .main-content {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width var(--transition-normal);
         }
 
-        .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            flex-wrap: wrap;
+        .nav-menu a:hover::after,
+        .nav-menu a.active::after {
+            width: 100%;
+        }
+
+        .nav-menu a.active {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-toggle {
+            display: block;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-menu-toggle {
+                display: none;
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            position: relative;
             overflow: hidden;
         }
 
-        .message-form, .contact-info {
-            padding: 2rem;
+        @media (min-width: 992px) {
+            .sidebar {
+                width: 35%;
+                height: calc(100vh - 73px);
+                position: sticky;
+                top: 73px;
+                overflow-y: auto;
+            }
         }
 
-        .message-form {
-            flex: 2;
-            min-width: 300px;
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .sidebar-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .sidebar-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background-color: white;
+            border-radius: 2px;
+        }
+
+        .sidebar-text {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
         .contact-info {
-            flex: 1;
-            min-width: 250px;
-            background-color: #f5f5f5;
+            margin-top: 3rem;
         }
 
-        h2 {
-            color: var(--primary-color);
+        .contact-info h3 {
+            font-size: 1.3rem;
             margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
+            position: relative;
+            display: inline-block;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .char-count {
-            text-align: right;
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: var(--secondary-color);
+        .contact-info h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
         }
 
         .contact-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            transition: transform var(--transition-normal);
+        }
+
+        .contact-item:hover {
+            transform: translateX(5px);
         }
 
         .contact-icon {
-            color: var(--primary-color);
             margin-right: 1rem;
             font-size: 1.2rem;
             width: 24px;
             text-align: center;
         }
 
-        .faq-section {
+        .social-links {
+            display: flex;
+            gap: 1rem;
             margin-top: 2rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .social-link:hover {
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
             padding: 2rem;
+            background-color: var(--background-color);
         }
 
-        .faq-item {
-            margin-bottom: 1.5rem;
+        @media (min-width: 992px) {
+            .main-content {
+                width: 65%;
+                overflow-y: auto;
+                height: calc(100vh - 73px);
+            }
         }
 
-        .faq-question {
+        .page-title {
+            font-size: 1.8rem;
             font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        /* Form Steps */
+        .form-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--border-color);
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             margin-bottom: 0.5rem;
+            transition: all var(--transition-normal);
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--text-light);
+            transition: color var(--transition-normal);
+        }
+
+        .step.active .step-icon {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .step.completed .step-icon {
+            background-color: var(--success-color);
+        }
+
+        /* Form Card */
+        .form-card {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        }
+
+        .form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .floating-label {
+            position: relative;
+        }
+
+        .floating-label input,
+        .floating-label textarea,
+        .floating-label select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Poppins', sans-serif;
+            background-color: transparent;
+            transition: all var(--transition-normal);
+            font-size: 1rem;
+        }
+
+        .floating-label label {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            background-color: transparent;
+            padding: 0 0.25rem;
+            color: var(--text-light);
+            pointer-events: none;
+            transition: all var(--transition-normal);
+        }
+
+        .floating-label textarea ~ label {
+            top: 1rem;
+            transform: translateY(0);
+        }
+
+        .floating-label input:focus,
+        .floating-label textarea:focus,
+        .floating-label select:focus,
+        .floating-label input:not(:placeholder-shown),
+        .floating-label textarea:not(:placeholder-shown),
+        .floating-label select:not(:placeholder-shown) {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+        }
+
+        .floating-label input:focus ~ label,
+        .floating-label textarea:focus ~ label,
+        .floating-label select:focus ~ label,
+        .floating-label input:not(:placeholder-shown) ~ label,
+        .floating-label textarea:not(:placeholder-shown) ~ label,
+        .floating-label select:not(:placeholder-shown) ~ label {
+            top: 0;
+            left: 0.8rem;
+            transform: translateY(-50%) scale(0.85);
+            background-color: white;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .floating-label textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: color var(--transition-fast);
+            margin-top: 0.25rem;
+        }
+
+        .char-count.warning {
+            color: var(--warning-color);
+        }
+
+        .char-count.danger {
+            color: var(--error-color);
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-upload-input {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             cursor: pointer;
         }
 
-        .faq-answer {
-            display: none;
-            padding-left: 1rem;
-            border-left: 2px solid var(--primary-color);
-        }
-
-        .quick-links {
-            margin-top: 2rem;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 2rem;
-        }
-
-        .quick-links ul {
-            list-style: none;
+        .file-upload-label {
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .quick-links li a {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .quick-links li a:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .newsletter {
-            margin-top: 2rem;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 8px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             padding: 2rem;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+
+        .file-upload-label:hover,
+        .file-upload-input:focus + .file-upload-label {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 102, 0, 0.05);
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .file-upload-info {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
             text-align: center;
         }
 
-        .newsletter h2 {
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: #f5f5f5;
+            border-radius: var(--border-radius-sm);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .file-preview-icon {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .file-preview-name {
+            flex: 1;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-preview-remove {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .file-preview-remove:hover {
+            color: var(--error-color);
+        }
+
+        /* Buttons */
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
             color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 102, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Status Message */
+        .status-message {
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+        }
+
+        .status-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .success-message {
+            background-color: #E8F5E9;
+            color: #1B5E20;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .error-message {
+            background-color: #FFEBEE;
+            color: #B71C1C;
+            border-left: 4px solid var(--error-color);
+        }
+
+        .warning-message {
+            background-color: #FFF8E1;
+            color: #F57F17;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .faq-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .faq-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .faq-question {
+            padding: 1rem;
+            background-color: #f9f9f9;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question i {
+            transition: transform var(--transition-normal);
+        }
+
+        .faq-question.active {
+            color: var(--primary-color);
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-normal);
+            padding: 0 1rem;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 1rem;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newsletter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background-color: var(--primary-color);
+            opacity: 0.05;
+            border-radius: 0 var(--border-radius-lg) 0 100%;
+        }
+
+        .newsletter-title {
+            font-size: 1.5rem;
+            font-weight: 600;
             margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .newsletter-text {
+            margin-bottom: 1.5rem;
         }
 
         .newsletter-form {
             display: flex;
-            justify-content: center;
             gap: 1rem;
         }
 
-        .newsletter-form input {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
+        @media (max-width: 576px) {
+            .newsletter-form {
+                flex-direction: column;
+            }
         }
 
-        .newsletter-form button {
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+        }
+
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
             background-color: white;
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            color: var(--error-color);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .tracking-number {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #f5f5f5;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            margin: 1rem 0;
+            font-size: 1.2rem;
             color: var(--primary-color);
         }
 
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Footer */
         .footer {
             background-color: #333;
             color: white;
-            padding: 2rem 0;
-            margin-top: 2rem;
+            padding: 1rem 0;
+            text-align: center;
         }
 
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
             padding: 0 2rem;
         }
 
-        .footer-section {
-            flex: 1;
-            margin-right: 2rem;
+        /* Mobile Menu */
+        .mobile-nav {
+            position: fixed;
+            top: 73px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: var(--shadow-md);
+            padding: 1rem;
+            z-index: 99;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all var(--transition-normal);
+            height: auto;
+            max-height: calc(100vh - 73px);
+            overflow-y: auto;
         }
 
-        .footer-section h3 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+        .mobile-nav.active {
+            transform: translateY(0);
+            opacity: 1;
         }
 
-        .footer-section ul {
+        .mobile-nav-menu {
             list-style: none;
         }
 
-        .footer-section ul li {
+        .mobile-nav-menu li {
             margin-bottom: 0.5rem;
         }
 
-        .footer-section ul li a {
-            color: white;
+        .mobile-nav-menu a {
+            display: block;
+            padding: 0.75rem;
+            color: var(--text-color);
             text-decoration: none;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-normal);
         }
 
-        .social-icons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .social-icons a {
-            color: white;
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .social-icons a:hover {
+        .mobile-nav-menu a:hover,
+        .mobile-nav-menu a.active {
+            background-color: #f5f5f5;
             color: var(--primary-color);
         }
 
-        .copyright {
+        .mobile-nav-menu a i {
+            margin-right: 0.5rem;
+            width: 20px;
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #555;
-            margin-top: 2rem;
         }
 
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error Styles */
+        .error-text {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-group.error .floating-label input,
+        .form-group.error .floating-label textarea,
+        .form-group.error .floating-label select {
+            border-color: var(--error-color);
+        }
+
+        .form-group.error .floating-label label {
+            color: var(--error-color);
+        }
+
+        .form-group.error .error-text {
+            display: block;
+        }
+
+        /* Recent Inquiries */
+        .recent-inquiries {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .recent-inquiries-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .refresh-button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+
+        .refresh-button:hover {
+            transform: rotate(45deg);
+        }
+
+        .inquiry-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .inquiry-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem;
+            transition: all var(--transition-normal);
+        }
+
+        .inquiry-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .inquiry-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .inquiry-title {
+            font-weight: 500;
+        }
+
+        .inquiry-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .inquiry-content {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .inquiry-status {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .status-processing {
+            background-color: #E3F2FD;
+            color: #0D47A1;
+        }
+
+        .status        .status-completed {
+            background-color: #E8F5E9;
+            color: #1B5E20;
+        }
+
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
-            .container {
+            .form-buttons {
                 flex-direction: column;
+                gap: 1rem;
             }
 
-            .footer-content {
-                flex-direction: column;
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
 
-            .footer-section {
-                margin-right: 0;
-                margin-bottom: 2rem;
+            .form-steps {
+                overflow-x: auto;
+                padding-bottom: 1rem;
             }
 
-            .newsletter-form {
-                flex-direction: column;
+            .step {
+                min-width: 80px;
             }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
+    <div class="app-container">
+        <header class="header">
             <div class="logo">
                 <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
                 <h1>ANG SILAKBO</h1>
             </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
             <nav class="nav-menu">
                 <a href="index.html"><i class="fas fa-home"></i> Home</a>
                 <a href="About Us.html"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#" class="active"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="FAQ.html"><i class="fas fa-question-circle"></i> FAQ</a>
             </nav>
-        </div>
-    </header>
+        </header>
 
-    <main class="main-content">
-        <div class="container">
-            <section class="message-form">
-                <h2><i class="fas fa-paper-plane"></i> Submit an Inquiry</h2>
-                <form id="messageRequestForm">
-                    <div class="form-group">
-                        <label for="name"><i class="fas fa-user"></i> Name and Section</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inquiry-type"><i class="fas fa-question-circle"></i> Inquiry Type</label>
-                        <select id="inquiry-type" name="inquiry-type" required>
-                            <option value="">Select an inquiry type</option>
-                            <option value="general">General Question</option>
-                            <option value="technical">Technical Support</option>
-                            <option value="billing">Cover Partnerships</option>
-                            <option value="feedback">Feedback</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="priority"><i class="fas fa-exclamation-circle"></i> Priority</label>
-                        <select id="priority" name="priority" required>
-                            <option value="">Select priority</option>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message"><i class="fas fa-comment"></i> Message</label>
-                        <textarea id="message" name="message" required></textarea>
-                        <div class="char-count">0 / 500</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="attachment"><i class="fas fa-paperclip"></i> Attachment (optional)</label>
-                        <input type="file" id="attachment" name="attachment">
-                    </div>
-
-                    <button type="submit"><i class="fas fa-send"></i> Send Inquiry</button>
-                </form>
-                <div id="statusMessage"></div>
-            </section>
-            <section class="contact-info">
-                <h2><i class="fas fa-address-card"></i> Contact Information</h2>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt contact-icon"></i>
-                    <div>
-                        <p><strong>Main Campus:</strong> University of Cebu Lapu-Lapu and Mandaue, A.C. Cortes Ave., Mandaue City, 6014 Cebu</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-phone contact-icon"></i>
-                    <div>
-                        <p><strong>Main Line:</strong> +63 (32) 345-6789</p>
-                        <p><strong>Student Affairs:</strong> +63 (32) 345-6790</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-clock contact-icon"></i>
-                    <div>
-                        <p><strong>Office Hours:</strong></p>
-                        <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
-                        <p>Saturday: 9:00 AM - 12:00 PM</p>
-                        <p>Sunday & Holidays: Closed</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fab fa-facebook contact-icon"></i>
-                    <div>
-                        <p><strong>Facebook:</strong> @Ang Silakbo</p>
-                        <p>Follow us for daily updates, events, and student life highlights!</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-globe contact-icon"></i>
-                    <div>
-                        <p><strong>Website:</strong> angsilakbo.netlify.app</p>
-                        <p>Visit our website for comprehensive information about our programs, admissions, and more.</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-handshake contact-icon"></i>
-                    <div>
-                        <p><strong>Community Outreach:</strong></p>
-                        <p>For partnership inquiries or community projects, contact angsilakbo@gmail.com</p>
-                    </div>
-                </div>
-            </section>
+        <div class="mobile-nav" id="mobileNav">
+            <ul class="mobile-nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="About Us.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="#" class="active"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="FAQ.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            </ul>
         </div>
 
-        <section class="faq-section">
-            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
-            <div class="faq-item">
-                <div class="faq-question">How long does it take to get a response?</div>
-                <div class="faq-answer">We typically respond to inquiries within 24-48 hours during business days.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">What types of inquiries can I submit?</div>
-                <div class="faq-answer">You can submit general questions, technical support requests, billing inquiries, and feedback.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">Is my information kept confidential?</div>
-                <div class="faq-answer">Yes, all information submitted through this form is kept strictly confidential and is only used to address your inquiry.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">Can I track the status of my inquiry?</div>
-                <div class="faq-answer">Yes, you will receive a confirmation email with a tracking number. You can use this to check the status of your inquiry on our website.</div>
-            </div>
-        </section>
-
-        <section class="newsletter">
-            <h2><i class="fas fa-envelope-open-text"></i> Subscribe to Our Newsletter</h2>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Ang Silakbo</h3>
-                <p>Ang Silakbo is a student organization dedicated to fostering academic excellence and personal growth among its members.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="About Us.html">About Us</a></li>
-                    <li><a href="FAQ.html">FAQ</a></li>
-                    <li><a href="ToS.html">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>Email: info@angsilakbo.com</p>
-                <p>Phone: +63 (32) 345-6789</p>
-                <p>Address: University of Cebu Lapu-Lapu and Mandaue, A.C. Cortes Ave., Mandaue City, 6014 Cebu</p>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-icons">
-                    <a href="https://www.facebook.com/AngSilakboUCLM"><i class="fab fa-facebook"> ANG SILAKBO</i></a>
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="sidebar-content">
+                    <h2 class="sidebar-title">Get in Touch</h2>
+                    <p class="sidebar-text">Have questions or feedback? We're here to help! Fill out the form and our team will respond to your inquiry as soon as possible.</p>
+                    
+                    <div class="contact-info">
+                        <h3>Contact Information</h3>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt contact-icon"></i>
+                            <div>
+                                <p><strong>Main Campus:</strong> University of Cebu Lapu-Lapu and Mandaue, A.C. Cortes Ave., Mandaue City, 6014 Cebu</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone contact-icon"></i>
+                            <div>
+                                <p><strong>Main Line:</strong> +63 (32) 345-6789</p>
+                                <p><strong>Student Affairs:</strong> +63 (32) 345-6790</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock contact-icon"></i>
+                            <div>
+                                <p><strong>Office Hours:</strong></p>
+                                <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                                <p>Saturday: 9:00 AM - 12:00 PM</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope contact-icon"></i>
+                            <div>
+                                <p><strong>Email:</strong> info@angsilakbo.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="social-links">
+                            <a href="https://www.facebook.com/AngSilakboUCLM" class="social-link">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
+            </aside>
+
+            <main class="main-content">
+                <h1 class="page-title">Submit an Inquiry</h1>
+
+                <div class="form-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-icon">1</div>
+                        <div class="step-label">Personal Info</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-icon">2</div>
+                        <div class="step-label">Inquiry Details</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-icon">3</div>
+                        <div class="step-label">Message</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-icon">4</div>
+                        <div class="step-label">Review & Submit</div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <form id="messageRequestForm">
+                        <div class="form-section active" data-section="1">
+                            <h3 class="form-section-title"><i class="fas fa-user"></i> Personal Information</h3>
+                            
+                            <div class="form-group">
+                                <div class="floating-label">
+                                    <input type="text" id="name" name="name" placeholder=" " required>
+                                    <label for="name">Name and Section</label>
+                                </div>
+                                <div class="error-text">Please enter your name and section</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="floating-label">
+                                    <input type="email" id="email" name="email" placeholder=" " required>
+                                    <label for="email">Email Address</label>
+                                </div>
+                                <div class="error-text">Please enter a valid email address</div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <div></div> <!-- Empty div for spacing -->
+                                <button type="button" class="btn btn-primary next-btn" data-next="2">
+                                    Next <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section" data-section="2">
+                            <h3 class="form-section-title"><i class="fas fa-info-circle"></i> Inquiry Details</h3>
+                            
+                            <div class="form-group">
+                                <div class="floating-label">
+                                    <select id="inquiry-type" name="inquiry-type" placeholder=" " required>
+                                        <option value=""></option>
+                                        <option value="general">General Question</option>
+                                        <option value="technical">Technical Support</option>
+                                        <option value="partnership">Cover Partnerships</option>
+                                        <option value="feedback">Feedback</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <label for="inquiry-type">Inquiry Type</label>
+                                </div>
+                                <div class="error-text">Please select an inquiry type</div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="floating-label">
+                                    <select id="priority" name="priority" placeholder=" " required>
+                                        <option value=""></option>
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                    <label for="priority">Priority</label>
+                                </div>
+                                <div class="error-text">Please select a priority level</div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button type="button" class="btn btn-secondary prev-btn" data-prev="1">
+                                    <i class="fas fa-arrow-left"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-primary next-btn" data-next="3">
+                                    Next <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section" data-section="3">
+                            <h3 class="form-section-title"><i class="fas fa-comment"></i> Your Message</h3>
+                            
+                            <div class="form-group">
+                                <div class="floating-label">
+                                    <textarea id="message" name="message" placeholder=" " required></textarea>
+                                    <label for="message">Message</label>
+                                </div>
+                                <div class="char-count">0 / 500</div>
+                                <div class="error-text">Please enter your message (max 500 characters)</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Attachment (optional)</label>
+                                <div class="file-upload">
+                                    <input type="file" id="attachment" name="attachment" class="file-upload-input">
+                                    <label for="attachment" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                                        <div class="file-upload-text">Drag & drop files here or click to browse</div>
+                                        <div class="file-upload-info">Max file size: 5MB</div>
+                                    </label>
+                                </div>
+                                <div id="filePreview" class="file-preview" style="display: none;">
+                                    <i class="fas fa-file file-preview-icon"></i>
+                                    <span class="file-preview-name"></span>
+                                    <button type="button" class="file-preview-remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button type="button" class="btn btn-secondary prev-btn" data-prev="2">
+                                    <i class="fas fa-arrow-left"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-primary next-btn" data-next="4">
+                                    Next <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section" data-section="4">
+                            <h3 class="form-section-title"><i class="fas fa-check-circle"></i> Review & Submit</h3>
+                            
+                            <div id="reviewContent">
+                                <!-- Will be filled dynamically -->
+                            </div>
+
+                            <div class="form-buttons">
+                                <button type="button" class="btn btn-secondary prev-btn" data-prev="3">
+                                    <i class="fas fa-arrow-left"></i> Previous
+                                </button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Submit Inquiry
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="statusMessage" class="status-message"></div>
+                </div>
+
+                <div class="recent-inquiries">
+                    <div class="recent-inquiries-title">
+                        <h3><i class="fas fa-history"></i> Recent Inquiries</h3>
+                        <button class="refresh-button" id="refreshInquiries">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div id="inquiryList" class="inquiry-list">
+                        <!-- Will be filled dynamically -->
+                    </div>
+                </div>
+
+                <div class="faq-section">
+                    <h3 class="faq-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                How long does it take to get a response?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                We typically respond to inquiries within 24-48 hours during business days. High priority inquiries may receive faster responses. If your inquiry is urgent, please select "High" priority when submitting your form.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                What types of inquiries can I submit?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                You can submit general questions, technical support requests, partnership inquiries, feedback, and any other questions related to Ang Silakbo. If your inquiry doesn't fit into the provided categories, please select "Other" and provide details in your message.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                Is my information kept confidential?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Yes, all information submitted through this form is kept strictly confidential and is only used to address your inquiry. We adhere to privacy best practices and will never share your personal information with third parties without your consent.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                Can I track the status of my inquiry?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Yes, you will receive a confirmation email with a tracking number. You can use this to check the status of your inquiry on our website. Additionally, you can view your recent inquiries in the "Recent Inquiries" section once you've submitted a form.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="newsletter">
+                    <h3 class="newsletter-title"><i class="fas fa-envelope-open-text"></i> Subscribe to Our Newsletter</h3>
+                    <p class="newsletter-text">Stay updated with the latest news, events, and opportunities from Ang Silakbo.</p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                        <button type="submit" id="newsletterButton" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Subscribe
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <button class="modal-close" id="closeSuccessModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="modal-title">Inquiry Submitted Successfully!</h3>
+            </div>
+            <div class="modal-body">
+                <p>Thank you for your inquiry. We will respond to you shortly.</p>
+                <p>Your tracking number:</p>
+                <div class="tracking-number" id="trackingNumber">INQ-12345</div>
+                <p>You can use this number to track the status of your inquiry.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="closeModalButton" class="btn btn-primary">Close</button>
             </div>
         </div>
-        <div class="copyright">
-            <p>&copy; 2025 Ang Silakbo. All rights reserved.</p>
-        </div>
-    </footer>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, push, serverTimestamp, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
@@ -539,41 +1469,262 @@
             measurementId: "G-TSDTG2YJ94"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // DOM Elements
         const messageRequestForm = document.getElementById('messageRequestForm');
         const messageTextarea = document.getElementById('message');
         const charCount = document.querySelector('.char-count');
         const statusMessage = document.getElementById('statusMessage');
+        const submitButton = document.getElementById('submitButton');
+        const fileInput = document.getElementById('attachment');
+        const filePreview = document.getElementById('filePreview');
+        const filePreviewName = document.querySelector('.file-preview-name');
+        const filePreviewRemove = document.querySelector('.file-preview-remove');
+        const successModal = document.getElementById('successModal');
+        const closeSuccessModal = document.getElementById('closeSuccessModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const trackingNumberElement = document.getElementById('trackingNumber');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        const newsletterForm = document.getElementById('newsletterForm');
+        const newsletterButton = document.getElementById('newsletterButton');
+        const refreshInquiries = document.getElementById('refreshInquiries');
+        const inquiryList = document.getElementById('inquiryList');
+        const reviewContent = document.getElementById('reviewContent');
+        const nextButtons = document.querySelectorAll('.next-btn');
+        const prevButtons = document.querySelectorAll('.prev-btn');
+        const formSections = document.querySelectorAll('.form-section');
+        const steps = document.querySelectorAll('.step');
 
-        messageTextarea.addEventListener('input', function() {
-            const remainingChars = 500 - this.value.length;
-            charCount.textContent = `${this.value.length} / 500`;
-            charCount.style.color = remainingChars < 0 ? 'var(--error-color)' : '#666';
+        // Mobile menu toggle
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileNav.classList.toggle('active');
         });
 
+        // Form navigation
+        nextButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const currentSection = parseInt(button.getAttribute('data-next')) - 1;
+                const nextSection = parseInt(button.getAttribute('data-next'));
+                
+                // Validate current section
+                if (validateSection(currentSection)) {
+                    // Update form sections
+                    formSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.querySelector(`.form-section[data-section="${nextSection}"]`).classList.add('active');
+                    
+                    // Update steps
+                    steps.forEach(step => {
+                        step.classList.remove('active');
+                    });
+                    document.querySelector(`.step[data-step="${nextSection}"]`).classList.add('active');
+                    
+                    // If moving to review section, populate review content
+                    if (nextSection === 4) {
+                        populateReviewContent();
+                    }
+                    
+                    // Scroll to top of form
+                    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        prevButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const prevSection = parseInt(button.getAttribute('data-prev'));
+                
+                // Update form sections
+                formSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.querySelector(`.form-section[data-section="${prevSection}"]`).classList.add('active');
+                
+                // Update steps
+                steps.forEach(step => {
+                    step.classList.remove('active');
+                });
+                document.querySelector(`.step[data-step="${prevSection}"]`).classList.add('active');
+                
+                // Scroll to top of form
+                document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Validate form section
+        function validateSection(sectionNumber) {
+            const section = document.querySelector(`.form-section[data-section="${sectionNumber}"]`);
+            let isValid = true;
+            
+            if (sectionNumber === 1) {
+                // Validate personal info
+                const name = document.getElementById('name');
+                const email = document.getElementById('email');
+                
+                if (!name.value.trim()) {
+                    name.parentElement.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    name.parentElement.parentElement.classList.remove('error');
+                }
+                
+                if (!email.value.trim() || !isValidEmail(email.value.trim())) {
+                    email.parentElement.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    email.parentElement.parentElement.classList.remove('error');
+                }
+            } else if (sectionNumber === 2) {
+                // Validate inquiry details
+                const inquiryType = document.getElementById('inquiry-type');
+                const priority = document.getElementById('priority');
+                
+                if (!inquiryType.value) {
+                    inquiryType.parentElement.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    inquiryType.parentElement.parentElement.classList.remove('error');
+                }
+                
+                if (!priority.value) {
+                    priority.parentElement.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    priority.parentElement.parentElement.classList.remove('error');
+                }
+            } else if (sectionNumber === 3) {
+                // Validate message
+                const message = document.getElementById('message');
+                
+                if (!message.value.trim() || message.value.length > 500) {
+                    message.parentElement.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    message.parentElement.parentElement.classList.remove('error');
+                }
+            }
+            
+            if (!isValid) {
+                showStatus('Please correct the errors before proceeding.', 'error');
+            }
+            
+            return isValid;
+        }
+
+        // Validate email
+        function isValidEmail(email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        // Populate review content
+        function populateReviewContent() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const inquiryType = document.getElementById('inquiry-type');
+            const priority = document.getElementById('priority');
+            const message = document.getElementById('message').value;
+            const attachment = fileInput.files[0];
+            
+            const inquiryTypeText = inquiryType.options[inquiryType.selectedIndex].text;
+            const priorityText = priority.options[priority.selectedIndex].text;
+            
+            reviewContent.innerHTML = `
+                <div class="review-item">
+                    <strong>Name and Section:</strong> ${name}
+                </div>
+                <div class="review-item">
+                    <strong>Email:</strong> ${email}
+                </div>
+                <div class="review-item">
+                    <strong>Inquiry Type:</strong> ${inquiryTypeText}
+                </div>
+                <div class="review-item">
+                    <strong>Priority:</strong> ${priorityText}
+                </div>
+                <div class="review-item">
+                    <strong>Message:</strong>
+                    <p>${message}</p>
+                </div>
+                ${attachment ? `
+                <div class="review-item">
+                    <strong>Attachment:</strong> ${attachment.name}
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // Character counter for message textarea
+        messageTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            const maxLength = 500;
+            const remainingChars = maxLength - currentLength;
+            
+            charCount.textContent = `${currentLength} / ${maxLength}`;
+            
+            if (remainingChars < 50) {
+                charCount.className = 'char-count warning';
+            } else if (remainingChars < 0) {
+                charCount.className = 'char-count danger';
+            } else {
+                charCount.className = 'char-count';
+            }
+        });
+
+        // File upload preview
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                filePreviewName.textContent = file.name;
+                filePreview.style.display = 'flex';
+                
+                // Check file size
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                    showStatus('File size exceeds the 5MB limit.', 'error');
+                    fileInput.value = '';
+                    filePreview.style.display = 'none';
+                }
+            } else {
+                filePreview.style.display = 'none';
+            }
+        });
+
+        // Remove file
+        filePreviewRemove.addEventListener('click', function() {
+            fileInput.value = '';
+            filePreview.style.display = 'none';
+        });
+
+        // Form submission
         messageRequestForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
+            if (!validateSection(3)) {
+                return;
+            }
+            
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<div class="spinner"></div> Sending...';
+            
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const inquiryType = document.getElementById('inquiry-type').value;
             const priority = document.getElementById('priority').value;
             const message = messageTextarea.value.trim();
-            const attachment = document.getElementById('attachment').files[0];
-
-            if (!name || !email || !inquiryType || !priority || !message) {
-                showStatus('Please fill in all required fields.', 'error');
-                return;
-            }
-
-            if (message.length > 500) {
-                showStatus('Message is too long. Please keep it under 500 characters.', 'error');
-                return;
-            }
+            const attachment = fileInput.files[0];
 
             try {
+                // Generate a tracking number
+                const trackingNumber = 'INQ-' + Math.floor(100000 + Math.random() * 900000);
+                
+                // Save to Firebase
                 const messageRequestsRef = ref(db, 'messageRequests');
                 const newRequestRef = await push(messageRequestsRef, {
                     name,
@@ -581,8 +1732,10 @@
                     inquiryType,
                     priority,
                     message,
+                    trackingNumber,
                     timestamp: serverTimestamp(),
-                    status: 'pending'
+                    status: 'pending',
+                    hasAttachment: !!attachment
                 });
 
                 if (attachment) {
@@ -591,6 +1744,7 @@
                     console.log('Attachment received:', attachment.name);
                 }
 
+                // Add notification
                 const notificationsRef = ref(db, 'notifications');
                 await push(notificationsRef, {
                     type: 'newMessageRequest',
@@ -599,38 +1753,292 @@
                     read: false
                 });
 
-                showStatus('Your inquiry has been sent successfully. We will respond to you shortly.', 'success');
+                // Show success modal
+                trackingNumberElement.textContent = trackingNumber;
+                successModal.classList.add('active');
+                
+                // Reset form
                 messageRequestForm.reset();
                 charCount.textContent = '0 / 500';
+                charCount.className = 'char-count';
+                filePreview.style.display = 'none';
+                
+                // Reset form to first step
+                formSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.querySelector('.form-section[data-section="1"]').classList.add('active');
+                
+                steps.forEach(step => {
+                    step.classList.remove('active');
+                });
+                document.querySelector('.step[data-step="1"]').classList.add('active');
+                
+                // Add to inquiry list
+                const inquiryTypeSelect = document.getElementById('inquiry-type');
+                const inquiryTypeText = inquiryTypeSelect.options[inquiryTypeSelect.selectedIndex].text;
+                
+                addInquiryToList(inquiryTypeText, new Date().toLocaleDateString(), message.substring(0, 50) + (message.length > 50 ? '...' : ''), 'pending');
+                
             } catch (error) {
                 console.error('Error sending message request:', error);
                 showStatus('Failed to send inquiry. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Inquiry';
             }
         });
 
+        // Show status message
         function showStatus(message, type) {
             statusMessage.textContent = message;
-            statusMessage.className = type === 'success' ? 'success-message' : 'error-message';
-            statusMessage.style.padding = '10px';
-            statusMessage.style.marginTop = '10px';
-            statusMessage.style.borderRadius = '4px';
-            statusMessage.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--error-color)';
-            statusMessage.style.color = 'white';
+            statusMessage.className = `status-message ${type}-message`;
+            statusMessage.classList.add('show');
+            
             setTimeout(() => {
-                statusMessage.textContent = '';
-                statusMessage.className = '';
-                statusMessage.style = '';
+                statusMessage.classList.remove('show');
             }, 5000);
         }
 
+        // Close modal
+        closeSuccessModal.addEventListener('click', () => {
+            successModal.classList.remove('active');
+        });
+        
+        closeModalButton.addEventListener('click', () => {
+            successModal.classList.remove('active');
+        });
+        
+        // Close modal when clicking outside
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                successModal.classList.remove('active');
+            }
+        });
+
         // FAQ toggle functionality
-        const faqQuestions = document.querySelectorAll('.faq-question');
         faqQuestions.forEach(question => {
             question.addEventListener('click', () => {
                 const answer = question.nextElementSibling;
-                answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+                const isActive = question.classList.contains('active');
+                
+                // Close all other FAQs
+                faqQuestions.forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
+                
+                // Toggle current FAQ
+                if (!isActive) {
+                    question.classList.add('active');
+                    answer.classList.add('active');
+                }
             });
+        });
+
+        // Newsletter form
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const emailInput = newsletterForm.querySelector('input[type="email"]');
+            const email = emailInput.value.trim();
+            
+            if (!email) return;
+            
+            // Show loading state
+            newsletterButton.disabled = true;
+            newsletterButton.innerHTML = '<div class="spinner"></div> Subscribing...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Save to Firebase
+                const newsletterRef = ref(db, 'newsletter');
+                push(newsletterRef, {
+                    email,
+                    timestamp: serverTimestamp()
+                }).then(() => {
+                    // Show success message
+                    showStatus('You have successfully subscribed to our newsletter!', 'success');
+                    emailInput.value = '';
+                }).catch(error => {
+                    console.error('Error subscribing to newsletter:', error);
+                    showStatus('Failed to subscribe. Please try again.', 'error');
+                }).finally(() => {
+                    // Reset button state
+                    newsletterButton.disabled = false;
+                    newsletterButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
+                });
+            }, 1500);
+        });
+
+        // Add inquiry to list
+        function addInquiryToList(type, date, message, status) {
+            const statusClasses = {
+                'pending': 'status-pending',
+                'processing': 'status-processing',
+                'completed': 'status-completed'
+            };
+            
+            const statusLabels = {
+                'pending': 'Pending',
+                'processing': 'In Progress',
+                'completed': 'Completed'
+            };
+            
+            const inquiryCard = document.createElement('div');
+            inquiryCard.className = 'inquiry-card';
+            inquiryCard.innerHTML = `
+                <div class="inquiry-header">
+                    <span class="inquiry-title">${type}</span>
+                    <span class="inquiry-date">${date}</span>
+                </div>
+                <div class="inquiry-content">${message}</div>
+                <span class="inquiry-status ${statusClasses[status]}">${statusLabels[status]}</span>
+            `;
+            
+            inquiryList.prepend(inquiryCard);
+        }
+
+        // Refresh inquiries
+        refreshInquiries.addEventListener('click', function() {
+            this.classList.add('fa-spin');
+            
+            // Simulate refresh
+            setTimeout(() => {
+                this.classList.remove('fa-spin');
+                
+                // Update a random inquiry status for demo purposes
+                const inquiries = inquiryList.querySelectorAll('.inquiry-card');
+                if (inquiries.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * inquiries.length);
+                    const randomInquiry = inquiries[randomIndex];
+                    const statusElement = randomInquiry.querySelector('.inquiry-status');
+                    
+                    if (statusElement.classList.contains('status-pending')) {
+                        statusElement.classList.remove('status-pending');
+                        statusElement.classList.add('status-processing');
+                        statusElement.textContent = 'In Progress';
+                    } else if (statusElement.classList.contains('status-processing')) {
+                        statusElement.classList.remove('status-processing');
+                        statusElement.classList.add('status-completed');
+                        statusElement.textContent = 'Completed';
+                    }
+                }
+            }, 1000);
+        });
+
+        // Load inquiries from Firebase
+        function loadInquiries() {
+            const inquiriesRef = ref(db, 'messageRequests');
+            onValue(inquiriesRef, (snapshot) => {
+                // Clear existing inquiries
+                inquiryList.innerHTML = '';
+
+                // Check if there are any inquiries
+                if (snapshot.exists()) {
+                    const inquiries = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const inquiry = childSnapshot.val();
+                        inquiries.push({
+                            id: childSnapshot.key,
+                            ...inquiry
+                        });
+                    });
+
+                    // Sort by timestamp (newest first)
+                    inquiries.sort((a, b) => {
+                        return (b.timestamp || 0) - (a.timestamp || 0);
+                    });
+
+                    // Display the 5 most recent inquiries
+                    inquiries.slice(0, 5).forEach(inquiry => {
+                        const date = inquiry.timestamp
+                            ? new Date(inquiry.timestamp).toLocaleDateString()
+                            : new Date().toLocaleDateString();
+
+                        addInquiryToList(
+                            inquiry.inquiryType || 'General',
+                            date,
+                            inquiry.message.substring(0, 50) + (inquiry.message.length > 50 ? '...' : ''),
+                            inquiry.status || 'pending'
+                        );
+                    });
+                } else {
+                    // No inquiries found
+                    inquiryList.innerHTML = '<p class="text-center">No inquiries found.</p>';
+                }
+            });
+        }
+
+        // Drag and drop file upload
+        const fileUploadLabel = document.querySelector('.file-upload-label');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileUploadLabel.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileUploadLabel.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileUploadLabel.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            fileUploadLabel.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            fileUploadLabel.classList.remove('highlight');
+        }
+
+        fileUploadLabel.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                fileInput.files = files;
+                const file = files[0];
+                filePreviewName.textContent = file.name;
+                filePreview.style.display = 'flex';
+
+                // Check file size
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                    showStatus('File size exceeds the 5MB limit.', 'error');
+                    fileInput.value = '';
+                    filePreview.style.display = 'none';
+                }
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load inquiries
+            loadInquiries();
+
+            // Set first FAQ as active
+            if (faqQuestions.length > 0) {
+                faqQuestions[0].click();
+            }
+
+            // Add some sample inquiries for demonstration
+            setTimeout(() => {
+                if (inquiryList.children.length === 0) {
+                    addInquiryToList('Technical Support', 'June 10, 2025', 'Having trouble accessing the member portal...', 'completed');
+                    addInquiryToList('Partnership', 'June 8, 2025', 'Interested in collaborating on the upcoming event...', 'processing');
+                }
+            }, 2000);
         });
     </script>
 </body>
 </html>
+
