@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ang Silakbo Applicant Manager</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -14,6 +14,8 @@
     <style>
         :root {
             --primary-color: #E65100;
+            --primary-light: #FFA162;
+            --primary-dark: #FF6B35;
             --secondary-color: #FFA162;
             --accent-color: #FF6B35;
             --background-color: #F5F7FA;
@@ -21,13 +23,26 @@
             --white: #FFFFFF;
             --gray: #8492A6;
             --light-gray: #E5E9F2;
+            --dark-gray: #3C4858;
             --success-color: #34C759;
             --error-color: #FF3B30;
+            --warning-color: #FFCC00;
+            --info-color: #5AC8FA;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 24px;
         }
 
         .dark-mode {
             --primary-color: #5C9CE6;
+            --primary-light: #7AB2ED;
+            --primary-dark: #4A8AD9;
             --secondary-color: #7AB2ED;
             --accent-color: #40D869;
             --background-color: #1A1C1E;
@@ -35,6 +50,7 @@
             --white: #2C2E30;
             --gray: #9EA3B0;
             --light-gray: #3A3C3E;
+            --dark-gray: #CCCCCC;
         }
 
         * {
@@ -49,18 +65,23 @@
             color: var(--text-color);
             line-height: 1.6;
             transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
         header {
-            background: linear-gradient(135deg, #FF8C42, #FF6B35);
-            padding: 20px 0;
-            box-shadow: 0 4px 20px rgba(255, 140, 66, 0.2);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            padding: 15px 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         nav {
@@ -81,9 +102,10 @@
         }
 
         .logo span {
-            font-size: 1.8em;
+            font-size: 1.5em;
             font-weight: 700;
             color: var(--white);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .nav-links {
@@ -96,136 +118,682 @@
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition);
+            padding: 8px 15px;
+            border-radius: var(--border-radius-md);
         }
 
         .nav-links a:hover {
-            color: var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-name {
+            color: var(--white);
+            font-weight: 500;
         }
 
         main {
-            padding: 40px 0;
+            padding: 30px 0;
+            min-height: calc(100vh - 70px);
         }
 
-        .dashboard {
-            background-color: var(--white);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-top: 20px;
         }
 
-        #loginStatus {
-            background-color: var(--secondary-color);
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 130px);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .login-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
             color: var(--white);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
-            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
             animation: fadeIn 0.5s ease-out;
         }
 
-        #applicantList {
-            margin-bottom: 20px;
+        .login-card h3 {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .login-card p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .login-card .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .login-card .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        .login-card .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-card .user-role {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9em;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .stat-card p {
+            font-size: 2em;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .stat-card .icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2em;
+            color: var(--primary-light);
+            opacity: 0.5;
+        }
+
+        .stat-card .trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+        }
+
+        .trend.up {
+            color: var(--success-color);
+        }
+
+        .trend.down {
+            color: var(--error-color);
+        }
+
+        .sidebar-menu {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: var(--border-radius-md);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            margin-bottom: 5px;
+        }
+
+        .menu-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .menu-item.active i {
+            color: var(--white);
+        }
+
+        .menu-item i {
+            font-size: 1.2em;
+            color: var(--primary-color);
             transition: var(--transition);
         }
 
-        .applicant-item {
-            background-color: var(--white);
+        .main-content {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .page-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-gray);
+        }
+
+        .page-subtitle {
+            font-size: 0.9em;
+            color: var(--gray);
+        }
+
+        .search-and-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--background-color);
+            border-bottom: 1px solid var(--light-gray);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-bar {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
             border: 1px solid var(--light-gray);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
+            border-radius: var(--border-radius-md);
+            font-size: 0.95em;
+            background-color: var(--white);
             transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .filter-btn i {
+            font-size: 0.9em;
+        }
+
+        .applicants-container {
+            padding: 20px 30px;
+            flex: 1;
+            overflow: auto;
+        }
+
+        .applicant-list-header {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items: center;
+            gap: 15px;
+            padding: 0 15px 15px;
+            border-bottom: 1px solid var(--light-gray);
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9em;
+        }
+
+        .applicant-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--white);
+            border-radius: var(--border-radius-md);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
         }
 
         .applicant-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
         }
 
-        .applicant-item input[type="checkbox"] {
-            margin-right: 15px;
-            transform: scale(1.2);
-        }
-
-        .btn {
-            font-family: 'Poppins', sans-serif;
-            padding: 12px 20px;
-            background: #FF8C42;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: 0.95em;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .applicant-checkbox {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
-            opacity: 0.95;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            background: #FF6B35;
-            opacity: 1;
-            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+        .applicant-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
         }
 
-        #sendEmailsBtn {
-            background: #FF8C42;
+        .applicant-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
-        #approveSelectedBtn {
-            background: #FF6B35;
+        .applicant-name {
+            font-weight: 600;
+            font-size: 1em;
         }
 
-        #rejectSelectedBtn {
-            background: #FF4B1F;
+        .applicant-email {
+            color: var(--gray);
+            font-size: 0.85em;
         }
 
-        .notification {
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 8px;
+        .applicant-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
             font-weight: 500;
-            animation: fadeIn 0.3s ease-out;
+            text-align: center;
+            min-width: 100px;
         }
 
-        .success {
-            background-color: var(--success-color);
-            color: var(--white);
+        .status-pending {
+            background-color: rgba(255, 204, 0, 0.15);
+            color: #B78105;
         }
 
-        .error {
-            background-color: var(--error-color);
-            color: var(--white);
+        .status-approved {
+            background-color: rgba(52, 199, 89, 0.15);
+            color: #1D8348;
         }
 
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .status-rejected {
+            background-color: rgba(255, 59, 48, 0.15);
+            color: #C0392B;
+        }
+
+        .applicant-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
             background-color: var(--primary-color);
             color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.view:hover {
+            background-color: var(--info-color);
+        }
+
+        .action-btn.approve:hover {
+            background-color: var(--success-color);
+        }
+
+        .action-btn.reject:hover {
+            background-color: var(--error-color);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .pagination-info {
+            color: var(--gray);
+            font-size: 0.9em;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            padding: 8px 15px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            border-radius: var(--border-radius-md);
             cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: var(--white);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5em;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .fab:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: var(--primary-dark);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .fab-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
             transition: var(--transition);
         }
 
+        .fab-menu.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .fab-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fab-item .btn {
+            padding: 10px 20px;
+            background: var(--white);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            min-width: 150px;
+            text-align: left;
+        }
+
+        .fab-item .btn:hover {
+            transform: translateX(-5px);
+        }
+
+        .fab-item .mini-fab {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .fab-item .mini-fab.email {
+            background: var(--primary-color);
+        }
+
+        .fab-item .mini-fab.approve {
+            background: var(--success-color);
+        }
+
+        .fab-item .mini-fab.reject {
+            background: var(--error-color);
+        }
+
+        .fab-item .mini-fab:hover {
+            transform: scale(1.1);
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--white);
+            color: var(--primary-color);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
         .dark-mode-toggle:hover {
-            background-color: var(--accent-color);
+            transform: rotate(30deg);
+        }
+
+        .notification-area {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .notification {
+            padding: 15px 25px 15px 20px;
+            border-radius: var(--border-radius-md);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: var(--shadow-lg);
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            pointer-events: all;
+            position: relative;
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--error-color);
+        }
+
+        .notification.warning {
+            background-color: var(--warning-color);
+            color: #333;
+        }
+
+        .notification.info {
+            background-color: var(--info-color);
+        }
+
+        .notification .icon {
+            font-size: 1.5em;
+        }
+
+        .notification .content {
+            flex: 1;
+        }
+
+        .notification .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 0.8em;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .notification .close:hover {
+            opacity: 1;
         }
 
         .loading-spinner {
@@ -242,138 +810,277 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--white);
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
             border-top: 5px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 120px;
-            background-color: var(--gray);
-            color: var(--white);
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -60px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .quick-stats {
+        .empty-state {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 4em;
+            color: var(--light-gray);
             margin-bottom: 20px;
         }
 
-        .stat-card {
-            background: linear-gradient(135deg, var(--white), var(--light-gray));
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            flex: 1;
-            margin: 0 10px;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: linear-gradient(135deg, #FFF, #FFF5EC);
-        }
-
-        .stat-card h3 {
-            font-size: 1.1em;
-            color: var(--gray);
+        .empty-state h3 {
+            font-size: 1.5em;
+            color: var(--dark-gray);
             margin-bottom: 10px;
         }
 
-        .stat-card p {
-            font-size: 2em;
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        .search-bar {
+        .empty-state p {
+            color: var(--gray);
+            max-width: 400px;
             margin-bottom: 20px;
         }
 
-        .search-bar input {
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 15px;
-            border: 2px solid var(--light-gray);
-            border-radius: 12px;
-            font-size: 1em;
-            background-color: var(--white);
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
             transition: var(--transition);
         }
 
-        .search-bar input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
         }
 
-        .filters {
+        .modal {
+            background-color: var(--white);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--light-gray);
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            align-items: center;
         }
 
-        .filter-btn {
-            padding: 10px 20px;
-            background-color: var(--light-gray);
-            color: var(--text-color);
-            border: none;
-            border-radius: 10px;
+        .modal-title {
+            font-size: 1.2em;
             font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--gray);
             transition: var(--transition);
         }
 
-        .filter-btn.active {
+        .modal-close:hover {
+            color: var(--error-color);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            border: none;
+        }
+
+        .modal-btn.primary {
             background-color: var(--primary-color);
             color: var(--white);
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .pagination button {
-            padding: 10px 20px;
-            margin: 0 5px;
+        .modal-btn.secondary {
             background-color: var(--light-gray);
             color: var(--text-color);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal-btn.primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .modal-btn.secondary:hover {
+            background-color: var(--gray);
+            color: var(--white);
+        }
+
+        /* Applicant details styles */
+        .applicant-details {
+            display: grid;
+            gap: 20px;
+        }
+
+        .detail-group {
+            display: grid;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 0.85em;
+            color: var(--gray);
             font-weight: 500;
         }
 
-        .pagination button:hover,
-        .pagination button.active {
-            background-color: var(--primary-color);
-            color: var(--white);
+        .detail-value {
+            font-size: 1em;
+            color: var(--text-color);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background-color: rgba(255, 204, 0, 0.15);
+            color: #B78105;
+        }
+
+        .status-badge.approved {
+            background-color: rgba(52, 199, 89, 0.15);
+            color: #1D8348;
+        }
+
+        .status-badge.rejected {
+            background-color: rgba(255, 59, 48, 0.15);
+            color: #C0392B;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 250px 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+                height: auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .login-card {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .applicant-list-header {
+                display: none;
+            }
+
+            .applicant-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .applicant-checkbox {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+            }
+
+            .applicant-info {
+                padding-right: 30px;
+            }
+
+            .applicant-actions {
+                justify-content: flex-start;
+            }
+
+            .search-and-filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .action-buttons {
+                right: 20px;
+                bottom: 20px;
+            }
+
+            .fab {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
         }
 
         @keyframes fadeIn {
@@ -382,254 +1089,28 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 10px;
-            }
-
-            .dashboard {
-                padding: 20px;
-            }
-
-            .btn {
-                width: 100%;
-                margin-right: 0;
-            }
-
-            .quick-stats {
-                flex-direction: column;
-            }
-
-            .stat-card {
-                margin: 10px 0;
-            }
-
-            .filters {
-                flex-wrap: wrap;
-            }
-
-            .filter-btn {
-                margin-bottom: 10px;
-            }
-        }
-
-        /* New layout styles */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            position: sticky;
-            top: 30px;
-            height: calc(100vh - 100px);
-            padding: 20px;
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .login-card {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #FF8C42, #FF6B35);
-            border-radius: 15px;
-            color: white;
-        }
-
-        .quick-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            padding: 20px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Action buttons container - move it outside sidebar for better visibility */
-        .action-buttons {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 100;
-            width: 200px; /* Fixed width for consistency */
-        }
-
-        /* Main content area styles */
-        .main-content {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .content-header {
-            margin-bottom: 30px;
-        }
-
-        .search-bar {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
-
-        .search-bar input {
-            padding-left: 45px;
-            width: 100%;
-            height: 50px;
-        }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .applicants-container {
-            background: var(--background-color);
-            border-radius: 15px;
-            padding: 20px;
-        }
-
-        .applicant-item {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 15px;
-            padding: 20px;
-            margin-bottom: 10px;
-            background: var(--white);
-            border-radius: 10px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: relative;
-                height: auto;
-                top: 0;
-            }
-
-            .quick-stats {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-
-            .stat-card {
-                flex: 1;
-                min-width: 200px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .quick-stats {
-                flex-direction: column;
-            }
-
-            .action-buttons {
-                position: fixed;
-                bottom: 20px;
-                right: 50%;
-                transform: translateX(50%);
-                width: 90%;
-                max-width: 300px;
-                background: rgba(255, 255, 255, 0.9);
-                padding: 15px;
-                border-radius: 15px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        .notification-area {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .notification {
-            padding: 15px 25px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            animation: slideIn 0.3s ease-out;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            min-width: 300px;
-        }
-
-        .notification.success {
-            background-color: #34C759;
-        }
-
-        .notification.error {
-            background-color: #FF3B30;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 <body>
     <header>
         <nav class="container">
-            <div class="nav-wrapper">
-                <a href="#" class="logo">
-                    <img src="SILAKBO.png" alt="SILAKBO Logo">
-                    <span>APPLICATION MANAGER</span>
-                </a>
-                <div class="nav-links">
-                    <a href="Ang Silakbo Admin Panel.html">Home</a>
-                    <a href="Ang Silakbo Registered Applicants.html">Applicants</a>
-                </div>
+            <a href="#" class="logo">
+                <img src="SILAKBO.png" alt="SILAKBO Logo">
+                <span>APPLICATION MANAGER</span>
+            </a>
+            <div class="nav-links">
+                <a href="Ang Silakbo Admin Panel.html" class="active">Dashboard</a>
+                <a href="Ang Silakbo Registered Applicants.html">Applicants</a>
+                <a href="#">Reports</a>
+                <a href="#">Settings</a>
             </div>
         </nav>
     </header>
@@ -637,42 +1118,123 @@
     <main class="container">
         <div class="dashboard-grid">
             <aside class="sidebar">
-                <div id="loginStatus" class="login-card"></div>
-                <div class="quick-stats">
+                <div id="loginStatus" class="login-card">
+                    <h3>Welcome back!</h3>
+                    <p>Manage applicants and send notifications</p>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">Admin Name</div>
+                            <div class="user-role">Administrator</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-container">
                     <div class="stat-card">
+                        <i class="fas fa-users icon"></i>
                         <h3>Total Applicants</h3>
                         <p id="totalApplicants">0</p>
+                        <div class="trend up">
+                            <i class="fas fa-arrow-up"></i> 12% from last week
+                        </div>
                     </div>
+                    
                     <div class="stat-card">
+                        <i class="fas fa-clock icon"></i>
                         <h3>Pending Review</h3>
                         <p id="pendingReview">0</p>
+                        <div class="trend down">
+                            <i class="fas fa-arrow-down"></i> 5% from last week
+                        </div>
                     </div>
+                    
                     <div class="stat-card">
+                        <i class="fas fa-check-circle icon"></i>
                         <h3>Approved</h3>
                         <p id="approvedApplicants">0</p>
+                        <div class="trend up">
+                            <i class="fas fa-arrow-up"></i> 18% from last week
+                        </div>
                     </div>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-users"></i>
+                        Applicants
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-envelope"></i>
+                        Notifications
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-chart-bar"></i>
+                        Reports
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
                 </div>
             </aside>
 
             <div class="main-content">
                 <div class="content-header">
+                    <h1 class="page-title">Applicant Management</h1>
+                    <p class="page-subtitle">Review and manage applicant submissions</p>
+                </div>
+                
+                <div class="search-and-filters">
                     <div class="search-bar">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="searchApplicants" placeholder="Search applicants...">
+                        <input type="text" id="searchApplicants" placeholder="Search by name, email, or status...">
                     </div>
+                    
                     <div class="filters">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="pending">Pending</button>
-                        <button class="filter-btn" data-filter="approved">Approved</button>
-                        <button class="filter-btn" data-filter="rejected">Rejected</button>
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-list"></i> All
+                        </button>
+                        <button class="filter-btn" data-filter="pending">
+                            <i class="fas fa-clock"></i> Pending
+                        </button>
+                        <button class="filter-btn" data-filter="approved">
+                            <i class="fas fa-check"></i> Approved
+                        </button>
+                        <button class="filter-btn" data-filter="rejected">
+                            <i class="fas fa-times"></i> Rejected
+                        </button>
                     </div>
                 </div>
-
+                
                 <div class="applicants-container">
+                    <div class="applicant-list-header">
+                        <div>Select</div>
+                        <div>Applicant</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+                    
                     <div id="applicantList"></div>
+                    
                     <div class="pagination">
-                        <button id="prevPage">&laquo; Previous</button>
-                        <button id="nextPage">Next &raquo;</button>
+                        <div class="pagination-info">
+                            Showing <span id="currentShowing">0</span> of <span id="totalItems">0</span> applicants
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="prevPage" class="pagination-btn">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </button>
+                            <button id="nextPage" class="pagination-btn">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -682,15 +1244,32 @@
     <div id="notificationArea" class="notification-area"></div>
 
     <div class="action-buttons">
-        <button id="sendEmailsBtn" class="btn">
-            <i class="fas fa-envelope"></i> Send Emails
+        <button id="mainActionBtn" class="fab">
+            <i class="fas fa-plus"></i>
         </button>
-        <button id="approveSelectedBtn" class="btn">
-            <i class="fas fa-check"></i> Approve Selected
-        </button>
-        <button id="rejectSelectedBtn" class="btn">
-            <i class="fas fa-times"></i> Reject Selected
-        </button>
+        
+        <div id="fabMenu" class="fab-menu">
+            <div class="fab-item">
+                <button id="sendEmailsBtn" class="mini-fab email">
+                    <i class="fas fa-envelope"></i>
+                </button>
+                <button class="btn">Send Emails</button>
+            </div>
+            
+            <div class="fab-item">
+                <button id="approveSelectedBtn" class="mini-fab approve">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button class="btn">Approve Selected</button>
+            </div>
+            
+            <div class="fab-item">
+                <button id="rejectSelectedBtn" class="mini-fab reject">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="btn">Reject Selected</button>
+            </div>
+        </div>
     </div>
 
     <button id="darkModeToggle" class="dark-mode-toggle">
@@ -699,6 +1278,48 @@
 
     <div class="loading-spinner">
         <div class="spinner"></div>
+    </div>
+
+    <!-- Applicant Details Modal -->
+    <div id="applicantModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Applicant Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="applicant-details">
+                    <div class="detail-group">
+                        <div class="detail-label">Name</div>
+                        <div class="detail-value" id="modalName">John Doe</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value" id="modalEmail">john.doe@example.com</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span class="status-badge pending" id="modalStatus">Pending</span>
+                        </div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Application Date</div>
+                        <div class="detail-value" id="modalDate">March 15, 2023</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Additional Information</div>
+                        <div class="detail-value" id="modalInfo">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="modalClose">Close</button>
+                <button class="modal-btn primary" id="modalApprove">Approve</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -723,6 +1344,7 @@
         })();
 
         document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
             const loginStatus = document.getElementById('loginStatus');
             const applicantList = document.getElementById('applicantList');
             const sendEmailsBtn = document.getElementById('sendEmailsBtn');
@@ -737,25 +1359,62 @@
             const filterBtns = document.querySelectorAll('.filter-btn');
             const prevPageBtn = document.getElementById('prevPage');
             const nextPageBtn = document.getElementById('nextPage');
+            const currentShowingEl = document.getElementById('currentShowing');
+            const totalItemsEl = document.getElementById('totalItems');
+            const mainActionBtn = document.getElementById('mainActionBtn');
+            const fabMenu = document.getElementById('fabMenu');
+            const applicantModal = document.getElementById('applicantModal');
+            const modalClose = document.getElementById('modalClose');
+            const modalCloseX = document.querySelector('.modal-close');
+            const modalApprove = document.getElementById('modalApprove');
 
+            // State variables
             let currentPage = 1;
             const applicantsPerPage = 10;
             let currentFilter = 'all';
+            let allApplicants = [];
+            let isFabMenuOpen = false;
 
-            function showNotification(message, type) {
+            // Show notification function
+            function showNotification(message, type = 'info') {
                 const notificationArea = document.getElementById('notificationArea');
-                if (!notificationArea) {
-                    console.error('Notification area not found');
-                    return;
-                }
                 
                 const notification = document.createElement('div');
-                notification.textContent = message;
                 notification.className = `notification ${type}`;
+                
+                let icon = '';
+                switch(type) {
+                    case 'success':
+                        icon = '<i class="fas fa-check-circle icon"></i>';
+                        break;
+                    case 'error':
+                        icon = '<i class="fas fa-exclamation-circle icon"></i>';
+                        break;
+                    case 'warning':
+                        icon = '<i class="fas fa-exclamation-triangle icon"></i>';
+                        break;
+                    default:
+                        icon = '<i class="fas fa-info-circle icon"></i>';
+                }
+                
+                notification.innerHTML = `
+                    ${icon}
+                    <div class="content">${message}</div>
+                    <button class="close">&times;</button>
+                `;
                 
                 notificationArea.appendChild(notification);
                 
-                // Remove notification after 5 seconds
+                // Add event listener to close button
+                const closeBtn = notification.querySelector('.close');
+                closeBtn.addEventListener('click', () => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                });
+                
+                // Auto remove after 5 seconds
                 setTimeout(() => {
                     notification.style.opacity = '0';
                     setTimeout(() => {
@@ -764,6 +1423,7 @@
                 }, 5000);
             }
 
+            // Loading spinner functions
             function showLoading() {
                 loadingSpinner.style.display = 'flex';
             }
@@ -772,15 +1432,22 @@
                 loadingSpinner.style.display = 'none';
             }
 
+            // Sign in function
             function signIn() {
                 const email = prompt("Enter your admin email:");
                 const password = prompt("Enter your password:");
+                
+                if (!email || !password) {
+                    showNotification('Login cancelled', 'warning');
+                    return;
+                }
                 
                 showLoading();
                 firebase.auth().signInWithEmailAndPassword(email, password)
                     .then((userCredential) => {
                         hideLoading();
-                        loginStatus.textContent = `Logged in as: ${getAdminName(email)}`;
+                        const userName = getAdminName(email);
+                        document.querySelector('.user-name').textContent = userName;
                         checkAdminStatus(userCredential.user);
                     })
                     .catch((error) => {
@@ -789,6 +1456,7 @@
                     });
             }
 
+            // Get admin name function
             function getAdminName(email) {
                 switch(email) {
                     case 'angsilakbo1@uclm.com':
@@ -798,66 +1466,38 @@
                     case 'angsilakbo3@uclm.com':
                         return 'Diana Rose';
                     default:
-                        return email;
+                        return email.split('@')[0];
                 }
             }
 
+            // Check admin status function
             function checkAdminStatus(user) {
                 const adminRef = firebase.database().ref('admins').child(user.email.replace('.', ','));
                 adminRef.once('value', (snapshot) => {
                     if (snapshot.exists()) {
-                        applicantList.style.display = 'block';
-                        sendEmailsBtn.style.display = 'inline-block';
-                        approveSelectedBtn.style.display = 'inline-block';
-                        rejectSelectedBtn.style.display = 'inline-block';
+                        showNotification('Successfully logged in as administrator', 'success');
                         fetchAndDisplayApplicants();
                     } else {
-                        showNotification('You do not have admin privileges.', 'error');
+                        showNotification('You do not have admin privileges', 'error');
+                        firebase.auth().signOut();
                     }
                 });
             }
 
+            // Fetch and display applicants function
             function fetchAndDisplayApplicants() {
                 showLoading();
                 firebase.database().ref('applications').once('value', (snapshot) => {
                     hideLoading();
                     const applications = snapshot.val();
+                    
                     if (applications) {
-                        let html = '<h2>Applicant List</h2>';
-                        let totalApplicants = 0;
-                        let pendingReview = 0;
-                        let approvedApplicants = 0;
-                        const applicantArray = Object.entries(applications).map(([key, value]) => ({id: key, ...value}));
-                        const filteredApplicants = filterApplicants(applicantArray);
-                        const paginatedApplicants = paginateApplicants(filteredApplicants);
-
-                        paginatedApplicants.forEach(applicant => {
-                            totalApplicants++;
-                            if (!applicant.reviewed) pendingReview++;
-                            if (applicant.status === 'approved') approvedApplicants++;
-                            html += `
-                                <div class="applicant-item" data-status="${applicant.status || 'pending'}">
-                                    <input type="checkbox" class="applicant-select" data-email="${applicant.email}" id="${applicant.id}">
-                                    <label for="${applicant.id}">
-                                        ${applicant.name} (${applicant.email}) - ${applicant.status || 'Pending'}
-                                        <div class="tooltip">
-                                            <i class="fas fa-info-circle"></i>
-                                            <span class="tooltiptext">Click to select</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            `;
-                        });
-                        applicantList.innerHTML = html;
-                        totalApplicantsEl.textContent = totalApplicants;
-                        pendingReviewEl.textContent = pendingReview;
-                        approvedApplicantsEl.textContent = approvedApplicants;
-                        updatePagination(filteredApplicants.length);
+                        allApplicants = Object.entries(applications).map(([key, value]) => ({id: key, ...value}));
+                        updateStatistics(allApplicants);
+                        renderApplicants();
                     } else {
-                        applicantList.innerHTML = '<p>No applicants found.</p>';
-                        totalApplicantsEl.textContent = '0';
-                        pendingReviewEl.textContent = '0';
-                        approvedApplicantsEl.textContent = '0';
+                        renderEmptyState();
+                        updateStatistics([]);
                     }
                 }).catch(error => {
                     hideLoading();
@@ -866,33 +1506,179 @@
                 });
             }
 
-            function filterApplicants(applicants) {
+            // Update statistics function
+            function updateStatistics(applicants) {
+                const totalApplicants = applicants.length;
+                const pendingReview = applicants.filter(app => !app.reviewed).length;
+                const approvedApplicants = applicants.filter(app => app.status === 'approved').length;
+                
+                totalApplicantsEl.textContent = totalApplicants;
+                pendingReviewEl.textContent = pendingReview;
+                approvedApplicantsEl.textContent = approvedApplicants;
+                
+                totalItemsEl.textContent = totalApplicants;
+            }
+
+            // Filter applicants function
+            function filterApplicants() {
                 const searchTerm = searchApplicants.value.toLowerCase();
-                return applicants.filter(applicant => {
-                    const matchesSearch = applicant.name.toLowerCase().includes(searchTerm) || 
-                                          applicant.email.toLowerCase().includes(searchTerm);
-                    const matchesFilter = currentFilter === 'all' || applicant.status === currentFilter;
+                
+                return allApplicants.filter(applicant => {
+                    const matchesSearch = 
+                        (applicant.name && applicant.name.toLowerCase().includes(searchTerm)) || 
+                        (applicant.email && applicant.email.toLowerCase().includes(searchTerm));
+                    
+                    const matchesFilter = 
+                        currentFilter === 'all' || 
+                        (currentFilter === 'pending' && (!applicant.status || applicant.status === 'pending')) ||
+                        (applicant.status === currentFilter);
+                    
                     return matchesSearch && matchesFilter;
                 });
             }
 
+            // Paginate applicants function
             function paginateApplicants(applicants) {
                 const startIndex = (currentPage - 1) * applicantsPerPage;
                 const endIndex = startIndex + applicantsPerPage;
                 return applicants.slice(startIndex, endIndex);
             }
 
-            function updatePagination(totalApplicants) {
-                const totalPages = Math.ceil(totalApplicants / applicantsPerPage);
-                prevPageBtn.disabled = currentPage === 1;
-                nextPageBtn.disabled = currentPage === totalPages;
+            // Render applicants function
+            function renderApplicants() {
+                const filteredApplicants = filterApplicants();
+                const paginatedApplicants = paginateApplicants(filteredApplicants);
+                
+                if (paginatedApplicants.length === 0) {
+                    renderEmptyState();
+                    return;
+                }
+                
+                let html = '';
+                
+                paginatedApplicants.forEach(applicant => {
+                    const status = applicant.status || 'pending';
+                    
+                    html += `
+                        <div class="applicant-item" data-id="${applicant.id}" data-status="${status}">
+                            <div class="applicant-checkbox">
+                                <input type="checkbox" class="applicant-select" data-email="${applicant.email}" id="check-${applicant.id}">
+                            </div>
+                            
+                            <div class="applicant-info">
+                                <div class="applicant-name">${applicant.name || 'Unknown'}</div>
+                                <div class="applicant-email">${applicant.email || 'No email'}</div>
+                            </div>
+                            
+                            <div class="applicant-status status-${status}">
+                                ${status.charAt(0).toUpperCase() + status.slice(1)}
+                            </div>
+                            
+                            <div class="applicant-actions">
+                                <button class="action-btn view" data-id="${applicant.id}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn approve" data-id="${applicant.id}">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="action-btn reject" data-id="${applicant.id}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                applicantList.innerHTML = html;
+                
+                // Add event listeners to action buttons
+                document.querySelectorAll('.action-btn.view').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        openApplicantModal(id);
+                    });
+                });
+                
+                document.querySelectorAll('.action-btn.approve').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        updateApplicantStatus([id], 'approved');
+                    });
+                });
+                
+                document.querySelectorAll('.action-btn.reject').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        updateApplicantStatus([id], 'rejected');
+                    });
+                });
+                
+                // Update pagination
+                updatePagination(filteredApplicants.length);
+                
+                // Update current showing
+                const startItem = (currentPage - 1) * applicantsPerPage + 1;
+                const endItem = Math.min(startItem + paginatedApplicants.length - 1, filteredApplicants.length);
+                currentShowingEl.textContent = `${startItem}-${endItem}`;
             }
 
+            // Render empty state function
+            function renderEmptyState() {
+                applicantList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No applicants found</h3>
+                        <p>Try adjusting your search or filter criteria to find what you're looking for.</p>
+                    </div>
+                `;
+                
+                currentShowingEl.textContent = '0';
+            }
+
+            // Update pagination function
+            function updatePagination(totalItems) {
+                const totalPages = Math.ceil(totalItems / applicantsPerPage);
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+            }
+
+            // Open applicant modal function
+            function openApplicantModal(id) {
+                const applicant = allApplicants.find(app => app.id === id);
+                
+                if (!applicant) {
+                    showNotification('Applicant not found', 'error');
+                    return;
+                }
+                
+                document.getElementById('modalName').textContent = applicant.name || 'Unknown';
+                document.getElementById('modalEmail').textContent = applicant.email || 'No email';
+                
+                const statusEl = document.getElementById('modalStatus');
+                const status = applicant.status || 'pending';
+                statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                statusEl.className = `status-badge ${status}`;
+                
+                document.getElementById('modalDate').textContent = applicant.timestamp ? new Date(applicant.timestamp).toLocaleDateString() : 'Unknown';
+                document.getElementById('modalInfo').textContent = applicant.additionalInfo || 'No additional information provided.';
+                
+                modalApprove.setAttribute('data-id', id);
+                
+                applicantModal.classList.add('active');
+            }
+
+            // Close applicant modal function
+            function closeApplicantModal() {
+                applicantModal.classList.remove('active');
+            }
+
+            // Send emails function
             async function sendEmailsToApplicants(emails) {
                 showLoading();
-                console.log('Starting to send emails to:', emails);
+                let successCount = 0;
+                let failCount = 0;
+                
                 for (let email of emails) {
-                    console.log('Attempting to send email to:', email);
                     try {
                         const response = await emailjs.send(
                             "service_opd6z0r",
@@ -902,31 +1688,45 @@
                                 to_name: "Applicant"
                             }
                         );
-                        console.log('Email.js response:', response);
-                        showNotification(`Email sent successfully to ${email}`, 'success');
+                        
+                        successCount++;
                     } catch (error) {
                         console.error('Error sending email:', error);
-                        console.error('Error details:', JSON.stringify(error, null, 2));
-                        showNotification(`Failed to send email to ${email}`, 'error');
+                        failCount++;
                     }
+                    
+                    // Add a small delay between emails
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }
-                console.log('Finished sending emails');
+                
                 hideLoading();
+                
+                if (successCount > 0) {
+                    showNotification(`Successfully sent ${successCount} email(s)`, 'success');
+                }
+                
+                if (failCount > 0) {
+                    showNotification(`Failed to send ${failCount} email(s)`, 'error');
+                }
             }
 
+            // Update applicant status function
             function updateApplicantStatus(applicantIds, status) {
                 showLoading();
                 const updates = {};
+                
                 applicantIds.forEach(id => {
                     updates[`applications/${id}/status`] = status;
                     updates[`applications/${id}/reviewed`] = true;
+                    updates[`applications/${id}/reviewedAt`] = Date.now();
                 });
+                
                 firebase.database().ref().update(updates)
                     .then(() => {
                         hideLoading();
                         showNotification(`Successfully updated ${applicantIds.length} applicant(s) to ${status}`, 'success');
                         fetchAndDisplayApplicants();
+                        closeApplicantModal();
                     })
                     .catch(error => {
                         hideLoading();
@@ -935,60 +1735,63 @@
                     });
             }
 
+            // Toggle FAB menu function
+            function toggleFabMenu() {
+                isFabMenuOpen = !isFabMenuOpen;
+                
+                if (isFabMenuOpen) {
+                    fabMenu.classList.add('active');
+                    mainActionBtn.innerHTML = '<i class="fas fa-times"></i>';
+                } else {
+                    fabMenu.classList.remove('active');
+                    mainActionBtn.innerHTML = '<i class="fas fa-plus"></i>';
+                }
+            }
+
+            // Event Listeners
             sendEmailsBtn.addEventListener('click', () => {
                 const selectedApplicants = document.querySelectorAll('.applicant-select:checked');
                 const emails = Array.from(selectedApplicants).map(checkbox => checkbox.dataset.email);
                 
                 if(emails.length === 0) {
-                    showNotification('Please select at least one applicant.', 'error');
+                    showNotification('Please select at least one applicant', 'warning');
                     return;
                 }
-
+                
                 sendEmailsToApplicants(emails);
+                toggleFabMenu();
             });
 
             approveSelectedBtn.addEventListener('click', () => {
                 const selectedApplicants = document.querySelectorAll('.applicant-select:checked');
-                const applicantIds = Array.from(selectedApplicants).map(checkbox => checkbox.id);
+                const applicantIds = Array.from(selectedApplicants).map(checkbox => checkbox.id.replace('check-', ''));
                 
                 if(applicantIds.length === 0) {
-                    showNotification('Please select at least one applicant.', 'error');
+                    showNotification('Please select at least one applicant', 'warning');
                     return;
                 }
-
+                
                 updateApplicantStatus(applicantIds, 'approved');
+                toggleFabMenu();
             });
 
             rejectSelectedBtn.addEventListener('click', () => {
                 const selectedApplicants = document.querySelectorAll('.applicant-select:checked');
-                const applicantIds = Array.from(selectedApplicants).map(checkbox => checkbox.id);
+                const applicantIds = Array.from(selectedApplicants).map(checkbox => checkbox.id.replace('check-', ''));
                 
                 if(applicantIds.length === 0) {
-                    showNotification('Please select at least one applicant.', 'error');
+                    showNotification('Please select at least one applicant', 'warning');
                     return;
                 }
-
+                
                 updateApplicantStatus(applicantIds, 'rejected');
-            });
-
-            firebase.auth().onAuthStateChanged((user) => {
-                console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
-                if (user) {
-                    loginStatus.textContent = `Logged in as: ${getAdminName(user.email)}`;
-                    checkAdminStatus(user);
-                } else {
-                    loginStatus.textContent = 'Not logged in';
-                    applicantList.style.display = 'none';
-                    sendEmailsBtn.style.display = 'none';
-                    approveSelectedBtn.style.display = 'none';
-                    rejectSelectedBtn.style.display = 'none';
-                    signIn();
-                }
+                toggleFabMenu();
             });
 
             darkModeToggle.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
                 const icon = darkModeToggle.querySelector('i');
+                
                 if (document.body.classList.contains('dark-mode')) {
                     icon.classList.remove('fa-moon');
                     icon.classList.add('fa-sun');
@@ -1000,7 +1803,7 @@
 
             searchApplicants.addEventListener('input', () => {
                 currentPage = 1;
-                fetchAndDisplayApplicants();
+                renderApplicants();
             });
 
             filterBtns.forEach(btn => {
@@ -1009,23 +1812,47 @@
                     btn.classList.add('active');
                     currentFilter = btn.dataset.filter;
                     currentPage = 1;
-                    fetchAndDisplayApplicants();
+                    renderApplicants();
                 });
             });
 
             prevPageBtn.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
-                    fetchAndDisplayApplicants();
+                    renderApplicants();
                 }
             });
 
             nextPageBtn.addEventListener('click', () => {
                 currentPage++;
-                fetchAndDisplayApplicants();
+                renderApplicants();
             });
 
-            signIn();
+            mainActionBtn.addEventListener('click', toggleFabMenu);
+
+            modalClose.addEventListener('click', closeApplicantModal);
+            modalCloseX.addEventListener('click', closeApplicantModal);
+
+            modalApprove.addEventListener('click', () => {
+                const id = modalApprove.getAttribute('data-id');
+                updateApplicantStatus([id], 'approved');
+            });
+
+            // Auth state change listener
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    const userName = getAdminName(user.email);
+                    document.querySelector('.user-name').textContent = userName;
+                    checkAdminStatus(user);
+                } else {
+                    signIn();
+                }
+            });
+
+            // Initialize
+            if (!firebase.auth().currentUser) {
+                signIn();
+            }
         });
     </script>
 </body>
