@@ -15,6 +15,7 @@
             --white: #ffffff;
             --text-dark: #2D2D2D;
             --gray: #F4F4F4;
+            --dark-gray: #E0E0E0;
             --transition: all 0.3s ease;
         }
 
@@ -29,6 +30,7 @@
             background-color: var(--white);
             color: var(--text-dark);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
@@ -37,6 +39,7 @@
             padding: 0 2rem;
         }
 
+        /* Header Styles */
         header {
             background: var(--primary-orange);
             padding: 1rem 0;
@@ -91,6 +94,11 @@
             opacity: 0.8;
         }
 
+        .nav-container {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -119,6 +127,20 @@
             width: 100%;
         }
 
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
         main {
             padding-top: 80px;
         }
@@ -172,36 +194,101 @@
             line-height: 1.6;
         }
 
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-orange);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-orange);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-orange);
+            border: 1px solid var(--primary-orange);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-orange);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.1);
+        }
+
         .hero-image {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .hero-image img {
             max-width: 100%;
             height: auto;
             border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             transition: var(--transition);
+            z-index: 1;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-orange);
+            border-radius: 10px;
+            transform: rotate(-3deg);
+            z-index: 0;
+            opacity: 0.3;
         }
 
         .hero-image img:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
+        }
+
+        /* Search Box */
+        .search-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: -2rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
         }
 
         .search-box {
             display: flex;
             gap: 1rem;
-            margin-bottom: 4rem;
             position: relative;
         }
 
         .search-input {
             flex: 1;
             padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid var(--primary-orange);
+            border: 2px solid var(--gray);
             border-radius: 50px;
             font-size: 1rem;
             transition: var(--transition);
@@ -209,7 +296,8 @@
 
         .search-input:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
         }
 
         .search-icon {
@@ -237,6 +325,79 @@
             box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
         }
 
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .search-suggestions.active {
+            max-height: 300px;
+            padding: 1rem;
+        }
+
+        .suggestion-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .suggestion-item:hover {
+            background: var(--light-orange);
+        }
+
+        .search-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .search-tag {
+            background: var(--gray);
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-tag:hover {
+            background: var(--primary-orange);
+            color: var(--white);
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-orange);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* FAQ Section */
         .faq-section {
             padding: 4rem 0;
         }
@@ -244,8 +405,72 @@
         .section-title {
             font-size: 2.5rem;
             color: var(--primary-orange);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+        }
+
+        .faq-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .faq-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--gray);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .faq-tab.active {
+            background: var(--primary-orange);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .faq-tab:hover:not(.active) {
+            background: var(--dark-gray);
+            transform: translateY(-2px);
+        }
+
+        .faq-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .faq-layout {
+                grid-template-columns: 3fr 1fr;
+            }
+        }
+
+        .faq-content {
+            display: none;
+        }
+
+        .faq-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .faq-grid {
@@ -259,13 +484,15 @@
             border-radius: 10px;
             padding: 1.5rem;
             transition: var(--transition);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             cursor: pointer;
+            border: 1px solid var(--gray);
         }
 
         .faq-item:hover {
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             transform: translateY(-5px);
+            border-color: var(--primary-orange);
         }
 
         .faq-question {
@@ -291,44 +518,567 @@
             max-height: 0;
             overflow: hidden;
             transition: var(--transition);
+            opacity: 0;
         }
 
         .faq-item.active .faq-answer {
             max-height: 1000px;
             margin-top: 1rem;
+            opacity: 1;
         }
 
-        .faq-categories {
+        .faq-actions {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray);
+            opacity: 0;
+            transition: var(--transition);
         }
 
-        .category-btn {
-            background: var(--gray);
-            color: var(--text-dark);
+        .faq-item.active .faq-actions {
+            opacity: 1;
+        }
+
+        .faq-action-btn {
+            background: transparent;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .faq-action-btn:hover {
+            color: var(--primary-orange);
+        }
+
+        /* Related Articles */
+        .related-articles {
+            margin-top: 4rem;
+            background: var(--light-orange);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .related-articles h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .related-articles h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-orange);
+        }
+
+        .article-list {
+            list-style: none;
+        }
+
+        .article-item {
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .article-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .article-item a {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .article-item a:hover {
+            color: var(--primary-orange);
+        }
+
+        .article-icon {
+            color: var(--primary-orange);
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+
+        .article-content {
+            flex: 1;
+        }
+
+        .article-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .article-meta {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+
+        /* Feedback Form */
+        .feedback-form {
+            margin-top: 4rem;
+            background: var(--gray);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .feedback-form h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .feedback-form h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-orange);
+        }
+
+        .feedback-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-option {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .feedback-option:hover {
+            background: var(--light-orange);
+        }
+
+        .feedback-option.selected {
+            border-color: var(--primary-orange);
+            background: var(--light-orange);
+        }
+
+        .feedback-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-orange);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--dark-gray);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        .submit-btn {
+            background: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
         }
 
-        .category-btn:hover, .category-btn.active {
-            background: var(--primary-orange);
-            color: var(--white);
+        .submit-btn:hover {
+            background: var(--secondary-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
         }
 
-        .faq-cta {
+        /* Latest News */
+        .latest-news {
+            margin-top: 4rem;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray);
+        }
+
+        .latest-news h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .latest-news h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-orange);
+        }
+
+        .news-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .news-item h4 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        .news-item:hover h4 {
+            color: var(--primary-orange);
+        }
+
+        .news-item p {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .news-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .news-btn {
+            font-size: 0.9rem;
+            color: var(--primary-orange);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .news-btn:hover {
+            color: var(--secondary-orange);
+        }
+
+        /* Newsletter Form */
+        .newsletter-form {
+            margin-top: 4rem;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            color: var(--white);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .newsletter-form h3 {
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .newsletter-form p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .newsletter-input-group {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            gap: 0.5rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+        }
+
+        .newsletter-btn {
+            background: var(--white);
+            color: var(--primary-orange);
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            background: var(--light-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Campus Resources */
+        .campus-resources {
+            margin-top: 4rem;
+            background: var(--gray);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .campus-resources h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .campus-resources h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--primary-orange);
+        }
+
+        .resource-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .resource-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray);
+        }
+
+        .resource-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-orange);
+        }
+
+        .resource-icon {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .resource-item:hover .resource-icon {
+            transform: scale(1.1);
+        }
+
+        .resource-item h4 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .resource-item p {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+        }
+
+        /* Sidebar */
+        .faq-sidebar {
+            position: sticky;
+            top: 100px;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray);
+        }
+
+        .sidebar-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .sidebar-section h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary-orange);
+        }
+
+        .sidebar-list {
+            list-style: none;
+        }
+
+        .sidebar-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-list a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-list a:hover {
+            color: var(--primary-orange);
+            padding-left: 5px;
+        }
+
+        .sidebar-list a i {
+            color: var(--primary-orange);
+            font-size: 0.8rem;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: var(--light-orange);
+            color: var(--text-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .tag:hover {
             background: var(--primary-orange);
             color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .faq-stats {
+            background: var(--light-orange);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            color: var(--primary-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        /* CTA Section */
+        .faq-cta {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
             text-align: center;
-            padding: 4rem 0;
+            padding: 4rem 2rem;
             margin-top: 4rem;
             border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.2);
         }
 
         .faq-cta h2 {
@@ -339,6 +1089,10 @@
         .faq-cta p {
             font-size: 1.1rem;
             margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
         }
 
         .cta-btn {
@@ -358,10 +1112,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
+        /* Footer */
         footer {
             background: var(--primary-orange);
             color: var(--white);
-            padding: 4rem 0;
+            padding: 4rem 0 2rem;
             margin-top: 4rem;
         }
 
@@ -401,11 +1156,18 @@
             text-decoration: none;
             opacity: 0.8;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .footer-links a:hover {
             opacity: 1;
             padding-left: 5px;
+        }
+
+        .footer-links a i {
+            font-size: 0.8rem;
         }
 
         .social-icons {
@@ -418,13 +1180,24 @@
             color: var(--white);
             font-size: 1.5rem;
             transition: var(--transition);
+            opacity: 0.8;
         }
 
         .social-icons a:hover {
-            opacity: 0.8;
+            opacity: 1;
             transform: translateY(-3px);
         }
 
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Back to Top Button */
         .back-to-top {
             position: fixed;
             bottom: 20px;
@@ -442,6 +1215,7 @@
             transition: var(--transition);
             opacity: 0;
             visibility: hidden;
+            z-index: 999;
         }
 
         .back-to-top.visible {
@@ -452,323 +1226,10 @@
         .back-to-top:hover {
             background: var(--secondary-orange);
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-        }
-
-        .breadcrumb a {
-            color: var(--primary-orange);
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .faq-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .faq-tab {
-            padding: 0.5rem 1rem;
-            background: var(--gray);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .faq-tab.active {
-            background: var(--primary-orange);
-            color: var(--white);
-        }
-
-        .faq-content {
-            display: none;
-        }
-
-        .faq-content.active {
-            display: block;
-        }
-
-        .related-articles {
-            margin-top: 4rem;
-            background: var(--light-orange);
-            padding: 2rem;
-            border-radius: 10px;
-        }
-
-        .related-articles h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .article-list {
-            list-style: none;
-        }
-
-        .article-list li {
-            margin-bottom: 0.5rem;
-        }
-
-        .article-list a {
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .article-list a:hover {
-            color: var(--primary-orange);
-        }
-
-        .feedback-form {
-            margin-top: 4rem;
-            background: var(--gray);
-            padding: 2rem;
-            border-radius: 10px;
-        }
-
-        .feedback-form h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .submit-btn {
-            background: var(--primary-orange);
-            color: var(--white);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .submit-btn:hover {
-            background: var(--secondary-orange);
-        }
-
-        .faq-sidebar {
-            position: sticky;
-            top: 100px;
-            background: var(--white);
-            padding: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .sidebar-section {
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-section h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .tag-cloud {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .tag {
-            background: var(--light-orange);
-            color: var(--text-dark);
-            padding: 0.25rem 0.5rem;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-
-        .tag:hover {
-            background: var(--primary-orange);
-            color: var(--white);
-        }
-
-        .latest-news {
-            margin-top: 4rem;
-            background: var(--gray);
-            padding: 2rem;
-            border-radius: 10px;
-        }
-
-        .latest-news h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .news-item {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .news-item:last-child {
-            border-bottom: none;
-        }
-
-        .news-item h4 {
-            margin-bottom: 0.5rem;
-        }
-
-        .news-item p {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .newsletter-form {
-            margin-top: 4rem;
-            background: var(--light-orange);
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .newsletter-form h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .newsletter-form input[type="email"] {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .campus-resources {
-            margin-top: 4rem;
-            background: var(--gray);
-            padding: 2rem;
-            border-radius: 10px;
-        }
-
-        .campus-resources h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .resource-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .resource-item {
-            background: var(--white);
-            padding: 1rem;
-            border-radius: 5px;
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .resource-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .resource-item i {
-            font-size: 2rem;
-            color: var(--primary-orange);
-            margin-bottom: 0.5rem;
-        }
-
-        .quick-links {
-            margin-top: 2rem;
-        }
-
-        .quick-links h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .quick-links ul {
-            list-style: none;
-        }
-
-        .quick-links li {
-            margin-bottom: 0.5rem;
-        }
-
-        .quick-links a {
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .quick-links a:hover {
-            color: var(--primary-orange);
-        }
-
-        .faq-stats {
-            background: var(--light-orange);
-            padding: 2rem;
-            border-radius: 10px;
-            margin-top: 2rem;
-        }
-
-        .faq-stats h3 {
-            color: var(--primary-orange);
-            margin-bottom: 1rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-orange);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-        }
-
-        @media (min-width: 768px) {
-            .faq-layout {
-                display: grid;
-                grid-template-columns: 3fr 1fr;
-                gap: 2rem;
-            }
-        }
-
+        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -784,22 +1245,113 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        @media (max-width: 768px) {
+        /* Responsive Styles */
+        @media (max-width: 992px) {
             .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-image::before {
+                transform: rotate(0);
+            }
+
+            .search-container {
+                margin-top: 0;
+            }
+
+            .newsletter-input-group {
                 flex-direction: column;
             }
 
+            .newsletter-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
             .nav-links {
                 display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--primary-orange);
+                z-index: 1001;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: translateX(-100%);
+                transition: var(--transition);
+            }
+
+            .mobile-menu.active {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: transparent;
+                border: none;
+                color: var(--white);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .mobile-menu a {
+                color: var(--white);
+                text-decoration: none;
+                font-size: 1.5rem;
+                margin: 1rem 0;
+                transition: var(--transition);
+            }
+
+            .mobile-menu a:hover {
+                color: var(--light-orange);
             }
 
             .logo-subtitle {
                 display: none;
             }
 
-            .faq-stats {
+            .search-box {
                 flex-direction: column;
-                gap: 2rem;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .feedback-options {
+                flex-direction: column;
+            }
+
+            .newsletter-form {
+                padding: 2rem 1rem;
+            }
+
+            .faq-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -815,14 +1367,30 @@
                         <span class="logo-subtitle">The Official Publication Page of University of Cebu Lapu-Lapu and Mandaue Senior High School</span>
                     </div>
                 </a>
-                <nav class="nav-links">
-                    <a href="#home">Home</a>
-                    <a href="#faq">FAQ</a>
-                    <a href="#contact">Contact</a>
-                </nav>
+                <div class="nav-container">
+                    <nav class="nav-links">
+                        <a href="#home" class="active">Home</a>
+                        <a href="#faq">FAQ</a>
+                        <a href="#resources">Resources</a>
+                        <a href="#contact">Contact</a>
+                    </nav>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" id="mobileMenuClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="#home">Home</a>
+        <a href="#faq">FAQ</a>
+        <a href="#resources">Resources</a>
+        <a href="#contact">Contact</a>
+    </div>
 
     <main>
         <section class="hero" id="home">
@@ -831,6 +1399,10 @@
                     <div class="hero-text">
                         <h1>Frequently Asked Questions</h1>
                         <p>Find answers to common questions about ANG SILAKBO and the University of Cebu Lapu-Lapu and Mandaue Senior High School.</p>
+                        <div class="hero-buttons">
+                            <a href="#faq" class="btn btn-primary">Browse FAQs</a>
+                            <a href="#contact" class="btn btn-secondary">Contact Us</a>
+                        </div>
                     </div>
                     <div class="hero-image">
                         <img src="ohdamns.png" alt="FAQ Illustration">
@@ -840,27 +1412,42 @@
         </section>
 
         <section class="container">
-            <div class="breadcrumb">
-                <a href="#">Home</a>
-                <i class="fas fa-chevron-right"></i>
-                <span>FAQ</span>
-            </div>
+            <div class="search-container fade-in-up">
+                <div class="breadcrumb">
+                    <a href="#">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>FAQ</span>
+                </div>
 
-            <div class="search-box fade-in-up">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search questions...">
-                <button class="search-btn">Search</button>
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search questions...">
+                    <button class="search-btn" id="searchBtn">Search</button>
+                </div>
+
+                <div class="search-suggestions" id="searchSuggestions">
+                    <!-- Search suggestions will be populated by JavaScript -->
+                </div>
+
+                <div class="search-tags">
+                    <span class="search-tag" data-tag="submission">Submission</span>
+                    <span class="search-tag" data-tag="guidelines">Guidelines</span>
+                    <span class="search-tag" data-tag="editorial">Editorial</span>
+                    <span class="search-tag" data-tag="publication">Publication</span>
+                </div>
             </div>
         </section>
 
         <section class="faq-section" id="faq">
             <div class="container">
                 <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Find answers to the most common questions about ANG SILAKBO and our publication process.</p>
                 
                 <div class="faq-tabs fade-in-up">
                     <button class="faq-tab active" data-tab="general">General</button>
                     <button class="faq-tab" data-tab="submissions">Submissions</button>
                     <button class="faq-tab" data-tab="guidelines">Guidelines</button>
+                    <button class="faq-tab" data-tab="editorial">Editorial Process</button>
                 </div>
 
                 <div class="faq-layout">
@@ -875,6 +1462,14 @@
                                     <div class="faq-answer">
                                         Ang Silakbo ay itinatag noong 2021 bilang opisyal na publikasyon ng University of Cebu Lapu-Lapu and Mandaue. Ito ay naglalayong magbigay ng boses sa mga mag-aaral at magsilbing platform para sa kanilang mga ideya at talento.
                                     </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="faq-item" data-category="pangkalahatang">
                                     <div class="faq-question">
@@ -883,6 +1478,48 @@
                                     </div>
                                     <div class="faq-answer">
                                         Ang Silakbo ay inilalathala buwanan sa panahon ng akademikong taon. May mga espesyal na edisyon din kami para sa mahahalagang kaganapan sa unibersidad.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="pangkalahatang">
+                                    <div class="faq-question">
+                                        Sino ang maaaring magbasa ng Ang Silakbo?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Ang Silakbo ay bukas para sa lahat ng mga mag-aaral, guro, at kawani ng University of Cebu Lapu-Lapu and Mandaue. Ito ay libre at madaling ma-access sa pamamagitan ng aming website at mga social media channels.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="pangkalahatang">
+                                    <div class="faq-question">
+                                        Saan ko mahahanap ang mga nakaraang isyu ng Ang Silakbo?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Ang mga nakaraang isyu ng Ang Silakbo ay matatagpuan sa aming archive section sa website. Mayroon din kaming mga kopya sa library ng unibersidad para sa mga gustong magbasa ng printed version.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -897,6 +1534,14 @@
                                     <div class="faq-answer">
                                         Maaari kang magsumite ng mga artikulo, tula, kuwento, larawan, o artwork sa aming email address. Siguraduhing sundin ang mga alituntunin sa pagsusumite na matatagpuan sa aming website.
                                     </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="faq-item" data-category="pagsusumite">
                                     <div class="faq-question">
@@ -905,6 +1550,48 @@
                                     </div>
                                     <div class="faq-answer">
                                         Hindi, ang pagsusumite ng kontribusyon sa Ang Silakbo ay libre. Hinihikayat namin ang lahat ng mga mag-aaral na magbahagi ng kanilang mga ideya at talento nang walang bayad.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="pagsusumite">
+                                    <div class="faq-question">
+                                        Ano ang mga uri ng kontribusyon na tinatanggap ng Ang Silakbo?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Ang Silakbo ay tumatanggap ng iba't ibang uri ng kontribusyon kabilang ang mga balita, feature articles, opinion pieces, tula, maikling kuwento, essays, larawan, at artwork. Bukas kami sa anumang uri ng creative at journalistic content.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="pagsusumite">
+                                    <div class="faq-question">
+                                        Gaano katagal bago ko malaman kung natanggap ang aking kontribusyon?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Karaniwang tumatagal ng 2-3 linggo ang proseso ng pagsusuri ng mga kontribusyon. Makatatanggap ka ng email notification tungkol sa status ng iyong submission sa loob ng panahong ito.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -919,7 +1606,53 @@
                                     <div class="faq-answer">
                                         Ang Silakbo ay sumusunod sa mga pamantayang pang-akademiko sa pagsusulat. Hinihikayat namin ang orihinal at malikhaing pagsusulat, ngunit dapat ding sumunod sa mga alituntunin sa grammar, spelling, at formatting.
                                     </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
                                 </div>
+                                <div class="faq-item" data-category="alituntunin">
+                                    <div class="faq-question">
+                                        May limitasyon ba sa haba ng mga artikulo?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Oo, may mga limitasyon sa haba depende sa uri ng kontribusyon. Ang mga balita ay dapat nasa 500-800 salita, feature articles 800-1200 salita, opinion pieces 600-1000 salita, at tula ay depende sa estilo ngunit karaniwang hindi hihigit sa 2 pahina.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="alituntunin">
+                                    <div class="faq-question">
+                                        Anong format ang dapat gamitin para sa mga submission?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Ang mga text submission ay dapat nasa .docx o .pdf format. Ang mga larawan ay dapat nasa .jpg o .png format na may resolution na hindi bababa sa 300dpi. Ang mga artwork ay maaaring i-submit bilang .jpg, .png, o .pdf.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-content" id="editorial">
+                            <div class="faq-grid fade-in-up">
                                 <div class="faq-item" data-category="pagsali">
                                     <div class="faq-question">
                                         Paano ako makakapagsali sa editorial team ng Ang Silakbo?
@@ -928,6 +1661,48 @@
                                     <div class="faq-answer">
                                         Ang pagsali sa editorial team ay bukas sa lahat ng mga mag-aaral ng UCLM. Mag-apply sa pamamagitan ng pagpasa ng application form at portfolio sa aming website. Ang mga aplikante ay dadaan sa interview at writing test.
                                     </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="editorial">
+                                    <div class="faq-question">
+                                        Ano ang proseso ng pag-edit ng mga artikulo?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Ang mga artikulo ay dumadaan sa maraming antas ng pag-edit. Una, sinusuri ng content editor ang kalidad at accuracy ng content. Pangalawa, sinusuri ng copy editor ang grammar at style. Pangatlo, sinusuri ng fact-checker ang lahat ng impormasyon. Panghuli, sinusuri ng editor-in-chief ang final version bago ilathala.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="faq-item" data-category="editorial">
+                                    <div class="faq-question">
+                                        Maaari bang i-edit ng editorial team ang aking submission?
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Oo, ang editorial team ay may karapatang mag-edit ng mga submission para sa clarity, accuracy, at style. Gayunpaman, kung may malalaking pagbabago, makikipag-ugnayan kami sa iyo para sa approval bago ilathala ang iyong kontribusyon.
+                                    </div>
+                                    <div class="faq-actions">
+                                        <button class="faq-action-btn" data-action="helpful">
+                                            <i class="fas fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="faq-action-btn" data-action="share">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -935,19 +1710,83 @@
                         <div class="related-articles fade-in-up">
                             <h3>Related Articles</h3>
                             <ul class="article-list">
-                                <li><a href="#">How to Submit Your First Article</a></li>
-                                <li><a href="#">Understanding ANG SILAKBO's Editorial Process</a></li>
-                                <li><a href="#">Tips for Effective Academic Writing</a></li>
-                                <li><a href="#">ANG SILAKBO's Impact on Student Journalism</a></li>
+                                <li class="article-item">
+                                    <a href="#">
+                                        <div class="article-icon">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div class="article-content">
+                                            <div class="article-title">How to Submit Your First Article</div>
+                                            <div class="article-meta">Published on February 15, 2025</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="article-item">
+                                    <a href="#">
+                                        <div class="article-icon">
+                                            <i class="fas fa-edit"></i>
+                                        </div>
+                                        <div class="article-content">
+                                            <div class="article-title">Understanding ANG SILAKBO's Editorial Process</div>
+                                            <div class="article-meta">Published on January 22, 2025</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="article-item">
+                                    <a href="#">
+                                        <div class="article-icon">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                        <div class="article-content">
+                                            <div class="article-title">Tips for Effective Academic Writing</div>
+                                            <div class="article-meta">Published on December 3, 2024</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="article-item">
+                                    <a href="#">
+                                        <div class="article-icon">
+                                            <i class="fas fa-newspaper"></i>
+                                        </div>
+                                        <div class="article-content">
+                                            <div class="article-title">ANG SILAKBO's Impact on Student Journalism</div>
+                                            <div class="article-meta">Published on August 22, 2024</div>
+                                        </div>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
                         <div class="feedback-form fade-in-up">
                             <h3>Was this FAQ helpful?</h3>
-                            <form>
+                            <div class="feedback-options">
+                                <div class="feedback-option" data-value="very-helpful">
+                                    <div class="feedback-icon">
+                                        <i class="fas fa-smile"></i>
+                                    </div>
+                                    <div>Very Helpful</div>
+                                </div>
+                                <div class="feedback-option" data-value="somewhat-helpful">
+                                    <div class="feedback-icon">
+                                        <i class="fas fa-meh"></i>
+                                    </div>
+                                    <div>Somewhat Helpful</div>
+                                </div>
+                                <div class="feedback-option" data-value="not-helpful">
+                                    <div class="feedback-icon">
+                                        <i class="fas fa-frown"></i>
+                                    </div>
+                                    <div>Not Helpful</div>
+                                </div>
+                            </div>
+                            <form id="feedbackForm">
                                 <div class="form-group">
                                     <label for="feedback">Your feedback:</label>
                                     <textarea id="feedback" rows="4" placeholder="Let us know how we can improve..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email (optional):</label>
+                                    <input type="email" id="email" placeholder="Your email for follow-up">
                                 </div>
                                 <button type="submit" class="submit-btn">Submit Feedback</button>
                             </form>
@@ -957,46 +1796,78 @@
                             <h3>Publication Infos</h3>
                             <div class="news-item">
                                 <h4>Students explore business potential at entrepreneurship forum by FYI</h4>
-                                <p>On February 8, 2024, the Annex 2 Social Hall at the University of Cebu - Lapu-lapu and Mandaue (UCLM) buzzed with energy as senior high school students from various strands gathered for the highly anticipated Entrepreneurship Forum, organized by the Federation of Young Innovators (FYI) from the ABM strand, featuring expert speakers from the Department of Trade and Industry (DTI), Ms. Noriel Gay Bustillo and Mr. Daniel John Gamuza.</p>
+                                <p>On February 8, 2024, the Annex 2 Social Hall at the University of Cebu - Lapu-lapu and Mandaue (UCLM) buzzed with energy as senior high school students from various strands gathered for the highly anticipated Entrepreneurship Forum.</p>
+                                <div class="news-meta">
+                                    <span><i class="far fa-calendar-alt"></i> Feb 10, 2025</span>
+                                    <span><i class="far fa-eye"></i> 245 views</span>
+                                </div>
+                                <div class="news-actions">
+                                    <a href="#" class="news-btn">Read More <i class="fas fa-arrow-right"></i></a>
+                                </div>
                             </div>
                             <div class="news-item">
                                 <h4>Call for Submissions: Special Edition on Climate Change</h4>
-                                <p>We're accepting articles, poems, and artwork related to environmental issues.</p>
+                                <p>We're accepting articles, poems, and artwork related to environmental issues for our upcoming special edition focused on climate change and sustainability.</p>
+                                <div class="news-meta">
+                                    <span><i class="far fa-calendar-alt"></i> Mar 5, 2025</span>
+                                    <span><i class="far fa-eye"></i> 189 views</span>
+                                </div>
+                                <div class="news-actions">
+                                    <a href="#" class="news-btn">Read More <i class="fas fa-arrow-right"></i></a>
+                                </div>
                             </div>
                             <div class="news-item">
-                                <h4>University of Cebu Pioneers AI-Centered Education, Expands Scholarships, and Builds Cutting-Edge Sports Complex.</h4>
-                                <p>On February 8, 2025, UC Chairman Atty. Augusto W. Go announced at a press briefing at Treewoods Residences that the University of Cebu (UC) is making bold strides in education and student development with the launch of an AI-focused Computer Science program, an expanded scholarship program, and the construction of a new sports complex.</p>
+                                <h4>University of Cebu Pioneers AI-Centered Education</h4>
+                                <p>UC Chairman Atty. Augusto W. Go announced at a press briefing that the University of Cebu is making bold strides in education with the launch of an AI-focused Computer Science program.</p>
+                                <div class="news-meta">
+                                    <span><i class="far fa-calendar-alt"></i> Feb 22, 2025</span>
+                                    <span><i class="far fa-eye"></i> 312 views</span>
+                                </div>
+                                <div class="news-actions">
+                                    <a href="#" class="news-btn">Read More <i class="fas fa-arrow-right"></i></a>
+                                </div>
                             </div>
                         </div>
 
                         <div class="newsletter-form fade-in-up">
                             <h3>Subscribe to Our Newsletter</h3>
-                            <form>
-                                <input type="email" placeholder="Enter your email address" required>
-                                <button type="submit" class="submit-btn">Subscribe</button>
+                            <p>Stay updated with the latest news, articles, and events from ANG SILAKBO.</p>
+                            <form id="newsletterForm">
+                                <div class="newsletter-input-group">
+                                    <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                                </div>
                             </form>
                         </div>
 
-                        <div class="campus-resources fade-in-up">
+                        <div class="campus-resources fade-in-up" id="resources">
                             <h3>Campus Resources</h3>
                             <div class="resource-list">
                                 <div class="resource-item">
-                                    <i class="fas fa-book"></i>
+                                    <div class="resource-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
                                     <h4>Library</h4>
                                     <p>Access our extensive collection of books and digital resources.</p>
                                 </div>
                                 <div class="resource-item">
-                                    <i class="fas fa-laptop"></i>
+                                    <div class="resource-icon">
+                                        <i class="fas fa-laptop"></i>
+                                    </div>
                                     <h4>Computer Labs</h4>
                                     <p>State-of-the-art facilities for your computing needs.</p>
                                 </div>
                                 <div class="resource-item">
-                                    <i class="fas fa-users"></i>
+                                    <div class="resource-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
                                     <h4>Writing Center</h4>
                                     <p>Get help with your essays and research papers.</p>
                                 </div>
                                 <div class="resource-item">
-                                    <i class="fas fa-microscope"></i>
+                                    <div class="resource-icon">
+                                        <i class="fas fa-microscope"></i>
+                                    </div>
                                     <h4>Science Labs</h4>
                                     <p>Equipped laboratories for hands-on learning experiences.</p>
                                 </div>
@@ -1007,11 +1878,12 @@
                     <aside class="faq-sidebar fade-in-up">
                         <div class="sidebar-section">
                             <h3>Popular Topics</h3>
-                            <ul class="article-list">
-                                <li><a href="Guidelines.html">Guidelines</a></li>
-                                <li><a href="#">Editorial Process</a></li>
-                                <li><a href="#">Publication Schedule</a></li>
-                                <li><a href="#">Copyright Policy</a></li>
+                            <ul class="sidebar-list">
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Submission Guidelines</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Editorial Process</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Publication Schedule</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Copyright Policy</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Writing Tips</a></li>
                             </ul>
                         </div>
                         <div class="sidebar-section">
@@ -1023,15 +1895,18 @@
                                 <span class="tag">Publication</span>
                                 <span class="tag">Guidelines</span>
                                 <span class="tag">Deadlines</span>
+                                <span class="tag">Format</span>
+                                <span class="tag">Content</span>
                             </div>
                         </div>
-                        <div class="quick-links">
+                        <div class="sidebar-section">
                             <h3>Quick Links</h3>
-                            <ul>
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms of Service</a></li>
+                            <ul class="sidebar-list">
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right"></i> Sitemap</a></li>
                             </ul>
                         </div>
                         <div class="faq-stats">
@@ -1039,7 +1914,7 @@
                             <div class="stats-grid">
                                 <div class="stat-item">
                                     <div class="stat-number">Informative Questions</div>
-                                    <div class="stat-label">Ang seksyong "Mga Madalas Itanong" (FAQ) ng Ang Silakbo, ang opisyal na publikasyon ng mga mag-aaral ng University of Cebu Lapu-Lapu and Mandaue (UCLM) Senior High School Department, ay nagbibigay ng mabilis na kasagutan sa mga karaniwang katanungan tungkol sa publikasyon. Ito ay nagpapadali sa pag-access ng impormasyon para sa mga mambabasa at nagpapakita ng dedikasyon ng publikasyon sa pagbibigay ng de-kalidad na serbisyo.</div>
+                                    <div class="stat-label">Ang seksyong "Mga Madalas Itanong" (FAQ) ng Ang Silakbo, ang opisyal na publikasyon ng mga mag-aaral ng University of Cebu Lapu-Lapu and Mandaue (UCLM) Senior High School Department, ay nagbibigay ng mabilis na kasagutan sa mga karaniwang katanungan tungkol sa publikasyon.</div>
                                 </div>
                             </div>
                         </div>
@@ -1051,8 +1926,11 @@
         <section class="faq-cta fade-in-up">
             <div class="container">
                 <h2>Still have questions?</h2>
-                <p>We're here to help. Contact our support team for personalized assistance.</p>
-                <a href="#contact" class="cta-btn">Contact Us</a>
+                <p>We're here to help. Contact our support team for personalized assistance or submit your question directly.</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="cta-btn">Contact Us</a>
+                    <a href="#" class="btn btn-secondary" id="askQuestionBtn">Ask a Question</a>
+                </div>
             </div>
         </section>
     </main>
@@ -1063,35 +1941,79 @@
                 <div class="footer-section">
                     <h3>ANG SILAKBO</h3>
                     <p>Ang Silakbo ay ang opisyal na publikasyon ng University of Cebu Lapu-Lapu and Mandaue, nakatuon sa pagbibigay-impormasyon at pag-engage sa aming komunidad ng unibersidad.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#faq">FAQ</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact Us</h3>
-                    <p>angsilakbo@uclm.com</p>
-                    <p>(032) 123-4567</p>
-                    <p>University of Cebu Lapu-Lapu and Mandaue</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Follow Us!</h3>
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#faq"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+                        <li><a href="#resources"><i class="fas fa-chevron-right"></i> Resources</a></li>
+                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> angsilakbo@uclm.com</p>
+                    <p><i class="fas fa-phone"></i> (032) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> University of Cebu Lapu-Lapu and Mandaue</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Publication Hours</h3>
+                    <p><i class="far fa-clock"></i> Monday - Friday: 9:00 AM - 5:00 PM</p>
+                    <p><i class="far fa-clock"></i> Saturday: 9:00 AM - 12:00 PM</p>
+                    <p><i class="far fa-clock"></i> Sunday: Closed</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ANG SILAKBO. All Rights Reserved. The Official Publication of University of Cebu Lapu-Lapu and Mandaue Senior High School.</p>
             </div>
         </div>
     </footer>
 
     <div class="back-to-top" id="backToTop">
         <i class="fas fa-chevron-up"></i>
+    </div>
+
+    <!-- Ask Question Modal (Hidden by default) -->
+    <div id="questionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1100; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 2rem; border-radius: 10px; width: 90%; max-width: 500px; position: relative;">
+            <button id="closeModal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 style="color: var(--primary-orange); margin-bottom: 1.5rem;">Ask Your Question</h3>
+            <form id="questionForm">
+                <div class="form-group">
+                    <label for="questionName">Your Name:</label>
+                    <input type="text" id="questionName" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionEmail">Your Email:</label>
+                    <input type="email" id="questionEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionCategory">Category:</label>
+                    <select id="questionCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="general">General</option>
+                        <option value="submissions">Submissions</option>
+                        <option value="guidelines">Guidelines</option>
+                        <option value="editorial">Editorial Process</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionText">Your Question:</label>
+                    <textarea id="questionText" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Question</button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -1108,33 +2030,185 @@
             }
         });
 
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
         // FAQ item toggle
         const faqItems = document.querySelectorAll('.faq-item');
         faqItems.forEach(item => {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', (e) => {
+                // Don't toggle if clicking on action buttons
+                if (e.target.closest('.faq-actions')) {
+                    return;
+                }
+                
+                // Close other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
                 item.classList.toggle('active');
             });
         });
 
+        // FAQ action buttons
+        const actionButtons = document.querySelectorAll('.faq-action-btn');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const action = button.getAttribute('data-action');
+                
+                if (action === 'helpful') {
+                    button.innerHTML = '<i class="fas fa-check"></i> Marked as helpful';
+                    button.style.color = 'var(--primary-orange)';
+                } else if (action === 'share') {
+                    // Simple share functionality
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'ANG SILAKBO FAQ',
+                            text: 'Check out this helpful FAQ from ANG SILAKBO',
+                            url: window.location.href
+                        });
+                    } else {
+                        alert('Share functionality not supported by your browser');
+                    }
+                }
+            });
+        });
+
         // Search functionality
-        const searchInput = document.querySelector('.search-input');
-        const searchBtn = document.querySelector('.search-btn');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+
+        // Sample search suggestions data
+        const suggestionData = [
+            'How to submit an article?',
+            'What is the publication schedule?',
+            'How to join the editorial team?',
+            'What are the submission guidelines?',
+            'Is there a word limit for articles?'
+        ];
+
+        searchInput.addEventListener('focus', () => {
+            searchSuggestions.classList.add('active');
+            populateSuggestions(suggestionData);
+        });
+
+        searchInput.addEventListener('blur', (e) => {
+            // Delay hiding to allow for clicks on suggestions
+            setTimeout(() => {
+                searchSuggestions.classList.remove('active');
+            }, 200);
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value.toLowerCase();
+            if (value.length > 0) {
+                const filteredSuggestions = suggestionData.filter(
+                    suggestion => suggestion.toLowerCase().includes(value)
+                );
+                populateSuggestions(filteredSuggestions);
+            } else {
+                populateSuggestions(suggestionData);
+            }
+        });
+
+        function populateSuggestions(suggestions) {
+            searchSuggestions.innerHTML = '';
+            suggestions.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.textContent = suggestion;
+                item.addEventListener('click', () => {
+                    searchInput.value = suggestion;
+                    searchSuggestions.classList.remove('active');
+                    performSearch(suggestion);
+                });
+                searchSuggestions.appendChild(item);
+            });
+        }
 
         searchBtn.addEventListener('click', () => {
             const searchTerm = searchInput.value.trim().toLowerCase();
             if (searchTerm) {
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question').textContent.toLowerCase();
-                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
-                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            } else {
-                faqItems.forEach(item => item.style.display = 'block');
+                performSearch(searchTerm);
             }
+        });
+
+        function performSearch(searchTerm) {
+            // Reset all items to visible
+            faqItems.forEach(item => {
+                item.style.display = 'block';
+                item.classList.remove('active');
+            });
+
+            // Filter items based on search term
+            let foundItems = 0;
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    item.classList.add('active'); // Expand matching items
+                    foundItems++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show message if no results found
+            const noResultsMsg = document.getElementById('noResultsMsg');
+            if (foundItems === 0) {
+                if (!noResultsMsg) {
+                    const msg = document.createElement('div');
+                    msg.id = 'noResultsMsg';
+                    msg.className = 'fade-in-up';
+                    msg.style.textAlign = 'center';
+                    msg.style.padding = '2rem';
+                    msg.style.marginTop = '2rem';
+                    msg.innerHTML = `
+                        <i class="fas fa-search" style="font-size: 3rem; color: var(--primary-orange); margin-bottom: 1rem;"></i>
+                        <h3>No results found</h3>
+                        <p>We couldn't find any FAQs matching "${searchTerm}"</p>
+                        <button class="btn btn-primary" style="margin-top: 1rem;" id="askNewQuestion">Ask this question</button>
+                    `;
+                    document.querySelector('.faq-main-content').appendChild(msg);
+                    
+                    document.getElementById('askNewQuestion').addEventListener('click', () => {
+                        openQuestionModal(searchTerm);
+                    });
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+
+            // Scroll to results
+            document.getElementById('faq').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Search tags functionality
+        const searchTags = document.querySelectorAll('.search-tag');
+        searchTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                const tagValue = tag.getAttribute('data-tag');
+                searchInput.value = tagValue;
+                performSearch(tagValue);
+            });
         });
 
         // FAQ Tabs functionality
@@ -1151,6 +2225,114 @@
                 tab.classList.add('active');
                 document.getElementById(tabId).classList.add('active');
             });
+        });
+
+        // Feedback form options
+        const feedbackOptions = document.querySelectorAll('.feedback-option');
+        feedbackOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                feedbackOptions.forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Form submissions
+        const feedbackForm = document.getElementById('feedbackForm');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const selectedOption = document.querySelector('.feedback-option.selected');
+                const feedbackValue = selectedOption ? selectedOption.getAttribute('data-value') : null;
+                const feedbackText = document.getElementById('feedback').value;
+                const email = document.getElementById('email').value;
+                
+                // Here you would normally send this data to your server
+                console.log('Feedback submitted:', { feedbackValue, feedbackText, email });
+                
+                // Show success message
+                feedbackForm.innerHTML = `
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--primary-orange); margin-bottom: 1rem;"></i>
+                        <h3>Thank you for your feedback!</h3>
+                        <p>We appreciate your input and will use it to improve our FAQ section.</p>
+                    </div>
+                `;
+            });
+        }
+
+        const newsletterForm = document.getElementById('newsletterForm');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = newsletterForm.querySelector('input[type="email"]').value;
+                
+                // Here you would normally send this data to your server
+                console.log('Newsletter subscription:', email);
+                
+                // Show success message
+                newsletterForm.innerHTML = `
+                    <div style="text-align: center; padding: 1rem 0;">
+                        <i class="fas fa-envelope-open-text" style="font-size: 2rem; color: var(--white); margin-bottom: 1rem;"></i>
+                        <h3>Thank you for subscribing!</h3>
+                        <p>You've been added to our newsletter list.</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Ask Question Modal
+        const askQuestionBtn = document.getElementById('askQuestionBtn');
+        const questionModal = document.getElementById('questionModal');
+        const closeModal = document.getElementById('closeModal');
+        const questionForm = document.getElementById('questionForm');
+
+        function openQuestionModal(question = '') {
+            questionModal.style.display = 'flex';
+            if (question) {
+                document.getElementById('questionText').value = question;
+            }
+        }
+
+        askQuestionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openQuestionModal();
+        });
+
+        closeModal.addEventListener('click', () => {
+            questionModal.style.display = 'none';
+        });
+
+        questionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('questionName').value;
+            const email = document.getElementById('questionEmail').value;
+            const category = document.getElementById('questionCategory').value;
+            const question = document.getElementById('questionText').value;
+            
+            // Here you would normally send this data to your server
+            console.log('Question submitted:', { name, email, category, question });
+            
+            // Show success message
+            const modalContent = questionModal.querySelector('div');
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 2rem 0;">
+                    <i class="fas fa-paper-plane" style="font-size: 3rem; color: var(--primary-orange); margin-bottom: 1rem;"></i>
+                    <h3>Question Submitted!</h3>
+                    <p>Thank you for your question. We'll respond to you as soon as possible.</p>
+                    <button id="closeSuccessModal" class="btn btn-primary" style="margin-top: 1rem;">Close</button>
+                </div>
+            `;
+            
+            document.getElementById('closeSuccessModal').addEventListener('click', () => {
+                questionModal.style.display = 'none';
+            });
+        });
+
+        // Close modal when clicking outside
+        questionModal.addEventListener('click', (e) => {
+            if (e.target === questionModal) {
+                questionModal.style.display = 'none';
+            }
         });
 
         // Smooth scrolling for anchor links
@@ -1191,6 +2373,32 @@
         document.querySelectorAll('.fade-in-up').forEach(el => {
             observer.observe(el);
         });
+
+        // Set active nav link based on scroll position
+        function setActiveNavLink() {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('scroll', setActiveNavLink);
+        
+        // Initialize the page
+        setActiveNavLink();
     </script>
 </body>
 </html>
