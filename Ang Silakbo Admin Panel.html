@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Admin Panel</title>
+    <title>Ang Silakbo - Admin Dashboard</title>
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,7 +14,7 @@
             --primary-dark: #E85D2E;
             --secondary-color: #FFB563;
             --accent-color: #FFA500;
-            --background-color: #F4F6F8;
+            --background-color: #F8F9FC;
             --card-background: #FFFFFF;
             --text-color: #2D3748;
             --text-light: #718096;
@@ -22,8 +22,12 @@
             --shadow-color: rgba(0, 0, 0, 0.1);
             --sidebar-width: 280px;
             --header-height: 70px;
-            --border-radius: 8px;
+            --border-radius: 12px;
             --transition-speed: 0.3s;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --info-color: #3B82F6;
         }
 
         * {
@@ -38,6 +42,7 @@
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
+            overflow-x: hidden;
         }
 
         .container {
@@ -45,14 +50,16 @@
             width: 100%;
         }
 
+        /* Sidebar Styles */
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
             height: 100vh;
             position: fixed;
             overflow-y: auto;
             transition: transform var(--transition-speed) ease;
             z-index: 1000;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
         }
 
         .sidebar-header {
@@ -66,6 +73,7 @@
         .sidebar-header img {
             width: 40px;
             height: 40px;
+            border-radius: 8px;
         }
 
         .sidebar-header h2 {
@@ -77,17 +85,20 @@
         .sidebar-btn {
             display: flex;
             align-items: center;
-            padding: 12px 24px;
+            padding: 14px 24px;
             margin: 8px 12px;
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             border-radius: var(--border-radius);
             transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .sidebar-btn i {
             width: 24px;
             margin-right: 12px;
+            font-size: 1.1rem;
         }
 
         .sidebar-btn:hover, .sidebar-btn.active {
@@ -96,6 +107,24 @@
             transform: translateX(4px);
         }
 
+        .sidebar-btn.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 16px 12px;
+        }
+
+        /* Main Content Styles */
         .main-content {
             flex: 1;
             margin-left: var(--sidebar-width);
@@ -103,6 +132,7 @@
             transition: margin-left var(--transition-speed) ease;
         }
 
+        /* Header Styles */
         .header {
             background: var(--card-background);
             padding: 0 24px;
@@ -111,8 +141,11 @@
             align-items: center;
             justify-content: space-between;
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 8px var(--shadow-color);
+            box-shadow: 0 2px 12px var(--shadow-color);
             margin-bottom: 24px;
+            position: sticky;
+            top: 24px;
+            z-index: 900;
         }
 
         .header-content {
@@ -155,12 +188,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 10px 16px;
             border: none;
             border-radius: var(--border-radius);
             background: var(--background-color);
             color: var(--text-color);
             font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
             transition: all var(--transition-speed) ease;
         }
@@ -173,6 +207,8 @@
         .quick-action-btn:hover {
             background: var(--primary-color);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
         }
 
         .quick-action-btn:hover i {
@@ -188,26 +224,42 @@
         .notification-icon {
             position: relative;
             cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .notification-icon:hover {
+            background: var(--background-color);
         }
 
         .notification-count {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -4px;
+            right: -4px;
             background: var(--accent-color);
             color: white;
             border-radius: 50%;
             padding: 2px 6px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             cursor: pointer;
-            padding: 8px;
+            padding: 8px 12px;
             border-radius: var(--border-radius);
             transition: all var(--transition-speed) ease;
         }
@@ -217,10 +269,11 @@
         }
 
         .user-profile img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--primary-light);
         }
 
         .user-name {
@@ -228,9 +281,28 @@
             font-weight: 500;
         }
 
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Dashboard Styles */
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title i {
+            color: var(--primary-color);
+        }
+
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 32px;
         }
@@ -239,10 +311,13 @@
             background: var(--card-background);
             padding: 24px;
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px var(--shadow-color);
+            box-shadow: 0 2px 12px var(--shadow-color);
             position: relative;
             transition: all var(--transition-speed) ease;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .dashboard-card::before {
@@ -250,10 +325,22 @@
             position: absolute;
             left: 0;
             top: 0;
-            height: 100%;
-            width: 4px;
+            height: 4px;
+            width: 100%;
             background: var(--primary-color);
-            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .dashboard-card .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 107, 53, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
         }
 
         .dashboard-card .background-icon {
@@ -261,7 +348,7 @@
             right: -20px;
             bottom: -20px;
             font-size: 120px;
-            opacity: 0.1;
+            opacity: 0.05;
             transform: rotate(-15deg);
             color: var(--primary-color);
             transition: all var(--transition-speed) ease;
@@ -269,12 +356,12 @@
 
         .dashboard-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 4px 8px var(--shadow-color);
+            box-shadow: 0 8px 24px var(--shadow-color);
         }
 
         .dashboard-card:hover .background-icon {
             transform: rotate(0deg) scale(1.1);
-            opacity: 0.15;
+            opacity: 0.08;
         }
 
         .dashboard-card h3 {
@@ -282,45 +369,323 @@
             z-index: 1;
             color: var(--text-light);
             font-size: 1rem;
-            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .dashboard-card p {
             position: relative;
             z-index: 1;
-            color: var(--primary-color);
+            color: var(--text-color);
             font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .dashboard-card .trend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: var(--danger-color);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 12px var(--shadow-color);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
             font-weight: 600;
         }
 
+        .chart-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-btn {
+            background: var(--background-color);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chart-btn:hover, .chart-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Recent Activity Section */
+        .recent-activity {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 12px var(--shadow-color);
+            margin-bottom: 32px;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .activity-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .icon-application {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+        }
+
+        .icon-update {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .icon-inquiry {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .activity-description {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Notification Panel */
         .notification-panel {
             position: absolute;
             top: calc(var(--header-height) + 10px);
             right: 24px;
-            width: 300px;
+            width: 320px;
             background: var(--card-background);
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 12px var(--shadow-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             display: none;
             z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .mark-all-read {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            cursor: pointer;
         }
 
         .notification-list {
             list-style: none;
-            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .notification-item {
-            padding: 12px;
+            padding: 16px;
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
             transition: background-color var(--transition-speed) ease;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
         }
 
         .notification-item:hover {
             background: var(--background-color);
         }
 
+        .notification-item.unread {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .notification-item.unread:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .notification-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin-top: 6px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .notification-empty {
+            padding: 24px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        /* User Menu */
+        .user-menu {
+            position: absolute;
+            top: calc(var(--header-height) + 10px);
+            right: 24px;
+            width: 220px;
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .user-menu-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .user-menu-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-menu-email {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .user-menu-list {
+            list-style: none;
+        }
+
+        .user-menu-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .user-menu-item:hover {
+            background: var(--background-color);
+        }
+
+        .user-menu-item i {
+            width: 20px;
+            color: var(--text-light);
+        }
+
+        .user-menu-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 8px 0;
+        }
+
+        /* Mobile Menu Toggle */
         .menu-toggle {
             display: none;
             background: none;
@@ -328,6 +693,17 @@
             font-size: 1.5rem;
             color: var(--primary-color);
             cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--background-color);
         }
 
         .sidebar-overlay {
@@ -339,6 +715,14 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 1024px) {
@@ -347,7 +731,10 @@
             }
 
             .quick-action-btn {
-                padding: 8px;
+                padding: 10px;
+                width: 40px;
+                height: 40px;
+                justify-content: center;
             }
 
             .quick-action-btn i {
@@ -378,42 +765,14 @@
             }
 
             .header {
-                margin: -16px -16px 16px -16px;
-                padding: 0 16px;
+                margin: 0 0 24px 0;
                 border-radius: 0;
                 position: sticky;
                 top: 0;
-                z-index: 900;
             }
 
-            .header-content {
-                flex-direction: column;
-                gap: 12px;
-                padding: 12px 0;
-            }
-
-            .greeting-section {
-                width: 100%;
-                text-align: center;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .quick-actions {
-                gap: 8px;
-            }
-
-            .quick-action-btn {
-                padding: 8px;
-                min-width: 40px;
-                justify-content: center;
-            }
-
-            .quick-action-btn span {
-                display: none;
+            .menu-toggle {
+                display: flex;
             }
 
             .dashboard {
@@ -421,70 +780,391 @@
                 gap: 16px;
             }
 
-            .menu-toggle {
-                display: block;
-                margin-right: 16px;
-            }
-
             .sidebar-overlay.active {
                 display: block;
             }
+
+            .notification-panel,
+            .user-menu {
+                width: calc(100% - 32px);
+                right: 16px;
+            }
         }
 
-        @media (max-width: 375px) {
+        @media (max-width: 480px) {
             .header-content {
-                padding: 8px 0;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 12px 0;
+                gap: 12px;
             }
 
-            #welcomeMessage {
-                font-size: 1.1rem;
+            .header {
+                height: auto;
             }
 
-            .header-subtitle {
-                font-size: 0.8rem;
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
             }
 
-            .quick-action-btn {
-                padding: 6px;
-                min-width: 32px;
+            .activity-item {
+                flex-direction: column;
+                gap: 8px;
             }
 
-            .quick-action-btn i {
-                font-size: 1rem;
-            }
-
-            .dashboard-card {
-                padding: 16px;
-            }
-
-            .dashboard-card h3 {
-                font-size: 0.9rem;
-            }
-
-            .dashboard-card p {
-                font-size: 1.5rem;
-            }
-
-            .dashboard-card .background-icon {
-                font-size: 80px;
-            }
-
-            .user-profile .user-name {
-                display: none;
+            .activity-icon {
+                margin-bottom: 8px;
             }
         }
 
-        @media (hover: none) {
-            .sidebar-btn,
-            .quick-action-btn,
-            .notification-item {
-                -webkit-tap-highlight-color: transparent;
-            }
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-            .sidebar-btn:active,
-            .quick-action-btn:active {
-                background-color: rgba(255, 255, 255, 0.2);
-            }
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .dashboard-card {
+            opacity: 0;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 900;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dark Mode Styles */
+        .dark {
+            --background-color: #1A202C;
+            --card-background: #2D3748;
+            --text-color: #F7FAFC;
+            --text-light: #A0AEC0;
+            --border-color: #4A5568;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .dark .skeleton {
+            background: linear-gradient(90deg, #2D3748 25%, #4A5568 50%, #2D3748 75%);
+            background-size: 200% 100%;
+        }
+
+        .dark .dashboard-card .card-icon {
+            background: rgba(255, 107, 53, 0.2);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--background-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-primary {
+            background: var(--primary-color);
+        }
+
+        .progress-success {
+            background: var(--success-color);
+        }
+
+        .progress-warning {
+            background: var(--warning-color);
+        }
+
+        .progress-danger {
+            background: var(--danger-color);
+        }
+
+        /* Task List */
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .task-checkbox.checked {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .task-checkbox.checked + .task-content .task-title {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .task-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .task-priority {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .priority-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .priority-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        /* Calendar Mini */
+        .calendar-mini {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar-mini th {
+            padding: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .calendar-mini td {
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .calendar-mini .today {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .calendar-mini .has-event {
+            position: relative;
+        }
+
+        .calendar-mini .has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+        }
+
+        .toast-success::before {
+            background: var(--success-color);
+        }
+
+        .toast-warning::before {
+            background: var(--warning-color);
+        }
+
+        .toast-error::before {
+            background: var(--danger-color);
+        }
+
+        .toast-info::before {
+            background: var(--info-color);
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color var(--transition-speed) ease;
+        }
+
+        .toast-close:hover {
+            color: var(--text-color);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
     </style>
 </head>
@@ -493,16 +1173,23 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
-                <h2>Admin Controls</h2>
+                <h2>Ang Silakbo</h2>
             </div>
             <a href="#" id="dashboardBtn" class="sidebar-btn active"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a href="#" id="checkApplicantsBtn" class="sidebar-btn"><i class="fas fa-users"></i> Applicants</a>
             <a href="#" id="calendarBtn" class="sidebar-btn"><i class="fas fa-calendar-alt"></i> Calendar</a>
-            <a href="Notifications.html" id="reportsBtn" class="sidebar-btn"><i class="fas fa-chart-bar"></i> Inquiries</a>
+            <a href="#" id="inquiriesBtn" class="sidebar-btn"><i class="fas fa-question-circle"></i> Inquiries</a>
+            
+            <div class="sidebar-divider"></div>
+            
             <a href="#" id="communicationsBtn" class="sidebar-btn"><i class="fas fa-comments"></i> Communications</a>
-            <a href="#" id="editContentBtn" class="sidebar-btn"><i class="fas fa-edit"></i> Edit Content</a>
-            <a href="Calendar2.html" id="memosBtn" class="sidebar-btn"><i class="fas fa-sticky-note"></i> Memos</a>
-            <a href="Server.html" id="memosBtn" class="sidebar-btn"><i class="fas fa-database"></i> Task Manager</a>
+            <a href="#" id="editContentBtn" class="sidebar-btn"><i class="fas fa-edit"></i> Content Management</a>
+            <a href="#" id="memosBtn" class="sidebar-btn"><i class="fas fa-sticky-note"></i> Memos</a>
+            <a href="#" id="taskManagerBtn" class="sidebar-btn"><i class="fas fa-server"></i> Task Manager</a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="#" id="settingsBtn" class="sidebar-btn"><i class="fas fa-cog"></i> Settings</a>
             <a href="#" id="logoutBtn" class="sidebar-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </aside>
         <div class="main-content">
@@ -512,8 +1199,8 @@
                 </button>
                 <div class="header-content">
                     <div class="greeting-section">
-                        <div id="welcomeMessage">Loading...</div>
-                        <div class="header-subtitle" id="dateTime"></div>
+                        <div id="welcomeMessage">Welcome to Ang Silakbo</div>
+                        <div class="header-subtitle" id="dateTime">Loading date and time...</div>
                     </div>
                     <div class="header-actions">
                         <div class="quick-actions">
@@ -535,9 +1222,12 @@
                                 <i class="fas fa-bell"></i>
                                 <span class="notification-count" id="notificationCount">0</span>
                             </div>
-                            <div class="user-profile">
+                            <div class="user-profile" id="userProfileBtn">
                                 <img src="SILAKBO (1).png" alt="Profile">
-                                <span class="user-name">Admin</span>
+                                <div>
+                                    <div class="user-name">Admin</div>
+                                    <div class="user-role">Administrator</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -548,11 +1238,42 @@
             </div>
         </div>
     </div>
+    
+    <!-- Notification Panel -->
     <div class="notification-panel" id="notificationPanel">
-        <ul id="notificationList" class="notification-list"></ul>
+        <div class="notification-header">
+            <div class="notification-title">Notifications</div>
+            <div class="mark-all-read" id="markAllRead">Mark all as read</div>
+        </div>
+        <ul id="notificationList" class="notification-list">
+            <div class="notification-empty">No notifications yet</div>
+        </ul>
     </div>
-
+    
+    <!-- User Menu -->
+    <div class="user-menu" id="userMenu">
+        <div class="user-menu-header">
+            <div class="user-menu-name">Admin User</div>
+            <div class="user-menu-email" id="userEmail">admin@angsilakbo.com</div>
+        </div>
+        <ul class="user-menu-list">
+            <li class="user-menu-item"><i class="fas fa-user"></i> My Profile</li>
+            <li class="user-menu-item"><i class="fas fa-cog"></i> Account Settings</li>
+            <div class="user-menu-divider"></div>
+            <li class="user-menu-item" id="userMenuLogout"><i class="fas fa-sign-out-alt"></i> Logout</li>
+        </ul>
+    </div>
+    
+    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script type="module">
         // Import the necessary Firebase modules
@@ -577,6 +1298,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // DOM Elements
         const welcomeMessage = document.getElementById('welcomeMessage');
         const adminContent = document.getElementById('adminContent');
         const notificationIcon = document.getElementById('notificationIcon');
@@ -585,30 +1307,52 @@
         const notificationCount = document.getElementById('notificationCount');
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const header = document.querySelector('.header');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        const userMenu = document.getElementById('userMenu');
+        const userEmail = document.getElementById('userEmail');
+        const userMenuLogout = document.getElementById('userMenuLogout');
+        const markAllRead = document.getElementById('markAllRead');
+        const themeToggle = document.getElementById('themeToggle');
+        const toastContainer = document.getElementById('toastContainer');
 
         let unreadNotifications = 0;
+        let currentUser = null;
+        let isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-        function getPersonalizedGreeting(email) {
-            const greetings = {
-                'angsilakbo1@uclm.com': 'Hello, Miss Queenie! Let us jump right in.',
-                'angsilakbo2@uclm.com': 'Hello, Miss June! Let us get started.',
-                'angsilakbo3@uclm.com': 'Hello, Miss Diana! Let us get to work'
-            };
-            return greetings[email] || 'Welcome, ' + email + '!';
+        // Apply dark mode if saved in localStorage
+        if (isDarkMode) {
+            document.body.classList.add('dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
         }
 
+        // Personalized greeting based on email
+        function getPersonalizedGreeting(email) {
+            const greetings = {
+                'angsilakbo1@uclm.com': 'Hello, Miss Queenie!',
+                'angsilakbo2@uclm.com': 'Hello, Miss June!',
+                'angsilakbo3@uclm.com': 'Hello, Miss Diana!'
+            };
+            
+            const hour = new Date().getHours();
+            let timeGreeting = '';
+            
+            if (hour < 12) timeGreeting = 'Good morning, ';
+            else if (hour < 18) timeGreeting = 'Good afternoon, ';
+            else timeGreeting = 'Good evening, ';
+            
+            const name = email.split('@')[0].replace('angsilakbo', 'Admin ');
+            return greetings[email] || timeGreeting + name;
+        }
+
+        // Toggle sidebar on mobile
         function toggleSidebar() {
             sidebar.classList.toggle('open');
             sidebarOverlay.classList.toggle('active');
             document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
         }
 
-        menuToggle.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
-
+        // Check for new applications
         function checkForNewApplications() {
             const applicationsRef = ref(db, 'applications');
             let lastTimestamp = localStorage.getItem('lastApplicationTimestamp') || 0;
@@ -616,11 +1360,16 @@
             onValue(applicationsRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    const applications = Object.values(data);
+                    const applications = Object.entries(data).map(([key, value]) => ({
+                        id: key,
+                        ...value
+                    }));
+                    
                     const newApplications = applications.filter(app => app.timestamp > lastTimestamp);
                     
                     newApplications.forEach(app => {
                         createNotification(`New applicant: ${app.name} for ${app.position}`);
+                        showToast('success', 'New Application', `${app.name} applied for ${app.position}`);
                     });
 
                     if (newApplications.length > 0) {
@@ -631,6 +1380,7 @@
             });
         }
 
+        // Create a notification in Firebase
         function createNotification(message) {
             const notificationsRef = ref(db, 'notifications');
             const newNotificationRef = push(notificationsRef);
@@ -641,6 +1391,7 @@
             });
         }
 
+        // Fetch notifications from Firebase
         function fetchNotifications() {
             const notificationsRef = ref(db, 'notifications');
             onValue(notificationsRef, (snapshot) => {
@@ -651,22 +1402,38 @@
                         ...value,
                         timestamp: new Date(value.timestamp)
                     })).sort((a, b) => b.timestamp - a.timestamp);
+                    
                     updateNotificationPanel(notifications);
+                } else {
+                    notificationList.innerHTML = '<div class="notification-empty">No notifications yet</div>';
+                    notificationCount.textContent = '0';
                 }
             });
         }
 
+        // Update notification panel UI
         function updateNotificationPanel(notifications) {
             notificationList.innerHTML = '';
             unreadNotifications = 0;
             
+            if (notifications.length === 0) {
+                notificationList.innerHTML = '<div class="notification-empty">No notifications yet</div>';
+                notificationCount.textContent = '0';
+                return;
+            }
+            
             notifications.forEach(notification => {
                 const li = document.createElement('li');
                 li.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                
                 li.innerHTML = `
-                    <strong>${notification.message}</strong><br>
-                    <small>${notification.timestamp.toLocaleString()}</small>
+                    <div class="notification-dot" style="${notification.read ? 'display: none;' : ''}"></div>
+                    <div class="notification-content">
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-time">${formatTimeAgo(notification.timestamp)}</div>
+                    </div>
                 `;
+                
                 li.onclick = () => markNotificationAsRead(notification.id);
                 notificationList.appendChild(li);
 
@@ -678,15 +1445,57 @@
             notificationCount.textContent = unreadNotifications;
         }
 
+        // Mark notification as read
         function markNotificationAsRead(notificationId) {
             const notificationRef = ref(db, `notifications/${notificationId}`);
             update(notificationRef, { read: true });
         }
 
+        // Mark all notifications as read
+        function markAllNotificationsAsRead() {
+            const notificationsRef = ref(db, 'notifications');
+            get(notificationsRef).then((snapshot) => {
+                const updates = {};
+                snapshot.forEach((childSnapshot) => {
+                    updates[`${childSnapshot.key}/read`] = true;
+                });
+                update(ref(db, 'notifications'), updates);
+            });
+        }
+
+        // Format time ago
+        function formatTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval > 1) return interval + ' years ago';
+            if (interval === 1) return '1 year ago';
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + ' months ago';
+            if (interval === 1) return '1 month ago';
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + ' days ago';
+            if (interval === 1) return '1 day ago';
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + ' hours ago';
+            if (interval === 1) return '1 hour ago';
+            
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) return interval + ' minutes ago';
+            if (interval === 1) return '1 minute ago';
+            
+            return 'just now';
+        }
+
+        // Check authentication status
         function checkAuthStatus() {
             welcomeMessage.textContent = 'Loading...';
             onAuthStateChanged(auth, (user) => {
                 if (user) {
+                    currentUser = user;
                     const allowedEmails = [
                         'angsilakbo1@uclm.com',
                         'angsilakbo2@uclm.com',
@@ -696,13 +1505,16 @@
                     if (allowedEmails.includes(user.email)) {
                         const greeting = getPersonalizedGreeting(user.email);
                         welcomeMessage.textContent = greeting;
+                        userEmail.textContent = user.email;
                         showDashboard();
                         checkForNewApplications();
                         fetchNotifications();
+                        showToast('success', 'Welcome', 'You have successfully logged in');
                     } else {
                         signOut(auth).then(() => {
                             welcomeMessage.textContent = "Access denied.";
                             adminContent.innerHTML = '<p>You are not authorized to access this panel.</p>';
+                            showToast('error', 'Access Denied', 'You are not authorized to access this panel');
                             setTimeout(() => {
                                 window.location.href = 'Ang Silakbo Login1.html';
                             }, 3000);
@@ -711,6 +1523,7 @@
                 } else {
                     welcomeMessage.textContent = "Please log in to access the admin panel.";
                     adminContent.innerHTML = '<p>You are not logged in. Redirecting to login page...</p>';
+                    showToast('info', 'Authentication Required', 'Please log in to access the admin panel');
                     setTimeout(() => {
                         window.location.href = 'Ang Silakbo Login1.html';
                     }, 3000);
@@ -718,213 +1531,634 @@
             });
         }
 
+        // Show dashboard content
         function showDashboard() {
             adminContent.innerHTML = `
-                <h2>Dashboard</h2>
+                <h2 class="page-title"><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
+                
                 <div class="dashboard">
                     <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
                         <h3>Total Applications</h3>
-                        <p id="totalApplications">Loading...</p>
+                        <p id="totalApplications">0</p>
+                        <div class="trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 12% from last month
+                        </div>
                         <i class="fas fa-file-alt background-icon"></i>
                     </div>
+                    
                     <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
                         <h3>New Applications</h3>
-                        <p id="newApplications">Loading...</p>
+                        <p id="newApplications">0</p>
+                        <div class="trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 5% from last week
+                        </div>
                         <i class="fas fa-user-plus background-icon"></i>
                     </div>
+                    
                     <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
                         <h3>Active Users</h3>
-                        <p id="activeUsers">Loading...</p>
+                        <p id="activeUsers">0</p>
+                        <div class="trend trend-down">
+                            <i class="fas fa-arrow-down"></i> 3% from last month
+                        </div>
                         <i class="fas fa-users background-icon"></i>
                     </div>
+                    
                     <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-sync"></i>
+                        </div>
                         <h3>Content Updates</h3>
-                        <p id="contentUpdates">Loading...</p>
+                        <p id="contentUpdates">0</p>
+                        <div class="trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 8% from last week
+                        </div>
                         <i class="fas fa-sync background-icon"></i>
                     </div>
-                    <div class="dashboard-card">
-                        <h3>Inquiries</h3>
-                        <p id="inquiries">Loading...</p>
-                        <i class="fas fa-question-circle background-icon"></i>
+                </div>
+                
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Application Statistics</div>
+                            <div class="chart-actions">
+                                <button class="chart-btn active">Weekly</button>
+                                <button class="chart-btn">Monthly</button>
+                                <button class="chart-btn">Yearly</button>
+                            </div>
+                        </div>
+                        <div class="chart-container" id="applicationsChart">
+                            <canvas id="applicationsChartCanvas"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Upcoming Events</div>
+                        </div>
+                        <div id="miniCalendar">
+                            <table class="calendar-mini">
+                                <thead>
+                                    <tr>
+                                        <th>Su</th>
+                                        <th>Mo</th>
+                                        <th>Tu</th>
+                                        <th>We</th>
+                                        <th>Th</th>
+                                        <th>Fr</th>
+                                        <th>Sa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="calendarBody">
+                                    <!-- Calendar will be generated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <h4 style="margin-bottom: 12px;">Today's Events</h4>
+                            <div id="todayEvents">
+                                <div style="color: var(--text-light); font-size: 0.9rem;">No events scheduled for today</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <div class="activity-header">
+                        <div class="activity-title">Recent Activity</div>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <ul class="activity-list" id="activityList">
+                        <!-- Activity items will be loaded here -->
+                    </ul>
+                </div>
+                
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Pending Tasks</div>
+                        </div>
+                        <ul class="task-list" id="taskList">
+                            <!-- Tasks will be loaded here -->
+                        </ul>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">System Status</div>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Server Load</span>
+                                <span>42%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-success" style="width: 42%"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; margin-top: 16px;">
+                                <span>Database Usage</span>
+                                <span>68%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-warning" style="width: 68%"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; margin-top: 16px;">
+                                <span>Storage</span>
+                                <span>23%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-primary" style="width: 23%"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; margin-top: 16px;">
+                                <span>Memory Usage</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-danger" style="width: 85%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
 
             fetchDashboardData();
+            generateMiniCalendar();
+            loadRecentActivity();
+            loadPendingTasks();
             animateDashboardCards();
+            
+            // Initialize charts if Chart.js is available
+            if (typeof Chart !== 'undefined') {
+                initializeCharts();
+            } else {
+                // Load Chart.js dynamically
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                script.onload = initializeCharts;
+                document.head.appendChild(script);
+            }
         }
 
+        // Initialize charts
+        function initializeCharts() {
+            const ctx = document.getElementById('applicationsChartCanvas').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Applications',
+                        data: [12, 19, 15, 17, 22, 30, 35, 28, 25, 30, 35, 40],
+                        borderColor: '#FF6B35',
+                        backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate mini calendar
+        function generateMiniCalendar() {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            const calendarBody = document.getElementById('calendarBody');
+            calendarBody.innerHTML = '';
+            
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+                
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('td');
+                    
+                    if (i === 0 && j < firstDay) {
+                        // Empty cells before the first day of the month
+                        cell.textContent = '';
+                    } else if (date > daysInMonth) {
+                        // Empty cells after the last day of the month
+                        break;
+                    } else {
+                        cell.textContent = date;
+                        
+                        // Mark today's date
+                        if (date === today.getDate()) {
+                            cell.innerHTML = `<div class="today">${date}</div>`;
+                        }
+                        
+                        // Mark dates with events (example)
+                        if (date === 5 || date === 12 || date === 18 || date === 25) {
+                            cell.classList.add('has-event');
+                        }
+                        
+                        date++;
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                
+                calendarBody.appendChild(row);
+                
+                if (date > daysInMonth) {
+                    break;
+                }
+            }
+            
+            // Example events for today
+            const todayEvents = document.getElementById('todayEvents');
+            const todayDate = today.getDate();
+            
+            if (todayDate === 5 || todayDate === 12 || todayDate === 18 || todayDate === 25) {
+                todayEvents.innerHTML = `
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                        <div style="font-weight: 500;">Team Meeting</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);">10:00 AM - 11:30 AM</div>
+                    </div>
+                    <div style="padding: 8px 0;">
+                        <div style="font-weight: 500;">Content Review</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);">2:00 PM - 3:30 PM</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            const activityList = document.getElementById('activityList');
+            
+            // Example activity data
+            const activities = [
+                {
+                    type: 'application',
+                    title: 'New Application',
+                    description: 'John Doe applied for Content Writer position',
+                    time: '2 hours ago'
+                },
+                {
+                    type: 'update',
+                    title: 'Content Updated',
+                    description: 'Homepage banner was updated by Admin',
+                    time: '5 hours ago'
+                },
+                {
+                    type: 'inquiry',
+                    title: 'New Inquiry',
+                    description: 'Sarah Smith asked about membership details',
+                    time: '1 day ago'
+                },
+                {
+                    type: 'application',
+                    title: 'Application Approved',
+                    description: 'Maria Garcia was approved for Editor position',
+                    time: '2 days ago'
+                },
+                {
+                    type: 'update',
+                    title: 'System Update',
+                    description: 'System was updated to version 2.3.0',
+                    time: '3 days ago'
+                }
+            ];
+            
+            activities.forEach(activity => {
+                const li = document.createElement('li');
+                li.className = 'activity-item';
+                
+                let iconClass = '';
+                switch(activity.type) {
+                    case 'application':
+                        iconClass = 'icon-application';
+                        break;
+                    case 'update':
+                        iconClass = 'icon-update';
+                        break;
+                    case 'inquiry':
+                        iconClass = 'icon-inquiry';
+                        break;
+                }
+                
+                li.innerHTML = `
+                    <div class="activity-icon ${iconClass}">
+                        <i class="fas fa-${activity.type === 'application' ? 'user-plus' : activity.type === 'update' ? 'sync' : 'question-circle'}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-description">${activity.description}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                
+                activityList.appendChild(li);
+            });
+        }
+
+        // Load pending tasks
+        function loadPendingTasks() {
+            const taskList = document.getElementById('taskList');
+            
+            // Example task data
+            const tasks = [
+                {
+                    title: 'Review new applicant profiles',
+                    date: 'Today',
+                    priority: 'high',
+                    completed: false
+                },
+                {
+                    title: 'Update content on homepage',
+                    date: 'Tomorrow',
+                    priority: 'medium',
+                    completed: false
+                },
+                {
+                    title: 'Prepare monthly report',
+                    date: 'Mar 15, 2025',
+                    priority: 'high',
+                    completed: false
+                },
+                {
+                    title: 'Respond to pending inquiries',
+                    date: 'Mar 12, 2025',
+                    priority: 'medium',
+                    completed: true
+                },
+                {
+                    title: 'Schedule team meeting',
+                    date: 'Mar 10, 2025',
+                    priority: 'low',
+                    completed: true
+                }
+            ];
+            
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                
+                li.innerHTML = `
+                    <div class="task-checkbox ${task.completed ? 'checked' : ''}">
+                        ${task.completed ? '<i class="fas fa-check"></i>' : ''}
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-meta">
+                            <div class="task-date"><i class="far fa-calendar-alt"></i> ${task.date}</div>
+                            <div class="task-priority priority-${task.priority}">${task.priority}</div>
+                        </div>
+                    </div>
+                `;
+                
+                const checkbox = li.querySelector('.task-checkbox');
+                checkbox.addEventListener('click', () => {
+                    checkbox.classList.toggle('checked');
+                    if (checkbox.classList.contains('checked')) {
+                        checkbox.innerHTML = '<i class="fas fa-check"></i>';
+                    } else {
+                        checkbox.innerHTML = '';
+                    }
+                });
+                
+                taskList.appendChild(li);
+            });
+        }
+
+        // Animate dashboard cards
         function animateDashboardCards() {
             const cards = document.querySelectorAll('.dashboard-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {
                     card.classList.add('fade-in');
-                    setTimeout(() => {
-                        card.classList.add('icon-visible');
-                    }, 500);
                 }, index * 100);
             });
         }
 
+        // Fetch dashboard data
         function fetchDashboardData() {
+            // Simulate loading with skeleton UI
+            document.getElementById('totalApplications').innerHTML = '<div class="skeleton" style="height: 40px; width: 80px;"></div>';
+            document.getElementById('newApplications').innerHTML = '<div class="skeleton" style="height: 40px; width: 80px;"></div>';
+            document.getElementById('activeUsers').innerHTML = '<div class="skeleton" style="height: 40px; width: 80px;"></div>';
+            document.getElementById('contentUpdates').innerHTML = '<div class="skeleton" style="height: 40px; width: 80px;"></div>';
+            
+            // Fetch data from Firebase
             const totalApplicationsRef = ref(db, 'applications');
             const usersRef = ref(db, 'users');
             const contentUpdatesRef = ref(db, 'contentUpdates');
-            const inquiriesRef = ref(db, 'inquiries');
-
+            
+            // Get total applications
             get(totalApplicationsRef).then((snapshot) => {
                 const totalApplications = snapshot.size || 0;
-                document.getElementById('totalApplications').textContent = totalApplications;
+                setTimeout(() => {
+                    document.getElementById('totalApplications').textContent = totalApplications;
+                }, 800);
             }).catch(error => {
                 console.error("Error fetching total applications:", error);
-                document.getElementById('totalApplications').textContent = 'Error';
+                setTimeout(() => {
+                    document.getElementById('totalApplications').textContent = 'Error';
+                }, 800);
             });
-
+            
+            // Get new applications (last 24 hours)
             get(totalApplicationsRef).then((snapshot) => {
                 const now = Date.now();
                 const oneDayAgo = now - 24 * 60 * 60 * 1000;
-                const newApplications = Object.values(snapshot.val() || {}).filter(app => app.timestamp > oneDayAgo).length;
-                document.getElementById('newApplications').textContent = newApplications;
+                const data = snapshot.val() || {};
+                const newApplications = Object.values(data).filter(app => app.timestamp > oneDayAgo).length;
+                
+                setTimeout(() => {
+                    document.getElementById('newApplications').textContent = newApplications;
+                }, 1000);
             }).catch(error => {
                 console.error("Error fetching new applications:", error);
-                document.getElementById('newApplications').textContent = 'Error';
+                setTimeout(() => {
+                    document.getElementById('newApplications').textContent = 'Error';
+                }, 1000);
             });
-
+            
+            // Get active users (last 30 days)
             get(usersRef).then((snapshot) => {
                 const now = Date.now();
                 const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
-                const activeUsers = Object.values(snapshot.val() || {}).filter(user => user.lastLogin > thirtyDaysAgo).length;
-                document.getElementById('activeUsers').textContent = activeUsers;
+                const data = snapshot.val() || {};
+                const activeUsers = Object.values(data).filter(user => user.lastLogin > thirtyDaysAgo).length;
+                
+                setTimeout(() => {
+                    document.getElementById('activeUsers').textContent = activeUsers;
+                }, 1200);
             }).catch(error => {
                 console.error("Error fetching active users:", error);
-                document.getElementById('activeUsers').textContent = 'Error';
+                setTimeout(() => {
+                    document.getElementById('activeUsers').textContent = 'Error';
+                }, 1200);
             });
-
+            
+            // Get content updates (last 7 days)
             get(contentUpdatesRef).then((snapshot) => {
                 const now = Date.now();
                 const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
-                const recentUpdates = Object.values(snapshot.val() || {}).filter(update => update.timestamp > sevenDaysAgo).length;
-                document.getElementById('contentUpdates').textContent = recentUpdates;
+                const data = snapshot.val() || {};
+                const recentUpdates = Object.values(data).filter(update => update.timestamp > sevenDaysAgo).length;
+                
+                setTimeout(() => {
+                    document.getElementById('contentUpdates').textContent = recentUpdates;
+                }, 1400);
             }).catch(error => {
                 console.error("Error fetching content updates:", error);
-                document.getElementById('contentUpdates').textContent = 'Error';
-            });
-
-            get(inquiriesRef).then((snapshot) => {
-                const totalInquiries = snapshot.size || 0;
-                document.getElementById('inquiries').textContent = totalInquiries;
-            }).catch(error => {
-                console.error("Error fetching inquiries:", error);
-                document.getElementById('inquiries').textContent = 'Error';
+                setTimeout(() => {
+                    document.getElementById('contentUpdates').textContent = 'Error';
+                }, 1400);
             });
         }
 
-        function showReviewArticles() {
-            adminContent.innerHTML = `
-                <h2>Review Articles</h2>
-                <div class="section">
-                    <h3>Pending Articles</h3>
-                    <ul class="article-list" id="pendingArticles">
-                        <li>Loading pending articles...</li>
-                    </ul>
+        // Show toast notification
+        function showToast(type, title, message) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = '';
+            switch(type) {
+                case 'success':
+                    icon = 'check-circle';
+                    break;
+                case 'warning':
+                    icon = 'exclamation-triangle';
+                    break;
+                case 'error':
+                    icon = 'times-circle';
+                    break;
+                case 'info':
+                    icon = 'info-circle';
+                    break;
+            }
+            
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas fa-${icon}"></i>
                 </div>
-            `;
-
-            const articlesRef = ref(db, 'articles');
-            get(articlesRef).then((snapshot) => {
-                const articles = snapshot.val();
-                const pendingArticlesList = document.getElementById('pendingArticles');
-                pendingArticlesList.innerHTML = '';
-
-                if (articles) {
-                    Object.entries(articles).forEach(([key, article]) => {
-                        if (article.status === 'pending') {
-                            const li = document.createElement('li');
-                            li.className = 'article-item';
-                            li.innerHTML = `
-                                <div>
-                                    <span class="article-title">${article.title}</span>
-                                    <br>
-                                    <span class="article-author">By ${article.author}</span>
-                                </div>
-                                <span class="article-status status-pending">Pending</span>
-                            `;
-                            pendingArticlesList.appendChild(li);
-                        }
-                    });
-                }
-
-                if (pendingArticlesList.children.length === 0) {
-                    pendingArticlesList.innerHTML = '<li>No pending articles</li>';
-                }
-            }).catch(error => {
-                console.error("Error fetching articles:", error);
-                const pendingArticlesList = document.getElementById('pendingArticles');
-                pendingArticlesList.innerHTML = '<li>Error loading articles</li>';
-            });
-        }
-
-        function showInquiries() {
-            adminContent.innerHTML = `
-                <h2>Inquiries</h2>
-                <div class="section">
-                    <h3>Recent Inquiries</h3>
-                    <ul class="inquiry-list" id="recentInquiries">
-                        <li>Loading recent inquiries...</li>
-                    </ul>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
                 </div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
-
-            const inquiriesRef = ref(db, 'inquiries');
-            get(inquiriesRef).then((snapshot) => {
-                const inquiries = snapshot.val();
-                const recentInquiriesList = document.getElementById('recentInquiries');
-                recentInquiriesList.innerHTML = '';
-
-                if (inquiries) {
-                    Object.entries(inquiries).slice(0, 10).forEach(([key, inquiry]) => {
-                        const li = document.createElement('li');
-                        li.className = 'inquiry-item';
-                        li.innerHTML = `
-                            <div>
-                                <span class="inquiry-subject">${inquiry.subject}</span>
-                                <br>
-                                <span class="inquiry-date">${new Date(inquiry.timestamp).toLocaleString()}</span>
-                            </div>
-                            <span class="inquiry-status ${inquiry.status === 'open' ? 'status-pending' : 'status-approved'}">${inquiry.status}</span>
-                        `;
-                        recentInquiriesList.appendChild(li);
-                    });
-                }
-
-                if (recentInquiriesList.children.length === 0) {
-                    recentInquiriesList.innerHTML = '<li>No recent inquiries</li>';
-                }
-            }).catch(error => {
-                console.error("Error fetching inquiries:", error);
-                const recentInquiriesList = document.getElementById('recentInquiries');
-                recentInquiriesList.innerHTML = '<li>Error loading inquiries</li>';
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 5000);
+            
+            // Close button
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
             });
         }
 
-        checkAuthStatus();
+        // Update date and time
+        function updateDateTime() {
+            const dateTimeElement = document.getElementById('dateTime');
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit'
+            };
+            dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
+        }
 
+        // Event Listeners
+        menuToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+        
         notificationIcon.addEventListener('click', () => {
             notificationPanel.style.display = notificationPanel.style.display === 'block' ? 'none' : 'block';
+            userMenu.style.display = 'none';
         });
-
+        
+        userProfileBtn.addEventListener('click', () => {
+            userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+            notificationPanel.style.display = 'none';
+        });
+        
+        markAllRead.addEventListener('click', () => {
+            markAllNotificationsAsRead();
+        });
+        
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark', isDarkMode);
+            themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('darkMode', isDarkMode);
+        });
+        
         document.addEventListener('click', (event) => {
             if (!notificationIcon.contains(event.target) && !notificationPanel.contains(event.target)) {
                 notificationPanel.style.display = 'none';
             }
+            
+            if (!userProfileBtn.contains(event.target) && !userMenu.contains(event.target)) {
+                userMenu.style.display = 'none';
+            }
         });
 
+        // Set active sidebar button
         function setActiveButton(activeButton) {
             const buttons = document.querySelectorAll('.sidebar-btn');
             buttons.forEach(button => button.classList.remove('active'));
             activeButton.classList.add('active');
         }
 
+        // Sidebar navigation
         document.getElementById('dashboardBtn').addEventListener('click', (e) => {
             e.preventDefault();
             setActiveButton(e.target);
@@ -943,6 +2177,12 @@
             window.location.href = 'Calendar.html';
         });
 
+        document.getElementById('inquiriesBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            window.location.href = 'Notifications.html';
+        });
+
         document.getElementById('communicationsBtn').addEventListener('click', (e) => {
             e.preventDefault();
             setActiveButton(e.target);
@@ -955,65 +2195,56 @@
             window.location.href = 'Silakbo Post.html';
         });
 
-        document.getElementById('inquiriesBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            setActiveButton(e.target);
-            showInquiries();
-        });
-
         document.getElementById('memosBtn').addEventListener('click', (e) => {
             e.preventDefault();
             setActiveButton(e.target);
             window.location.href = 'Calendar2.html';
         });
 
+        document.getElementById('taskManagerBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            window.location.href = 'Server.html';
+        });
+
+        document.getElementById('settingsBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveButton(e.target);
+            showToast('info', 'Settings', 'Settings page is under development');
+        });
+
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
+            showToast('info', 'Logging Out', 'You are being logged out');
             signOut(auth).then(() => {
                 console.log("User signed out successfully");
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('adminUser');
-                window.location.href = 'Ang Silakbo Login1.html';
+                setTimeout(() => {
+                    window.location.href = 'Ang Silakbo Login1.html';
+                }, 1500);
             }).catch((error) => {
                 console.error("Error signing out:", error);
+                showToast('error', 'Error', 'Failed to log out');
             });
         });
 
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', (event) => {
-            if (window.innerWidth <= 767 && sidebar.classList.contains('open') &&
-                !sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-                toggleSidebar();
-            }
+        userMenuLogout.addEventListener('click', () => {
+            showToast('info', 'Logging Out', 'You are being logged out');
+            signOut(auth).then(() => {
+                console.log("User signed out successfully");
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('adminUser');
+                setTimeout(() => {
+                    window.location.href = 'Ang Silakbo Login1.html';
+                }, 1500);
+            }).catch((error) => {
+                console.error("Error signing out:", error);
+                showToast('error', 'Error', 'Failed to log out');
+            });
         });
 
-        // Close sidebar when window is resized to desktop view
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 767) {
-                sidebar.classList.remove('open');
-                mainContent.classList.remove('sidebar-open');
-                header.classList.remove('sidebar-open');
-            }
-        });
-
-        function updateDateTime() {
-            const dateTimeElement = document.getElementById('dateTime');
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit'
-            };
-            dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
-        }
-
-        // Update time every minute
-        updateDateTime();
-        setInterval(updateDateTime, 60000);
-
+        // Quick action buttons
         document.querySelectorAll('.quick-action-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const action = this.title;
@@ -1025,8 +2256,7 @@
                         window.location.href = 'Calendar.html';
                         break;
                     case 'Reports':
-                        // Add your reports functionality here
-                        console.log('Opening reports...');
+                        showToast('info', 'Reports', 'Reports feature is coming soon');
                         break;
                 }
             });
@@ -1041,16 +2271,13 @@
             }
         });
 
-        // Prevent touchmove on body when sidebar is open
-        document.addEventListener('touchmove', function(e) {
-            if (sidebar.classList.contains('open')) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+        // Initialize
+        checkAuthStatus();
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
     </script>
     
     <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2024/12/19/04/20241219041230-T4Z2UM4T.js"></script>
-    
 </body>
 </html>
