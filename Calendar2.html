@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SILAKBO Calendar</title>
+    <title>ANG SILAKBO - Memos</title>
     <link rel="icon" href="SILAKBO.png">
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -16,6 +16,8 @@
             --accent-color: #FF4500;
             --background-color: #FFFFFF;
             --text-color: #333333;
+            --transition-speed: 0.5s;
+            --transition-easing: cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
         * {
@@ -28,6 +30,7 @@
         body {
             background-color: var(--background-color);
             color: var(--text-color);
+            overflow-x: hidden;
         }
 
         .container {
@@ -43,18 +46,44 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border-radius: 10px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            transition: all var(--transition-speed) var(--transition-easing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 1s;
+        }
+
+        .header:hover::before {
+            transform: translateX(100%);
         }
 
         .header img {
             height: 40px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s var(--transition-easing);
+        }
+
+        .header img:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .header h1 {
             font-size: 1.5rem;
             margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .home-button {
@@ -64,30 +93,52 @@
             padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--transition-easing);
             display: flex;
             align-items: center;
             gap: 0.5rem;
             text-decoration: none;
             font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .home-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s var(--transition-easing);
+            z-index: -1;
         }
 
         .home-button:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-button:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
         }
 
         #calendar {
             background-color: var(--background-color);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: all 0.4s var(--transition-easing);
+            transform-origin: center;
         }
 
         #calendar:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
         }
 
         .modal {
@@ -98,34 +149,35 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            background-color: rgba(0, 0, 0, 0);
+            transition: background-color 0.4s var(--transition-easing);
+            backdrop-filter: blur(0px);
         }
 
         .modal.show {
             display: block;
-            opacity: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
         }
 
         .modal-content {
             background-color: var(--background-color);
             margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 25px;
+            border-radius: 15px;
             width: 90%;
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.3s ease;
+            transform: scale(0.8) translateY(-20px);
+            transition: all 0.5s var(--transition-easing);
         }
 
         .modal.show .modal-content {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
         }
 
         .close {
@@ -134,122 +186,231 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.3s ease;
+            transition: all 0.3s var(--transition-easing);
         }
 
         .close:hover,
         .close:focus {
-            color: #000;
+            color: var(--primary-color);
+            transform: rotate(90deg);
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            transition: all 0.3s var(--transition-easing);
+        }
+
+        .form-group:hover {
+            transform: translateX(5px);
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
+            font-weight: 500;
+            transition: color 0.3s var(--transition-easing);
+        }
+
+        .form-group:hover label {
+            color: var(--primary-color);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s var(--transition-easing);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2);
             outline: none;
+            transform: translateY(-2px);
         }
 
         .button {
             background-color: var(--primary-color);
             color: var(--background-color);
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--transition-easing);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
         }
 
         .button:hover {
             background-color: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .button:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .button:active {
+            transform: translateY(-1px);
         }
 
         .fc-event {
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 4px;
+            transition: all 0.3s var(--transition-easing);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .fc-event:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            z-index: 5;
         }
 
         .footer {
             background-color: var(--primary-color);
             color: var(--background-color);
             text-align: center;
-            padding: 1rem 0;
-            margin-top: 2rem;
+            padding: 1.2rem 0;
+            margin-top: 2.5rem;
             border-radius: 10px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            to {
+                left: 100%;
+            }
         }
 
         .action-buttons {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .action-button {
             background-color: var(--secondary-color);
             color: var(--background-color);
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--transition-easing);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.7rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            opacity: 0;
+            transition: opacity 0.3s var(--transition-easing);
+            z-index: -1;
         }
 
         .action-button:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-button:hover::before {
+            opacity: 1;
         }
 
         .action-button i {
             font-size: 1.2rem;
+            transition: transform 0.3s var(--transition-easing);
+        }
+
+        .action-button:hover i {
+            transform: scale(1.2);
         }
 
         .color-dropdown {
             position: relative;
             display: inline-block;
+            width: 100%;
+        }
+
+        .color-dropdown .button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .color-dropdown-content {
             display: none;
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            border-radius: 4px;
-            max-height: 200px;
+            background-color: #fff;
+            min-width: 100%;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            z-index: 10;
+            border-radius: 8px;
+            max-height: 250px;
             overflow-y: auto;
+            transform-origin: top center;
+            transform: scaleY(0.8);
+            opacity: 0;
+            transition: all 0.3s var(--transition-easing);
+        }
+
+        .color-dropdown-content.show {
+            display: block;
+            transform: scaleY(1);
+            opacity: 1;
         }
 
         .color-option {
@@ -258,74 +419,268 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            transition: all 0.2s var(--transition-easing);
         }
 
         .color-option:hover {
-            background-color: #f1f1f1;
+            background-color: #f5f5f5;
+            transform: translateX(5px);
         }
 
         .color-preview {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            margin-right: 10px;
+            margin-right: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s var(--transition-easing);
+        }
+
+        .color-option:hover .color-preview {
+            transform: scale(1.2);
         }
 
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 align-items: flex-start;
+                padding: 1.2rem;
             }
 
             .header h1 {
-                margin-top: 0.5rem;
+                margin: 0.8rem 0;
             }
 
             .action-buttons {
                 flex-direction: column;
+                align-items: stretch;
             }
 
             .action-button {
                 width: 100%;
+                justify-content: center;
             }
+        }
+
+        /* FullCalendar Custom Styles */
+        .fc .fc-toolbar {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.5rem !important;
+            font-weight: 600;
+            color: var(--primary-color);
+            transition: all 0.3s var(--transition-easing);
+        }
+
+        .fc .fc-toolbar-title:hover {
+            transform: scale(1.05);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .fc .fc-button-primary {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--transition-easing);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .fc .fc-button-primary:hover {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
             transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         .fc .fc-button-primary:not(:disabled).fc-button-active,
         .fc .fc-button-primary:not(:disabled):active {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
+        /* View Transitions */
         .fc-view-harness {
-            transition: all 0.5s ease;
+            transition: height 0.5s var(--transition-easing) !important;
+        }
+
+        .fc-view-harness.fc-view-harness-active {
+            animation: viewFadeIn 0.5s var(--transition-easing);
+        }
+
+        @keyframes viewFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Day/Week/Month transition animations */
+        .fc .fc-dayGridMonth-view .fc-daygrid-body {
+            animation: fadeSlideIn 0.6s var(--transition-easing);
+        }
+
+        .fc .fc-timeGridWeek-view .fc-timegrid-body {
+            animation: fadeSlideUp 0.6s var(--transition-easing);
+        }
+
+        .fc .fc-timeGridDay-view .fc-timegrid-body {
+            animation: fadeZoomIn 0.6s var(--transition-easing);
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Calendar cells hover effect */
+        .fc-day {
+            transition: background-color 0.3s var(--transition-easing);
+        }
+
+        .fc-day:hover {
+            background-color: rgba(255, 140, 0, 0.05);
+        }
+
+        /* Today highlight animation */
+        .fc .fc-day-today {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fc .fc-day-today::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 140, 0, 0.2) 0%, rgba(255, 140, 0, 0) 70%);
+            animation: pulseToday 2s infinite;
+        }
+
+        @keyframes pulseToday {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
         }
 
         #quote-widget {
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
             color: var(--background-color);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s var(--transition-easing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #quote-widget::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s var(--transition-easing);
         }
 
         #quote-widget:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        #quote-widget:hover::before {
+            opacity: 1;
+            animation: rotateBg 10s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #quote-widget h3 {
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        #quote-widget p {
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -343,7 +698,7 @@
 
         <div id="quote-widget">
             <h3>Quote of the Day</h3>
-            <p>Loading quote...</p>
+            <div class="loading-spinner"></div>
         </div>
 
         <div class="action-buttons">
@@ -376,13 +731,15 @@
                 <div class="form-group">
                     <label for="eventColor"><i class="fas fa-palette"></i> Color:</label>
                     <div class="color-dropdown">
-                        <button type="button" class="button" onclick="toggleColorDropdown()">Select Color</button>
+                        <button type="button" class="button" onclick="toggleColorDropdown()">
+                            <i class="fas fa-palette"></i> Select Color
+                        </button>
                         <div id="colorDropdown" class="color-dropdown-content"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="eventDescription"><i class="fas fa-align-left"></i> Description:</label>
-                    <textarea id="eventDescription"></textarea>
+                    <textarea id="eventDescription" rows="3"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="eventLocation"><i class="fas fa-map-marker-alt"></i> Location:</label>
@@ -399,7 +756,9 @@
                     </select>
                 </div>
                 <button type="submit" class="button"><i class="fas fa-save"></i> Save Event</button>
-                <button type="button" class="button" id="deleteEventBtn" style="display: none; background-color: #b8480c;"><i class="fas fa-trash"></i> Delete Event</button>
+                <button type="button" class="button" id="deleteEventBtn" style="display: none; background-color: #b8480c; margin-top: 10px;">
+                    <i class="fas fa-trash"></i> Delete Event
+                </button>
             </form>
         </div>
     </div>
@@ -430,6 +789,8 @@
 
         let calendar;
         let currentEvent = null;
+        let currentView = 'dayGridMonth';
+        let animationInProgress = false;
 
         const colors = [
             { name: 'Red', value: '#FF0000' },
@@ -469,13 +830,44 @@
                 eventContent: function(arg) {
                     return {
                         html: `
-                            <div class="fc-event-main-frame" style="background-color: ${arg.event.backgroundColor}; color: ${getContrastColor(arg.event.backgroundColor)}; padding: 2px 5px; border-radius: 3px;">
+                            <div class="fc-event-main-frame" style="background-color: ${arg.event.backgroundColor}; color: ${getContrastColor(arg.event.backgroundColor)}; padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                 <div class="fc-event-title-container">
                                     <div class="fc-event-title fc-sticky">${arg.event.title}</div>
                                 </div>
                             </div>
                         `
                     };
+                },
+                datesSet: function(dateInfo) {
+                    // Track view changes for animations
+                    if (currentView !== dateInfo.view.type && !animationInProgress) {
+                        animationInProgress = true;
+                        
+                        // Add animation class based on the view type
+                        const viewHarness = document.querySelector('.fc-view-harness');
+                        if (viewHarness) {
+                            viewHarness.style.opacity = '0';
+                            viewHarness.style.transform = 'scale(0.95)';
+                            
+                            setTimeout(() => {
+                                viewHarness.style.opacity = '1';
+                                viewHarness.style.transform = 'scale(1)';
+                                
+                                // Apply specific animation class based on view type
+                                if (dateInfo.view.type === 'dayGridMonth') {
+                                    viewHarness.classList.add('month-view-animation');
+                                } else if (dateInfo.view.type === 'timeGridWeek') {
+                                    viewHarness.classList.add('week-view-animation');
+                                } else if (dateInfo.view.type === 'timeGridDay') {
+                                    viewHarness.classList.add('day-view-animation');
+                                }
+                                
+                                animationInProgress = false;
+                            }, 100);
+                        }
+                        
+                        currentView = dateInfo.view.type;
+                    }
                 }
             });
 
@@ -483,6 +875,21 @@
             loadEvents();
             setupColorDropdown();
             fetchQuote();
+            
+            // Add animation classes
+            const style = document.createElement('style');
+            style.textContent = `
+                .month-view-animation {
+                    animation: fadeSlideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+                }
+                .week-view-animation {
+                    animation: fadeSlideUp 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+                }
+                .day-view-animation {
+                    animation: fadeZoomIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+                }
+            `;
+            document.head.appendChild(style);
         });
 
         function openModal(start, end, event = null) {
@@ -512,11 +919,22 @@
             }
 
             modal.classList.add('show');
+            
+            // Add entrance animation for modal content
+            setTimeout(() => {
+                const modalContent = modal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'scale(1) translateY(0)';
+                }
+            }, 50);
         }
 
         function setupColorDropdown() {
             const colorDropdown = document.getElementById('colorDropdown');
-            colors.forEach(color => {
+            colorDropdown.innerHTML = ''; // Clear existing options
+            
+            colors.forEach((color, index) => {
                 const colorOption = document.createElement('div');
                 colorOption.className = 'color-option';
                 colorOption.innerHTML = `
@@ -527,13 +945,16 @@
                     selectColor(color.value);
                     toggleColorDropdown();
                 });
+                
+                // Add staggered animation delay
+                colorOption.style.animationDelay = `${index * 0.05}s`;
                 colorDropdown.appendChild(colorOption);
             });
         }
 
         function toggleColorDropdown() {
             const dropdown = document.getElementById('colorDropdown');
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            dropdown.classList.toggle('show');
         }
 
         function selectColor(color) {
@@ -543,8 +964,23 @@
         }
 
         document.querySelector('.close').addEventListener('click', function() {
-            document.getElementById('eventModal').classList.remove('show');
+            closeModal();
         });
+
+        function closeModal() {
+            const modal = document.getElementById('eventModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Exit animation
+            if (modalContent) {
+                modalContent.style.opacity = '0';
+                modalContent.style.transform = 'scale(0.8) translateY(-20px)';
+            }
+            
+            setTimeout(() => {
+                modal.classList.remove('show');
+            }, 300);
+        }
 
         document.getElementById('eventForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -565,7 +1001,7 @@
                 addEvent(eventData);
             }
 
-            document.getElementById('eventModal').classList.remove('show');
+            closeModal();
         });
 
         document.getElementById('deleteEventBtn').addEventListener('click', function() {
@@ -575,20 +1011,43 @@
         });
 
         function addEvent(eventData) {
+            // Show loading indicator
+            showNotification('Adding event...', 'info');
+            
             db.collection('events').add(eventData)
                 .then((docRef) => {
                     console.log('Event added with ID: ', docRef.id);
-                    calendar.addEvent({
+                    
+                    // Add with animation
+                    const newEvent = {
                         id: docRef.id,
                         ...eventData
-                    });
+                    };
+                    
+                    calendar.addEvent(newEvent);
+                    
+                    // Highlight the new event
+                    setTimeout(() => {
+                        const eventEl = document.querySelector(`[data-event-id="${docRef.id}"]`);
+                        if (eventEl) {
+                            eventEl.classList.add('new-event-highlight');
+                            setTimeout(() => {
+                                eventEl.classList.remove('new-event-highlight');
+                            }, 2000);
+                        }
+                    }, 100);
+                    
+                    showNotification('Event added successfully!', 'success');
                 })
                 .catch((error) => {
                     console.error('Error adding event: ', error);
+                    showNotification('Error adding event', 'error');
                 });
         }
 
         function updateEvent(eventId, eventData) {
+            showNotification('Updating event...', 'info');
+            
             db.collection('events').doc(eventId).update(eventData)
                 .then(() => {
                     console.log('Event updated successfully');
@@ -596,63 +1055,130 @@
                     if (event) {
                         event.remove();
                     }
+                    
                     calendar.addEvent({
                         id: eventId,
                         ...eventData
                     });
+                    
+                    showNotification('Event updated successfully!', 'success');
                 })
                 .catch((error) => {
                     console.error('Error updating event: ', error);
+                    showNotification('Error updating event', 'error');
                 });
         }
 
         function deleteEvent(eventId) {
             if (confirm('Are you sure you want to delete this event?')) {
+                showNotification('Deleting event...', 'info');
+                
+                // Add delete animation
+                const eventEl = document.querySelector(`[data-event-id="${eventId}"]`);
+                if (eventEl) {
+                    eventEl.style.transition = 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                    eventEl.style.transform = 'translateX(100px)';
+                    eventEl.style.opacity = '0';
+                }
+                
                 db.collection('events').doc(eventId).delete()
                     .then(() => {
                         console.log('Event deleted successfully');
-                        const event = calendar.getEventById(eventId);
-                        if (event) {
-                            event.remove();
-                        }
-                        document.getElementById('eventModal').classList.remove('show');
+                        setTimeout(() => {
+                            const event = calendar.getEventById(eventId);
+                            if (event) {
+                                event.remove();
+                            }
+                            closeModal();
+                            showNotification('Event deleted successfully!', 'success');
+                        }, 300);
                     })
                     .catch((error) => {
                         console.error('Error deleting event: ', error);
+                        showNotification('Error deleting event', 'error');
                     });
             }
         }
 
         function loadEvents() {
+            showNotification('Loading events...', 'info');
+            
             db.collection('events').get()
                 .then((querySnapshot) => {
+                    let count = 0;
                     querySnapshot.forEach((doc) => {
                         const eventData = doc.data();
-                        calendar.addEvent({
-                            id: doc.id,
-                            ...eventData
-                        });
+                        setTimeout(() => {
+                            calendar.addEvent({
+                                id: doc.id,
+                                ...eventData
+                            });
+                        }, count * 50); // Staggered loading for visual effect
+                        count++;
                     });
+                    
+                    if (count > 0) {
+                        showNotification(`Loaded ${count} events successfully!`, 'success');
+                    } else {
+                        showNotification('No events found. Create your first event!', 'info');
+                    }
                 })
                 .catch((error) => {
                     console.error('Error loading events: ', error);
+                    showNotification('Error loading events', 'error');
                 });
         }
 
         function printCalendar() {
-            window.print();
+            // Add print animation
+            const calendarEl = document.getElementById('calendar');
+            calendarEl.classList.add('print-animation');
+            
+            setTimeout(() => {
+                calendarEl.classList.remove('print-animation');
+                window.print();
+            }, 500);
         }
 
         function saveAsImage() {
-            html2canvas(document.querySelector("#calendar")).then(canvas => {
-                let link = document.createElement('a');
-                link.download = 'SILAKBO_calendar.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
+            showNotification('Preparing image...', 'info');
+            
+            const calendarEl = document.getElementById('calendar');
+            calendarEl.classList.add('capture-animation');
+            
+            setTimeout(() => {
+                html2canvas(document.querySelector("#calendar")).then(canvas => {
+                    calendarEl.classList.remove('capture-animation');
+                    let link = document.createElement('a');
+                    link.download = 'SILAKBO_calendar.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    showNotification('Image saved successfully!', 'success');
+                }).catch(err => {
+                    console.error('Error saving image:', err);
+                    showNotification('Error saving image', 'error');
+                    calendarEl.classList.remove('capture-animation');
+                });
+            }, 500);
         }
 
         function getContrastColor(hexcolor) {
+            if (!hexcolor) return 'black';
+            
+            // Handle rgba format
+            if (hexcolor.startsWith('rgba') || hexcolor.startsWith('rgb')) {
+                const rgbMatch = hexcolor.match(/\d+/g);
+                if (rgbMatch && rgbMatch.length >= 3) {
+                    const r = parseInt(rgbMatch[0]);
+                    const g = parseInt(rgbMatch[1]);
+                    const b = parseInt(rgbMatch[2]);
+                    const yiq = ((r*299)+(g*587)+(b*114))/1000;
+                    return (yiq >= 128) ? 'black' : 'white';
+                }
+                return 'black';
+            }
+            
+            // Handle hex format
             hexcolor = hexcolor.replace("#", "");
             var r = parseInt(hexcolor.substr(0,2),16);
             var g = parseInt(hexcolor.substr(2,2),16);
@@ -662,27 +1188,147 @@
         }
 
         function fetchQuote() {
-            // Replace with actual API call
+            const quoteWidget = document.getElementById('quote-widget');
+            
+            // Simulate loading with animation
             setTimeout(() => {
-                const quoteWidget = document.getElementById('quote-widget');
                 if (quoteWidget) {
-                    quoteWidget.innerHTML = `
-                        <h3>Quote of the Day</h3>
-                        <p>"AHAHAHAHAHAHAHAHAH" - Ron Asnahon</p>
-                    `;
+                    // Add fade-out animation
+                    quoteWidget.style.opacity = '0';
+                    quoteWidget.style.transform = 'translateY(10px)';
+                    
+                    setTimeout(() => {
+                        quoteWidget.innerHTML = `
+                            <h3>Quote of the Day</h3>
+                            <p>"AHAHAHAHAHAHAHAHAH" - Ron Asnahon</p>
+                        `;
+                        
+                        // Add fade-in animation
+                        quoteWidget.style.opacity = '1';
+                        quoteWidget.style.transform = 'translateY(0)';
+                    }, 300);
                 } else {
                     console.error('Quote widget element not found');
                 }
-            }, 1000);
+            }, 1500);
+        }
+
+        // Create notification system
+        function showNotification(message, type = 'info') {
+            // Create notification container if it doesn't exist
+            let container = document.getElementById('notification-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'notification-container';
+                container.style.position = 'fixed';
+                container.style.top = '20px';
+                container.style.right = '20px';
+                container.style.zIndex = '9999';
+                container.style.display = 'flex';
+                container.style.flexDirection = 'column';
+                container.style.gap = '10px';
+                document.body.appendChild(container);
+            }
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.style.padding = '12px 20px';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.display = 'flex';
+            notification.style.alignItems = 'center';
+            notification.style.gap = '10px';
+            notification.style.minWidth = '250px';
+            notification.style.maxWidth = '350px';
+            notification.style.transform = 'translateX(100%)';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            
+            // Set type-specific styles
+            let icon = '';
+            if (type === 'success') {
+                notification.style.backgroundColor = '#4CAF50';
+                notification.style.color = 'white';
+                icon = '<i class="fas fa-check-circle"></i>';
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#F44336';
+                notification.style.color = 'white';
+                icon = '<i class="fas fa-exclamation-circle"></i>';
+            } else if (type === 'warning') {
+                notification.style.backgroundColor = '#FF9800';
+                notification.style.color = 'white';
+                icon = '<i class="fas fa-exclamation-triangle"></i>';
+            } else {
+                notification.style.backgroundColor = '#2196F3';
+                notification.style.color = 'white';
+                icon = '<i class="fas fa-info-circle"></i>';
+            }
+            
+            notification.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+                notification.style.opacity = '1';
+            }, 10);
+            
+            // Auto remove after delay
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
         }
 
         // Close modal when clicking outside
         window.onclick = function(event) {
             let modal = document.getElementById('eventModal');
+            let colorDropdown = document.getElementById('colorDropdown');
+            
             if (event.target == modal) {
-                modal.classList.remove('show');
+                closeModal();
+            }
+            
+            // Close color dropdown when clicking outside
+            if (!event.target.matches('.color-dropdown .button') && 
+                !event.target.closest('#colorDropdown')) {
+                colorDropdown.classList.remove('show');
             }
         }
+
+        // Add these animation styles
+        const animStyles = document.createElement('style');
+        animStyles.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            
+            .new-event-highlight {
+                animation: pulse 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 3;
+                box-shadow: 0 0 0 3px var(--accent-color) !important;
+            }
+            
+            .print-animation {
+                animation: pulse 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            }
+            
+            .capture-animation {
+                animation: flash 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            }
+            
+            @keyframes flash {
+                0% { filter: brightness(1); }
+                50% { filter: brightness(1.2); }
+                100% { filter: brightness(1); }
+            }
+        `;
+        document.head.appendChild(animStyles);
     </script>
 </body>
 </html>
+
