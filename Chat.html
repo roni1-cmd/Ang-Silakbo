@@ -10,15 +10,18 @@
     <style>
         :root {
             --primary-color: #E65100;
-            --secondary-color: #ff8533;
-            --background-color: #fff9f5;
-            --text-color: #333333;
-            --light-text-color: #666666;
-            --border-color: #e0e0e0;
-            --hover-color: #fff0e6;
-            --transition: all 0.3s ease;
-            --online-color: #4CAF50;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --secondary-color: #c74a07;
+            --background-color: #F0F2F5;
+            --text-color: #050505;
+            --light-text-color: #65676B;
+            --border-color: #E4E6EB;
+            --hover-color: #F2F3F5;
+            --transition: all 0.2s ease;
+            --online-color: #31A24C;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --message-bg: #E4E6EB;
+            --sent-message-bg: #E65100;
+            --sent-message-color: white;
         }
 
         * {
@@ -41,68 +44,78 @@
 
         .container {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 320px 1fr;
             height: 100vh;
             width: 100vw;
-            background-color: #f5f7fb;
-            gap: 20px;
-            padding: 20px;
+            background-color: var(--background-color);
+            position: relative;
         }
 
         .sidebar {
             background-color: white;
-            border-radius: 20px;
+            height: 100%;
+            border-right: 1px solid var(--border-color);
             overflow: hidden;
-            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 10;
         }
 
         .sidebar-header {
-            padding: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
+            padding: 16px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .sidebar-header h1 {
             font-size: 24px;
             font-weight: 600;
-            margin-bottom: 10px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h1 i {
+            font-size: 20px;
         }
 
         .room-list {
             flex-grow: 1;
-            padding: 16px;
             overflow-y: auto;
-            height: calc(100% - 180px);
+            padding: 8px;
         }
 
         .room-btn {
             display: flex;
             align-items: center;
             width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 12px;
+            padding: 12px;
+            margin-bottom: 4px;
             background-color: white;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border: none;
+            border-radius: 8px;
             text-align: left;
             cursor: pointer;
             transition: var(--transition);
             font-weight: 500;
-            box-shadow: var(--shadow);
         }
 
         .room-btn:hover, .room-btn.active {
             background-color: var(--hover-color);
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
+        }
+
+        .room-btn.active {
+            background-color: rgba(0, 132, 255, 0.1);
         }
 
         .room-btn .room-icon {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             background-color: var(--primary-color);
             border-radius: 50%;
             display: flex;
@@ -111,6 +124,47 @@
             color: white;
             font-weight: bold;
             margin-right: 12px;
+            position: relative;
+        }
+
+        .room-btn .room-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .room-btn .room-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .room-btn .room-last-message {
+            font-size: 13px;
+            color: var(--light-text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .room-btn .room-time {
+            font-size: 12px;
+            color: var(--light-text-color);
+            white-space: nowrap;
+            margin-left: 8px;
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background-color: var(--online-color);
+            border-radius: 50%;
+            border: 2px solid white;
         }
 
         .sidebar-footer {
@@ -120,156 +174,255 @@
 
         .sidebar-footer button {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: var(--transition);
             font-weight: 600;
-            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .sidebar-footer button:hover {
             background-color: var(--secondary-color);
-            transform: translateY(-2px);
         }
 
         .main-content {
-            background-color: transparent;
-            border-radius: 20px;
-            overflow: hidden;
-            height: calc(100vh - 40px);
+            background-color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
         .chat-header {
-            padding: 20px;
+            padding: 12px 16px;
             background-color: white;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .chat-header h2 {
-            color: var(--primary-color);
-            font-size: 20px;
-            font-weight: 600;
+            z-index: 5;
         }
 
         .chat-header-info {
             display: flex;
             align-items: center;
+            gap: 12px;
         }
 
-        .user-status {
+        .chat-header-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            margin-right: 15px;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
         }
 
-        .status-indicator {
-            width: 10px;
-            height: 10px;
+        .chat-header-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chat-header-status {
+            font-size: 13px;
+            color: var(--light-text-color);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-icon-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 18px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
         }
 
-        .status-indicator.online {
-            background-color: var(--online-color);
+        .header-icon-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background-color: white;
+            display: flex;
+            flex-direction: column-reverse;
         }
 
         .chat-messages {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .message-group.sent {
+            align-items: flex-end;
+        }
+
+        .message-group.received {
+            align-items: flex-start;
         }
 
         .message {
             max-width: 70%;
-            padding: 12px 16px;
-            margin-bottom: 8px;
+            padding: 8px 12px;
             border-radius: 18px;
             position: relative;
             word-wrap: break-word;
+            font-size: 15px;
         }
 
         .message.sent {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            margin-left: auto;
+            background-color: var(--sent-message-bg);
+            color: var(--sent-message-color);
             border-bottom-right-radius: 4px;
         }
 
-        .message.sent .text {
-            color: white;
-        }
-
         .message.received {
-            background-color: #f0f2f5;
+            background-color: var(--message-bg);
             border-bottom-left-radius: 4px;
-            margin-right: auto;
-            color: var(--text-color);
         }
 
-        .message .sender {
-            font-size: 0.8em;
+        .message-time {
+            font-size: 11px;
+            margin-top: 2px;
             color: var(--light-text-color);
-            margin-bottom: 4px;
-            font-weight: 500;
         }
 
-        .message .text {
-            line-height: 1.4;
+        .message-group.sent .message-time {
+            text-align: right;
+            padding-right: 8px;
+        }
+
+        .message-group.received .message-time {
+            padding-left: 8px;
+        }
+
+        .message-sender {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            padding-left: 12px;
+            color: var(--light-text-color);
+        }
+
+        .input-container {
+            padding: 12px 16px;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+            position: relative;
         }
 
         .message-form {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 8px;
             width: 100%;
+            background-color: var(--hover-color);
+            border-radius: 20px;
+            padding: 8px 16px;
         }
 
         .message-form input {
-            background-color: white;
-            padding: 15px 25px;
-            border-radius: 30px;
+            background-color: transparent;
+            padding: 8px 0;
             font-size: 15px;
             flex-grow: 1;
-            border: 1px solid var(--border-color);
+            border: none;
+            outline: none;
         }
 
-        .message-form button {
-            margin-left: 12px;
-            padding: 12px 24px;
-            background-color: var(--primary-color);
-            color: white;
+        .message-form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-icon-btn {
+            background: none;
             border: none;
-            border-radius: 24px;
+            color: var(--primary-color);
+            font-size: 18px;
             cursor: pointer;
             transition: var(--transition);
-            font-weight: 600;
-            box-shadow: var(--shadow);
         }
 
-        .message-form button:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
+        .form-icon-btn:hover {
+            color: var(--secondary-color);
+        }
+
+        .send-btn {
+            background-color: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .send-btn:hover {
+            color: var(--secondary-color);
+        }
+
+        .send-btn:disabled {
+            color: var(--light-text-color);
+            cursor: not-allowed;
         }
 
         #backToAdminBtn {
-            padding: 8px 16px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid white;
-            border-radius: 12px;
+            padding: 8px 12px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
             transition: var(--transition);
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         #backToAdminBtn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            background-color: var(--hover-color);
         }
 
         .loading {
@@ -277,20 +430,57 @@
             justify-content: center;
             align-items: center;
             height: 100%;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--light-text-color);
         }
 
-        .loading::after {
-            content: '...';
-            animation: dots 1.5s steps(5, end) infinite;
+        .loading-dots {
+            display: inline-flex;
+            align-items: center;
+            height: 20px;
+            margin-left: 4px;
         }
 
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60% { content: '...'; }
-            80%, 100% { content: ''; }
+        .loading-dots span {
+            width: 4px;
+            height: 4px;
+            margin: 0 1px;
+            background-color: var(--light-text-color);
+            border-radius: 50%;
+            display: inline-block;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes loading {
+            0%, 80%, 100% { 
+                transform: scale(0);
+            } 40% { 
+                transform: scale(1.0);
+            }
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 8px 12px;
+            background-color: var(--message-bg);
+            border-radius: 18px;
+            margin-top: 4px;
+            align-self: flex-start;
+            font-size: 14px;
+            color: var(--light-text-color);
+        }
+
+        .typing-indicator.active {
+            display: flex;
+            align-items: center;
         }
 
         .modal {
@@ -302,46 +492,67 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
             background-color: white;
             margin: 15% auto;
-            padding: 20px;
-            border-radius: 12px;
-            width: 300px;
-            box-shadow: var(--shadow);
+            padding: 24px;
+            border-radius: 8px;
+            width: 320px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .modal-content h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
+            color: var(--text-color);
+            margin-bottom: 16px;
+            font-size: 18px;
         }
 
         .modal-content input {
             width: 100%;
-            padding: 10px;
+            padding: 10px 12px;
             margin-bottom: 20px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.2);
         }
 
         .modal-buttons {
             display: flex;
             justify-content: flex-end;
+            gap: 8px;
         }
 
         .modal-buttons button {
-            padding: 10px 20px;
-            margin-left: 10px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: var(--transition);
+            font-weight: 500;
         }
 
         .modal-buttons button.cancel {
-            background-color: #f0f0f0;
+            background-color: var(--hover-color);
             color: var(--text-color);
         }
 
@@ -351,168 +562,416 @@
         }
 
         .modal-buttons button:hover {
-            opacity: 0.8;
-            transform: translateY(-2px);
+            opacity: 0.9;
         }
 
         .search-bar {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 10px 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 20px;
             font-size: 14px;
-            box-shadow: var(--shadow);
+            background-color: var(--hover-color);
         }
 
         .search-bar:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+        }
+
+        .search-container {
+            padding: 0 8px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text-color);
+            font-size: 14px;
+        }
+
+        .search-bar {
+            padding-left: 36px;
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px;
+            right: 16px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 320px;
+            height: 300px;
+            display: none;
+            z-index: 100;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .emoji-picker.active {
+            display: block;
+            animation: slideUp 0.2s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .emoji-categories {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .emoji-category {
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .emoji-category:hover {
+            background-color: var(--hover-color);
+        }
+
+        .emoji-category.active {
+            background-color: var(--hover-color);
+        }
+
+        .emoji-list {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+
+        .emoji {
+            font-size: 20px;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .emoji:hover {
+            background-color: var(--hover-color);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--light-text-color);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+        .unread-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+        }
+
+        .message-reactions {
+            display: flex;
+            margin-top: 4px;
+            gap: 4px;
+        }
+
+        .reaction {
+            background-color: var(--hover-color);
+            border-radius: 12px;
+            padding: 2px 6px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .reaction-count {
+            font-weight: 500;
+        }
+
+        .message-options {
+            position: absolute;
+            top: 0;
+            right: -30px;
+            display: none;
+        }
+
+        .message:hover .message-options {
+            display: block;
+        }
+
+        .message-options-btn {
+            background: none;
+            border: none;
+            color: var(--light-text-color);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .message-options-menu {
+            position: absolute;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 150px;
+            display: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .message-options-menu.active {
+            display: block;
+        }
+
+        .message-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .message-option:hover {
+            background-color: var(--hover-color);
+        }
+
+        .date-divider {
+            text-align: center;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        .date-divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background-color: var(--border-color);
+            z-index: 1;
+        }
+
+        .date-divider span {
+            background-color: white;
+            padding: 0 12px;
+            position: relative;
+            z-index: 2;
+            font-size: 12px;
+            color: var(--light-text-color);
         }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
-                padding: 0;
-                gap: 0;
             }
 
             .sidebar {
-                height: auto;
-                border-radius: 0;
-                max-height: 40vh;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
             }
 
             .main-content {
-                height: 60vh;
-                border-radius: 0;
+                width: 100%;
             }
 
             .chat-header {
-                flex-direction: column;
-                align-items: flex-start;
+                padding: 8px 12px;
             }
 
-            .chat-header-info {
-                margin-bottom: 10px;
-            }
-
-            .message-form {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
+            .mobile-back-btn {
                 display: flex;
-                flex-direction: row;
-                padding: 10px;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                background: none;
+                border: none;
+                font-size: 18px;
+                color: var(--primary-color);
+                cursor: pointer;
+                margin-right: 8px;
             }
 
-            .message-form input {
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                background: none;
+                border: none;
+                font-size: 18px;
+                color: var(--primary-color);
+                cursor: pointer;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .emoji-picker {
                 width: 100%;
-                margin-bottom: 10px;
-            }
-
-            .message-form button {
-                width: 100%;
-                margin-left: 0;
-            }
-
-            .chat-messages {
-                height: calc(100% - 160px);
-                padding: 15px;
-            }
-            
-            .room-list {
-                height: calc(100% - 140px);
-            }
-
-            .input-container {
-                position: fixed;
-                bottom: 0;
                 left: 0;
                 right: 0;
-                background-color: white;
-                padding: 10px;
-                border-top: 1px solid var(--border-color);
-            }
-
-            .messages-container {
-                padding-bottom: 80px; /* Add space for fixed input container */
             }
         }
 
-        /* Add these container styles */
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background-color: white;
-            border-radius: 20px;
-            overflow: hidden;
+        /* Default styles for desktop */
+        .mobile-back-btn, .mobile-menu-btn {
+            display: none;
         }
 
-        .sidebar-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background-color: white;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background-color: #f5f7fb;
-        }
-
-        .input-container {
-            padding: 20px;
-            background-color: white;
-            border-top: 1px solid var(--border-color);
+        /* Show mobile elements on small screens */
+        @media (max-width: 768px) {
+            .mobile-back-btn, .mobile-menu-btn {
+                display: flex;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-container">
-                <div class="sidebar-header">
-                    <h1><i class="fas fa-comments"></i> Communications</h1>
-                    <button id="backToAdminBtn"><i class="fas fa-cog"></i> Admin Panel</button>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-comments"></i> Chats</h1>
+                <button id="backToAdminBtn"><i class="fas fa-cog"></i> Admin</button>
+            </div>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="roomSearch" class="search-bar" placeholder="Search conversations...">
+            </div>
+            <div id="roomList" class="room-list">
+                <div class="loading">
+                    Loading conversations
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </div>
-                <input type="text" id="roomSearch" class="search-bar" placeholder="Search rooms...">
-                <div id="roomList" class="room-list">
-                    <div class="loading">Loading rooms</div>
-                </div>
-                <div class="sidebar-footer">
-                    <button id="createRoomBtn"><i class="fas fa-plus"></i> Create New Room</button>
-                </div>
+            </div>
+            <div class="sidebar-footer">
+                <button id="createRoomBtn"><i class="fas fa-plus"></i> New Conversation</button>
             </div>
         </div>
         
         <div class="main-content">
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="chat-header-info">
-                        <div class="user-status">
-                            <span class="status-indicator"></span>
-                            <span id="userName"></span>
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="chat-header-avatar" id="roomAvatar">
+                        <span id="roomInitial"></span>
+                        <span class="online-indicator" id="roomOnlineStatus"></span>
+                    </div>
+                    <div class="chat-header-details">
+                        <h2 id="currentRoomName">Select a conversation</h2>
+                        <div class="chat-header-status" id="roomStatus">
+                            <span id="typingStatus"></span>
                         </div>
-                        <h2 id="currentRoomName">Select a room</h2>
                     </div>
                 </div>
-                <div class="messages-container">
-                    <div id="messages" class="chat-messages"></div>
+                <div class="chat-header-actions">
+                    <button class="header-icon-btn" id="callBtn" title="Start a call">
+                        <i class="fas fa-phone"></i>
+                    </button>
+                    <button class="header-icon-btn" id="videoBtn" title="Start a video call">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="header-icon-btn" id="infoBtn" title="Conversation info">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
                 </div>
-                <div class="input-container">
-                    <form id="messageForm" class="message-form">
-                        <input type="text" id="messageInput" placeholder="Type your message..." required>
-                        <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
-                    </form>
+            </div>
+            <div class="messages-container" id="messagesContainer">
+                <div id="messages" class="chat-messages">
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-comments"></i>
+                        <h3>Select a conversation</h3>
+                        <p>Choose a conversation from the list or create a new one to start messaging</p>
+                    </div>
+                </div>
+                <div class="typing-indicator" id="typingIndicator">
+                    <span id="typingUser"></span> is typing
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-container">
+                <form id="messageForm" class="message-form">
+                    <button type="button" class="form-icon-btn" id="attachBtn" title="Attach a file">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                    <div class="message-form-actions">
+                        <button type="button" class="form-icon-btn" id="emojiBtn" title="Choose an emoji">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <button type="submit" class="send-btn" id="sendBtn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="emoji-picker" id="emojiPicker">
+                <div class="emoji-categories">
+                    <div class="emoji-category active" data-category="smileys">😀</div>
+                    <div class="emoji-category" data-category="people">👋</div>
+                    <div class="emoji-category" data-category="animals">🐶</div>
+                    <div class="emoji-category" data-category="food">🍎</div>
+                    <div class="emoji-category" data-category="travel">🚗</div>
+                    <div class="emoji-category" data-category="activities">⚽</div>
+                    <div class="emoji-category" data-category="objects">💡</div>
+                    <div class="emoji-category" data-category="symbols">❤️</div>
+                </div>
+                <div class="emoji-list" id="emojiList">
+                    <!-- Emojis will be populated here -->
                 </div>
             </div>
         </div>
@@ -520,8 +979,8 @@
 
     <div id="createRoomModal" class="modal">
         <div class="modal-content">
-            <h2>Create New Room</h2>
-            <input type="text" id="newRoomName" placeholder="Enter room name" required>
+            <h2>Create New Conversation</h2>
+            <input type="text" id="newRoomName" placeholder="Enter conversation name" required>
             <div class="modal-buttons">
                 <button class="cancel" id="cancelCreateRoom">Cancel</button>
                 <button class="create" id="confirmCreateRoom">Create</button>
@@ -532,7 +991,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, set, update, serverTimestamp, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
@@ -555,95 +1014,513 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // DOM Elements
         const roomList = document.getElementById('roomList');
         const createRoomBtn = document.getElementById('createRoomBtn');
         const backToAdminBtn = document.getElementById('backToAdminBtn');
         const currentRoomName = document.getElementById('currentRoomName');
+        const roomInitial = document.getElementById('roomInitial');
+        const roomAvatar = document.getElementById('roomAvatar');
+        const roomOnlineStatus = document.getElementById('roomOnlineStatus');
+        const roomStatus = document.getElementById('roomStatus');
+        const typingStatus = document.getElementById('typingStatus');
         const messages = document.getElementById('messages');
+        const messagesContainer = document.getElementById('messagesContainer');
         const messageForm = document.getElementById('messageForm');
         const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
         const createRoomModal = document.getElementById('createRoomModal');
         const newRoomNameInput = document.getElementById('newRoomName');
         const cancelCreateRoomBtn = document.getElementById('cancelCreateRoom');
         const confirmCreateRoomBtn = document.getElementById('confirmCreateRoom');
-        const roomParticipants = document.getElementById('roomParticipants');
         const roomSearch = document.getElementById('roomSearch');
-        const userName = document.getElementById('userName');
-        const statusIndicator = document.querySelector('.status-indicator');
+        const emptyState = document.getElementById('emptyState');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const typingUser = document.getElementById('typingUser');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
+        const emojiList = document.getElementById('emojiList');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const callBtn = document.getElementById('callBtn');
+        const videoBtn = document.getElementById('videoBtn');
+        const infoBtn = document.getElementById('infoBtn');
+        const attachBtn = document.getElementById('attachBtn');
 
+        // State variables
         let currentRoom = null;
         let currentUser = null;
+        let lastMessageTime = {};
+        let typingTimeout = null;
+        let userTyping = {};
+        let unreadMessages = {};
+        let lastMessageRef = {};
+        let messageGroups = {};
 
+        // Emoji data
+        const emojiCategories = {
+            smileys: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘'],
+            people: ['👋', '👌', '✌️', '🤞', '👍', '👎', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '💪', '🦾', '🖐️', '✋', '🤚'],
+            animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧'],
+            food: ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆'],
+            travel: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🛻', '🚚', '🚛', '🚜', '🛵', '🏍️', '🛺'],
+            activities: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏'],
+            objects: ['💡', '🔦', '🧯', '🛢️', '💸', '💵', '💴', '💶', '💷', '💰', '💳', '💎', '⚖️', '🔨', '🪓', '⛏️', '⚒️'],
+            symbols: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘']
+        };
+
+        // Authentication state observer
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 console.log('User authenticated:', user.email);
                 currentUser = user;
-                userName.textContent = userNames[user.email] || user.email;
-                statusIndicator.classList.add('online');
                 loadRooms();
+                setupMessageInput();
             } else {
                 console.log('User not authenticated, redirecting to login');
                 window.location.href = 'Ang Silakbo Login1.html';
             }
         });
 
+        // Load rooms from Firebase
         function loadRooms() {
             const roomsRef = ref(db, 'chatRooms');
             onValue(roomsRef, (snapshot) => {
                 roomList.innerHTML = '';
+                if (!snapshot.exists()) {
+                    roomList.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><h3>No conversations yet</h3><p>Create a new conversation to start messaging</p></div>';
+                    return;
+                }
+
+                const rooms = [];
                 snapshot.forEach((childSnapshot) => {
                     const roomId = childSnapshot.key;
-                    const roomName = childSnapshot.val().name;
-                    const roomBtn = document.createElement('button');
-                    roomBtn.className = 'room-btn';
-                    roomBtn.innerHTML = `
-                        <div class="room-icon">${roomName.charAt(0).toUpperCase()}</div>
-                        <span>${roomName}</span>
-                    `;
-                    roomBtn.onclick = () => selectRoom(roomId, roomName);
-                    roomList.appendChild(roomBtn);
+                    const roomData = childSnapshot.val();
+                    rooms.push({
+                        id: roomId,
+                        name: roomData.name,
+                        lastMessage: roomData.lastMessage || null,
+                        lastMessageTime: roomData.lastMessageTime || 0
+                    });
+
+                    // Set up listener for last message in each room
+                    setupLastMessageListener(roomId);
+                });
+
+                // Sort rooms by last message time (newest first)
+                rooms.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+
+                // Render rooms
+                rooms.forEach(room => {
+                    createRoomElement(room);
                 });
             }, (error) => {
                 console.error('Error loading rooms:', error);
-                roomList.innerHTML = '<div class="loading">Error loading rooms</div>';
+                roomList.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Error loading conversations</h3><p>Please try again later</p></div>';
             });
         }
 
+        // Create room element
+        function createRoomElement(room) {
+            const roomBtn = document.createElement('button');
+            roomBtn.className = 'room-btn';
+            if (currentRoom === room.id) {
+                roomBtn.classList.add('active');
+            }
+
+            const lastMessageText = room.lastMessage ? 
+                (room.lastMessage.sender === currentUser.email ? 
+                    'You: ' + room.lastMessage.text : 
+                    (userNames[room.lastMessage.sender] || room.lastMessage.sender.split('@')[0]) + ': ' + room.lastMessage.text) : 
+                'No messages yet';
+            
+            const lastMessageTimeStr = room.lastMessageTime ? formatMessageTime(room.lastMessageTime) : '';
+            
+            const hasUnread = unreadMessages[room.id] && unreadMessages[room.id] > 0;
+            
+            roomBtn.innerHTML = `
+                <div class="room-icon">
+                    ${room.name.charAt(0).toUpperCase()}
+                    <span class="online-indicator"></span>
+                </div>
+                <div class="room-details">
+                    <div class="room-name">${room.name}</div>
+                    <div class="room-last-message">${lastMessageText}</div>
+                </div>
+                ${hasUnread ? `<div class="unread-badge">${unreadMessages[room.id]}</div>` : ''}
+                <div class="room-time">${lastMessageTimeStr}</div>
+            `;
+            
+            roomBtn.onclick = () => selectRoom(room.id, room.name);
+            roomList.appendChild(roomBtn);
+        }
+
+        // Set up listener for last message in each room
+        function setupLastMessageListener(roomId) {
+            const messagesRef = ref(db, `messages/${roomId}`);
+            const lastMessageQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(1));
+            
+            lastMessageRef[roomId] = onValue(lastMessageQuery, (snapshot) => {
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        const message = childSnapshot.val();
+                        
+                        // Update room's last message in Firebase
+                        const roomRef = ref(db, `chatRooms/${roomId}`);
+                        update(roomRef, {
+                            lastMessage: message,
+                            lastMessageTime: message.timestamp
+                        });
+                        
+                        // Update unread count if not in current room
+                        if (currentRoom !== roomId && message.sender !== currentUser.email) {
+                            unreadMessages[roomId] = (unreadMessages[roomId] || 0) + 1;
+                            // Update room element to show unread badge
+                            const roomElements = document.querySelectorAll('.room-btn');
+                            roomElements.forEach(el => {
+                                if (el.querySelector('.room-name').textContent === message.roomName) {
+                                    const unreadBadge = el.querySelector('.unread-badge') || document.createElement('div');
+                                    unreadBadge.className = 'unread-badge';
+                                    unreadBadge.textContent = unreadMessages[roomId];
+                                    if (!el.querySelector('.unread-badge')) {
+                                        el.appendChild(unreadBadge);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // Select a room
         function selectRoom(roomId, roomName) {
+            // If on mobile, hide sidebar after selecting a room
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+            }
+            
+            // Clear any previous room selection
+            if (currentRoom) {
+                document.querySelectorAll('.room-btn').forEach(btn => {
+                    if (btn.classList.contains('active')) {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
             currentRoom = roomId;
             currentRoomName.textContent = roomName;
-            loadMessages(roomId);
-            document.querySelectorAll('.room-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.room-btn').classList.add('active');
+            roomInitial.textContent = roomName.charAt(0).toUpperCase();
+            roomOnlineStatus.style.display = 'block';
+            
+            // Mark room as active
+            document.querySelectorAll('.room-btn').forEach(btn => {
+                if (btn.querySelector('.room-name').textContent === roomName) {
+                    btn.classList.add('active');
+                    // Remove unread badge
+                    const unreadBadge = btn.querySelector('.unread-badge');
+                    if (unreadBadge) {
+                        unreadBadge.remove();
+                    }
+                }
+            });
+            
+            // Reset unread count for this room
+            unreadMessages[roomId] = 0;
+            
+            // Show typing status area
+            roomStatus.style.display = 'flex';
+            typingStatus.textContent = '';
+            
+            // Hide empty state
+            emptyState.style.display = 'none';
+            
+            // Enable message input
+            messageInput.disabled = false;
+            messageInput.placeholder = "Type a message...";
+            messageInput.focus();
+            
+            // Load messages
+            loadMessages(roomId, roomName);
         }
 
-        function loadMessages(roomId) {
-            messages.innerHTML = '<div class="loading">Loading messages</div>';
+        // Load messages for a room
+        function loadMessages(roomId, roomName) {
+            messages.innerHTML = '';
+            messageGroups = {};
+            
             const messagesRef = ref(db, `messages/${roomId}`);
             onValue(messagesRef, (snapshot) => {
+                if (!snapshot.exists()) {
+                    messages.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-comment-dots"></i>
+                            <h3>No messages yet</h3>
+                            <p>Be the first to send a message in this conversation</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
                 messages.innerHTML = '';
+                
+                // Group messages by date
+                const messagesByDate = {};
+                
                 snapshot.forEach((childSnapshot) => {
                     const message = childSnapshot.val();
-                    const messageElement = document.createElement('div');
-                    const isCurrentUser = message.sender === currentUser.email;
-                    const senderName = userNames[message.sender] || message.sender;
+                    const messageDate = new Date(message.timestamp).toLocaleDateString();
                     
-                    messageElement.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
-                    messageElement.innerHTML = `
-                        ${!isCurrentUser ? `<div class="sender">${senderName}</div>` : ''}
-                        <div class="text">${message.text}</div>
-                    `;
-                    messages.appendChild(messageElement);
+                    if (!messagesByDate[messageDate]) {
+                        messagesByDate[messageDate] = [];
+                    }
+                    
+                    messagesByDate[messageDate].push({
+                        id: childSnapshot.key,
+                        ...message
+                    });
                 });
-                messages.scrollTop = messages.scrollHeight;
+                
+                // Sort dates
+                const sortedDates = Object.keys(messagesByDate).sort((a, b) => {
+                    return new Date(a) - new Date(b);
+                });
+                
+                // Render messages by date
+                sortedDates.forEach(date => {
+                    // Add date divider
+                    const today = new Date().toLocaleDateString();
+                    const yesterday = new Date(Date.now() - 86400000).toLocaleDateString();
+                    
+                    let dateText;
+                    if (date === today) {
+                        dateText = 'Today';
+                    } else if (date === yesterday) {
+                        dateText = 'Yesterday';
+                    } else {
+                        dateText = new Date(date).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        });
+                    }
+                    
+                    const dateDivider = document.createElement('div');
+                    dateDivider.className = 'date-divider';
+                    dateDivider.innerHTML = `<span>${dateText}</span>`;
+                    messages.appendChild(dateDivider);
+                    
+                    // Sort messages by timestamp
+                    const sortedMessages = messagesByDate[date].sort((a, b) => a.timestamp - b.timestamp);
+                    
+                    // Group consecutive messages from the same sender
+                    let currentSender = null;
+                    let currentGroup = null;
+                    
+                    sortedMessages.forEach((message, index) => {
+                        const isCurrentUser = message.sender === currentUser.email;
+                        const senderName = userNames[message.sender] || message.sender.split('@')[0];
+                        
+                        // Check if we need to start a new group
+                        if (currentSender !== message.sender || 
+                            (index > 0 && message.timestamp - sortedMessages[index-1].timestamp > 60000)) {
+                            // Create a new message group
+                            currentSender = message.sender;
+                            currentGroup = document.createElement('div');
+                            currentGroup.className = `message-group ${isCurrentUser ? 'sent' : 'received'}`;
+                            
+                            // Add sender name for received messages
+                            if (!isCurrentUser) {
+                                const senderElement = document.createElement('div');
+                                senderElement.className = 'message-sender';
+                                senderElement.textContent = senderName;
+                                currentGroup.appendChild(senderElement);
+                            }
+                            
+                            messages.appendChild(currentGroup);
+                        }
+                        
+                        // Create message element
+                        const messageElement = document.createElement('div');
+                        messageElement.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
+                        messageElement.innerHTML = `
+                            <div class="message-text">${message.text}</div>
+                            <div class="message-options">
+                                <button class="message-options-btn">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Add to current group
+                        currentGroup.appendChild(messageElement);
+                        
+                        // Add timestamp to the last message in a group or if it's been more than 5 minutes
+                        const nextMessage = sortedMessages[index + 1];
+                        if (!nextMessage || 
+                            nextMessage.sender !== message.sender || 
+                            nextMessage.timestamp - message.timestamp > 300000) {
+                            const timeElement = document.createElement('div');
+                            timeElement.className = 'message-time';
+                            timeElement.textContent = formatMessageTime(message.timestamp, true);
+                            currentGroup.appendChild(timeElement);
+                        }
+                    });
+                });
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }, (error) => {
                 console.error('Error loading messages:', error);
-                messages.innerHTML = '<div class="loading">Error loading messages</div>';
+                messages.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Error loading messages</h3>
+                        <p>Please try again later</p>
+                    </div>
+                `;
             });
         }
 
+        // Format message time
+        function formatMessageTime(timestamp, includeTime = false) {
+            if (!timestamp) return '';
+            
+            const messageDate = new Date(timestamp);
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            // Check if the message is from today
+            if (messageDate >= today) {
+                return includeTime ? formatTime(messageDate) : 'Today';
+            }
+            
+            // Check if the message is from yesterday
+            if (messageDate >= yesterday) {
+                return includeTime ? `Yesterday, ${formatTime(messageDate)}` : 'Yesterday';
+            }
+            
+            // Check if the message is from this week
+            const oneWeekAgo = new Date(today);
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 6);
+            if (messageDate >= oneWeekAgo) {
+                return includeTime ? 
+                    `${messageDate.toLocaleDateString('en-US', { weekday: 'short' })}, ${formatTime(messageDate)}` : 
+                    messageDate.toLocaleDateString('en-US', { weekday: 'short' });
+            }
+            
+            // Otherwise, show the date
+            return includeTime ? 
+                `${messageDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${formatTime(messageDate)}` : 
+                messageDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Format time (12-hour format)
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+
+        // Set up message input
+        function setupMessageInput() {
+            messageInput.addEventListener('input', () => {
+                // Enable/disable send button based on input
+                if (messageInput.value.trim()) {
+                    sendBtn.disabled = false;
+                } else {
+                    sendBtn.disabled = true;
+                }
+                
+                // Send typing indicator to Firebase
+                if (currentRoom) {
+                    const typingRef = ref(db, `typing/${currentRoom}/${currentUser.email.replace(/\./g, ',')}`);
+                    set(typingRef, {
+                        typing: true,
+                        timestamp: Date.now(),
+                        user: userNames[currentUser.email] || currentUser.email.split('@')[0]
+                    });
+                    
+                    // Clear typing indicator after 3 seconds of inactivity
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        set(typingRef, {
+                            typing: false,
+                            timestamp: Date.now(),
+                            user: userNames[currentUser.email] || currentUser.email.split('@')[0]
+                        });
+                    }, 3000);
+                }
+            });
+            
+            // Listen for typing indicators
+            if (currentRoom) {
+                const typingRef = ref(db, `typing/${currentRoom}`);
+                onValue(typingRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const typingUsers = [];
+                        snapshot.forEach((childSnapshot) => {
+                            const typingData = childSnapshot.val();
+                            const userEmail = childSnapshot.key.replace(/,/g, '.');
+                            
+                            // Don't show typing indicator for current user
+                            if (userEmail !== currentUser.email && typingData.typing) {
+                                typingUsers.push(typingData.user);
+                            }
+                        });
+                        
+                        if (typingUsers.length > 0) {
+                            typingUser.textContent = typingUsers.join(', ');
+                            typingIndicator.classList.add('active');
+                        } else {
+                            typingIndicator.classList.remove('active');
+                        }
+                    } else {
+                        typingIndicator.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Send message
+        messageForm.onsubmit = (e) => {
+            e.preventDefault();
+            if (currentRoom && messageInput.value.trim()) {
+                const messagesRef = ref(db, `messages/${currentRoom}`);
+                push(messagesRef, {
+                    sender: currentUser.email,
+                    text: messageInput.value.trim(),
+                    timestamp: Date.now(),
+                    roomName: currentRoomName.textContent
+                }).catch((error) => {
+                    console.error('Error sending message:', error);
+                    alert('Failed to send message. Please try again.');
+                });
+                
+                // Clear typing indicator
+                const typingRef = ref(db, `typing/${currentRoom}/${currentUser.email.replace(/\./g, ',')}`);
+                set(typingRef, {
+                    typing: false,
+                    timestamp: Date.now(),
+                    user: userNames[currentUser.email] || currentUser.email.split('@')[0]
+                });
+                
+                messageInput.value = '';
+                sendBtn.disabled = true;
+            }
+        };
+
+        // Create room
         createRoomBtn.onclick = () => {
             createRoomModal.style.display = 'block';
+            setTimeout(() => {
+                newRoomNameInput.focus();
+            }, 100);
         };
 
         cancelCreateRoomBtn.onclick = () => {
@@ -656,11 +1533,18 @@
             if (roomName) {
                 const roomsRef = ref(db, 'chatRooms');
                 const newRoomRef = push(roomsRef);
-                set(newRoomRef, { name: roomName })
+                set(newRoomRef, { 
+                    name: roomName,
+                    createdBy: currentUser.email,
+                    createdAt: serverTimestamp()
+                })
                     .then(() => {
                         console.log('Room created successfully');
                         createRoomModal.style.display = 'none';
                         newRoomNameInput.value = '';
+                        
+                        // Select the newly created room
+                        selectRoom(newRoomRef.key, roomName);
                     })
                     .catch((error) => {
                         console.error('Error creating room:', error);
@@ -669,31 +1553,22 @@
             }
         };
 
-        messageForm.onsubmit = (e) => {
-            e.preventDefault();
-            if (currentRoom && messageInput.value.trim()) {
-                const messagesRef = ref(db, `messages/${currentRoom}`);
-                push(messagesRef, {
-                    sender: currentUser.email,
-                    text: messageInput.value.trim(),
-                    timestamp: Date.now()
-                }).catch((error) => {
-                    console.error('Error sending message:', error);
-                    alert('Failed to send message. Please try again.');
-                });
-                messageInput.value = '';
-            }
-        };
-
+        // Back to admin panel
         backToAdminBtn.onclick = () => {
             window.location.href = 'Ang Silakbo Admin Panel.html';
         };
 
-        // Close the modal if clicked outside
+        // Close modal when clicking outside
         window.onclick = (event) => {
             if (event.target === createRoomModal) {
                 createRoomModal.style.display = 'none';
                 newRoomNameInput.value = '';
+            }
+            
+            // Close emoji picker when clicking outside
+            if (event.target !== emojiPicker && !emojiPicker.contains(event.target) && 
+                event.target !== emojiBtn && !emojiBtn.contains(event.target)) {
+                emojiPicker.classList.remove('active');
             }
         };
 
@@ -701,9 +1576,12 @@
         roomSearch.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const rooms = roomList.querySelectorAll('.room-btn');
+            
             rooms.forEach(room => {
-                const roomName = room.querySelector('span').textContent.toLowerCase();
-                if (roomName.includes(searchTerm)) {
+                const roomName = room.querySelector('.room-name').textContent.toLowerCase();
+                const lastMessage = room.querySelector('.room-last-message').textContent.toLowerCase();
+                
+                if (roomName.includes(searchTerm) || lastMessage.includes(searchTerm)) {
                     room.style.display = 'flex';
                 } else {
                     room.style.display = 'none';
@@ -711,9 +1589,97 @@
             });
         });
 
+        // Emoji picker
+        emojiBtn.addEventListener('click', () => {
+            emojiPicker.classList.toggle('active');
+            
+            // Populate emoji list if it's empty
+            if (emojiList.children.length === 0) {
+                populateEmojiList('smileys');
+            }
+        });
+
+        // Populate emoji list
+        function populateEmojiList(category) {
+            emojiList.innerHTML = '';
+            
+            emojiCategories[category].forEach(emoji => {
+                const emojiElement = document.createElement('div');
+                emojiElement.className = 'emoji';
+                emojiElement.textContent = emoji;
+                emojiElement.addEventListener('click', () => {
+                    messageInput.value += emoji;
+                    messageInput.focus();
+                    sendBtn.disabled = false;
+                });
+                emojiList.appendChild(emojiElement);
+            });
+            
+            // Update active category
+            document.querySelectorAll('.emoji-category').forEach(el => {
+                el.classList.remove('active');
+                if (el.dataset.category === category) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        // Emoji category selection
+        document.querySelectorAll('.emoji-category').forEach(el => {
+            el.addEventListener('click', () => {
+                populateEmojiList(el.dataset.category);
+            });
+        });
+
+        // Mobile menu button
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+        });
+
+        // Add mobile back button
+        const mobileBackBtn = document.createElement('button');
+        mobileBackBtn.className = 'mobile-back-btn';
+        mobileBackBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
+        mobileBackBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+        
+        // Add to sidebar header
+        sidebar.querySelector('.sidebar-header').prepend(mobileBackBtn);
+
+        // Feature buttons (placeholders for now)
+        callBtn.addEventListener('click', () => {
+            alert('Call feature coming soon!');
+        });
+        
+        videoBtn.addEventListener('click', () => {
+            alert('Video call feature coming soon!');
+        });
+        
+        infoBtn.addEventListener('click', () => {
+            alert('Conversation info feature coming soon!');
+        });
+        
+        attachBtn.addEventListener('click', () => {
+            alert('File attachment feature coming soon!');
+        });
+
         // Initialize the app
         function init() {
-            loadRooms();
+            // Disable message input until a room is selected
+            messageInput.disabled = true;
+            messageInput.placeholder = "Select a conversation to start messaging";
+            sendBtn.disabled = true;
+            
+            // Hide typing indicator initially
+            typingIndicator.classList.remove('active');
+            
+            // Show empty state
+            emptyState.style.display = 'flex';
+            
+            // Hide room status initially
+            roomStatus.style.display = 'none';
+            roomOnlineStatus.style.display = 'none';
         }
 
         init();
