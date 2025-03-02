@@ -873,8 +873,18 @@
             font-weight: 700;
         }
 
+        .comments-count {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
         .comment-form {
             margin-bottom: 40px;
+            position: relative;
         }
 
         .comment-input {
@@ -915,6 +925,17 @@
             box-shadow: 0 6px 15px rgba(230, 81, 0, 0.4);
         }
 
+        .comment-submit:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .comments-container {
+            margin-top: 30px;
+        }
+
         .comment {
             padding: 25px;
             border-radius: 12px;
@@ -922,6 +943,7 @@
             margin-bottom: 20px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
             transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
         }
 
         .comment:hover {
@@ -949,6 +971,40 @@
         .comment-body {
             line-height: 1.7;
             color: var(--text-primary);
+        }
+
+        .comments-loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            background-color: var(--background-alt);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .comment-user-info {
+            display: flex;
+            align-items: center;
         }
 
         /* Footer */
@@ -1913,6 +1969,150 @@
             return processedContent.slice(0, maxLength) + '...';
         }
 
+        // Load comments for a post
+        async function loadComments(postId, container) {
+            const commentsContainer = container.querySelector('.comments-container');
+            const commentsCount = container.querySelector('.comments-count');
+            
+            if (!commentsContainer) return;
+            
+            commentsContainer.innerHTML = `
+                <div class="comments-loading">
+                    <div class="loading-spinner" style="width: 30px; height: 30px;"></div>
+                    <p>Loading comments...</p>
+                </div>
+            `;
+            
+            try {
+                const snapshot = await db.collection('comments')
+                    .where('postId', '==', postId)
+                    .orderBy('timestamp', 'desc')
+                    .get();
+                
+                if (snapshot.empty) {
+                    commentsContainer.innerHTML = `
+                        <div class="no-comments">
+                            <p>No comments yet. Be the first to comment!</p>
+                        </div>
+                    `;
+                    commentsCount.textContent = '0';
+                    return;
+                }
+                
+                const comments = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        text: data.text,
+                        author: data.author || 'Anonymous',
+                        timestamp: data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date()
+                    };
+                });
+                
+                commentsContainer.innerHTML = '';
+                
+                comments.forEach(comment => {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment';
+                    
+                    // Get initials for avatar
+                    const initials = comment.author.charAt(0).toUpperCase();
+                    
+                    commentElement.innerHTML = `
+                        <div class="comment-header">
+                            <div class="comment-user-info">
+                                <div class="comment-avatar">${initials}</div>
+                                <div class="comment-author">${comment.author}</div>
+                            </div>
+                            <div class="comment-date">${formatCommentDate(comment.timestamp)}</div>
+                        </div>
+                        <div class="comment-body">${comment.text}</div>
+                    `;
+                    
+                    commentsContainer.appendChild(commentElement);
+                });
+                
+                commentsCount.textContent = comments.length.toString();
+                
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsContainer.innerHTML = `
+                    <div class="error" style="padding: 20px;">
+                        <p>Failed to load comments. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Format comment date
+        function formatCommentDate(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffSecs = Math.floor(diffMs / 1000);
+            const diffMins = Math.floor(diffSecs / 60);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffSecs < 60) {
+                return 'Just now';
+            } else if (diffMins < 60) {
+                return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+            } else if (diffHours < 24) {
+                return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            } else if (diffDays < 7) {
+                return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            } else {
+                return date.toLocaleDateString();
+            }
+        }
+        
+        // Add a comment
+        async function addComment(postId, text, form) {
+            if (!text.trim()) {
+                showToast('Please enter a comment');
+                return;
+            }
+            
+            const submitButton = form.querySelector('.comment-submit');
+            const commentInput = form.querySelector('.comment-input');
+            
+            // Disable the submit button and show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+            
+            try {
+                // Create a new comment document
+                const commentData = {
+                    postId: postId,
+                    text: text.trim(),
+                    author: 'Anonymous',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('comments').add(commentData);
+                
+                // Clear the input and re-enable the button
+                commentInput.value = '';
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Post Comment';
+                
+                // Show success message
+                showToast('Comment posted successfully!');
+                
+                // Reload comments to show the new one
+                const fullscreenElement = document.querySelector('.fullscreen');
+                if (fullscreenElement) {
+                    loadComments(postId, fullscreenElement);
+                }
+                
+            } catch (error) {
+                console.error('Error adding comment:', error);
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Post Comment';
+                showToast('Failed to post comment. Please try again.');
+            }
+        }
+
         // Open fullscreen article view
         async function openFullscreen(post) {
             const fullscreenElement = document.createElement('div');
@@ -1957,12 +2157,13 @@
                     <div class="comments-section">
                         <div class="comments-header">
                             <h3>Comments</h3>
+                            <span class="comments-count">0</span>
                         </div>
                         <div class="comment-form">
-                            <textarea class="comment-input" placeholder="Write a comment..." rows="3"></textarea>
+                            <textarea class="comment-input" placeholder="Write a comment as Anonymous..." rows="3"></textarea>
                             <button class="comment-submit">Post Comment</button>
                         </div>
-                        </div>
+                        <div class="comments-container"></div>
                     </div>
                 </div>
             `;
@@ -1994,12 +2195,32 @@
             bookmarkButton.addEventListener('click', function() {
                 bookmarkPost(post);
             });
+            
+            // Add event listener for comment form
+            const commentForm = fullscreenElement.querySelector('.comment-form');
+            const commentSubmit = commentForm.querySelector('.comment-submit');
+            const commentInput = commentForm.querySelector('.comment-input');
+            
+            commentSubmit.addEventListener('click', function() {
+                addComment(post.id, commentInput.value, commentForm);
+            });
+            
+            // Allow submitting with Enter key (Shift+Enter for new line)
+            commentInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    addComment(post.id, commentInput.value, commentForm);
+                }
+            });
 
             // Update the URL with the post ID
             history.pushState(null, '', `?post=${post.id}`);
 
             // Increment view count
             await incrementViewCount(post.id);
+            
+            // Load comments
+            loadComments(post.id, fullscreenElement);
         }
 
         // Check if user has loved a post
