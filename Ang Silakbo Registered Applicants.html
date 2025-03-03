@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silakbo Applicants Dashboard</title>
+    <title>Ang Silakbo - Applicants</title>
     <link rel="icon" href="SILAKBO.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1140,7 +1140,6 @@
                                 <div class="stat-label">Unique Positions</div>
                             </div>
                         </div>
-                      
                         <div class="stat-card">
                             <div class="stat-icon-container">
                                 <i class="fas fa-chart-line"></i>
@@ -1294,6 +1293,9 @@
         const applicantModal = document.getElementById('applicantModal');
         const modalClose = document.getElementById('modalClose');
         const closeModalBtn = document.getElementById('closeModalBtn');
+        const totalApplicantsElement = document.getElementById('totalApplicants');
+        const uniquePositionsElement = document.getElementById('uniquePositions');
+        const applicationRateElement = document.getElementById('applicationRate');
 
         // State
         let allApplicants = [];
@@ -1394,6 +1396,9 @@
                     showEmptyState('No applicant data available in the database');
                     showMessage("No applicant data available.", true);
                 }
+            }, (error) => {
+                console.error("Error fetching data:", error);
+                showMessage("Error fetching data: " + error.message, true);
             });
         }
 
@@ -1403,10 +1408,10 @@
 
             const filteredApplicants = allApplicants.filter(applicant => 
                 (searchTerm === '' || 
-                 applicant.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                 applicant.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                 applicant.position?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-                (positionFilter.value === '' || applicant.position === positionFilter.value) &&
+                 (applicant.name && applicant.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                 (applicant.email && applicant.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                 (applicant.position && applicant.position.toLowerCase().includes(searchTerm.toLowerCase()))) &&
+                (positionFilter.value === '' || (applicant.position && applicant.position === positionFilter.value)) &&
                 (experienceFilter.value === '' || filterExperience(applicant.experience, experienceFilter.value))
             );
 
@@ -1443,33 +1448,46 @@
                     actionsCell.appendChild(viewBtn);
                 });
                 
-                pageInfo.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, filteredApplicants.length)} of ${filteredApplicants.length} entries`;
+                if (pageInfo) {
+                    pageInfo.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, filteredApplicants.length)} of ${filteredApplicants.length} entries`;
+                }
             }
 
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
         }
 
-        // Update Stats
+        // Update Stats - Fixed to prevent null reference errors
         function updateStats() {
-            document.getElementById('totalApplicants').textContent = allApplicants.length;
+            if (totalApplicantsElement) {
+                totalApplicantsElement.textContent = allApplicants.length;
+            }
             
             const uniquePositions = new Set(allApplicants.map(a => a.position).filter(Boolean)).size;
-            document.getElementById('uniquePositions').textContent = uniquePositions;
-            
-            const latestApplication = allApplicants.length > 0 
-                ? new Date(allApplicants[0].timestamp).toLocaleDateString()
-                : 'N/A';
-            document.getElementById('latestApplication').textContent = latestApplication;
+            if (uniquePositionsElement) {
+                uniquePositionsElement.textContent = uniquePositions;
+            }
             
             if (allApplicants.length > 1) {
-                const oldestTimestamp = Math.min(...allApplicants.map(a => a.timestamp).filter(Boolean));
-                const newestTimestamp = Math.max(...allApplicants.map(a => a.timestamp).filter(Boolean));
-                const daysDifference = Math.max(1, (newestTimestamp - oldestTimestamp) / (1000 * 60 * 60 * 24));
-                const rate = (allApplicants.length / daysDifference).toFixed(2);
-                document.getElementById('applicationRate').textContent = `${rate}/day`;
+                const timestamps = allApplicants.map(a => a.timestamp).filter(Boolean);
+                if (timestamps.length > 1) {
+                    const oldestTimestamp = Math.min(...timestamps);
+                    const newestTimestamp = Math.max(...timestamps);
+                    const daysDifference = Math.max(1, (newestTimestamp - oldestTimestamp) / (1000 * 60 * 60 * 24));
+                    const rate = (allApplicants.length / daysDifference).toFixed(2);
+                    
+                    if (applicationRateElement) {
+                        applicationRateElement.textContent = `${rate}/day`;
+                    }
+                } else {
+                    if (applicationRateElement) {
+                        applicationRateElement.textContent = 'N/A';
+                    }
+                }
             } else {
-                document.getElementById('applicationRate').textContent = 'N/A';
+                if (applicationRateElement) {
+                    applicationRateElement.textContent = 'N/A';
+                }
             }
         }
 
@@ -1563,7 +1581,12 @@
                     </div>
                 </div>
             `;
-            document.getElementById('applicantDetails').innerHTML = detailsHTML;
+            
+            const detailsElement = document.getElementById('applicantDetails');
+            if (detailsElement) {
+                detailsElement.innerHTML = detailsHTML;
+            }
+            
             modalBackdrop.style.display = "block";
             applicantModal.style.display = "block";
             document.body.style.overflow = "hidden"; // Prevent scrolling
