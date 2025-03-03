@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -1225,6 +1226,109 @@
             font-size: 14px;
         }
 
+        /* Comment Popup */
+        .comment-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .comment-popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .comment-popup-content {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .comment-popup.active .comment-popup-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .comment-popup-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .comment-popup-title {
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .comment-popup-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .comment-popup-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .comment-popup-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            border: none;
+        }
+
+        .comment-popup-btn.google {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-popup-btn.google:hover {
+            background-color: #f8f8f8;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .comment-popup-btn.anonymous {
+            background-color: var(--background-alt);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .comment-popup-btn.anonymous:hover {
+            background-color: var(--border);
+        }
+
         /* Footer */
         .footer {
             background-color: var(--primary);
@@ -1606,11 +1710,20 @@
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
             
+            /* Mobile header layout improvements */
             .mobile-menu-btn {
                 display: block;
                 position: absolute;
-                right: 20px;
+                left: 20px;
                 top: 20px;
+            }
+            
+            .user-profile {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                left: auto;
+                transform: none;
             }
             
             .posts-grid {
@@ -1821,6 +1934,28 @@
         </div>
     </div>
 
+    <!-- Comment Popup -->
+    <div class="comment-popup" id="comment-popup">
+        <div class="comment-popup-content">
+            <button class="login-modal-close" id="comment-popup-close">&times;</button>
+            <div class="comment-popup-header">
+                <h3 class="comment-popup-title">You're about to comment as Anonymous</h3>
+                <p class="comment-popup-subtitle">You have the option to comment as your personal account</p>
+            </div>
+            <div class="comment-popup-options">
+                <button class="comment-popup-btn google" id="comment-google-login-btn">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </button>
+                <div class="login-modal-divider">
+                    <span>or</span>
+                </div>
+                <button class="comment-popup-btn anonymous" id="proceed-anonymous-btn">
+                    <i class="fas fa-user-secret"></i> Proceed as Anonymous
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Initialize Firebase
         const firebaseConfig = {
@@ -1853,6 +1988,9 @@
         const postsPerPage = 6;
         let currentCategory = 'all';
         let currentUser = null;
+        let pendingCommentText = '';
+        let pendingCommentPostId = '';
+        let pendingCommentForm = null;
         
         // DOM Elements
         const postsContainer = document.getElementById('posts-container');
@@ -1870,6 +2008,10 @@
         const anonymousLoginBtn = document.getElementById('anonymous-login-btn');
         const loginModalClose = document.querySelector('.login-modal-close');
         const userInfo = document.getElementById('user-info');
+        const commentPopup = document.getElementById('comment-popup');
+        const commentPopupClose = document.getElementById('comment-popup-close');
+        const commentGoogleLoginBtn = document.getElementById('comment-google-login-btn');
+        const proceedAnonymousBtn = document.getElementById('proceed-anonymous-btn');
         
         // Show error message
         function showError(message) {
@@ -1972,7 +2114,6 @@
                     postsContainer.innerHTML = `
                         <div class="no-posts fade-in">
                             <h2>No articles found</h2>
-                            <p>Try a different category or check back                            <h2>No articles found</h2>
                             <p>Try a different category or check back later.</p>
                         </div>
                     `;
@@ -2335,14 +2476,15 @@
                 return;
             }
             
-            // Show login modal if not logged in
+            // If user is not logged in, show the comment popup
             if (!currentUser) {
-                showLoginModal(() => {
-                    // This will be called after login
-                    if (currentUser) {
-                        addComment(postId, text, form);
-                    }
-                });
+                // Store the comment details for later
+                pendingCommentText = text;
+                pendingCommentPostId = postId;
+                pendingCommentForm = form;
+                
+                // Show the comment popup
+                showCommentPopup();
                 return;
             }
             
@@ -2386,6 +2528,21 @@
                 submitButton.innerHTML = 'Post Comment';
                 showToast('Failed to post comment. Please try again.');
             }
+        }
+
+        // Show comment popup
+        function showCommentPopup() {
+            commentPopup.classList.add('active');
+            
+            // Focus trap for accessibility
+            setTimeout(() => {
+                commentGoogleLoginBtn.focus();
+            }, 100);
+        }
+
+        // Hide comment popup
+        function hideCommentPopup() {
+            commentPopup.classList.remove('active');
         }
 
         // Open fullscreen article view
@@ -2559,7 +2716,7 @@
                     countElement.textContent = currentCount + 1;
                     
                     if (iconElement.classList.contains('far')) {
-                        iconElement.classList.replace('far', 'fas');
+                        iconElement.                        iconElement.classList.replace('far', 'fas');
                     }
                     
                     button.classList.add('active');
@@ -2821,7 +2978,6 @@
                 post.content.toLowerCase().includes(searchTerm) ||
                 (post.author && post.author.toLowerCase().includes(searchTerm)) ||
                 (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-                (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
             );
             
             displayPosts(filteredPosts);
@@ -2860,11 +3016,20 @@
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await auth.signInWithPopup(provider);
                 hideLoginModal();
+                hideCommentPopup();
                 
                 // Call the callback if it exists
                 if (typeof window.loginCallback === 'function') {
                     window.loginCallback();
                     window.loginCallback = null;
+                }
+                
+                // If there's a pending comment, post it now
+                if (pendingCommentText && pendingCommentPostId && pendingCommentForm) {
+                    addComment(pendingCommentPostId, pendingCommentText, pendingCommentForm);
+                    pendingCommentText = '';
+                    pendingCommentPostId = '';
+                    pendingCommentForm = null;
                 }
                 
                 showToast('Signed in successfully!');
@@ -2879,11 +3044,20 @@
             try {
                 await auth.signInAnonymously();
                 hideLoginModal();
+                hideCommentPopup();
                 
                 // Call the callback if it exists
                 if (typeof window.loginCallback === 'function') {
                     window.loginCallback();
                     window.loginCallback = null;
+                }
+                
+                // If there's a pending comment, post it now
+                if (pendingCommentText && pendingCommentPostId && pendingCommentForm) {
+                    addComment(pendingCommentPostId, pendingCommentText, pendingCommentForm);
+                    pendingCommentText = '';
+                    pendingCommentPostId = '';
+                    pendingCommentForm = null;
                 }
                 
                 showToast('Continuing as Anonymous');
@@ -3036,10 +3210,29 @@
                 }
             });
             
-            // Close modal with Escape key
+            // Comment popup events
+            commentPopupClose.addEventListener('click', hideCommentPopup);
+            
+            commentGoogleLoginBtn.addEventListener('click', signInWithGoogle);
+            
+            proceedAnonymousBtn.addEventListener('click', signInAnonymously);
+            
+            // Close comment popup when clicking outside
+            commentPopup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideCommentPopup();
+                }
+            });
+            
+            // Close modals with Escape key
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && loginModal.classList.contains('active')) {
-                    hideLoginModal();
+                if (e.key === 'Escape') {
+                    if (loginModal.classList.contains('active')) {
+                        hideLoginModal();
+                    }
+                    if (commentPopup.classList.contains('active')) {
+                        hideCommentPopup();
+                    }
                 }
             });
         });
