@@ -42,8 +42,11 @@
             overflow-x: hidden;
         }
 
+        /* Modern Glass Header */
         .header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: rgba(230, 81, 0, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 1rem 2rem;
             display: flex;
             align-items: center;
@@ -53,11 +56,13 @@
             top: 0;
             z-index: 1000;
             transition: var(--transition);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header.scrolled {
             padding: 0.5rem 2rem;
             box-shadow: var(--shadow-lg);
+            background: rgba(230, 81, 0, 0.98);
         }
 
         .branding {
@@ -71,10 +76,21 @@
             width: auto;
             transition: var(--transition);
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.05);
+            }
         }
 
         .header.scrolled .logo {
             height: 50px;
+            animation: none;
         }
 
         .title-container h1 {
@@ -84,6 +100,7 @@
             margin-bottom: 0.25rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: var(--transition);
+            letter-spacing: 1px;
         }
 
         .header.scrolled .title-container h1 {
@@ -96,6 +113,7 @@
             font-weight: 400;
             max-width: 400px;
             transition: var(--transition);
+            opacity: 0.9;
         }
 
         .header.scrolled .title-container p {
@@ -117,6 +135,7 @@
             transform: scale(1.1);
         }
 
+        /* Modern Navigation Menu */
         .nav-menu {
             display: flex;
             gap: 2rem;
@@ -128,31 +147,34 @@
             font-weight: 500;
             transition: var(--transition);
             position: relative;
-            padding: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            overflow: hidden;
         }
 
-        .nav-menu a::after {
+        .nav-menu a::before {
             content: '';
             position: absolute;
-            width: 0;
-            height: 3px;
-            bottom: 0;
+            top: 0;
             left: 0;
-            background-color: var(--accent-color);
-            transition: var(--transition);
-            border-radius: 3px;
-        }
-
-        .nav-menu a:hover {
-            color: var(--accent-light);
-        }
-
-        .nav-menu a:hover::after {
             width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+            border-radius: 30px;
+            z-index: -1;
         }
 
-        .nav-menu a.active::after {
-            width: 100%;
+        .nav-menu a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-menu a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .container {
@@ -161,6 +183,7 @@
             padding: 0 2rem;
         }
 
+        /* Modern Card Design */
         .document-card {
             background: var(--white);
             border-radius: var(--border-radius);
@@ -168,6 +191,19 @@
             padding: 3rem;
             margin-bottom: 2rem;
             transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         }
 
         .document-card:hover {
@@ -175,10 +211,11 @@
             transform: translateY(-5px);
         }
 
+        /* Modern Hero Section */
         .hero-section {
             text-align: center;
             margin-bottom: 3rem;
-            padding: 4rem 2rem;
+            padding: 6rem 2rem;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             border-radius: var(--border-radius);
             color: var(--white);
@@ -199,11 +236,12 @@
         }
 
         .hero-section h2 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
             font-weight: 700;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             position: relative;
+            letter-spacing: 2px;
         }
 
         .order-number {
@@ -216,16 +254,18 @@
             background: rgba(255,255,255,0.15);
             border-radius: 30px;
             backdrop-filter: blur(5px);
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* Modern Section Titles */
         .section-title {
             color: var(--primary-color);
             font-size: 2.2rem;
             font-weight: 600;
             margin: 2.5rem 0 1.5rem;
             padding-bottom: 0.75rem;
-            border-bottom: 3px solid var(--accent-color);
             position: relative;
             display: inline-block;
         }
@@ -233,20 +273,23 @@
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: -3px;
+            bottom: 0;
             left: 0;
-            width: 60px;
+            width: 100%;
             height: 3px;
-            background-color: var(--primary-color);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), transparent);
+            border-radius: 3px;
         }
 
         .effective-date {
             display: inline-block;
             background: var(--accent-color);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
             font-size: 0.9rem;
             margin: 1rem 0 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .subsection-title {
@@ -263,18 +306,19 @@
             display: inline-block;
             width: 8px;
             height: 24px;
-            background: var(--secondary-color);
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
             margin-right: 12px;
             border-radius: 4px;
         }
 
+        /* Modern Table Design */
         .professional-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
             margin: 2rem 0;
             background: var(--white);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
         }
@@ -283,7 +327,7 @@
         .professional-table td {
             padding: 1.2rem;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .professional-table th {
@@ -309,8 +353,10 @@
 
         .professional-table tr:hover {
             background-color: rgba(255, 224, 178, 0.4);
+            transform: translateX(5px);
         }
 
+        /* Modern List Design */
         .styled-list {
             list-style: none;
             margin: 1.5rem 0;
@@ -318,12 +364,13 @@
 
         .styled-list li {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: flex-start;
             gap: 1rem;
             transition: var(--transition);
-            border-radius: 6px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
         }
 
         .styled-list li:last-child {
@@ -333,6 +380,7 @@
         .styled-list li:hover {
             background-color: rgba(255, 224, 178, 0.2);
             transform: translateX(5px);
+            box-shadow: var(--shadow-sm);
         }
 
         .styled-list li::before {
@@ -343,6 +391,7 @@
             flex-shrink: 0;
         }
 
+        /* Modern Card Grid */
         .protocols-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -352,11 +401,24 @@
 
         .protocol-card {
             background: var(--white);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
             border-top: 4px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .protocol-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 143, 0, 0.1) 50%);
+            border-radius: 0 0 0 100px;
         }
 
         .protocol-card:hover {
@@ -374,15 +436,22 @@
 
         .protocol-card .styled-list li {
             padding: 0.75rem 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
         }
 
+        .protocol-card .styled-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Modern Footer */
         .footer {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
             color: var(--white);
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             margin-top: 4rem;
             text-align: center;
             position: relative;
+            border-top: 5px solid var(--secondary-color);
         }
 
         .footer::before {
@@ -391,8 +460,9 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 10px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" width="100" height="100"/><rect fill="rgba(255,255,255,0.05)" width="50" height="50"/><rect fill="rgba(255,255,255,0.05)" x="50" y="50" width="50" height="50"/></svg>');
+            opacity: 0.3;
         }
 
         .footer p {
@@ -401,6 +471,7 @@
             max-width: 600px;
             margin: 0 auto;
             line-height: 1.8;
+            position: relative;
         }
 
         .footer-links {
@@ -408,19 +479,26 @@
             justify-content: center;
             gap: 2rem;
             margin: 2rem 0;
+            position: relative;
         }
 
         .footer-links a {
             color: var(--accent-color);
             text-decoration: none;
             transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .footer-links a:hover {
             color: var(--white);
-            text-decoration: underline;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        /* Modern Back to Top Button */
         .back-to-top {
             position: fixed;
             bottom: 2rem;
@@ -445,7 +523,9 @@
 
         .back-to-top:hover {
             background: var(--primary-dark);
-            transform: translateY(-5px);
+            transform: translateY(-5px) rotate(360deg);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
         .back-to-top.visible {
@@ -453,6 +533,7 @@
             visibility: visible;
         }
 
+        /* Modern Timeline */
         .timeline {
             position: relative;
             max-width: 800px;
@@ -496,6 +577,7 @@
         .timeline-item:hover::after {
             background-color: var(--secondary-color);
             transform: scale(1.2);
+            box-shadow: 0 0 15px var(--secondary-light);
         }
 
         .left {
@@ -543,6 +625,7 @@
             border-radius: 12px;
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .timeline-content:hover {
@@ -570,67 +653,36 @@
             font-size: 0.8rem;
             margin-bottom: 0.5rem;
             font-weight: 500;
+            box-shadow: var(--shadow-sm);
         }
 
-        .quote-section {
-            background: var(--accent-color);
-            padding: 3rem 2rem;
-            text-align: center;
-            margin: 3rem 0;
-            border-radius: var(--border-radius);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quote-section::before {
-            content: '"';
-            position: absolute;
-            top: -20px;
-            left: 20px;
-            font-size: 150px;
-            color: rgba(230, 81, 0, 0.1);
-            font-family: Georgia, serif;
-        }
-
-        .quote-section::after {
-            content: '"';
-            position: absolute;
-            bottom: -80px;
-            right: 20px;
-            font-size: 150px;
-            color: rgba(230, 81, 0, 0.1);
-            font-family: Georgia, serif;
-        }
-
-        .quote-section blockquote {
-            font-size: 1.5rem;
-            font-style: italic;
-            color: var(--primary-color);
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .quote-section cite {
-            display: block;
-            margin-top: 1.5rem;
-            font-weight: 600;
-            font-style: normal;
-            color: var(--text-color);
-        }
-
+        /* Modern Progress Bar */
         .progress-bar {
             position: fixed;
             top: 0;
             left: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+            background-size: 200% 100%;
             width: 0%;
             z-index: 1001;
             transition: width 0.1s ease-out;
+            animation: gradient-shift 3s ease infinite;
         }
 
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Responsive Design */
         @media (max-width: 992px) {
             .container {
                 padding: 0 1.5rem;
@@ -669,6 +721,7 @@
             
             .logo {
                 height: 50px;
+                animation: none;
             }
             
             .title-container h1 {
@@ -705,6 +758,12 @@
 
             .nav-menu.active {
                 display: flex;
+            }
+
+            .nav-menu a {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem;
             }
 
             .hero-section {
@@ -762,6 +821,11 @@
             .right {
                 left: 0%;
             }
+
+            .footer-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -810,13 +874,27 @@
             }
         }
 
-        /* Animation classes */
+        /* Enhanced Animation Classes */
         .fade-in {
             animation: fadeIn 0.8s ease-in-out forwards;
         }
 
         .slide-up {
+            opacity: 0;
+            transform: translateY(30px);
             animation: slideUp 0.8s ease-in-out forwards;
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 0.8s ease-in-out forwards;
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideInRight 0.8s ease-in-out forwards;
         }
 
         @keyframes fadeIn {
@@ -836,6 +914,61 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Shimmer Effect for Cards */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) rotate(30deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(30deg);
             }
         }
     </style>
@@ -920,7 +1053,7 @@
             </div>
 
             <h4 class="subsection-title">Organizational Framework</h4>
-            <div class="table-container">
+            <div class="table-container shimmer">
                 <table class="professional-table">
                     <thead>
                         <tr>
@@ -956,7 +1089,7 @@
 
             <h3 class="section-title" id="protocols">Operational Protocols</h3>
             <div class="protocols-grid">
-                <div class="protocol-card">
+                <div class="protocol-card slide-in-left">
                     <h4 class="subsection-title">Ethical Journalism Standards</h4>
                     <ul class="styled-list">
                         <li>Fact-checking verification process</li>
@@ -966,7 +1099,7 @@
                     </ul>
                 </div>
 
-                <div class="protocol-card">
+                <div class="protocol-card slide-in-right">
                     <h4 class="subsection-title">Publication Timeline</h4>
                     <ul class="styled-list">
                         <li>Monthly digital updates</li>
@@ -1113,7 +1246,7 @@
             });
         });
 
-        // Scroll animations
+        // Enhanced scroll animations
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -1123,15 +1256,24 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('slide-up');
+                    if (entry.target.classList.contains('slide-in-left') || 
+                        entry.target.classList.contains('slide-in-right') ||
+                        entry.target.classList.contains('slide-up')) {
+                        // Keep the class for animation
+                    } else {
+                        entry.target.classList.add('slide-up');
+                    }
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
         // Observe elements for animation
-        document.querySelectorAll('.protocol-card, .timeline-item, .section-title').forEach(el => {
-            el.classList.remove('slide-up');
+        document.querySelectorAll('.protocol-card, .timeline-item, .section-title, .subsection-title').forEach(el => {
+            if (!el.classList.contains('slide-in-left') && 
+                !el.classList.contains('slide-in-right')) {
+                el.classList.remove('slide-up');
+            }
             observer.observe(el);
         });
 
