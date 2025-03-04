@@ -343,6 +343,43 @@
             box-shadow: 0 4px 10px rgba(230, 81, 0, 0.3);
         }
 
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto 20px;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+
+        .view-toggle-btn {
+            background-color: var(--background);
+            border: 2px solid var(--border);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-toggle-btn:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .view-toggle-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         /* Main Content */
         .main-content {
             max-width: 1200px;
@@ -496,6 +533,90 @@
 
         .post:hover::before {
             transform: scaleY(1);
+        }
+
+        /* Posts List View - NEW */
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .post-list-item {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 4px solid transparent;
+        }
+
+        .post-list-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+        }
+
+        .post-list-image {
+            flex: 0 0 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .post-list-content {
+            flex: 1;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-list-item .post-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+            font-weight: 700;
+        }
+
+        .post-list-item:hover .post-title {
+            color: var(--primary);
+        }
+
+        .post-list-item .post-meta {
+            margin-bottom: 15px;
+        }
+
+        .post-list-item .post-content {
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .post-list-item .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .post-list-category {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            font-family: 'Poppins', sans-serif;
         }
 
         .post-category-label {
@@ -1732,6 +1853,16 @@
             .latest-post-header {
                 height: 300px;
             }
+            
+            .post-list-item {
+                flex-direction: column;
+            }
+            
+            .post-list-image {
+                height: 200px;
+                flex: none;
+                width: 100%;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1875,6 +2006,11 @@
             .latest-post-header {
                 height: 200px;
             }
+            
+            .view-toggle-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -1884,7 +2020,7 @@
             <div class="header-content">
                 <img src="SILAKBO.png" alt="SILAKBO Logo">
                 <div class="header-text">
-                    <h1>ANG SILAKBO  |  Archives</h1>
+                    <h1>ANG SILAKBO | Archives</h1>
                     <p class="header-description">Pagpapahayag ng Makatotohanang Balita Na May Makabuluhang Damdamin.</p>
                 </div>
             </div>
@@ -1920,6 +2056,16 @@
             <button data-category="opinion">Opinion</button>
             <button data-category="feature">Feature</button>
             <button data-category="culture">Culture</button>
+        </div>
+
+        <!-- New View Toggle Buttons -->
+        <div class="view-toggle fade-in delay-2">
+            <button class="view-toggle-btn active" id="grid-view-btn">
+                <i class="fas fa-th-large"></i> Grid View
+            </button>
+            <button class="view-toggle-btn" id="list-view-btn">
+                <i class="fas fa-list"></i> List View
+            </button>
         </div>
 
         <div class="main-content">
@@ -2057,6 +2203,7 @@
         let pendingCommentText = '';
         let pendingCommentPostId = '';
         let pendingCommentForm = null;
+        let currentView = 'grid'; // Default view is grid
         
         // DOM Elements
         const postsContainer = document.getElementById('posts-container');
@@ -2078,6 +2225,8 @@
         const commentPopupClose = document.getElementById('comment-popup-close');
         const commentGoogleLoginBtn = document.getElementById('comment-google-login-btn');
         const proceedAnonymousBtn = document.getElementById('proceed-anonymous-btn');
+        const gridViewBtn = document.getElementById('grid-view-btn');
+        const listViewBtn = document.getElementById('list-view-btn');
         
         // Show error message
         function showError(message) {
@@ -2302,10 +2451,13 @@
             incrementViewCount(post.id);
         }
 
-        // Display posts in grid
+        // Display posts in grid or list view
         function displayPosts(posts, append = false) {
             if (!append) {
                 postsContainer.innerHTML = '';
+                
+                // Set the appropriate class based on current view
+                postsContainer.className = currentView === 'grid' ? 'posts-grid' : 'posts-list';
             }
 
             if (posts.length === 0 && !append) {
@@ -2319,43 +2471,104 @@
             }
 
             posts.forEach((post, index) => {
-                const postElement = document.createElement('article');
-                postElement.className = 'post fade-in';
-                postElement.style.animationDelay = `${(index * 0.1) + 0.3}s`;
-           
-                postElement.innerHTML = `
-                    <div class="post-category-label">${post.category}</div>
-                    <h2 class="post-title">${post.title}</h2>
-                    <div class="post-meta">
-                        <span class="post-date"><i class="far fa-calendar-alt"></i> ${post.date.toLocaleDateString()}</span>
-                        <span class="post-author"><i class="far fa-user"></i> ${post.author || 'Anonymous'}</span>
-                    </div>
-                    <div class="post-tags">${generateTags(post.tags)}</div>
-                    <div class="post-content">${truncateContent(post.content, 150)}</div>
-                    <div class="post-footer">
-                        <a href="#" class="read-more" data-id="${post.id}">Read more <i class="fas fa-arrow-right"></i></a>
-                        <button class="reaction-btn" data-id="${post.id}" data-type="love">
-                            <i class="far fa-heart"></i>
-                            <span class="reaction-count">${post.reactions?.love || 0}</span>
-                        </button>
-                    </div>
-                    <div class="post-menu">
-                        <button class="post-menu-btn">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div class="post-menu-content">
-                            <a href="#" class="share-link" data-id="${post.id}"><i class="fas fa-share-alt"></i> Share</a>
-                            <a href="#" class="bookmark-link" data-id="${post.id}"><i class="fas fa-bookmark"></i> Bookmark</a>
-                            <a href="#" class="report-link" data-id="${post.id}"><i class="fas fa-flag"></i> Report</a>
+                if (currentView === 'grid') {
+                    // Grid view
+                    const postElement = document.createElement('article');
+                    postElement.className = 'post fade-in';
+                    postElement.style.animationDelay = `${(index * 0.1) + 0.3}s`;
+               
+                    postElement.innerHTML = `
+                        <div class="post-category-label">${post.category}</div>
+                        <h2 class="post-title">${post.title}</h2>
+                        <div class="post-meta">
+                            <span class="post-date"><i class="far fa-calendar-alt"></i> ${post.date.toLocaleDateString()}</span>
+                            <span class="post-author"><i class="far fa-user"></i> ${post.author || 'Anonymous'}</span>
                         </div>
-                    </div>
-                `;
-                
-                postsContainer.appendChild(postElement);
+                        <div class="post-tags">${generateTags(post.tags)}</div>
+                        <div class="post-content">${truncateContent(post.content, 150)}</div>
+                        <div class="post-footer">
+                            <a href="#" class="read-more" data-id="${post.id}">Read more <i class="fas fa-arrow-right"></i></a>
+                            <button class="reaction-btn" data-id="${post.id}" data-type="love">
+                                <i class="far fa-heart"></i>
+                                <span class="reaction-count">${post.reactions?.love || 0}</span>
+                            </button>
+                        </div>
+                        <div class="post-menu">
+                            <button class="post-menu-btn">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="post-menu-content">
+                                <a href="#" class="share-link" data-id="${post.id}"><i class="fas fa-share-alt"></i> Share</a>
+                                <a href="#" class="bookmark-link" data-id="${post.id}"><i class="fas fa-bookmark"></i> Bookmark</a>
+                                <a href="#" class="report-link" data-id="${post.id}"><i class="fas fa-flag"></i> Report</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    postsContainer.appendChild(postElement);
+                } else {
+                    // List view
+                    const postElement = document.createElement('article');
+                    postElement.className = 'post-list-item fade-in';
+                    postElement.style.animationDelay = `${(index * 0.1) + 0.3}s`;
+                    
+                    postElement.innerHTML = `
+                        <div class="post-list-image" style="background-image: url('${post.image || '/placeholder.svg?height=400&width=800'}')">
+                            <div class="post-list-category">${post.category}</div>
+                        </div>
+                        <div class="post-list-content">
+                            <h2 class="post-title">${post.title}</h2>
+                            <div class="post-meta">
+                                <span class="post-date"><i class="far fa-calendar-alt"></i> ${post.date.toLocaleDateString()}</span>
+                                <span class="post-author"><i class="far fa-user"></i> ${post.author || 'Anonymous'}</span>
+                                <span class="view-count"><i class="fas fa-eye"></i> ${post.views}</span>
+                            </div>
+                            <div class="post-content">${truncateContent(post.content, 120)}</div>
+                            <div class="post-footer">
+                                <a href="#" class="read-more" data-id="${post.id}">Read more <i class="fas fa-arrow-right"></i></a>
+                                <button class="reaction-btn" data-id="${post.id}" data-type="love">
+                                    <i class="far fa-heart"></i>
+                                    <span class="reaction-count">${post.reactions?.love || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="post-menu">
+                            <button class="post-menu-btn">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="post-menu-content">
+                                <a href="#" class="share-link" data-id="${post.id}"><i class="fas fa-share-alt"></i> Share</a>
+                                <a href="#" class="bookmark-link" data-id="${post.id}"><i class="fas fa-bookmark"></i> Bookmark</a>
+                                <a href="#" class="report-link" data-id="${post.id}"><i class="fas fa-flag"></i> Report</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    postsContainer.appendChild(postElement);
+                }
                 
                 // Add event listeners for this post
-                setupPostEventListeners(postElement, post);
+                setupPostEventListeners(postsContainer.lastElementChild, post);
             });
+        }
+
+        // Toggle view between grid and list
+        function toggleView(viewType) {
+            if (currentView === viewType) return;
+            
+            currentView = viewType;
+            
+            // Update active button
+            if (viewType === 'grid') {
+                gridViewBtn.classList.add('active');
+                listViewBtn.classList.remove('active');
+            } else {
+                gridViewBtn.classList.remove('active');
+                listViewBtn.classList.add('active');
+            }
+            
+            // Redisplay posts with the new view
+            displayPosts(allPosts.slice(1));
         }
 
         // Setup event listeners for post elements
@@ -3209,6 +3422,10 @@
                     loadPosts();
                 });
             });
+            
+            // View toggle buttons
+            gridViewBtn.addEventListener('click', () => toggleView('grid'));
+            listViewBtn.addEventListener('click', () => toggleView('list'));
             
             // Load more button
             loadMoreBtn.addEventListener('click', () => loadPosts(true));
