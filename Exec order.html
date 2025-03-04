@@ -76,21 +76,10 @@
             width: auto;
             transition: var(--transition);
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-            animation: pulse 2s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.05);
-            }
         }
 
         .header.scrolled .logo {
             height: 50px;
-            animation: none;
         }
 
         .title-container h1 {
@@ -391,12 +380,31 @@
             flex-shrink: 0;
         }
 
-        /* Modern Card Grid */
+        /* Modern Card Grid with Logo Silhouette */
         .protocols-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
+            position: relative;
+        }
+
+        .protocols-grid::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background-image: url('SILAKBO.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            z-index: 0;
+            filter: contrast(200%) brightness(150%);
+            pointer-events: none;
         }
 
         .protocol-card {
@@ -408,6 +416,7 @@
             border-top: 4px solid var(--primary-color);
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
 
         .protocol-card::before {
@@ -721,7 +730,6 @@
             
             .logo {
                 height: 50px;
-                animation: none;
             }
             
             .title-container h1 {
@@ -874,102 +882,58 @@
             }
         }
 
-        /* Enhanced Animation Classes */
-        .fade-in {
-            animation: fadeIn 0.8s ease-in-out forwards;
+        /* Card Hover Effects */
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .slide-up {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: slideUp 0.8s ease-in-out forwards;
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
-        .slide-in-left {
-            opacity: 0;
-            transform: translateX(-30px);
-            animation: slideInLeft 0.8s ease-in-out forwards;
+        /* Floating Animation */
+        .float {
+            animation: float 6s ease-in-out infinite;
         }
 
-        .slide-in-right {
-            opacity: 0;
-            transform: translateX(30px);
-            animation: slideInRight 0.8s ease-in-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
             }
-            to {
-                opacity: 1;
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
             }
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Shimmer Effect for Cards */
-        .shimmer {
+        /* Glow Effect */
+        .glow {
             position: relative;
             overflow: hidden;
         }
 
-        .shimmer::after {
+        .glow::after {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 100%
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(255, 255, 255, 0) 70%
             );
-            transform: rotate(30deg);
-            animation: shimmer 3s infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease;
             pointer-events: none;
         }
 
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%) rotate(30deg);
-            }
-            100% {
-                transform: translateX(100%) rotate(30deg);
-            }
+        .glow:hover::after {
+            opacity: 1;
         }
     </style>
 </head>
@@ -978,7 +942,7 @@
     
     <header class="header" id="header">
         <div class="branding">
-            <img src="SILAKBO.png" alt="Ang Silakbo Logo" class="logo">
+            <img src="SILAKBO.png" alt="Ang Silakbo Logo" class="logo float">
             <div class="title-container">
                 <h1>ANG SILAKBO</h1>
                 <p>University of Cebu Lapu-Lapu and Mandaue Senior High School Official Publication</p>
@@ -995,12 +959,12 @@
     </header>
 
     <main class="container">
-        <section class="hero-section fade-in" id="charter">
+        <section class="hero-section glow" id="charter">
             <h2>University Publication Charter</h2>
             <p class="order-number">Executive Order No. 211</p>
         </section>
 
-        <article class="document-card slide-up">
+        <article class="document-card card-hover">
             <h3 class="section-title">Preamble</h3>
             <p class="effective-date"><strong>Effective Date:</strong> Immediately upon ratification</p>
             
@@ -1053,7 +1017,7 @@
             </div>
 
             <h4 class="subsection-title">Organizational Framework</h4>
-            <div class="table-container shimmer">
+            <div class="table-container glow">
                 <table class="professional-table">
                     <thead>
                         <tr>
@@ -1089,7 +1053,7 @@
 
             <h3 class="section-title" id="protocols">Operational Protocols</h3>
             <div class="protocols-grid">
-                <div class="protocol-card slide-in-left">
+                <div class="protocol-card card-hover">
                     <h4 class="subsection-title">Ethical Journalism Standards</h4>
                     <ul class="styled-list">
                         <li>Fact-checking verification process</li>
@@ -1099,7 +1063,7 @@
                     </ul>
                 </div>
 
-                <div class="protocol-card slide-in-right">
+                <div class="protocol-card card-hover">
                     <h4 class="subsection-title">Publication Timeline</h4>
                     <ul class="styled-list">
                         <li>Monthly digital updates</li>
@@ -1113,28 +1077,28 @@
             <h3 class="section-title" id="timeline">Publication Timeline</h3>
             <div class="timeline">
                 <div class="timeline-item left">
-                    <div class="timeline-content">
+                    <div class="timeline-content glow">
                         <span class="timeline-date">2021</span>
                         <h2>Concept Development</h2>
                         <p>Initial brainstorming and planning for the publication structure</p>
                     </div>
                 </div>
                 <div class="timeline-item right">
-                    <div class="timeline-content">
+                    <div class="timeline-content glow">
                         <span class="timeline-date">2021</span>
                         <h2>Team Formation</h2>
                         <p>Recruitment and organization of the editorial team</p>
                     </div>
                 </div>
                 <div class="timeline-item left">
-                    <div class="timeline-content">
+                    <div class="timeline-content glow">
                         <span class="timeline-date">2025</span>
                         <h2>First Edition Release</h2>
                         <p>Launch of the inaugural issue of Ang Silakbo</p>
                     </div>
                 </div>
                 <div class="timeline-item right">
-                    <div class="timeline-content">
+                    <div class="timeline-content glow">
                         <span class="timeline-date">2025</span>
                         <h2>Digital Expansion</h2>
                         <p>Introduction of online platforms and social media presence</p>
@@ -1246,7 +1210,7 @@
             });
         });
 
-        // Enhanced scroll animations
+        // Reveal animations on scroll
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -1256,24 +1220,14 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    if (entry.target.classList.contains('slide-in-left') || 
-                        entry.target.classList.contains('slide-in-right') ||
-                        entry.target.classList.contains('slide-up')) {
-                        // Keep the class for animation
-                    } else {
-                        entry.target.classList.add('slide-up');
-                    }
+                    entry.target.classList.add('card-hover');
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
         // Observe elements for animation
-        document.querySelectorAll('.protocol-card, .timeline-item, .section-title, .subsection-title').forEach(el => {
-            if (!el.classList.contains('slide-in-left') && 
-                !el.classList.contains('slide-in-right')) {
-                el.classList.remove('slide-up');
-            }
+        document.querySelectorAll('.protocol-card, .timeline-content, .document-card').forEach(el => {
             observer.observe(el);
         });
 
