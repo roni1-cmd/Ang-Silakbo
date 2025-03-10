@@ -3,407 +3,1347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Literary Works</title>
-    <link rel="icon" href="SILAKBO (1).png">
+    <title>Ang Silakbo - Narratives</title>
+    <link rel="icon" href="SILAKBO.png">
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Georgia:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body, html {
+        :root {
+            --primary: #FF6B00;
+            --primary-light: #FF8A3D;
+            --primary-dark: #E05A00;
+            --secondary: #263238;
+            --accent: #FFC107;
+            --text-dark: #212121;
+            --text-medium: #424242;
+            --text-light: #757575;
+            --background: #FFF9F5;
+            --card-bg: #FFFFFF;
+            --border: #FFE0CC;
+            --shadow: 0 8px 30px rgba(255, 107, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
+            background-color: var(--background);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            line-height: 1.8;
+            font-size: 16px;
+            overflow-x: hidden;
+            width: 100%;
         }
+
         .content-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
             width: 100%;
             margin: 0 auto;
-            background-color: white;
         }
-        .header {
-            background-image: url('literary.avif');
-            background-size: cover;
-            background-position: center;
+
+        /* Masthead Styles */
+        .masthead {
+            background-color: var(--primary-dark);
+            padding: 12px 0;
             color: white;
-            padding: 40px 20px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .masthead p {
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: white;
+            color: var(--text-dark);
+            padding: 30px 20px;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            border-bottom: 3px solid var(--primary);
         }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
+
         .header-content {
             position: relative;
             z-index: 1;
             display: flex;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
+
         .header img {
-            height: 60px;
-            margin-right: 20px;
+            height: 80px;
+            margin-right: 30px;
         }
+
         .header-text {
             text-align: left;
+            position: relative;
         }
+
         .header h1 {
-            font-size: 1.8em;
+            font-family: 'Poppins', sans-serif;
+            font-size: 3em;
             margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            color: var(--primary);
         }
+
+        .header h1::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary);
+            margin-top: 15px;
+        }
+
         .header-description {
-            font-size: 1em;
-            max-width: 400px;
-            margin: 5px 0 0;
+            font-size: 1.1em;
+            max-width: 500px;
+            margin: 15px 0 0;
+            font-weight: 400;
+            line-height: 1.5;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            color: var(--text-medium);
         }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255, 107, 0, 0.1);
+            width: 100%;
+        }
+
         .nav-links {
-            background-color: #E65100;
-            padding: 10px;
-            text-align: center;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 5px 10px;
-            margin: 0 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .nav-links a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        .search-container {
-            padding: 20px;
-            background-color: white;
-        }
-        #search-input {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #E65100;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .posts-container {
-            flex: 1;
-            padding: 20px;
-            background-color: white;
-        }
-        .post {
-            margin-bottom: 30px;
-            position: relative;
-        }
-        .post-title {
-            font-size: 24px;
-            color: #E65100;
-            margin-bottom: 10px;
-        }
-        .post-date {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        .post-content {
-            line-height: 1.6;
-        }
-        .post-separator {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 20px 0;
-            position: relative;
-        }
-        .post-separator::after {
-            content: "ANG SILAKBO";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 0 10px;
-            font-size: 10px;
-            color: #999;
-        }
-        .loading, .error, .no-posts {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .error {
-            color: #d32f2f;
-            background-color: #ffebee;
-            border-radius: 8px;
-        }
-        .retry-button {
-            background-color: #E65100;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .retry-button:hover {
-            background-color: #F57C00;
-        }
-        .footer {
-            background-color: #E65100;
-            color: white;
-            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9em;
-            box-sizing: border-box;
-            padding: 20px;
+            flex-wrap: wrap;
         }
-        .footer-content {
+
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 8px 0;
+            font-weight: 500;
             display: flex;
             align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            text-transform: uppercase;
+            font-size: 14px;
         }
-        .footer-logo {
-            height: 40px;
-            margin-right: 15px;
-        }
-        .footer-text {
-            text-align: left;
-        }
-        .social-icons {
-            display: flex;
-            gap: 15px;
-        }
-        .social-icons a {
-            color: white;
-            font-size: 20px;
-            transition: color 0.3s;
-        }
-        .social-icons a:hover {
-            color: #F57C00;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .fade-in {
-            animation: fadeIn 1s ease-in;
-        }
-        .post-menu {
+
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            top: 10px;
-            right: 10px;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 24px;
             cursor: pointer;
         }
-        .post-menu-content {
-            display: none;
+
+        /* Search Container Styles - Moved to top navigation */
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            position: relative;
+            width: 300px;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #search-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+        }
+
+        .search-icon {
             position: absolute;
+            right: 15px;
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        /* Magazine Layout */
+        .magazine-layout {
+            max-width: 1200px;
+            margin: 25px auto 50px;
+            padding: 0 20px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 30px;
+        }
+
+        .main-content {
+            grid-column: span 8;
+        }
+
+        .sidebar {
+            grid-column: span 4;
+            position: sticky;
+            top: 90px;
+            align-self: start;
+        }
+
+        /* Posts Container Styles */
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .post {
+            background-color: var(--card-bg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 107, 0, 0.15);
+        }
+
+        /* Featured Post */
+        .post.featured {
+            position: relative;
+            border-top: 4px solid var(--accent);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 20px;
             right: 0;
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            z-index: 10;
+            background-color: var(--accent);
+            color: var(--text-dark);
+            padding: 8px 15px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            border-radius: 4px 0 0 4px;
+            box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .post-menu-content a {
+
+        /* Cover Image Styles */
+        .post-cover {
+            width: 100%;
+            position: relative;
+            background-color: #f5f5f5;
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+            max-height: 300px; /* Limit preview height */
+        }
+
+        .cover-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            cursor: pointer;
             display: block;
-            padding: 10px;
+        }
+
+        .post:hover .cover-image {
+            transform: scale(1.03);
+        }
+
+        .post-header {
+            padding: 30px 30px 15px;
+            position: relative;
+        }
+
+        .post-category {
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: 600;
+            background-color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .post-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .post-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .post-meta {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .post-date {
+            color: var(--text-light);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .post-date i {
+            color: var(--primary);
+        }
+
+        .post-credits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background-color: rgba(255, 107, 0, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .post-author, .post-cartoonist {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .credit-icon {
+            color: var(--primary);
+            font-size: 18px;
+            background-color: rgba(255, 107, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .credit-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .credit-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .credit-role {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-excerpt {
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-medium);
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(255, 107, 0, 0.03);
+            border-radius: 8px;
+            position: relative;
+            font-style: italic;
+        }
+
+        .post-excerpt::before {
+            content: '"';
+            font-family: 'Georgia', serif;
+            font-size: 60px;
+            position: absolute;
+            left: 5px;
+            top: -15px;
+            color: rgba(255, 107, 0, 0.2);
+        }
+
+        .post-content {
+            padding: 0 30px 30px;
+            line-height: 1.9;
+            color: var(--text-dark);
+            overflow: hidden;
+            transition: var(--transition);
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.5em;
+        }
+
+        .post-content h2, .post-content h3, .post-content h4 {
+            font-family: 'Poppins', sans-serif;
+            margin: 1.5em 0 0.8em;
+            color: var(--text-dark);
+        }
+
+        .post-content a {
+            color: var(--primary);
             text-decoration: none;
-            color: #333;
+            border-bottom: 1px solid var(--primary-light);
+            transition: var(--transition);
         }
-        .post-menu-content a:hover {
-            background-color: #f0f0f0;
+
+        .post-content a:hover {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary-dark);
         }
-        .fullscreen {
+
+        .post-content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            color: var(--text-medium);
+            position: relative;
+        }
+
+        .post-content blockquote::before {
+            content: '"';
+            font-family: 'Georgia', serif;
+            font-size: 60px;
+            position: absolute;
+            left: -15px;
+            top: -20px;
+            color: rgba(255, 107, 0, 0.2);
+        }
+
+        .post-content.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+        }
+
+        /* Content images in collapsed state */
+        .post-content.collapsed img {
+            display: none;
+        }
+
+        /* Toggle Button Styles */
+        .toggle-content {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 25px;
+            margin: 15px 0 0;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 14px;
+            border-radius: 30px;
+        }
+
+        .toggle-content:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Share Button Styles */
+        .share-post {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 15px 15px 0 0;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 14px;
+            border-radius: 30px;
+        }
+
+        .share-post:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        .post-actions {
+            display: flex;
+            padding: 0 30px 30px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar-section {
+            background-color: var(--card-bg);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .sidebar-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            margin: 0;
+            position: relative;
+            display: inline-block;
+            color: var(--primary-dark);
+        }
+
+        .sidebar-content {
+            padding: 20px;
+        }
+
+        .popular-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .popular-post {
+            display: flex;
+            gap: 15px;
+            transition: var(--transition);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .popular-post:hover {
+            background-color: rgba(255, 107, 0, 0.05);
+            transform: translateX(5px);
+        }
+
+        .popular-post-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .popular-post-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popular-post-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            margin: 0 0 5px;
+            line-height: 1.4;
+        }
+
+        .popular-post-date {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: white;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 1000;
-            overflow-y: auto;
-            padding: 20px;
-            box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-            transform: scale(0.9);
+            transition: var(--transition);
         }
-        .fullscreen.active {
+
+        .lightbox.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1);
         }
-        .fullscreen .post-content {
-            max-width: 800px;
-            margin: 0 auto;
+
+        .lightbox-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
         }
-        .close-fullscreen {
-            position: fixed;
+
+        .close-lightbox {
+            position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 1001;
-            background-color: #E65100;
             color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background-color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-lightbox:hover {
+            background-color: var(--primary-light);
+            transform: rotate(90deg);
+        }
+
+        /* Loading and Error Styles */
+        .loading, .error, .no-posts {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 107, 0, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+        }
+
+        .retry-button {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            cursor: pointer;
+            margin-top: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: 30px;
+        }
+
+        .retry-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: var(--secondary);
+            color: white;
+            width: 100%;
+            padding: 50px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .footer-logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .footer-logo {
+            height: 70px;
+            margin-bottom: 20px;
+        }
+
+        .footer-description {
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .footer-links h3, .footer-contact h3 {
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 20px;
+            font-size: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h3::after, .footer-contact h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-light);
+            transform: translateX(5px);
+        }
+
+        .footer-contact p {
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-contact i {
+            color: var(--primary-light);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
             width: 40px;
             height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: var(--transition);
         }
-        .close-fullscreen:hover {
-            background-color: #F57C00;
-            transform: rotate(90deg);
+
+        .social-icons a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-        .read-more {
-            color: #E65100;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .read-more:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 768px) {
-            .header, .footer {
-            flex-direction: column;
+
+        .copyright {
             text-align: center;
             padding: 20px;
-            }
-            .header-content, .footer-content {
-            flex-direction: column;
-            }
-            .header img {
-            height: 40px;
-            width: auto;
-            margin-right: 0;
-            margin-bottom: 10px;
-            }
-            .footer-logo {
-            height: 30px;
-            width: auto;
-            margin-right: 0;
-            margin-bottom: 10px;
-            }
-            .header-text, .footer-text {
-            text-align: center;
-            }
-            .nav-links a {
-            display: block;
-            margin: 10px 0;
-            }
-            .social-icons {
-            justify-content: center;
-            margin-top: 15px;
-            }
-            img {
-            max-width: 100%;
-            height: auto;
-            }
+            background-color: rgba(0, 0, 0, 0.2);
+            margin-top: 40px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
         }
 
-        .featured-label {
-            background-color: #E65100;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            display: inline-block;
-            margin-bottom: 10px;
+        /* Animation Styles */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .post-meta {
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Share Link Modal */
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-            color: #666;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
         }
 
-        .post-tags {
-            margin-bottom: 15px;
+        .share-modal.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .tag {
-            background-color: #f0f0f0;
-            color: #333;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            margin-right: 5px;
+        .share-modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
         }
 
-        .social-share {
-            margin-top: 20px;
+        .share-modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
         }
 
-        .social-share button {
-            background-color: #E65100;
+        .share-modal-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .share-link-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #share-link {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 4px 0 0 4px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        #copy-link-btn {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 8px 12px;
-            margin-right: 10px;
-            border-radius: 4px;
+            padding: 0 20px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 0 4px 4px 0;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
-        .social-share button:hover {
-            background-color: #F57C00;
+        #copy-link-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .close-share-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .close-share-modal:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .share-social {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .share-social a {
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .share-social a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .share-social a.facebook {
+            background-color: #3b5998;
+            color: white;
+        }
+
+        .share-social a.twitter {
+            background-color: #1da1f2;
+            color: white;
+        }
+
+        .share-social a.whatsapp {
+            background-color: #25d366;
+            color: white;
+        }
+
+        /* Highlight for post when linked directly */
+        .post.highlight {
+            box-shadow: 0 0 0 3px var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
+        }
+
+        /* Responsive Styles - Improved */
+        @media (max-width: 1200px) {
+            .magazine-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .main-content, .sidebar {
+                grid-column: span 12;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header h1 {
+                font-size: 2.8em;
+            }
+            
+            .header-description {
+                font-size: 1em;
+            }
+            
+            .post-title {
+                font-size: 26px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .search-container {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header img {
+                height: 70px;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .header-text {
+                text-align: center;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .header h1::after {
+                margin: 15px auto 0;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 15px;
+                justify-content: space-between;
+            }
+            
+            .search-container {
+                width: 100%;
+                order: 3;
+                margin-top: 15px;
+                margin-left: 0;
+            }
+            
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: white;
+                padding: 15px 0;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                z-index: 100;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                order: 1;
+            }
+            
+            .post-header, .post-content {
+                padding: 20px;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .post-credits {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+            
+            .post-actions {
+                flex-direction: column;
+                padding: 0 20px 20px;
+            }
+            
+            .share-post {
+                margin: 15px 0 0 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .post {
+                margin-bottom: 30px;
+            }
+            
+            .post-header, .post-content {
+                padding: 15px;
+            }
+            
+            .post-title {
+                font-size: 22px;
+            }
+            
+            .post-actions {
+                padding: 0 15px 15px;
+            }
+            
+            .share-link-container {
+                flex-direction: column;
+            }
+            
+            #share-link {
+                border-radius: 4px 4px 0 0;
+            }
+            
+            #copy-link-btn {
+                border-radius: 0 0 4px 4px;
+                padding: 10px;
+            }
+            
+            .post-cover {
+                max-height: 200px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="content-wrapper">
+        <div class="masthead">
+            <p>The Literary Voice of Ang Silakbo • Voice of the Students • Voice of Reality</p>
+        </div>
+        
         <header class="header fade-in">
             <div class="header-content">
                 <img src="SILAKBO.png" alt="SILAKBO Logo">
                 <div class="header-text">
-                    <h1>Ang Silakbo Literaries</h1>
-                    <p class="header-description">Expressing emotions through the power of words.</p>
+                    <h1><strong> ANG SILAKBO</strong></h1>
+                    <p class="header-description">Expressing emotions through the power of words and imagery.</p>
                 </div>
             </div>
         </header>
 
-        <nav class="nav-links fade-in">
-            <a href="Photostory.html"><i class="fas fa-camera"></i> Photostories</a>
-            <a href="Artikulo.html"><i class="fas fa-newspaper"></i> Articles</a>
-            <a href="literary.html"><i class="fas fa-book"></i> Literary Works</a>
-            <a href="About Us.html"><i class="fas fa-info-circle"></i> About Us</a>
-        </nav>
-
-        <div class="search-container fade-in">
-            <input type="text" id="search-input" placeholder="Search literary works...">
+        <div class="nav-container">
+            <nav class="nav-links fade-in">
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-menu" id="nav-menu">
+                    <a href="Photostory.html"><i class="fas fa-camera"></i> Photostories</a>
+                    <a href="Artikulo.html"><i class="fas fa-newspaper"></i> Articles</a>
+                    <a href="literary.html"><i class="fas fa-book"></i> Literary Works</a>
+                    <a href="About Us.html"><i class="fas fa-info-circle"></i> About Us</a>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search literary works...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </nav>
         </div>
 
-        <div id="posts-container" class="posts-container">
-            <div class="loading">Loading literary works...</div>
+        <div class="magazine-layout">
+            <main class="main-content">
+                <div id="posts-container" class="posts-container">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading literary works...</p>
+                    </div>
+                </div>
+            </main>
+            
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <h2 class="sidebar-title">Popular Posts</h2>
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="popular-posts" id="popular-posts">
+                            <!-- Popular posts will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <h2 class="sidebar-title">About Ang Silakbo</h2>
+                    </div>
+                    <div class="sidebar-content">
+                        <p>Ang Silakbo is a literary magazine dedicated to showcasing the creative expressions of Filipino writers and artists. We publish poetry, short stories, essays, and visual art that capture the depth of human emotions.</p>
+                        <div class="social-icons" style="margin-top: 15px;">
+                            <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div id="lightbox" class="lightbox">
+            <img id="lightbox-image" class="lightbox-image" src="/placeholder.svg" alt="Enlarged image">
+            <div class="close-lightbox" id="close-lightbox">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+
+        <!-- Share Link Modal -->
+        <div id="share-modal" class="share-modal">
+            <div class="share-modal-content">
+                <h3 class="share-modal-title">Share This Post</h3>
+                <div class="share-link-container">
+                    <input type="text" id="share-link" readonly>
+                    <button id="copy-link-btn">Copy</button>
+                </div>
+                <div class="share-social">
+                    <a href="#" class="facebook" id="share-facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="twitter" id="share-twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="whatsapp" id="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <button class="close-share-modal" id="close-share-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
 
         <footer class="footer fade-in">
             <div class="footer-content">
-                <img src="SILAKBO.png" alt="SILAKBO Logo" class="footer-logo">
-                <div class="footer-text">
-                    <p>&copy; 2025 Ang Silakbo Photostories</p>
-                    <p>Pagpapahayag ng Makatotohanang Balita Na May Makabuluhang Damdamin.</p>
+                <div class="footer-logo-section">
+                    <img src="SILAKBO.png" alt="SILAKBO Logo" class="footer-logo">
+                    <p class="footer-description">Pagpapahayag ng Makatotohanang Balita Na May Makabuluhang Damdamin.</p>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="Photostory.html"><i class="fas fa-angle-right"></i> Photostories</a></li>
+                        <li><a href="Artikulo.html"><i class="fas fa-angle-right"></i> Articles</a></li>
+                        <li><a href="literary.html"><i class="fas fa-angle-right"></i> Literary Works</a></li>
+                        <li><a href="About Us.html"><i class="fas fa-angle-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i> Submit Your Work</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> University of Cebu, Lapu-Lapu and Mandaue Senior High School</p>
+                    <p><i class="fas fa-envelope"></i> angsilakbo@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +63 912 345 6789</p>
                 </div>
             </div>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook"></i> Ang Silakbo</a>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Ang Silakbo Literary Magazine. All Rights Reserved.</p>
             </div>
         </footer>
     </div>
@@ -421,20 +1361,93 @@
             measurementId: "G-TSDTG2YJ94"
         };
 
-        // Initialize Firebase with error handling
-        try {
-            firebase.initializeApp(firebaseConfig);
-        } catch (error) {
-            if (error.code !== 'app/duplicate-app') {
-                showError('Firebase initialization failed. Please refresh the page.');
-                console.error('Firebase initialization error:', error);
-            }
-        }
-
-        const db = firebase.firestore();
+        // Global variables
+        let db;
         let allPosts = [];
+        let currentPostId = null;
         
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const closeLightbox = document.getElementById('close-lightbox');
+        
+        function openLightbox(imageSrc) {
+            lightboxImage.src = imageSrc;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightboxFn() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        closeLightbox.addEventListener('click', closeLightboxFn);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightboxFn();
+            }
+        });
+        
+        // Share Modal functionality
+        const shareModal = document.getElementById('share-modal');
+        const shareLink = document.getElementById('share-link');
+        const copyLinkBtn = document.getElementById('copy-link-btn');
+        const closeShareModal = document.getElementById('close-share-modal');
+        const shareFacebook = document.getElementById('share-facebook');
+        const shareTwitter = document.getElementById('share-twitter');
+        const shareWhatsapp = document.getElementById('share-whatsapp');
+        
+        function openShareModal(postId) {
+            currentPostId = postId;
+            const postUrl = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+            shareLink.value = postUrl;
+            
+            // Set up social share links
+            shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`;
+            shareTwitter.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=Check out this post on Ang Silakbo:`;
+            shareWhatsapp.href = `https://wa.me/?text=${encodeURIComponent('Check out this post on Ang Silakbo: ' + postUrl)}`;
+            
+            shareModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            shareLink.select();
+        }
+        
+        function closeShareModalFn() {
+            shareModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        copyLinkBtn.addEventListener('click', () => {
+            shareLink.select();
+            document.execCommand('copy');
+            copyLinkBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyLinkBtn.textContent = 'Copy';
+            }, 2000);
+        });
+        
+        closeShareModal.addEventListener('click', closeShareModalFn);
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) {
+                closeShareModalFn();
+            }
+        });
+        
+        // Error handling
         function showError(message) {
+            console.error(message);
             const container = document.getElementById('posts-container');
             container.innerHTML = `
                 <div class="error">
@@ -446,97 +1459,401 @@
 
         function showLoading() {
             document.getElementById('posts-container').innerHTML = `
-                <div class="loading">Loading literary works...</div>
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading literary works...</p>
+                </div>
             `;
         }
 
-        async function loadPosts() {
-            showLoading();
+        // Extract first image from content and remove it
+        function extractFirstImage(content) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
             
-            try {
-                const snapshot = await db.collection('literary')
-                    .orderBy('timestamp', 'desc')
-                    .get();
+            const firstImg = tempDiv.querySelector('img');
+            
+            if (!firstImg) {
+                return {
+                    coverImage: null,
+                    updatedContent: content
+                };
+            }
+            
+            // Get image details before removing it
+            const coverImage = {
+                src: firstImg.src,
+                alt: firstImg.alt || 'Cover image'
+            };
+            
+            // Remove the image from content
+            firstImg.parentNode.removeChild(firstImg);
+            
+            // Return both the cover image and updated content
+            return {
+                coverImage: coverImage,
+                updatedContent: tempDiv.innerHTML
+            };
+        }
 
-                const postsContainer = document.getElementById('posts-container');
-                
-                if (snapshot.empty) {
-                    postsContainer.innerHTML = `
-                        <div class="no-posts fade-in">
-                            <h2>No literary works yet</h2>
-                            <p>Be the first to share your literary work!</p>
-                            <a href="editor.html" style="color: #E65100;">Create Literary Work</a>
-                        </div>
-                    `;
-                    return;
+        // Generate excerpt from content
+        function generateExcerpt(content) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            const text = tempDiv.textContent || tempDiv.innerText || '';
+            return text.substring(0, 150) + (text.length > 150 ? '...' : '');
+        }
+
+        // Check for post ID in URL
+        function checkForPostInUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+            
+            if (postId) {
+                // Find the post in allPosts array
+                const post = allPosts.find(p => p.id === postId);
+                if (post) {
+                    // Scroll to the post
+                    const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                    if (postElement) {
+                        setTimeout(() => {
+                            postElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            postElement.classList.add('highlight');
+                            setTimeout(() => {
+                                postElement.classList.remove('highlight');
+                            }, 2000);
+                        }, 500);
+                    }
                 }
-
-                allPosts = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    const date = data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date();
-                    return {
-                        title: data.title || 'Untitled',
-                        date: date,
-                        content: data.content || ''
-                    };
-                });
-
-                displayPosts(allPosts);
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                showError('Failed to load literary works. Please try again.');
             }
         }
 
+        // Initialize Firebase and load posts
+        function initApp() {
+            console.log("Initializing app...");
+            try {
+                // Initialize Firebase
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                
+                db = firebase.firestore();
+                console.log("Firebase initialized successfully");
+                
+                // Load posts
+                loadPosts();
+                
+                // Set up event listeners
+                document.getElementById('search-input').addEventListener('input', debounce(searchPosts, 300));
+                
+            } catch (error) {
+                console.error("Error initializing app:", error);
+                showError('Failed to initialize the application. Please refresh the page.');
+            }
+        }
+
+        // Load posts from Firebase
+        function loadPosts() {
+            console.log("Loading posts...");
+            showLoading();
+            
+            db.collection('literary')
+                .orderBy('timestamp', 'desc')
+                .get()
+                .then((snapshot) => {
+                    console.log(`Fetched ${snapshot.docs.length} posts`);
+                    
+                    if (snapshot.empty) {
+                        document.getElementById('posts-container').innerHTML = `
+                            <div class="no-posts fade-in">
+                                <h2>No literary works yet</h2>
+                                <p>Be the first to share your literary work!</p>
+                                <a href="editor.html" style="color: var(--primary);">Create Literary Work</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Process posts
+                    allPosts = snapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const date = data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date();
+                        const content = data.content || '';
+                        
+                        // Extract first image for cover and remove it from content
+                        const { coverImage, updatedContent } = extractFirstImage(content);
+                        
+                        // Generate excerpt from content
+                        const excerpt = generateExcerpt(updatedContent);
+                        
+                        return {
+                            id: doc.id,
+                            title: data.title || 'Untitled',
+                            date: date,
+                            content: updatedContent,
+                            coverImage: coverImage,
+                            excerpt: excerpt,
+                            category: getRandomCategory(),
+                            author: data.author || 'Anonymous',
+                            authorRole: data.authorRole || 'Author',
+                            cartoonist: data.photojournalist || null, // Use photojournalist field for cartoonist
+                            cartoonistRole: 'Cartoonist' // Always set role as Cartoonist for literary works
+                        };
+                    });
+
+                    displayPosts(allPosts);
+                    populateSidebar(allPosts);
+                    
+                    // Check if there's a post ID in the URL
+                    checkForPostInUrl();
+                })
+                .catch((error) => {
+                    console.error('Error loading posts:', error);
+                    showError('Failed to load literary works. Please try again.');
+                });
+        }
+        
+        // Random category generator for demo
+        function getRandomCategory() {
+            const categories = ['Poetry', 'Short Story', 'Essay', 'Reflection'];
+            return categories[Math.floor(Math.random() * categories.length)];
+        }
+
+        // Populate sidebar with popular posts
+        function populateSidebar(posts) {
+            const popularPostsContainer = document.getElementById('popular-posts');
+            if (!popularPostsContainer) return;
+            
+            // Take first 3 posts for popular section
+            const popularPosts = posts.slice(0, 3);
+            
+            popularPostsContainer.innerHTML = '';
+            
+            popularPosts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'popular-post';
+                
+                const imageSrc = post.coverImage ? post.coverImage.src : '/placeholder.svg?height=80&width=80';
+                
+                postElement.innerHTML = `
+                    <img src="${imageSrc}" alt="${post.title}" class="popular-post-image">
+                    <div class="popular-post-info">
+                        <h3 class="popular-post-title">${post.title}</h3>
+                        <span class="popular-post-date">${post.date.toLocaleDateString()}</span>
+                    </div>
+                `;
+                
+                popularPostsContainer.appendChild(postElement);
+            });
+        }
+
+        // Process images in content
+        function processImages() {
+            console.log("Processing images...");
+            
+            // Process cover images
+            const coverImages = document.querySelectorAll('.cover-image');
+            coverImages.forEach(img => {
+                img.addEventListener('click', function() {
+                    openLightbox(this.src);
+                });
+            });
+            
+            // Process content images
+            const contentImages = document.querySelectorAll('.post-content img');
+            contentImages.forEach(img => {
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                img.style.margin = '20px 0';
+                img.style.borderRadius = '8px';
+                img.style.cursor = 'pointer';
+                img.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+                
+                img.addEventListener('click', function() {
+                    openLightbox(this.src);
+                });
+            });
+        }
+
+        // Display posts
         function displayPosts(posts) {
+            console.log(`Displaying ${posts.length} posts`);
             const postsContainer = document.getElementById('posts-container');
             postsContainer.innerHTML = '';
 
-            posts.forEach((post, index) => {
-            const postElement = document.createElement('div');
-            postElement.className = 'post fade-in';
-            postElement.style.animationDelay = `${index * 0.1}s`;
-            
-            // Replace img tags with responsive styling
-            const content = post.content.replace(/<img/g, 
-                '<img style="max-width: 100%; height: auto; display: block; margin: 10px auto;"');
-            
-            postElement.innerHTML = `
-                <h2 class="post-title">${post.title}</h2>
-                <div class="post-date">${post.date.toLocaleDateString()} ${post.date.toLocaleTimeString()}</div>
-                <div class="post-content" style="transition: all 0.3s ease-out; overflow: hidden; max-height: 100px;">${content}</div>
-                <button class="toggle-content" style="background: #E65100; color: white; border: none; padding: 5px 10px; margin-top: 10px; cursor: pointer; border-radius: 4px;">See More</button>
-            `;
+            if (posts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="no-posts fade-in">
+                        <h2>No matching literary works found</h2>
+                        <p>Try a different search term or browse all works.</p>
+                        <button class="retry-button" onclick="resetSearch()">View All Works</button>
+                    </div>
+                `;
+                return;
+            }
 
+            // Create and append posts one by one
+            posts.forEach((post, index) => {
+                createPostElement(post, index, postsContainer);
+            });
+            
+            // Process images after posts are displayed
+            setTimeout(processImages, 100);
+        }
+        
+        // Create a single post element
+        function createPostElement(post, index, container) {
+            const postElement = document.createElement('div');
+            postElement.className = index === 0 ? 'post featured fade-in' : 'post fade-in';
+            postElement.style.animationDelay = `${index * 0.1}s`;
+            postElement.setAttribute('data-post-id', post.id);
+            
+            // Create post HTML structure
+            let postHTML = '';
+            
+            // Add featured badge for first post
+            if (index === 0) {
+                postHTML += `<div class="featured-badge">Featured</div>`;
+            }
+            
+            // Add cover image if available
+            if (post.coverImage) {
+                postHTML += `
+                    <div class="post-cover">
+                        <img src="${post.coverImage.src}" alt="${post.coverImage.alt}" class="cover-image">
+                    </div>
+                `;
+            }
+            
+            // Format date nicely
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric'
+            };
+            const formattedDate = post.date.toLocaleDateString('en-US', options);
+            
+            // Add post header and content
+            postHTML += `
+                <div class="post-header">
+                    <span class="post-category">${post.category}</span>
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="far fa-calendar-alt"></i>
+                            ${formattedDate}
+                        </div>
+                        <div class="post-credits">
+                            <div class="post-author">
+                                <i class="fas fa-pen-fancy credit-icon"></i>
+                                <div class="credit-info">
+                                    <span class="credit-name">${post.author}</span>
+                                    <span class="credit-role">${post.authorRole}</span>
+                                </div>
+                            </div>
+                            ${post.cartoonist ? `
+                            <div class="post-cartoonist">
+                                <i class="fas fa-paint-brush credit-icon"></i>
+                                <div class="credit-info">
+                                    <span class="credit-name">${post.cartoonist}</span>
+                                    <span class="credit-role">${post.cartoonistRole}</span>
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <p class="post-excerpt">${post.excerpt}</p>
+                </div>
+                <div class="post-content collapsed">${post.content}</div>
+                <div class="post-actions">
+                    <button class="toggle-content">
+                        <i class="fas fa-chevron-down"></i> Continue Reading
+                    </button>
+                    <button class="share-post" data-post-id="${post.id}">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                </div>
+            `;
+            
+            postElement.innerHTML = postHTML;
+
+            // Add event listener for toggle button
             const contentDiv = postElement.querySelector('.post-content');
             const toggleButton = postElement.querySelector('.toggle-content');
-            let isFolded = true;
-
+            
             toggleButton.addEventListener('click', () => {
-                isFolded = !isFolded;
-                contentDiv.style.maxHeight = isFolded ? '100px' : '10000px';
-                contentDiv.style.overflow = isFolded ? 'hidden' : 'visible';
-                toggleButton.textContent = isFolded ? 'See More' : 'Fold';
+                contentDiv.classList.toggle('collapsed');
+                if (contentDiv.classList.contains('collapsed')) {
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-down"></i> Continue Reading';
+                    // Hide all images when collapsed
+                    const contentImages = contentDiv.querySelectorAll('img');
+                    contentImages.forEach(img => {
+                        img.style.display = 'none';
+                    });
+                } else {
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-up"></i> Show Less';
+                    // Show all images when expanded
+                    const contentImages = contentDiv.querySelectorAll('img');
+                    contentImages.forEach(img => {
+                        img.style.display = 'block';
+                    });
+                }
+            });
+            
+            // Add event listener for share button
+            const shareButton = postElement.querySelector('.share-post');
+            shareButton.addEventListener('click', () => {
+                openShareModal(post.id);
             });
 
-            postsContainer.appendChild(postElement);
-            });
+            container.appendChild(postElement);
         }
 
+        // Search functionality
         function searchPosts() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            if (!searchTerm.trim()) {
+                displayPosts(allPosts);
+                return;
+            }
+            
             const filteredPosts = allPosts.filter(post => 
                 post.title.toLowerCase().includes(searchTerm) || 
-                post.content.toLowerCase().includes(searchTerm)
+                stripHtml(post.content).toLowerCase().includes(searchTerm) ||
+                post.author.toLowerCase().includes(searchTerm) ||
+                (post.cartoonist && post.cartoonist.toLowerCase().includes(searchTerm))
             );
+            
             displayPosts(filteredPosts);
         }
+        
+        // Reset search
+        function resetSearch() {
+            document.getElementById('search-input').value = '';
+            displayPosts(allPosts);
+        }
+        
+        // Strip HTML for search
+        function stripHtml(html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.textContent || temp.innerText || '';
+        }
+        
+        // Debounce function for search
+        function debounce(func, delay) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
+        }
 
-        // Load posts when the page is ready
-        document.addEventListener('DOMContentLoaded', loadPosts);
-
-        // Add event listener for search input
-        document.getElementById('search-input').addEventListener('input', searchPosts);
+        // Initialize the app when the page is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
