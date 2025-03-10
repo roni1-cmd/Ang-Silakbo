@@ -1395,9 +1395,9 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="photojournalist">Photojournalist</label>
+                                        <label for="photojournalist" id="photojournalist-label">Photojournalist</label>
                                         <div class="input-wrapper">
-                                            <i class="fas fa-camera input-icon"></i>
+                                            <i class="fas fa-camera input-icon" id="photojournalist-icon"></i>
                                             <input type="text" id="photojournalist" class="input-with-icon" placeholder="Enter photojournalist's name">
                                         </div>
                                     </div>
@@ -1804,6 +1804,27 @@
             document.getElementById('progress-bar').style.width = `${progress}%`;
         }
 
+        // Function to update photojournalist label and icon based on category
+        function updatePhotojournalistField() {
+            const category = document.getElementById('category').value;
+            const photojournalistLabel = document.getElementById('photojournalist-label');
+            const photojournalistIcon = document.getElementById('photojournalist-icon');
+            const photojournalistInput = document.getElementById('photojournalist');
+            
+            if (category === 'literary') {
+                photojournalistLabel.textContent = 'Cartoonist';
+                photojournalistIcon.className = 'fas fa-pencil-alt input-icon';
+                photojournalistInput.placeholder = "Enter cartoonist's name";
+            } else {
+                photojournalistLabel.textContent = 'Photojournalist';
+                photojournalistIcon.className = 'fas fa-camera input-icon';
+                photojournalistInput.placeholder = "Enter photojournalist's name";
+            }
+        }
+
+        // Add event listener to category dropdown
+        document.getElementById('category').addEventListener('change', updatePhotojournalistField);
+
         async function handlePublish() {
             const title = document.getElementById('title').value;
             const category = document.getElementById('category').value;
@@ -1924,6 +1945,7 @@
                 
                 updatePreview();
                 updateWordCount();
+                updatePhotojournalistField();
                 
                 showNotification('Draft loaded successfully!', 'success');
             }
@@ -1944,6 +1966,7 @@
             document.getElementById('publish-button').innerHTML = '<i class="fas fa-paper-plane"></i> Publish';
             updatePreview();
             updateWordCount();
+            updatePhotojournalistField();
         }
 
         function updateWritingSuggestions() {
@@ -2021,7 +2044,9 @@
             
             if (photojournalist) {
                 doc.setFontSize(12);
-                doc.text(`Photojournalist: ${photojournalist}`, 20, 40);
+                const category = document.getElementById('category').value;
+                const label = category === 'literary' ? 'Cartoonist' : 'Photojournalist';
+                doc.text(`${label}: ${photojournalist}`, 20, 40);
                 doc.setFontSize(12);
                 const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
                 const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
@@ -2058,9 +2083,11 @@
             ];
             
             if (photojournalist) {
+                const category = document.getElementById('category').value;
+                const label = category === 'literary' ? 'Cartoonist' : 'Photojournalist';
                 paragraphs.push(
                     new Paragraph({
-                        text: `Photojournalist: ${photojournalist}`,
+                        text: `${label}: ${photojournalist}`,
                         heading: HeadingLevel.HEADING_3,
                     })
                 );
@@ -2146,6 +2173,12 @@
                     `;
                 }
                 
+                // Determine if it should show Photojournalist or Cartoonist
+                let contributorLabel = 'Photojournalist';
+                if (work.category === 'literary') {
+                    contributorLabel = 'Cartoonist';
+                }
+                
                 publishedItem.innerHTML = `
                     <h3>${work.title}</h3>
                     <div class="published-meta">
@@ -2155,8 +2188,8 @@
                         </div>
                         ${work.photojournalist ? `
                         <div class="published-meta-item">
-                            <i class="fas fa-camera"></i>
-                            <span>${work.photojournalist}</span>
+                            <i class="${work.category === 'literary' ? 'fas fa-pencil-alt' : 'fas fa-camera'}"></i>
+                            <span>${contributorLabel}: ${work.photojournalist}</span>
                         </div>
                         ` : ''}
                         <div class="published-meta-item">
@@ -2207,6 +2240,7 @@
                 
                 updatePreview();
                 updateWordCount();
+                updatePhotojournalistField();
             } catch (error) {
                 console.error('Error editing work:', error);
                 showNotification('Error loading content for editing. Please try again.', 'error');
@@ -2497,6 +2531,7 @@
             loadDraft();
             updatePreview();
             updateWordCount();
+            updatePhotojournalistField();
             
             // Add search on enter key
             document.getElementById('search-input').addEventListener('keyup', function(event) {
