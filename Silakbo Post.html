@@ -3,35 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo Workstation</title>
+    <title>Ang Silakbo - Workstation</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.3/docx.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tiny.cloud/1/n92j01vjprp9xy96v0uxd2kgqi5vnd50dwm5i47veg2u1bur/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #E65100;
-            --primary-light: #FF8A50;
-            --primary-dark: #B23C00;
-            --secondary-color: #FFF3E0;
-            --text-color: #333333;
+            --primary: #E64A19;
+            --primary-light: #FF7043;
+            --primary-dark: #BF360C;
+            --secondary: #F2F4F3;
+            --accent: #A65E44;
+            --text-dark: #2B2D42;
+            --text-light: #8D99AE;
             --white: #FFFFFF;
-            --gray: #F5F5F5;
-            --dark-gray: #4A4A4A;
-            --border-color: #E0E0E0;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
+            --gray-light: #F8F9FA;
+            --gray: #E9ECEF;
+            --gray-dark: #CED4DA;
+            --success: #2E7D32;
+            --error: #C62828;
+            --warning: #F9A825;
+            --info: #1565C0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+            --border-radius-lg: 16px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s ease;
         }
 
@@ -39,2505 +41,2252 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body, html {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: var(--text-color);
-            height: 100%;
-            line-height: 1.6;
-            scroll-behavior: smooth;
         }
 
-        .app-container {
+        body {
+            background-color: #f5f5f7;
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
 
-        /* Top Navigation */
-        .top-nav {
-            background-color: var(--white);
-            box-shadow: var(--shadow-md);
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
-            padding: 0;
+            align-items: center;
+            padding: 0.75rem 2rem;
         }
 
-        .brand-section {
+        .logo-container {
             display: flex;
             align-items: center;
-            background-color: var(--primary-color);
-            padding: 0.75rem 2rem;
-            color: var(--white);
+            gap: 1rem;
         }
 
-        .brand-section img {
+        .logo-img {
             height: 40px;
-            margin-right: 1rem;
+            width: auto;
             filter: brightness(0) invert(1);
+            transition: transform 0.3s ease;
         }
 
-        .brand-section h1 {
-            font-size: 1.5rem;
+        .logo-container:hover .logo-img {
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
             font-weight: 600;
+            color: var(--white);
+            text-decoration: none;
             letter-spacing: 0.5px;
         }
 
-        .nav-actions {
+        .nav-links {
             display: flex;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1.5rem 1.25rem;
-            color: var(--dark-gray);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
             gap: 0.5rem;
         }
 
-        .nav-link:hover {
-            color: var(--primary-color);
-            background-color: rgba(230, 81, 0, 0.05);
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.6rem 1rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--white);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
         }
 
         .nav-link.active {
-            color: var(--primary-color);
-            box-shadow: inset 0 -3px 0 var(--primary-color);
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .nav-link i {
-            font-size: 1.1rem;
+        .nav-link.active::after {
+            transform: scaleX(1);
         }
 
-        .user-actions {
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-left: 2rem;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            padding: 0.5rem 0.75rem;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-        }
-
-        .user-profile:hover {
-            background-color: rgba(230, 81, 0, 0.05);
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-weight: 600;
-        }
-
-        .home-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            color: var(--dark-gray);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .home-icon:hover {
-            background-color: rgba(230, 81, 0, 0.05);
-            color: var(--primary-color);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Dashboard Layout */
-        .dashboard {
+        .dashboard-layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 300px;
             gap: 2rem;
         }
 
-        /* Page Header */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .tabs-container {
+            position: relative;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
         }
 
-        .page-title-section h1 {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: var(--dark-gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .page-description {
-            color: var(--dark-gray);
-            font-size: 0.95rem;
-        }
-
-        .page-actions {
+        .tabs {
             display: flex;
             gap: 1rem;
+            position: relative;
+            z-index: 1;
+            background-color: var(--white);
+            padding: 0.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Card Styles */
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            font-size: 0.95rem;
+            border-radius: var(--border-radius);
+            flex: 1;
+        }
+
+        .tab.active {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .tab:not(.active):hover {
+            background-color: var(--gray-light);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .card {
             background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
-            transition: var(--transition);
-            border: none;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
             margin-bottom: 2rem;
+            transition: var(--transition);
+            border: 1px solid var(--gray);
         }
 
         .card:hover {
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--white);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
         }
 
         .card-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
             font-weight: 600;
-            color: var(--dark-gray);
             display: flex;
             align-items: center;
             gap: 0.75rem;
-        }
-
-        .card-title i {
-            color: var(--primary-color);
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        .card-footer {
-            padding: 1.5rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--white);
-        }
-
-        /* Form Styles */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gray);
         }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: var(--dark-gray);
+            color: var(--text-dark);
             font-size: 0.95rem;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--dark-gray);
-        }
-
-        .input-with-icon {
-            padding-left: 2.75rem;
-        }
-
-        select, input, textarea, .search-bar input {
+        input[type="text"],
+        select,
+        textarea {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
             font-size: 0.95rem;
             transition: var(--transition);
             background-color: var(--white);
         }
 
-        select:focus, input:focus, textarea:focus, .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
+        input[type="text"]:hover,
+        select:hover,
+        textarea:hover {
+            border-color: var(--gray-dark);
         }
 
-        /* Button Styles */
-        .btn {
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 74, 25, 0.2);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238D99AE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-input-label {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            background-color: var(--primary);
             color: var(--white);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            font-size: 0.9rem;
         }
 
-        .btn-primary:hover {
+        .file-input-label:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
-        .btn-secondary {
-            background-color: var(--white);
-            color: var(--dark-gray);
-            border: 1px solid var(--border-color);
+        input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
         }
 
-        .btn-secondary:hover {
-            background-color: var(--gray);
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background-color: #4CAF50;
-            color: var(--white);
-        }
-
-        .btn-success:hover {
-            background-color: #388E3C;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background-color: #F44336;
-            color: var(--white);
-        }
-
-        .btn-danger:hover {
-            background-color: #D32F2F;
-            transform: translateY(-2px);
-        }
-
-        .btn-sm {
+        .file-name {
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--gray-light);
             padding: 0.5rem 1rem;
-            font-size: 0.875rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
         }
 
-        .btn-icon {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            border-radius: 50%;
+        .file-name:hover {
+            background-color: var(--gray);
         }
 
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
+        .image-preview-container {
+            margin-top: 1rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            max-width: 400px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+        }
+
+        .image-preview-container:hover {
+            box-shadow: var(--shadow);
+        }
+
+        #imagePreview, #editImagePreview {
+            max-width: 100%;
+            max-height: 250px;
+            display: none;
+            object-fit: cover;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
             gap: 0.75rem;
-        }
-
-        /* Tab Styles */
-        .tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 0.5rem;
             box-shadow: var(--shadow-sm);
         }
 
-        .tabs::-webkit-scrollbar {
-            display: none;
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
-        .tab {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--dark-gray);
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--error);
+        }
+
+        .btn-danger:hover {
+            background-color: #b71c1c;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #1b5e20;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
             transition: var(--transition);
-            white-space: nowrap;
-            border-radius: var(--radius-md);
+            border: 1px solid var(--gray);
+            background-color: var(--white);
+            max-height: 700px;
+            overflow-y: auto;
         }
 
-        .tab:hover {
-            color: var(--primary-color);
-            background-color: rgba(230, 81, 0, 0.05);
+        .table-container:hover {
+            box-shadow: var(--shadow-lg);
         }
 
-        .tab.active {
+        .posts-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--white);
+        }
+
+        .posts-table th,
+        .posts-table td {
+            padding: 1.25rem;
+            text-align: left;
+        }
+
+        .posts-table th {
+            background-color: var(--primary);
             color: var(--white);
-            background-color: var(--primary-color);
+            font-weight: 600;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.9rem;
         }
 
-        /* Search Bar */
-        .search-bar {
+        .posts-table th:first-child {
+            border-top-left-radius: var(--border-radius);
+        }
+
+        .posts-table th:last-child {
+            border-top-right-radius: var(--border-radius);
+        }
+
+        .posts-table tr {
+            transition: var(--transition);
+        }
+
+        .posts-table tr:nth-child(even) {
+            background-color: var(--gray-light);
+        }
+
+        .posts-table tr:hover {
+            background-color: rgba(230, 74, 25, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .posts-table td {
+            border-bottom: 1px solid var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .action-buttons {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            width: 100%;
-            max-width: 500px;
         }
 
-        .search-bar input {
-            flex-grow: 1;
-            border-radius: var(--radius-lg);
-        }
-
-        /* Published Works */
-        .published-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .published-item {
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 1.5rem;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            border-top: 4px solid var(--primary-color);
-        }
-
-        .published-item:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transform: translateY(-5px);
-        }
-
-        .published-item h3 {
-            margin: 0 0 0.75rem 0;
-            color: var(--dark-gray);
-            font-size: 1.25rem;
-        }
-
-        .published-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.875rem;
-            color: var(--dark-gray);
-        }
-
-        .published-meta-item {
+        .btn-icon {
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .published-meta-item i {
-            color: var(--primary-color);
-        }
-
-        .category-badge {
-            display: inline-block;
-            padding: 0.35rem 0.85rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background-color: var(--secondary-color);
-            color: var(--primary-color);
-        }
-
-        .edit-delete-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        /* Analytics Styles */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .analytics-card {
+            justify-content: center;
+            border-radius: 50%;
             background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 1.5rem;
-            text-align: center;
+            color: var(--text-dark);
+            border: 1px solid var(--gray);
+            cursor: pointer;
             transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-edit {
+            color: var(--info);
+            border-color: var(--info);
+        }
+
+        .btn-edit:hover {
+            background-color: var(--info);
+            color: var(--white);
+            border-color: var(--info);
+        }
+
+        .btn-delete {
+            color: var(--error);
+            border-color: var(--error);
+        }
+
+        .btn-delete:hover {
+            background-color: var(--error);
+            color: var(--white);
+            border-color: var(--error);
+        }
+
+        .btn-view {
+            color: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-view:hover {
+            background-color: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideInDown 0.4s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            transform: translateY(-5px);
+            opacity: 0;
             position: relative;
             overflow: hidden;
         }
 
-        .analytics-card:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transform: translateY(-5px);
-        }
-
-        .analytics-card::before {
+        .alert::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: var(--primary-color);
+            width: 4px;
+            height: 100%;
         }
 
-        .analytics-card h3 {
-            color: var(--dark-gray);
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 0.75rem;
+        .alert-success {
+            background-color: rgba(46, 125, 50, 0.1);
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            color: var(--success);
         }
 
-        .analytics-card p {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin: 0;
+        .alert-success::before {
+            background-color: var(--success);
         }
 
-        .analytics-card .trend {
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
+        .alert-error {
+            background-color: rgba(198, 40, 40, 0.1);
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            color: var(--error);
+        }
+
+        .alert-error::before {
+            background-color: var(--error);
+        }
+
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: inherit;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.25rem;
+            border-radius: 50%;
         }
 
-        .trend-up {
-            color: #4CAF50;
+        .alert-close:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: rotate(90deg);
         }
 
-        .trend-down {
-            color: #F44336;
-        }
-
-        .chart-container {
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            transition: var(--transition);
-        }
-
-        .chart-container:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transform: translateY(-5px);
-        }
-
-        .chart-container h3 {
-            color: var(--dark-gray);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1.25rem;
-        }
-
-        /* Settings Styles */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .settings-card {
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 1.5rem;
-            transition: var(--transition);
-        }
-
-        .settings-card:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transform: translateY(-5px);
-        }
-
-        .settings-card h3 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 1.25rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .switch {
-            position: relative;
+        .spinner {
             display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .loading-spinner {
             width: 50px;
-            height: 24px;
+            height: 50px;
+            border: 3px solid rgba(230, 74, 25, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1.5rem;
         }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+        .loading-text {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 1rem;
         }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--gray-dark);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .empty-text {
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px var(--primary-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .checkbox-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .checkbox-label {
-            margin-bottom: 0;
-        }
-
-        /* Writing Tips Panel */
-        .tips-panel {
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            transition: var(--transition);
-        }
-
-        .tips-panel:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .tips-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-        }
-
-        .tips-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .close-tips {
-            background: none;
-            border: none;
-            color: var(--dark-gray);
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }
-
-        .close-tips:hover {
-            color: var(--primary-color);
-        }
-
-        .writing-tips-content {
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .writing-tips-content h4 {
-            color: var(--primary-color);
-            margin-top: 1.25rem;
-            margin-bottom: 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .writing-tips-content ul {
-            padding-left: 1.5rem;
-        }
-
-        .writing-tips-content li {
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .font-preview {
-            margin-top: 1.5rem;
-            padding: 1.25rem;
-            background-color: var(--secondary-color);
-            border-radius: var(--radius-md);
-        }
-
-        .font-preview h4 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .font-preview p {
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
-        }
-
-        /* Footer Styles */
-        footer {
-            background-color: var(--white);
-            color: var(--dark-gray);
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: auto;
-            font-size: 0.875rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        footer .footer-brand {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        /* Tag Styles */
-        .tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.35rem 0.75rem;
-            background-color: var(--secondary-color);
-            color: var(--primary-color);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .tag:hover {
-            background-color: var(--primary-light);
-            color: var(--white);
-            transform: translateY(-2px);
-        }
-
-        .tag i {
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-
-        .tag i:hover {
-            color: var(--white);
-        }
-
-        /* Content Preview */
-        .content-preview {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            background-color: var(--white);
-            transition: var(--transition);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .content-preview:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .content-preview h4 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .preview-content {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 1rem;
-            background-color: var(--gray);
-            border-radius: var(--radius-md);
-            margin-bottom: 1rem;
-        }
-
-        .word-count {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.75rem;
-            font-size: 0.85rem;
-            color: var(--dark-gray);
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background-color: var(--gray);
-            border-radius: 3px;
-            margin-top: 1rem;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: var(--primary-color);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        /* Form Status */
-        .form-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--dark-gray);
-            padding: 0.5rem 1rem;
-            background-color: var(--gray);
-            border-radius: var(--radius-lg);
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #4CAF50;
-        }
-
-        .status-draft {
-            background-color: #FFC107;
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--dark-gray);
-            color: var(--white);
-            text-align: center;
-            border-radius: var(--radius-md);
-            padding: 0.75rem;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.85rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .tooltip .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: var(--dark-gray) transparent transparent transparent;
-        }
-
-        /* Contributors Section */
-        .contributors-section {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            transition: var(--transition);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .contributors-section:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .contributors-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .contributors-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .contributor {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            font-size: 0.85rem;
-            transition: var(--transition);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        .contributor:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-        }
-
-        .contributor-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--white);
-            font-size: 0.75rem;
-            font-weight: 600;
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        /* Notification */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
+        .modal {
+            background-color: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: zoomIn 0.4s ease-in-out;
+            border: 1px solid var(--gray);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            z-index: 1;
+            border-top-left-radius: var(--border-radius-lg);
+            border-top-right-radius: var(--border-radius-lg);
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-dark);
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            min-width: 300px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
         }
 
-        .notification-success {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .notification-error {
-            background-color: #F44336;
-            color: white;
-        }
-
-        .notification-info {
-            background-color: #2196F3;
-            color: white;
-        }
-
-        /* Animation */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--dark-gray);
-            font-size: 1rem;
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .loading-indicator {
-            text-align: center;
-            padding: 3rem;
-            color: var(--dark-gray);
-            font-size: 1rem;
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        /* Editor Layout */
-        .editor-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        .editor-main {
-            flex: 1;
-        }
-
-        .editor-sidebar {
-            width: 100%;
-        }
-
-        /* Two Column Layout */
-        .two-column-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-toggle {
-            display: none;
+        .modal-close {
             background: none;
             border: none;
-            color: var(--dark-gray);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background-color: var(--gray-light);
+            color: var(--error);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            position: sticky;
+            bottom: 0;
+            background-color: var(--white);
+            z-index: 1;
+            border-bottom-left-radius: var(--border-radius-lg);
+            border-bottom-right-radius: var(--border-radius-lg);
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 2.5rem 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.25rem;
+            color: var(--white);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--white);
+            border-radius: 2px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.4rem 0;
+        }
+
+        .footer-link:hover {
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+        }
+
+        .sidebar-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.25rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gray);
+        }
+
+        .writing-tip {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        .writing-tip::before {
+            content: '\f0eb';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--primary);
+        }
+
+        .writing-tip:last-child {
+            margin-bottom: 0;
+        }
+
+        .font-preview {
+            margin-bottom: 1.25rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background-color: var(--gray-light);
+            transition: var(--transition);
             cursor: pointer;
         }
 
-        /* Responsive Styles */
-        @media (min-width: 992px) {
-            .editor-layout {
-                grid-template-columns: 2fr 1fr;
+        .font-preview:hover {
+            background-color: var(--gray);
+            transform: translateY(-2px);
+        }
+
+        .font-preview:last-child {
+            margin-bottom: 0;
+        }
+
+        .font-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+        }
+
+        .font-sample {
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            gap: 0.4rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-article {
+            background-color: rgba(21, 101, 192, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(21, 101, 192, 0.2);
+        }
+
+        .category-literary {
+            background-color: rgba(166, 94, 68, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(166, 94, 68, 0.2);
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-dark);
+            color: var(--white);
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 10;
+            margin-bottom: 5px;
+            box-shadow: var(--shadow);
+        }
+
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--text-dark);
+            margin-bottom: -5px;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
-        @media (max-width: 991px) {
-            .two-column-layout {
-                grid-template-columns: 1fr;
+        @keyframes slideInDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        @media (max-width: 768px) {
-            .top-nav {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .brand-section {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .nav-actions {
-                width: 100%;
-                padding: 0;
-                flex-direction: column;
-                display: none;
-            }
-
-            .nav-actions.active {
-                display: flex;
-            }
-
-            .nav-menu {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav-link {
-                padding: 1rem 2rem;
-            }
-
-            .user-actions {
-                margin: 0;
-                width: 100%;
-                justify-content: center;
-                padding: 1rem;
-                border-top: 1px solid var(--border-color);
-            }
-
-            .main-content {
-                padding: 1.5rem 1rem;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .page-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .analytics-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .published-list {
-                grid-template-columns: 1fr;
-            }
-
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .card-footer {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .card-footer .btn-group {
-                width: 100%;
-            }
-
-            .search-bar {
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .brand-section img {
-                height: 30px;
-            }
-
-            .brand-section h1 {
-                font-size: 1.2rem;
-            }
-
-            .btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
-            }
-
-            .analytics-card p {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* TinyMCE Customization */
         .tox-tinymce {
-            border-radius: var(--radius-lg) !important;
-            border-color: var(--border-color) !important;
-            overflow: hidden;
+            border-radius: var(--border-radius) !important;
+            border: 1px solid var(--gray) !important;
+            transition: var(--transition) !important;
+        }
+
+        .tox-tinymce:hover {
+            border-color: var(--gray-dark) !important;
+        }
+
+        .tox-tinymce:focus-within {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(230, 74, 25, 0.2) !important;
         }
 
         .tox .tox-statusbar {
-            border-top: 1px solid var(--border-color) !important;
+            border-top: 1px solid var(--gray) !important;
         }
 
         .tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary {
             background-color: var(--white) !important;
-            border-bottom: 1px solid var(--border-color) !important;
         }
 
-        /* Quick Links */
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+        @media (max-width: 1200px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .quick-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            text-decoration: none;
-            color: var(--dark-gray);
-            transition: var(--transition);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        @media (max-width: 992px) {
+            .header-container {
+                padding: 0.75rem 1.5rem;
+            }
+            
+            main {
+                padding: 0 1.5rem;
+                margin: 1.5rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
         }
 
-        .quick-link:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            color: var(--primary-color);
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+                position: absolute;
+                right: 1rem;
+                top: 1.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem 0;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-link {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-links {
+                align-items: center;
+            }
+
+            .footer-section h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer-link:hover {
+                transform: none;
+            }
+
+            .modal {
+                width: 95%;
+                max-height: 80vh;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-footer .btn {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 0.5rem;
+            }
+            
+            .modal-footer .btn:last-child {
+                margin-bottom: 0;
+            }
         }
 
-        .quick-link i {
-            font-size: 1.25rem;
-            color: var(--primary-color);
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            main {
+                padding: 0 1rem;
+                margin: 1.5rem auto;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .file-input-container, .file-name {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .file-input-label {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <nav class="top-nav">
-            <div class="brand-section">
-                <img src="SILAKBO.png" alt="Silakbo Logo">
-                <h1>ANG SILAKBO WORKSTATION</h1>
-                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="SILAKBO (1).png" alt="Silakbo Logo" class="logo-img">
+                <a href="#" class="logo-text">ANG SILAKBO WORKSTATION</a>
             </div>
-            <div class="nav-actions" id="nav-actions">
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active" onclick="showTab('editor')">
-                            <i class="fas fa-pen-to-square"></i>
-                            <span>Editor</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showTab('published')">
-                            <i class="fas fa-book"></i>
-                            <span>Published Works</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showTab('analytics')">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Analytics</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showTab('settings')">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="user-actions">
-                    <div class="user-profile">
-                        <div class="user-avatar">AS</div>
-                        <span>Admin</span>
-                    </div>
-                    <a href="Ang Silakbo Admin Panel.html" class="home-icon" title="Go to Admin Panel">
-                        <i class="fas fa-home"></i>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <div class="nav-links" id="navLinks">
+                    <a href="#" class="nav-link active" id="nav-create">
+                        <i class="fas fa-plus-circle"></i> Create Post
+                    </a>
+                    <a href="#" class="nav-link" id="nav-manage">
+                        <i class="fas fa-tasks"></i> Manage Posts
                     </a>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </div>
+    </header>
 
-        <main class="main-content">
-            <div id="editor-container" class="dashboard fade-in">
-                <div class="page-header">
-                    <div class="page-title-section">
-                        <h1>Content Editor</h1>
-                        <p class="page-description">Create and publish new content for Ang Silakbo</p>
-                    </div>
-                    <div class="page-actions">
-                        <button class="btn btn-secondary" onclick="saveDraft()">
-                            <i class="fas fa-save"></i>
-                            Save Draft
-                        </button>
-                        <button id="publish-button" class="btn btn-primary" onclick="handlePublish()">
-                            <i class="fas fa-paper-plane"></i>
-                            Publish
-                        </button>
+    <main>
+        <h1 class="page-title">
+            <i class="fas fa-newspaper"></i> Content Management System
+        </h1>
+        
+        <div id="alertSuccess" class="alert alert-success">
+            <i class="fas fa-check-circle"></i> 
+            <span>Operation completed successfully!</span>
+            <button class="alert-close">&times;</button>
+        </div>
+        <div id="alertError" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> 
+            <span id="errorMessage">An error occurred.</span>
+            <button class="alert-close">&times;</button>
+        </div>
+        
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab active" data-tab="create">
+                    <i class="fas fa-plus-circle"></i> Create New Post
+                </button>
+                <button class="tab" data-tab="manage">
+                    <i class="fas fa-tasks"></i> Manage Posts
+                </button>
+            </div>
+        </div>
+
+        <div class="tab-content active" id="createTab">
+            <div class="dashboard-layout">
+                <div class="main-content">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <i class="fas fa-pen-fancy"></i> Create a New Post
+                        </h2>
+                        <form id="postForm">
+                            <div class="form-group">
+                                <label for="category">
+                                    <i class="fas fa-tag"></i> Category:
+                                </label>
+                                <select id="category" required>
+                                    <option value="article">Article</option>
+                                    <option value="literary">Literary</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="title">
+                                    <i class="fas fa-heading"></i> Title:
+                                </label>
+                                <input type="text" id="title" required placeholder="Enter post title">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="author">
+                                    <i class="fas fa-user-edit"></i> Author:
+                                </label>
+                                <input type="text" id="author" required placeholder="Enter author's name">
+                            </div>
+
+                            <div class="form-group" id="additionalFields">
+                                <label id="roleLabel" for="additionalField">
+                                    <i class="fas fa-camera"></i> Photojournalist:
+                                </label>
+                                <input type="text" id="additionalField" placeholder="Enter photojournalist's name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="imageUpload">
+                                    <i class="fas fa-image"></i> Upload Image:
+                                </label>
+                                <div class="file-input-container">
+                                    <label class="file-input-label">
+                                        <i class="fas fa-upload"></i> Choose File
+                                        <input type="file" id="imageUpload" accept="image/*">
+                                    </label>
+                                    <span class="file-name" id="fileName">
+                                        <i class="fas fa-file-image"></i> No file chosen
+                                    </span>
+                                </div>
+                                <div class="image-preview-container">
+                                    <img id="imagePreview" alt="Image Preview">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="content">
+                                    <i class="fas fa-paragraph"></i> Content:
+                                </label>
+                                <textarea id="content"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn" id="submitBtn">
+                                <span class="spinner" id="submitSpinner"></span>
+                                <i class="fas fa-paper-plane"></i> Publish Post
+                            </button>
+                        </form>
                     </div>
                 </div>
-
-                <div class="editor-layout">
-                    <div class="editor-main">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">
-                                    <i class="fas fa-pen-to-square"></i>
-                                    New Content
-                                </h2>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="title">Title</label>
-                                        <div class="input-wrapper">
-                                            <i class="fas fa-heading input-icon"></i>
-                                            <input type="text" id="title" class="input-with-icon" required placeholder="Enter title">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="category">Category</label>
-                                        <div class="input-wrapper">
-                                            <i class="fas fa-folder input-icon"></i>
-                                            <select id="category" class="input-with-icon" required>
-                                                <option value="">Select a category</option>
-                                                <option value="photostory">Photostory</option>
-                                                <option value="articles">Articles</option>
-                                                <option value="literary">Literary</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="author">Author</label>
-                                        <div class="input-wrapper">
-                                            <i class="fas fa-user input-icon"></i>
-                                            <input type="text" id="author" class="input-with-icon" required placeholder="Enter author's name">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="photojournalist" id="photojournalist-label">Photojournalist</label>
-                                        <div class="input-wrapper">
-                                            <i class="fas fa-camera input-icon" id="photojournalist-icon"></i>
-                                            <input type="text" id="photojournalist" class="input-with-icon" placeholder="Enter photojournalist's name">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="tags">Tags</label>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-tags input-icon"></i>
-                                        <input type="text" id="tags-input" class="input-with-icon" placeholder="Add tags and press Enter">
-                                    </div>
-                                    <div class="tag-container" id="tags-container"></div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="editor">Content</label>
-                                    <textarea id="editor"></textarea>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <div class="form-status">
-                                    <div class="status-indicator status-draft"></div>
-                                    <span>Draft</span>
-                                    <div class="tooltip">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span class="tooltip-text">This content is currently saved as a draft. Click Publish to make it live.</span>
-                                    </div>
-                                </div>
-                                <div class="btn-group">
-                                    <button class="btn btn-secondary" onclick="exportToPDF()">
-                                        <i class="fas fa-file-pdf"></i>
-                                        Export to PDF
-                                    </button>
-                                    <button class="btn btn-secondary" onclick="exportToDOC()">
-                                        <i class="fas fa-file-word"></i>
-                                        Export to DOC
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-preview">
-                            <h4>
-                                <i class="fas fa-eye"></i>
-                                Content Preview
-                            </h4>
-                            <div class="preview-content" id="content-preview"></div>
-                            <div class="word-count">
-                                <i class="fas fa-file-word"></i>
-                                <span id="word-count">0 words</span>
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
-                            </div>
+                
+                <div class="sidebar">
+                    <div class="sidebar-card" id="writingTipsPanel">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-lightbulb"></i> Writing Tips
+                        </h3>
+                        <div id="writingTipsContent">
+                            <!-- Tips will be loaded dynamically based on category -->
                         </div>
                     </div>
-
-                    <div class="editor-sidebar">
-                        <div class="contributors-section">
-                            <h4 class="contributors-title">
-                                <i class="fas fa-users"></i>
-                                Contributors
-                            </h4>
-                            <div class="contributors-list" id="contributors-list">
-                                <!-- Contributors will be added here dynamically -->
-                            </div>
-                            <div class="form-actions">
-                                <div class="input-wrapper">
-                                    <input type="text" id="contributor-input" placeholder="Add contributor and press Enter">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tips-panel">
-                            <div class="tips-header">
-                                <h3 class="tips-title">
-                                    <i class="fas fa-lightbulb"></i>
-                                    Writing Tips
-                                </h3>
-                                <button class="close-tips" id="close-tips" title="Close Tips">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <div id="writing-suggestions" class="writing-tips-content">
-                                <h4>General Tips</h4>
-                                <ul>
-                                    <li>Know your audience and write with them in mind.</li>
-                                    <li>Create an outline before you start writing.</li>
-                                    <li>Use active voice for more engaging content.</li>
-                                    <li>Be concise and avoid unnecessary words.</li>
-                                    <li>Proofread and edit your work multiple times.</li>
-                                </ul>
-                                <h4>Category-Specific Tips</h4>
-                                <div id="category-tips"></div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">
-                                    <i class="fas fa-link"></i>
-                                    Quick Links
-                                </h2>
-                            </div>
-                            <div class="card-body">
-                                <div class="quick-links">
-                                    <a href="Photostory.html" class="quick-link">
-                                        <i class="fas fa-camera"></i>
-                                        <span>Photostories</span>
-                                    </a>
-                                    <a href="Artikulo.html" class="quick-link">
-                                        <i class="fas fa-newspaper"></i>
-                                        <span>Articles</span>
-                                    </a>
-                                    <a href="literary.html" class="quick-link">
-                                        <i class="fas fa-book"></i>
-                                        <span>Literary Works</span>
-                                    </a>
-                                </div>
-                            </div>
+                    
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-font"></i> Font Preview
+                        </h3>
+                        <div class="font-preview" data-font="Poppins" onclick="applyFont('Poppins')">
+                            <div class="font-name">Poppins</div>
+                            <div class="font-sample">The quick brown fox jumps over the lazy dog.</div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div id="published-works" class="dashboard fade-in" style="display: none;">
-                <div class="page-header">
-                    <div class="page-title-section">
-                        <h1>Published Works</h1>
-                        <p class="page-description">Manage your published content</p>
+        <div class="tab-content" id="manageTab">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-list-alt"></i> Manage Published Posts
+                </h2>
+                <div id="postsTableContainer">
+                    <div id="loadingPosts" class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Loading posts...</p>
                     </div>
-                    <div class="search-bar">
-                        <div class="input-wrapper">
-                            <i class="fas fa-search input-icon"></i>
-                            <input type="text" id="search-input" class="input-with-icon" placeholder="Search published works...">
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="searchPublishedWorks()">
-                            Search
+                    <div class="table-container" id="postsTable" style="display: none;">
+                        <table class="posts-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-tag"></i> Category</th>
+                                    <th><i class="fas fa-heading"></i> Title</th>
+                                    <th><i class="fas fa-user-edit"></i> Author</th>
+                                    <th><i class="fas fa-user-tag"></i> Role</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="postsTableBody">
+                                <!-- Posts will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="noPostsMessage" class="empty-state" style="display: none;">
+                        <i class="fas fa-inbox empty-icon"></i>
+                        <p class="empty-text">No posts found.</p>
+                        <button class="btn" id="createFirstPostBtn">
+                            <i class="fas fa-plus-circle"></i> Create Your First Post
                         </button>
                     </div>
                 </div>
-
-                <div class="tabs">
-                    <div class="tab active" onclick="filterPublishedWorks('all')">All</div>
-                    <div class="tab" onclick="filterPublishedWorks('photostory')">Photostory</div>
-                    <div class="tab" onclick="filterPublishedWorks('articles')">Articles</div>
-                    <div class="tab" onclick="filterPublishedWorks('literary')">Literary</div>
-                </div>
-
-                <div id="published-list" class="published-list"></div>
             </div>
+        </div>
+    </main>
 
-            <div id="analytics-container" class="dashboard fade-in" style="display: none;">
-                <div class="page-header">
-                    <div class="page-title-section">
-                        <h1>Analytics Dashboard</h1>
-                        <p class="page-description">Track and analyze your content performance</p>
-                    </div>
-                </div>
-
-                <div class="analytics-grid">
-                    <div class="analytics-card">
-                        <h3>Total Published Works</h3>
-                        <p id="total-works">0</p>
-                        <div class="trend trend-up">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>12% from last month</span>
-                        </div>
-                    </div>
-                    <div class="analytics-card">
-                        <h3>Most Popular Category</h3>
-                        <p id="popular-category">-</p>
-                    </div>
-                    <div class="analytics-card">
-                        <h3>Average Word Count</h3>
-                        <p id="avg-word-count">0</p>
-                        <div class="trend trend-up">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>5% from last month</span>
-                        </div>
-                    </div>
-                    <div class="analytics-card">
-                        <h3>Publications This Month</h3>
-                        <p id="publications-month">0</p>
-                        <div class="trend trend-down">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>3% from last month</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="two-column-layout">
-                    <div class="chart-container">
-                        <h3>Category Distribution</h3>
-                        <canvas id="category-chart"></canvas>
-                    </div>
-
-                    <div class="chart-container">
-                        <h3>Publication Trends</h3>
-                        <canvas id="trend-chart"></canvas>
-                    </div>
-                </div>
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit"></i> Edit Post
+                </h3>
+                <button class="modal-close" id="closeEditModal">&times;</button>
             </div>
-
-            <div id="settings-container" class="dashboard fade-in" style="display: none;">
-                <div class="page-header">
-                    <div class="page-title-section">
-                        <h1>Settings</h1>
-                        <p class="page-description">Customize your workstation preferences</p>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editPostId">
+                    <div class="form-group">
+                        <label for="editCategory">
+                            <i class="fas fa-tag"></i> Category:
+                        </label>
+                        <select id="editCategory" required>
+                            <option value="article">Article</option>
+                            <option value="literary">Literary</option>
+                        </select>
                     </div>
-                    <button class="btn btn-primary" onclick="saveSettings()">
-                        <i class="fas fa-save"></i>
-                        Save Settings
-                    </button>
-                </div>
 
-                <div class="settings-grid">
-                    <div class="settings-card">
-                        <h3>Editor Settings</h3>
-                        <div class="form-group">
-                            <label for="editor-theme">Editor Theme</label>
-                            <select id="editor-theme" onchange="changeEditorTheme()">
-                                <option value="default">Default</option>
-                                <option value="dark">Dark</option>
-                                <option value="light">Light</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="font-size">Font Size</label>
-                            <input type="number" id="font-size" min="12" max="24" value="14" onchange="changeFontSize()">
-                        </div>
+                    <div class="form-group">
+                        <label for="editTitle">
+                            <i class="fas fa-heading"></i> Title:
+                        </label>
+                        <input type="text" id="editTitle" required placeholder="Enter post title">
                     </div>
-                    <div class="settings-card">
-                        <h3>Notification Settings</h3>
-                        <div class="checkbox-wrapper">
-                            <label class="checkbox-label">Email Notifications</label>
-                            <label class="switch">
-                                <input type="checkbox" id="email-notifications" checked>
-                                <span class="slider"></span>
+
+                    <div class="form-group">
+                        <label for="editAuthor">
+                            <i class="fas fa-user-edit"></i> Author:
+                        </label>
+                        <input type="text" id="editAuthor" required placeholder="Enter author's name">
+                    </div>
+
+                    <div class="form-group" id="editAdditionalFields">
+                        <label id="editRoleLabel" for="editAdditionalField">
+                            <i class="fas fa-camera"></i> Photojournalist:
+                        </label>
+                        <input type="text" id="editAdditionalField" placeholder="Enter photojournalist's name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editImageUpload">
+                            <i class="fas fa-image"></i> Upload New Image:
+                        </label>
+                        <div class="file-input-container">
+                            <label class="file-input-label">
+                                <i class="fas fa-upload"></i> Choose File
+                                <input type="file" id="editImageUpload" accept="image/*">
                             </label>
+                            <span class="file-name" id="editFileName">
+                                <i class="fas fa-file-image"></i> No file chosen
+                            </span>
                         </div>
-                        <div class="checkbox-wrapper">
-                            <label class="checkbox-label">Push Notifications</label>
-                            <label class="switch">
-                                <input type="checkbox" id="push-notifications">
-                                <span class="slider"></span>
-                            </label>
+                        <div class="image-preview-container">
+                            <img id="editImagePreview" alt="Image Preview">
                         </div>
                     </div>
-                </div>
-            </div>
-        </main>
 
-        <footer>
-            <p>&copy; 2025 <span class="footer-brand">Ang Silakbo Workstation</span>. All rights reserved.</p>
-        </footer>
+                    <div class="form-group">
+                        <label for="editContent">
+                            <i class="fas fa-paragraph"></i> Content:
+                        </label>
+                        <textarea id="editContent"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelEditBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn" id="saveEditBtn">
+                    <span class="spinner" id="editSpinner"></span>
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
     </div>
 
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-trash-alt"></i> Confirm Deletion
+                </h3>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--error);"></i>
+                </div>
+                <p style="text-align: center; font-size: 1.1rem; margin-bottom: 1.5rem;">Are you sure you want to delete this post?</p>
+                <p style="text-align: center; color: var(--text-light);">This action cannot be undone.</p>
+                <input type="hidden" id="deletePostId">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDeleteBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <span class="spinner" id="deleteSpinner"></span>
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-eye"></i> View Post
+                </h3>
+                <button class="modal-close" id="closeViewModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="viewPostContent">
+                    <!-- Post content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeViewBtn">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button class="btn" id="editFromViewBtn">
+                    <i class="fas fa-edit"></i> Edit Post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8); line-height: 1.7;">
+                    ANG SILAKBO WORKSTATION is a comprehensive content management system for publishing articles and literary works.
+                </p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <div class="footer-links">
+                    <a href="#" class="footer-link"><i class="fas fa-home"></i> Home</a>
+                    <a href="#" class="footer-link"><i class="fas fa-info-circle"></i> About</a>
+                    <a href="#" class="footer-link"><i class="fas fa-envelope"></i> Contact</a>
+                    <a href="#" class="footer-link"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <div class="footer-links">
+                    <a href="mailto:info@silakbo.com" class="footer-link"><i class="fas fa-envelope"></i> info@silakbo.com</a>
+                    <a href="tel:+1234567890" class="footer-link"><i class="fas fa-phone"></i> +123 456 7890</a>
+                    <a href="#" class="footer-link"><i class="fas fa-map-marker-alt"></i> Manila, Philippines</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> ANG SILAKBO WORKSTATION. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
-            authDomain: "ang-silakbo.firebaseapp.com",
-            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
-            projectId: "ang-silakbo",
-            storageBucket: "ang-silakbo.firebasestorage.app",
-            messagingSenderId: "1006400633782",
-            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
-            measurementId: "G-TSDTG2YJ94"
+        // Initialize Supabase
+        const supabaseUrl = "https://uyxgsziyflquisckdwwc.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5eGdzeml5ZmxxdWlzY2tkd3djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1OTQyODUsImV4cCI6MjA1NzE3MDI4NX0.DoIEoWWuajDpBhD2UwLYzrKRyZNyBP4izasROCdIbkk";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Writing Tips Data
+        const writingTips = {
+            article: [
+                "Start with a compelling headline that grabs attention and summarizes your main point.",
+                "Use the inverted pyramid structure: put the most important information first.",
+                "Include relevant statistics and data to support your claims.",
+                "Break up long paragraphs into shorter ones for better readability.",
+                "Use subheadings to organize your content and guide readers through your article.",
+                "Incorporate quotes from experts or relevant sources to add credibility.",
+                "End with a strong conclusion that reinforces your main message."
+            ],
+            literary: [
+                "Show, don't tell. Use descriptive language to create vivid imagery.",
+                "Develop complex, multi-dimensional characters with unique voices.",
+                "Experiment with different literary devices like metaphor, simile, and symbolism.",
+                "Pay attention to rhythm and pacing in your narrative.",
+                "Create a strong sense of setting that immerses readers in your world.",
+                "Use dialogue to reveal character and advance the plot naturally.",
+                "Revise and edit ruthlessly, focusing on language precision and emotional impact."
+            ]
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Initialize TinyMCE for both editors
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Initialize TinyMCE
-        tinymce.init({
-            selector: '#editor',
-            height: 500,
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount'
-            ],
-            toolbar: 'undo redo | formatselect | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-            content_style: 'body { font-family: Poppins, sans-serif; font-size: 14px; }',
-            skin: 'oxide',
-            content_css: 'default',
-            setup: function(editor) {
-                editor.on('KeyUp', function() {
-                    updatePreview();
-                    updateWordCount();
-                });
-                editor.on('Change', function() {
-                    updatePreview();
-                    updateWordCount();
-                });
-            }
-        });
-
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
-            const navActions = document.getElementById('nav-actions');
-            navActions.classList.toggle('active');
-        });
-
-        // Close tips panel
-        document.getElementById('close-tips').addEventListener('click', function() {
-            const tipsPanel = document.querySelector('.tips-panel');
-            tipsPanel.style.display = 'none';
-        });
-
-        let currentEditId = null;
-        let currentEditCategory = null;
-        let tags = [];
-        let contributors = [];
-
-        // Tags functionality
-        document.getElementById('tags-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const tagValue = this.value.trim();
-                if (tagValue && !tags.includes(tagValue)) {
-                    tags.push(tagValue);
-                    renderTags();
-                    this.value = '';
-                }
-            }
-        });
-
-        function renderTags() {
-            const tagsContainer = document.getElementById('tags-container');
-            tagsContainer.innerHTML = '';
-            
-            tags.forEach((tag, index) => {
-                const tagElement = document.createElement('div');
-                tagElement.className = 'tag';
-                tagElement.innerHTML = `
-                    ${tag}
-                    <i class="fas fa-times" onclick="removeTag(${index})"></i>
-                `;
-                tagsContainer.appendChild(tagElement);
-            });
-        }
-
-        function removeTag(index) {
-            tags.splice(index, 1);
-            renderTags();
-        }
-
-        // Contributors functionality
-        document.getElementById('contributor-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const contributorValue = this.value.trim();
-                if (contributorValue && !contributors.includes(contributorValue)) {
-                    contributors.push(contributorValue);
-                    renderContributors();
-                    this.value = '';
-                }
-            }
-        });
-
-        function renderContributors() {
-            const contributorsList = document.getElementById('contributors-list');
-            contributorsList.innerHTML = '';
-            
-            contributors.forEach((contributor, index) => {
-                const contributorElement = document.createElement('div');
-                contributorElement.className = 'contributor';
-                
-                const initials = contributor.split(' ').map(name => name[0]).join('').toUpperCase();
-                
-                contributorElement.innerHTML = `
-                    <div class="contributor-avatar">${initials}</div>
-                    ${contributor}
-                    <i class="fas fa-times" onclick="removeContributor(${index})"></i>
-                `;
-                contributorsList.appendChild(contributorElement);
-            });
-        }
-
-        function removeContributor(index) {
-            contributors.splice(index, 1);
-            renderContributors();
-        }
-
-        // Content preview and word count
-        function updatePreview() {
-            const content = tinymce.get('editor').getContent();
-            document.getElementById('content-preview').innerHTML = content;
-        }
-
-        function updateWordCount() {
-            const content = tinymce.get('editor').getContent();
-            const text = content.replace(/<[^>]+>/g, '');
-            const words = text.trim().split(/\s+/).length;
-            document.getElementById('word-count').textContent = `${words} words`;
-            
-            // Update progress bar - assuming a target of 500 words
-            const progress = Math.min(words / 500 * 100, 100);
-            document.getElementById('progress-bar').style.width = `${progress}%`;
-        }
-
-        // Function to update photojournalist label and icon based on category
-        function updatePhotojournalistField() {
-            const category = document.getElementById('category').value;
-            const photojournalistLabel = document.getElementById('photojournalist-label');
-            const photojournalistIcon = document.getElementById('photojournalist-icon');
-            const photojournalistInput = document.getElementById('photojournalist');
-            
-            if (category === 'literary') {
-                photojournalistLabel.textContent = 'Cartoonist';
-                photojournalistIcon.className = 'fas fa-pencil-alt input-icon';
-                photojournalistInput.placeholder = "Enter cartoonist's name";
-            } else {
-                photojournalistLabel.textContent = 'Photojournalist';
-                photojournalistIcon.className = 'fas fa-camera input-icon';
-                photojournalistInput.placeholder = "Enter photojournalist's name";
-            }
-        }
-
-        // Add event listener to category dropdown
-        document.getElementById('category').addEventListener('change', updatePhotojournalistField);
-
-        async function handlePublish() {
-            const title = document.getElementById('title').value;
-            const category = document.getElementById('category').value;
-            const author = document.getElementById('author').value;
-            const photojournalist = document.getElementById('photojournalist').value;
-            const content = tinymce.get('editor').getContent();
-
-            if (!title || !category || !author || !content) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            if (currentEditId) {
-                await updatePublishedWork(currentEditId, currentEditCategory, title, category, author, photojournalist, content);
-            } else {
-                await publishContent(title, category, author, photojournalist, content);
-            }
-
-            resetEditor();
-            loadPublishedWorks();
-        }
-
-        async function publishContent(title, category, author, photojournalist, content) {
-            try {
-                await db.collection(category).add({
-                    title: title,
-                    author: author,
-                    photojournalist: photojournalist,
-                    content: content,
-                    tags: tags,
-                    contributors: contributors,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                showNotification('Content published successfully!', 'success');
-            } catch (error) {
-                console.error('Error publishing content:', error);
-                showNotification('Error publishing content. Please try again.', 'error');
-            }
-        }
-
-        async function updatePublishedWork(docId, oldCategory, title, newCategory, author, photojournalist, content) {
-                    try {
-                        if (oldCategory === newCategory) {
-                    await db.collection(oldCategory).doc(docId).update({
-                        title: title,
-                        author: author,
-                        photojournalist: photojournalist,
-                        content: content,
-                        tags: tags,
-                        contributors: contributors,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            // Initialize TinyMCE for create form
+            tinymce.init({
+                selector: '#content',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                height: 400,
+                menubar: false,
+                statusbar: true,
+                branding: false,
+                promotion: false,
+                skin: 'oxide',
+                content_css: 'default',
+                setup: function(editor) {
+                    editor.on('init', function() {
+                        updateWritingTips('article'); // Default to article tips
                     });
+                }
+            });
+
+            // Initialize TinyMCE for edit form
+            tinymce.init({
+                selector: '#editContent',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                height: 400,
+                menubar: false,
+                statusbar: true,
+                branding: false,
+                promotion: false,
+                skin: 'oxide',
+                content_css: 'default'
+            });
+
+            // Load posts when the page loads
+            loadPosts();
+            
+            // Initialize writing tips
+            updateWritingTips('article');
+            
+            // Initialize category change event
+            document.getElementById('category').addEventListener('change', function() {
+                let label = document.getElementById('roleLabel');
+                let additionalField = document.getElementById('additionalField');
+                
+                if (this.value === 'article') {
+                    label.innerHTML = '<i class="fas fa-camera"></i> Photojournalist:';
+                    additionalField.placeholder = "Enter photojournalist's name";
                 } else {
-                    // Delete from old category and add to new category
-                    await db.collection(oldCategory).doc(docId).delete();
-                    await db.collection(newCategory).add({
-                        title: title,
-                        author: author,
-                        photojournalist: photojournalist,
-                        content: content,
-                        tags: tags,
-                        contributors: contributors,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-
-                showNotification('Work updated successfully!', 'success');
-                currentEditId = null;
-                currentEditCategory = null;
-                document.getElementById('publish-button').innerHTML = '<i class="fas fa-paper-plane"></i> Publish';
-            } catch (error) {
-                console.error('Error updating work:', error);
-                showNotification('Error updating work. Please try again.', 'error');
-            }
-        }
-
-        function saveDraft() {
-            const title = document.getElementById('title').value;
-            const category = document.getElementById('category').value;
-            const author = document.getElementById('author').value;
-            const photojournalist = document.getElementById('photojournalist').value;
-            const content = tinymce.get('editor').getContent();
-            
-            // Save to localStorage
-            const draft = {
-                title,
-                category,
-                author,
-                photojournalist,
-                content,
-                tags,
-                contributors,
-                timestamp: new Date().toISOString()
-            };
-            
-            localStorage.setItem('silakbo_draft', JSON.stringify(draft));
-            showNotification('Draft saved successfully!', 'success');
-        }
-
-        function loadDraft() {
-            const draftData = localStorage.getItem('silakbo_draft');
-            if (draftData) {
-                const draft = JSON.parse(draftData);
-                document.getElementById('title').value = draft.title || '';
-                document.getElementById('category').value = draft.category || '';
-                document.getElementById('author').value = draft.author || '';
-                document.getElementById('photojournalist').value = draft.photojournalist || '';
-                if (draft.content) {
-                    tinymce.get('editor').setContent(draft.content);
+                    label.innerHTML = '<i class="fas fa-paint-brush"></i> Cartoonist:';
+                    additionalField.placeholder = "Enter cartoonist's name";
                 }
                 
-                tags = draft.tags || [];
-                renderTags();
-                
-                contributors = draft.contributors || [];
-                renderContributors();
-                
-                updatePreview();
-                updateWordCount();
-                updatePhotojournalistField();
-                
-                showNotification('Draft loaded successfully!', 'success');
-            }
-        }
-
-        function resetEditor() {
-            document.getElementById('title').value = '';
-            document.getElementById('category').value = '';
-            document.getElementById('author').value = '';
-            document.getElementById('photojournalist').value = '';
-            tinymce.get('editor').setContent('');
-            tags = [];
-            renderTags();
-            contributors = [];
-            renderContributors();
-            currentEditId = null;
-            currentEditCategory = null;
-            document.getElementById('publish-button').innerHTML = '<i class="fas fa-paper-plane"></i> Publish';
-            updatePreview();
-            updateWordCount();
-            updatePhotojournalistField();
-        }
-
-        function updateWritingSuggestions() {
-            const category = document.getElementById('category').value;
-            const categoryTipsElement = document.getElementById('category-tips');
-            let tips = '';
-
-            switch(category) {
-                case 'articles':
-                    tips = `
-                        <h4>Article Writing Tips</h4>
-                        <ul>
-                            <li>Start with a compelling headline that grabs attention.</li>
-                            <li>Use subheadings to break up your content and improve readability.</li>
-                            <li>Include relevant facts, statistics, and quotes to support your points.</li>
-                            <li>Use transition words to improve the flow between paragraphs.</li>
-                            <li>End with a strong conclusion or call-to-action.</li>
-                            <li>Research thoroughly and cite your sources.</li>
-                            <li>Use storytelling techniques to engage your readers.</li>
-                        </ul>
-                    `;
-                    break;
-                case 'literary':
-                    tips = `
-                        <h4>Literary Writing Tips</h4>
-                        <ul>
-                            <li>Develop a strong, central theme or message for your work.</li>
-                            <li>Create complex, relatable characters with depth and motivation.</li>
-                            <li>Use vivid imagery and descriptive language to paint a picture in the reader's mind.</li>
-                            <li>Experiment with different literary devices like metaphors, similes, and personification.</li>
-                            <li>Pay attention to pacing and structure in your narrative.</li>
-                            <li>Show, don't tell: use actions and dialogue to reveal character traits and emotions.</li>
-                            <li>Edit ruthlessly, focusing on clarity and impact in your writing.</li>
-                        </ul>
-                    `;
-                    break;
-                case 'photostory':
-                    tips = `
-                        <h4>Photostory Tips</h4>
-                        <ul>
-                            <li>Select a series of impactful, high-quality images that tell a cohesive story.</li>
-                            <li>Ensure your images have a logical sequence and flow.</li>
-                            <li>Write concise, engaging captions that complement the images without stating the obvious.</li>
-                            <li>Consider the composition and framing of each photograph.</li>
-                            <li>Use a mix of wide, medium, and close-up shots to add variety.</li>
-                            <li>Include a brief introduction and conclusion to set the context and wrap up the story.</li>
-                            <li>Pay attention to color schemes and visual themes across your images.</li>
-                        </ul>
-                    `;
-                    break;
-                default:
-                    tips = 'Select a category to see specific writing tips.';
-            }
-
-            categoryTipsElement.innerHTML = tips;
-        }
-
-        document.getElementById('category').addEventListener('change', updateWritingSuggestions);
-        updateWritingSuggestions();
-
-        function exportToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            const title = document.getElementById('title').value;
-            const author = document.getElementById('author').value;
-            const photojournalist = document.getElementById('photojournalist').value;
-            const content = tinymce.get('editor').getContent();
-            
-            doc.setFontSize(18);
-            doc.text(title, 20, 20);
-            
-            doc.setFontSize(14);
-            doc.text(`By ${author}`, 20, 30);
-            
-            if (photojournalist) {
-                doc.setFontSize(12);
-                const category = document.getElementById('category').value;
-                const label = category === 'literary' ? 'Cartoonist' : 'Photojournalist';
-                doc.text(`${label}: ${photojournalist}`, 20, 40);
-                doc.setFontSize(12);
-                const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
-                const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
-                doc.text(splitContent, 20, 50);
-            } else {
-                doc.setFontSize(12);
-                const contentWithoutHTML = content.replace(/<[^>]+>/g, '');
-                const splitContent = doc.splitTextToSize(contentWithoutHTML, 180);
-                doc.text(splitContent, 20, 40);
-            }
-            
-            doc.save(title + '.pdf');
-            showNotification('PDF exported successfully!', 'success');
-        }
-
-        function exportToDOC() {
-            const title = document.getElementById('title').value;
-            const author = document.getElementById('author').value;
-            const photojournalist = document.getElementById('photojournalist').value;
-            const content = tinymce.get('editor').getContent();
-            
-            // Using docx.js
-            const { Document, Paragraph, HeadingLevel, Packer } = docx;
-            
-            const paragraphs = [
-                new Paragraph({
-                    text: title,
-                    heading: HeadingLevel.HEADING_1,
-                }),
-                new Paragraph({
-                    text: `By ${author}`,
-                    heading: HeadingLevel.HEADING_2,
-                })
-            ];
-            
-            if (photojournalist) {
-                const category = document.getElementById('category').value;
-                const label = category === 'literary' ? 'Cartoonist' : 'Photojournalist';
-                paragraphs.push(
-                    new Paragraph({
-                        text: `${label}: ${photojournalist}`,
-                        heading: HeadingLevel.HEADING_3,
-                    })
-                );
-            }
-            
-            paragraphs.push(
-                new Paragraph({
-                    text: content.replace(/<[^>]+>/g, ''),
-                })
-            );
-            
-            const doc = new Document({
-                sections: [{
-                    properties: {},
-                    children: paragraphs,
-                }],
+                // Update writing tips
+                updateWritingTips(this.value);
             });
+        });
+
+        // Update writing tips based on category
+        function updateWritingTips(category) {
+            const tipsContainer = document.getElementById('writingTipsContent');
+            tipsContainer.innerHTML = '';
             
-            Packer.toBlob(doc).then(blob => {
-                saveAs(blob, title + ".docx");
-                showNotification('DOC exported successfully!', 'success');
+            const tips = writingTips[category] || writingTips.article;
+            
+            tips.forEach(tip => {
+                const tipElement = document.createElement('div');
+                tipElement.className = 'writing-tip';
+                tipElement.textContent = tip;
+                tipsContainer.appendChild(tipElement);
             });
         }
 
-        let allPublishedWorks = [];
-
-        async function loadPublishedWorks() {
-            const publishedList = document.getElementById('published-list');
-            publishedList.innerHTML = '<div class="loading-indicator">Loading published works...</div>';
-
-            const categories = ['photostory', 'articles', 'literary'];
-            allPublishedWorks = [];
-
-            try {
-                for (const category of categories) {
-                    const snapshot = await db.collection(category).orderBy('timestamp', 'desc').get();
-                    
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        allPublishedWorks.push({
-                            id: doc.id,
-                            category: category,
-                            title: data.title,
-                            author: data.author,
-                            photojournalist: data.photojournalist || '',
-                            content: data.content,
-                            tags: data.tags || [],
-                            contributors: data.contributors || [],
-                            timestamp: data.timestamp
-                        });
-                    });
-                }
-
-                displayPublishedWorks(allPublishedWorks);
-                updateAnalytics();
-            } catch (error) {
-                console.error('Error loading published works:', error);
-                publishedList.innerHTML = '<div class="error-message">Error loading published works. Please try again.</div>';
+        // Apply font to TinyMCE editor
+        function applyFont(fontFamily) {
+            const editor = tinymce.get('content');
+            if (editor) {
+                editor.execCommand('fontName', false, fontFamily);
+                showAlert('success', `Font "${fontFamily}" applied to selected text`);
             }
         }
 
-        function displayPublishedWorks(works) {
-            const publishedList = document.getElementById('published-list');
-            publishedList.innerHTML = '';
+        // Initialize navigation elements
+        let tabs, tabContents;
+        const navLinksElements = document.querySelectorAll('.nav-link');
 
-            if (works.length === 0) {
-                publishedList.innerHTML = '<div class="empty-state">No published works found.</div>';
-                return;
-            }
-
-            works.forEach(work => {
-                const publishedItem = document.createElement('div');
-                publishedItem.className = 'published-item';
-                
-                const formattedDate = work.timestamp ? work.timestamp.toDate().toLocaleString() : 'Unknown date';
-                
-                let tagsHTML = '';
-                if (work.tags && work.tags.length > 0) {
-                    tagsHTML = `
-                        <div class="tag-container">
-                            ${work.tags.map(tag => `<div class="tag">${tag}</div>`).join('')}
-                        </div>
-                    `;
-                }
-                
-                // Determine if it should show Photojournalist or Cartoonist
-                let contributorLabel = 'Photojournalist';
-                if (work.category === 'literary') {
-                    contributorLabel = 'Cartoonist';
-                }
-                
-                publishedItem.innerHTML = `
-                    <h3>${work.title}</h3>
-                    <div class="published-meta">
-                        <div class="published-meta-item">
-                            <i class="fas fa-user"></i>
-                            <span>${work.author}</span>
-                        </div>
-                        ${work.photojournalist ? `
-                        <div class="published-meta-item">
-                            <i class="${work.category === 'literary' ? 'fas fa-pencil-alt' : 'fas fa-camera'}"></i>
-                            <span>${contributorLabel}: ${work.photojournalist}</span>
-                        </div>
-                        ` : ''}
-                        <div class="published-meta-item">
-                            <i class="fas fa-calendar"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                        <div class="published-meta-item">
-                            <span class="category-badge">${work.category}</span>
-                        </div>
-                    </div>
-                    ${tagsHTML}
-                    <div class="edit-delete-buttons">
-                        <button class="btn btn-secondary btn-sm" onclick="editPublishedWork('${work.category}', '${work.id}')">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="deletePublishedWork('${work.category}', '${work.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                `;
-                publishedList.appendChild(publishedItem);
-            });
-        }
-
-        async function editPublishedWork(category, docId) {
-            try {
-                const doc = await db.collection(category).doc(docId).get();
-                const data = doc.data();
-
-                document.getElementById('title').value = data.title;
-                document.getElementById('category').value = category;
-                document.getElementById('author').value = data.author;
-                document.getElementById('photojournalist').value = data.photojournalist || '';
-                tinymce.get('editor').setContent(data.content);
-                
-                tags = data.tags || [];
-                renderTags();
-                
-                contributors = data.contributors || [];
-                renderContributors();
-
-                currentEditId = docId;
-                currentEditCategory = category;
-                document.getElementById('publish-button').innerHTML = '<i class="fas fa-save"></i> Update';
-
-                showTab('editor');
-                window.scrollTo(0, 0);
-                
-                updatePreview();
-                updateWordCount();
-                updatePhotojournalistField();
-            } catch (error) {
-                console.error('Error editing work:', error);
-                showNotification('Error loading content for editing. Please try again.', 'error');
-            }
-        }
-
-        async function deletePublishedWork(category, docId) {
-            if (confirm('Are you sure you want to delete this work?')) {
-                try {
-                    await db.collection(category).doc(docId).delete();
-                    showNotification('Work deleted successfully!', 'success');
-                    loadPublishedWorks();
-                } catch (error) {
-                    console.error('Error deleting work:', error);
-                    showNotification('Error deleting work. Please try again.', 'error');
-                }
-            }
-        }
-
-        function searchPublishedWorks() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            
-            if (!searchTerm.trim()) {
-                displayPublishedWorks(allPublishedWorks);
-                return;
-            }
-            
-            const filteredWorks = allPublishedWorks.filter(work => 
-                work.title.toLowerCase().includes(searchTerm) || 
-                work.author.toLowerCase().includes(searchTerm) ||
-                (work.photojournalist && work.photojournalist.toLowerCase().includes(searchTerm)) ||
-                work.content.toLowerCase().includes(searchTerm) ||
-                (work.tags && work.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-            );
-            
-            displayPublishedWorks(filteredWorks);
-        }
-
-        function filterPublishedWorks(category) {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if (category === 'all') {
-                displayPublishedWorks(allPublishedWorks);
-            } else {
-                const filteredWorks = allPublishedWorks.filter(work => work.category === category);
-                displayPublishedWorks(filteredWorks);
-            }
-        }
-
-        function showTab(tabName) {
-            const editorContainer = document.getElementById('editor-container');
-            const publishedWorks = document.getElementById('published-works');
-            const analyticsContainer = document.getElementById('analytics-container');
-            const settingsContainer = document.getElementById('settings-container');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get navigation elements
+            tabs = document.querySelectorAll('.tab');
+            tabContents = document.querySelectorAll('.tab-content');
             const navLinks = document.querySelectorAll('.nav-link');
 
-            editorContainer.style.display = 'none';
-            publishedWorks.style.display = 'none';
-            analyticsContainer.style.display = 'none';
-            settingsContainer.style.display = 'none';
+            // Tab Navigation
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update tab contents
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                    
+                    // Update nav links
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    document.getElementById(`nav-${tabId}`).classList.add('active');
 
-            navLinks.forEach(link => link.classList.remove('active'));
-
-            if (tabName === 'editor') {
-                editorContainer.style.display = 'block';
-                document.querySelector('.nav-link[onclick="showTab(\'editor\')"]').classList.add('active');
-            } else if (tabName === 'published') {
-                publishedWorks.style.display = 'block';
-                document.querySelector('.nav-link[onclick="showTab(\'published\')"]').classList.add('active');
-                loadPublishedWorks();
-            } else if (tabName === 'analytics') {
-                analyticsContainer.style.display = 'block';
-                document.querySelector('.nav-link[onclick="showTab(\'analytics\')"]').classList.add('active');
-                updateAnalytics();
-            } else if (tabName === 'settings') {
-                settingsContainer.style.display = 'block';
-                document.querySelector('.nav-link[onclick="showTab(\'settings\')"]').classList.add('active');
-            }
-        }
-
-        function updateAnalytics() {
-            const totalWorks = allPublishedWorks.length;
-            document.getElementById('total-works').textContent = totalWorks;
-
-            const categoryCounts = allPublishedWorks.reduce((acc, work) => {
-                acc[work.category] = (acc[work.category] || 0) + 1;
-                return acc;
-            }, {});
-
-            let popularCategory = '-';
-            if (Object.keys(categoryCounts).length > 0) {
-                popularCategory = Object.keys(categoryCounts).reduce((a, b) => 
-                    categoryCounts[a] > categoryCounts[b] ? a : b
-                );
-            }
-            document.getElementById('popular-category').textContent = popularCategory;
-
-            const avgWordCount = totalWorks > 0 ? 
-                Math.round(allPublishedWorks.reduce((sum, work) => 
-                    sum + (work.content.replace(/<[^>]+>/g, '').split(/\s+/).length), 0
-                ) / totalWorks) : 0;
-            document.getElementById('avg-word-count').textContent = avgWordCount;
-
-            const now = new Date();
-            const thisMonth = now.getMonth();
-            const thisYear = now.getFullYear();
-            const publicationsThisMonth = allPublishedWorks.filter(work => {
-                if (!work.timestamp) return false;
-                const pubDate = work.timestamp.toDate();
-                return pubDate.getMonth() === thisMonth && pubDate.getFullYear() === thisYear;
-            }).length;
-            document.getElementById('publications-month').textContent = publicationsThisMonth;
-
-            // Create a pie chart for category distribution
-            const categoryCtx = document.getElementById('category-chart').getContext('2d');
-            new Chart(categoryCtx, {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(categoryCounts).length > 0 ? Object.keys(categoryCounts) : ['No Data'],
-                    datasets: [{
-                        data: Object.keys(categoryCounts).length > 0 ? Object.values(categoryCounts) : [1],
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        },
-                        title: {
-                            display: false
-                        }
+                    // If switching to manage tab, refresh the posts
+                    if (tabId === 'manage') {
+                        loadPosts();
                     }
-                }
-            });
-
-            // Create a line chart for trends
-            const trendCtx = document.getElementById('trend-chart').getContext('2d');
-            
-            // Sample data - in a real app, you'd calculate this from your database
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const currentMonth = new Date().getMonth();
-            const lastSixMonths = months.slice(currentMonth - 5, currentMonth + 1);
-            
-            new Chart(trendCtx, {
-                type: 'line',
-                data: {
-                    labels: lastSixMonths,
-                    datasets: [{
-                        label: 'Publications',
-                        data: [5, 8, 12, 9, 11, publicationsThisMonth],
-                        borderColor: '#E65100',
-                        backgroundColor: 'rgba(230, 81, 0, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Publications'
-                            }
-                        }
+                    
+                    // Close mobile menu if open
+                    const navLinksMenu = document.getElementById('navLinks');
+                    if (navLinksMenu.classList.contains('active')) {
+                        navLinksMenu.classList.remove('active');
+                        document.getElementById('mobileMenuToggle').innerHTML = '<i class="fas fa-bars"></i>';
                     }
-                }
+                });
             });
-        }
 
-        function changeEditorTheme() {
-            const theme = document.getElementById('editor-theme').value;
-            tinymce.remove();
-            tinymce.init({
-                selector: '#editor',
-                height: 500,
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                ],
-                toolbar: 'undo redo | formatselect | ' +
-                    'bold italic backcolor | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                    'removeformat | help',
-                content_style: 'body { font-family: Poppins, sans-serif; font-size: 14px; }',
-                skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
-                content_css: theme === 'dark' ? 'dark' : 'default',
-                setup: function(editor) {
-                    editor.on('KeyUp', function() {
-                        updatePreview();
-                        updateWordCount();
+            // Nav Links
+            navLinksElements.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = link.id.replace('nav-', '');
+                    
+                    // Update nav links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Update tabs
+                    tabs.forEach(tab => {
+                        if (tab.getAttribute('data-tab') === tabId) {
+                            tab.click();
+                        }
                     });
-                    editor.on('Change', function() {
-                        updatePreview();
-                        updateWordCount();
-                    });
-                }
+                    
+                    // Close mobile menu if open
+                    const navLinksMenu = document.getElementById('navLinks');
+                    if (navLinksMenu.classList.contains('active')) {
+                        navLinksMenu.classList.remove('active');
+                        document.getElementById('mobileMenuToggle').innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
             });
-            showNotification('Editor theme updated!', 'success');
-        }
 
-        function changeFontSize() {
-            const fontSize = document.getElementById('font-size').value;
-            tinymce.get('editor').getBody().style.fontSize = fontSize + 'px';
-            showNotification('Font size updated!', 'success');
-        }
+            // Create first post button
+            const createFirstPostBtn = document.getElementById('createFirstPostBtn');
+            if (createFirstPostBtn) {
+                createFirstPostBtn.addEventListener('click', () => {
+                    document.getElementById('nav-create').click();
+                });
+            }
 
-        function saveSettings() {
-            const editorTheme = document.getElementById('editor-theme').value;
-            const fontSize = document.getElementById('font-size').value;
-            const emailNotifications = document.getElementById('email-notifications').checked;
-            const pushNotifications = document.getElementById('push-notifications').checked;
+            // Mobile Menu Toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    const navLinksMenu = document.getElementById('navLinks');
+                    navLinksMenu.classList.toggle('active');
+                    this.innerHTML = navLinksMenu.classList.contains('active') ? 
+                        '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+                });
+            }
+        });
 
-            // Here you would typically save these settings to a database or local storage
-            localStorage.setItem('editorSettings', JSON.stringify({
-                theme: editorTheme,
-                fontSize: fontSize,
-                emailNotifications: emailNotifications,
-                pushNotifications: pushNotifications
-            }));
+        // Update edit role label when category changes
+        document.getElementById('editCategory').addEventListener('change', function() {
+            let label = document.getElementById('editRoleLabel');
+            let additionalField = document.getElementById('editAdditionalField');
             
-            showNotification('Settings saved successfully!', 'success');
-        }
+            if (this.value === 'article') {
+                label.innerHTML = '<i class="fas fa-camera"></i> Photojournalist:';
+                additionalField.placeholder = "Enter photojournalist's name";
+            } else {
+                label.innerHTML = '<i class="fas fa-paint-brush"></i> Cartoonist:';
+                additionalField.placeholder = "Enter cartoonist's name";
+            }
+        });
 
-        function loadSettings() {
-            const savedSettings = localStorage.getItem('editorSettings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                document.getElementById('editor-theme').value = settings.theme || 'default';
-                document.getElementById('font-size').value = settings.fontSize || '14';
-                document.getElementById('email-notifications').checked = settings.emailNotifications !== undefined ? settings.emailNotifications : true;
-                document.getElementById('push-notifications').checked = settings.pushNotifications !== undefined ? settings.pushNotifications : false;
+        // Image Preview Feature
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgPreview = document.getElementById('imagePreview');
+                    imgPreview.src = e.target.result;
+                    imgPreview.style.display = 'block';
+                    document.getElementById('fileName').innerHTML = '<i class="fas fa-file-image"></i> ' + file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Edit Image Preview Feature
+        document.getElementById('editImageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgPreview = document.getElementById('editImagePreview');
+                    imgPreview.src = e.target.result;
+                    imgPreview.style.display = 'block';
+                    document.getElementById('editFileName').innerHTML = '<i class="fas fa-file-image"></i> ' + file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('postForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Show spinner
+            const submitBtn = document.getElementById('submitBtn');
+            const submitSpinner = document.getElementById('submitSpinner');
+            submitBtn.disabled = true;
+            submitSpinner.style.display = 'inline-block';
+            
+            try {
+                const category = document.getElementById('category').value;
+                const title = document.getElementById('title').value;
+                const author = document.getElementById('author').value;
+                const role = document.getElementById('additionalField').value;
+                const content = tinymce.get('content').getContent();
+                const imageFile = document.getElementById('imageUpload').files[0];
                 
-                // Apply theme if needed
-                if (settings.theme !== 'default') {
-                    changeEditorTheme();
+                let imageUrl = '';
+                if (imageFile) {
+                    const formData = new FormData();
+                    formData.append("file", imageFile);
+                    formData.append("upload_preset", "Ang Silakbo");
+                    
+                    const response = await fetch("https://api.cloudinary.com/v1_1/ddalveuw6/image/upload", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error.message);
+                    }
+                    imageUrl = data.secure_url;
                 }
+
+                const { data, error } = await supabase
+                    .from("posts")
+                    .insert([{ 
+                        category, 
+                        title,
+                        author, 
+                        role, 
+                        content, 
+                        image_url: imageUrl,
+                        created_at: new Date().toISOString()
+                    }]);
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                // Show success message
+                showAlert('success', 'Post created successfully!');
+                
+                // Reset form
+                document.getElementById('postForm').reset();
+                tinymce.get('content').setContent('');
+                document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('fileName').innerHTML = '<i class="fas fa-file-image"></i> No file chosen';
+                
+                // Refresh posts list if on manage tab
+                if (document.getElementById('manageTab').classList.contains('active')) {
+                    loadPosts();
+                }
+            } catch (error) {
+                console.error("Error saving post:", error);
+                showAlert('error', error.message || 'Error creating post. Please try again.');
+            } finally {
+                // Hide spinner
+                submitBtn.disabled = false;
+                submitSpinner.style.display = 'none';
+            }
+        });
+
+        // Load posts from Supabase
+        async function loadPosts() {
+            const loadingElement = document.getElementById('loadingPosts');
+            const tableElement = document.getElementById('postsTable');
+            const noPostsMessage = document.getElementById('noPostsMessage');
+            
+            loadingElement.style.display = 'flex';
+            tableElement.style.display = 'none';
+            noPostsMessage.style.display = 'none';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                const tableBody = document.getElementById('postsTableBody');
+                tableBody.innerHTML = '';
+                
+                if (data && data.length > 0) {
+                    data.forEach(post => {
+                        const row = document.createElement('tr');
+                        
+                        // Format date
+                        const date = new Date(post.created_at);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                        
+                        // Category badge
+                        const categoryClass = post.category === 'article' ? 'category-article' : 'category-literary';
+                        const categoryIcon = post.category === 'article' ? 'newspaper' : 'book';
+                        
+                        row.innerHTML = `
+                            <td>
+                                <span class="category-badge ${categoryClass}">
+                                    <i class="fas fa-${categoryIcon}"></i> ${post.category.charAt(0).toUpperCase() + post.category.slice(1)}
+                                </span>
+                            </td>
+                            <td>${post.title || 'Untitled'}</td>
+                            <td>${post.author}</td>
+                            <td>${post.role || '-'}</td>
+                            <td><i class="far fa-clock"></i> ${formattedDate}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-view tooltip" data-id="${post.id}" data-tooltip="View Post">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon btn-edit tooltip" data-id="${post.id}" data-tooltip="Edit Post">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete tooltip" data-id="${post.id}" data-tooltip="Delete Post">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        
+                        tableBody.appendChild(row);
+                    });
+                    
+                    tableElement.style.display = 'block';
+                    
+                    // Add event listeners to view, edit and delete buttons
+                    document.querySelectorAll('.btn-view').forEach(button => {
+                        button.addEventListener('click', () => openViewModal(button.getAttribute('data-id')));
+                    });
+                    
+                    document.querySelectorAll('.btn-edit').forEach(button => {
+                        button.addEventListener('click', () => openEditModal(button.getAttribute('data-id')));
+                    });
+                    
+                    document.querySelectorAll('.btn-delete').forEach(button => {
+                        button.addEventListener('click', () => openDeleteModal(button.getAttribute('data-id')));
+                    });
+                } else {
+                    noPostsMessage.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error("Error loading posts:", error);
+                showAlert('error', error.message || 'Error loading posts. Please try again.');
+            } finally {
+                loadingElement.style.display = 'none';
             }
         }
 
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
+        // Open view modal
+        async function openViewModal(postId) {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .eq('id', postId)
+                    .single();
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                if (data) {
+                    const viewContent = document.getElementById('viewPostContent');
+                    
+                    // Format date
+                    const date = new Date(data.created_at);
+                    const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    
+                    // Category badge
+                    const categoryClass = data.category === 'article' ? 'category-article' : 'category-literary';
+                    const categoryIcon = data.category === 'article' ? 'newspaper' : 'book';
+                    
+                    let html = `
+                        <div style="margin-bottom: 1.5rem;">
+                            <span class="category-badge ${categoryClass}">
+                                <i class="fas fa-${categoryIcon}"></i> ${data.category.charAt(0).toUpperCase() + data.category.slice(1)}
+                            </span>
+                        </div>
+                        
+                        <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--primary-dark); font-weight: 600;">
+                            ${data.title || 'Untitled'}
+                        </h2>
+                    `;
+                    
+                    if (data.image_url) {
+                        html += `
+                            <div style="margin-bottom: 1.5rem; text-align: center;">
+                                <img src="${data.image_url}" alt="Post Image" style="max-width: 100%; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                            </div>
+                        `;
+                    }
+                    
+                    html += `
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <i class="fas fa-user-edit" style="color: var(--primary);"></i>
+                                <strong>Author:</strong> ${data.author}
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <i class="fas fa-${data.category === 'article' ? 'camera' : 'paint-brush'}" style="color: var(--primary);"></i>
+                                <strong>${data.category === 'article' ? 'Photojournalist' : 'Cartoonist'}:</strong> ${data.role || '-'}
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                                <i class="far fa-clock" style="color: var(--primary);"></i>
+                                <strong>Published:</strong> ${formattedDate}
+                            </div>
+                        </div>
+                        
+                        <div style="border-top: 1px solid var(--gray); padding-top: 1.5rem;">
+                            ${data.content}
+                        </div>
+                    `;
+                    
+                    viewContent.innerHTML = html;
+                    
+                    // Store post ID for edit button
+                    document.getElementById('editFromViewBtn').setAttribute('data-id', postId);
+                    
+                    // Show modal
+                    document.getElementById('viewModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error("Error loading post for view:", error);
+                showAlert('error', error.message || 'Error loading post. Please try again.');
+            }
+        }
+
+        // Open edit modal
+        async function openEditModal(postId) {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .eq('id', postId)
+                    .single();
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                if (data) {
+                    document.getElementById('editPostId').value = data.id;
+                    document.getElementById('editCategory').value = data.category;
+                    document.getElementById('editTitle').value = data.title || '';
+                    document.getElementById('editAuthor').value = data.author;
+                    document.getElementById('editAdditionalField').value = data.role || '';
+                    
+                    // Update role label based on category
+                    let label = document.getElementById('editRoleLabel');
+                    let additionalField = document.getElementById('editAdditionalField');
+                    if (data.category === 'article') {
+                        label.innerHTML = '<i class="fas fa-camera"></i> Photojournalist:';
+                        additionalField.placeholder = "Enter photojournalist's name";
+                    } else {
+                        label.innerHTML = '<i class="fas fa-paint-brush"></i> Cartoonist:';
+                        additionalField.placeholder = "Enter cartoonist's name";
+                    }
+                    
+                    // Set content in TinyMCE
+                    tinymce.get('editContent').setContent(data.content || '');
+                    
+                    // Show image preview if available
+                    const imgPreview = document.getElementById('editImagePreview');
+                    if (data.image_url) {
+                        imgPreview.src = data.image_url;
+                        imgPreview.style.display = 'block';
+                    } else {
+                        imgPreview.style.display = 'none';
+                    }
+                    
+                    // Reset file name
+                    document.getElementById('editFileName').innerHTML = '<i class="fas fa-file-image"></i> No file chosen';
+                    
+                    // Show modal
+                    document.getElementById('editModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error("Error loading post for edit:", error);
+                showAlert('error', error.message || 'Error loading post. Please try again.');
+            }
+        }
+
+        // Handle edit form submission
+        document.getElementById('saveEditBtn').addEventListener('click', async function() {
+            // Show spinner
+            const saveBtn = document.getElementById('saveEditBtn');
+            const editSpinner = document.getElementById('editSpinner');
+            saveBtn.disabled = true;
+            editSpinner.style.display = 'inline-block';
             
-            // Add to DOM
-            document.body.appendChild(notification);
+            try {
+                const postId = document.getElementById('editPostId').value;
+                const category = document.getElementById('editCategory').value;
+                const title = document.getElementById('editTitle').value;
+                const author = document.getElementById('editAuthor').value;
+                const role = document.getElementById('editAdditionalField').value;
+                const content = tinymce.get('editContent').getContent();
+                const imageFile = document.getElementById('editImageUpload').files[0];
+                
+                let updateData = { 
+                    category, 
+                    title,
+                    author, 
+                    role, 
+                    content,
+                    updated_at: new Date().toISOString()
+                };
+                
+                // Upload new image if selected
+                if (imageFile) {
+                    const formData = new FormData();
+                    formData.append("file", imageFile);
+                    formData.append("upload_preset", "Ang Silakbo");
+                    
+                    const response = await fetch("https://api.cloudinary.com/v1_1/ddalveuw6/image/upload", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error.message);
+                    }
+                    updateData.image_url = data.secure_url;
+                }
+
+                const { error } = await supabase
+                    .from("posts")
+                    .update(updateData)
+                    .eq('id', postId);
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                // Show success message
+                showAlert('success', 'Post updated successfully!');
+                
+                // Close modal
+                document.getElementById('editModal').style.display = 'none';
+                
+                // Refresh posts list
+                loadPosts();
+            } catch (error) {
+                console.error("Error updating post:", error);
+                showAlert('error', error.message || 'Error updating post. Please try again.');
+            } finally {
+                // Hide spinner
+                saveBtn.disabled = false;
+                editSpinner.style.display = 'none';
+            }
+        });
+
+        // Open delete modal
+        function openDeleteModal(postId) {
+            document.getElementById('deletePostId').value = postId;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        // Handle delete confirmation
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+            // Show spinner
+            const deleteBtn = document.getElementById('confirmDeleteBtn');
+            const deleteSpinner = document.getElementById('deleteSpinner');
+            deleteBtn.disabled = true;
+            deleteSpinner.style.display = 'inline-block';
             
-            // Animate in
-            setTimeout(() => {
-                notification.style.transform = 'translateY(0)';
-                notification.style.opacity = '1';
-            }, 10);
+            try {
+                const postId = document.getElementById('deletePostId').value;
+                
+                const { error } = await supabase
+                    .from("posts")
+                    .delete()
+                    .eq('id', postId);
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                // Show success message
+                showAlert('success', 'Post deleted successfully!');
+                
+                // Close modal
+                document.getElementById('deleteModal').style.display = 'none';
+                
+                // Refresh posts list
+                loadPosts();
+            } catch (error) {
+                console.error("Error deleting post:", error);
+                showAlert('error', error.message || 'Error deleting post. Please try again.');
+            } finally {
+                // Hide spinner
+                deleteBtn.disabled = false;
+                deleteSpinner.style.display = 'none';
+            }
+        });
+
+        // Edit from view modal
+        document.getElementById('editFromViewBtn').addEventListener('click', function() {
+            const postId = this.getAttribute('data-id');
+            document.getElementById('viewModal').style.display = 'none';
+            openEditModal(postId);
+        });
+
+        // Close modals
+        document.getElementById('closeEditModal').addEventListener('click', () => {
+            document.getElementById('editModal').style.display = 'none';
+        });
+        
+        document.getElementById('cancelEditBtn').addEventListener('click', () => {
+            document.getElementById('editModal').style.display = 'none';
+        });
+        
+        document.getElementById('closeDeleteModal').addEventListener('click', () => {
+            document.getElementById('deleteModal').style.display = 'none';
+        });
+        
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            document.getElementById('deleteModal').style.display = 'none';
+        });
+        
+        document.getElementById('closeViewModal').addEventListener('click', () => {
+            document.getElementById('viewModal').style.display = 'none';
+        });
+        
+        document.getElementById('closeViewBtn').addEventListener('click', () => {
+            document.getElementById('viewModal').style.display = 'none';
+        });
+
+        // Show alert message
+        function showAlert(type, message) {
+            const alertSuccess = document.getElementById('alertSuccess');
+            const alertError = document.getElementById('alertError');
+            const errorMessage = document.getElementById('errorMessage');
             
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateY(100px)';
-                notification.style.opacity = '0';
+            if (type === 'success') {
+                alertSuccess.querySelector('span').textContent = message;
+                alertSuccess.style.display = 'flex';
+                alertSuccess.style.opacity = '1';
+                alertSuccess.style.transform = 'translateY(0)';
+                alertError.style.display = 'none';
                 
                 setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
+                    alertSuccess.style.opacity = '0';
+                    alertSuccess.style.transform = 'translateY(-5px)';
+                    setTimeout(() => {
+                        alertSuccess.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            } else {
+                errorMessage.textContent = message;
+                alertError.style.display = 'flex';
+                alertError.style.opacity = '1';
+                alertError.style.transform = 'translateY(0)';
+                alertSuccess.style.display = 'none';
+                
+                setTimeout(() => {
+                    alertError.style.opacity = '0';
+                    alertError.style.transform = 'translateY(-5px)';
+                    setTimeout(() => {
+                        alertError.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            }
         }
 
-        // Load published works and settings when the page loads
-        window.addEventListener('DOMContentLoaded', function() {
-            loadPublishedWorks();
-            loadSettings();
-            loadDraft();
-            updatePreview();
-            updateWordCount();
-            updatePhotojournalistField();
-            
-            // Add search on enter key
-            document.getElementById('search-input').addEventListener('keyup', function(event) {
-                if (event.key === 'Enter') {
-                    searchPublishedWorks();
-                }
+        // Close alert when clicked
+        document.querySelectorAll('.alert-close').forEach(button => {
+            button.addEventListener('click', function() {
+                const alert = this.parentElement;
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 300);
             });
         });
     </script>
