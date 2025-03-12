@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary: #FF6B35;
+            --primary: #E65100;
             --primary-light: #FF8C61;
             --primary-dark: #E85A2A;
             --secondary: #F7C59F;
@@ -3253,7 +3253,25 @@
                         
                         const postId = e.currentTarget.getAttribute('data-post-id');
                         const likeInfo = toggleLike(postId);
+                        const bookmarkHandler = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const postId = button.getAttribute('data-post-id');
+                            const isBookmarked = toggleBookmark(postId);
+                            updateBookmarkButtonsInView(postId, isBookmarked);
+                        };
                         
+                        // Update the document event listeners to prevent bookmark clicks for read article buttons
+                        const readArticleBtn = document.querySelectorAll('.read-more, .featured-read-more').forEach(button => {
+                            button.removeEventListener('click', bookmarkHandler);
+                            button.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const postId = e.target.getAttribute('data-post-id');
+                                openArticle(postId, allPosts);
+                            });
+                        });
+
                         // Add heart animation
                         const likeIcon = e.currentTarget.querySelector('.like-icon');
                         likeIcon.classList.add('heart-animation');
@@ -3626,13 +3644,7 @@
                             </svg>
                             ${roleLabel}: ${post.role || 'Unknown'}
                         </div>
-                        <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}" style="position: static; background: none; margin-left: auto;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                            ${isBookmarked ? 'Bookmarked' : 'Bookmark'}
-                        </button>
-                    </div>
+                      
                 </div>
                 ${hasImage ? `
                 <div class="article-cover">
