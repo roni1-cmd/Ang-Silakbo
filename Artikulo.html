@@ -4094,8 +4094,86 @@
                     overlay.classList.remove('active');
                 }
             });
-            
             // View toggle buttons
+            gridViewBtn.addEventListener('click', () => {
+                toggleView('grid');
+            });
+
+            listViewBtn.addEventListener('click', () => {
+                toggleView('list');
+            });
+
+            // Modified function to update views in Supabase
+            async function incrementViewCount(postId) {
+                try {
+                    // First get the current view count from Supabase
+                    const { data, error } = await supabase
+                        .from('posts')
+                        .select('views')
+                        .eq('id', postId)
+                        .single();
+
+                    if (error) throw error;
+
+                    // Increment the view count
+                    const newViewCount = (data.views || 0) + 1;
+
+                    // Update the view count in Supabase
+                    const { error: updateError } = await supabase
+                        .from('posts')
+                        .update({ views: newViewCount })
+                        .eq('id', postId);
+
+                    if (updateError) throw updateError;
+
+                    // Update local storage
+                    viewedPosts[postId] = newViewCount;
+                    localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+
+                    // Update UI
+                    updateViewCountsInView(postId, newViewCount);
+
+                    return newViewCount;
+                } catch (error) {
+                    console.error('Error updating view count:', error);
+                    return getViewCount(postId);
+                }
+            }
+
+            // Subscribe to real-time changes
+            const viewsSubscription = supabase
+                .channel('posts_views_channel')
+                .on('postgres_changes', 
+                    { 
+                        event: '*', 
+                        schema: 'public', 
+                        table: 'posts',
+                        filter: 'views=neq.null'
+                    }, 
+                    payload => {
+                        const { new: newRecord } = payload;
+                        if (newRecord && newRecord.id) {
+                            // Update view count in UI
+                            updateViewCountsInView(newRecord.id, newRecord.views);
+                            // Update local storage
+                            viewedPosts[newRecord.id] = newRecord.views;
+                            localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Load more button event listener
+            loadMoreBtn.addEventListener('click', () => {
+                let filteredPosts = allPosts;
+                
+                if (currentFilter !== 'all') {
+                    filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
+                }
+                
+                // Skip the featured article
+                loadMorePosts(filteredPosts.slice(1));
+            });   // View toggle buttons
             gridViewBtn.addEventListener('click', () => {
                 toggleView('grid');
             });
