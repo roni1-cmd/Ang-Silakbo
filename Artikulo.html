@@ -2691,18 +2691,56 @@
         }
 
         // Function to toggle like on a post
-        function toggleLike(postId) {
-            if (!likedPosts[postId]) {
-                likedPosts[postId] = { liked: true, count: 1 };
-            } else {
-                likedPosts[postId].liked = !likedPosts[postId].liked;
-                likedPosts[postId].count = likedPosts[postId].liked ? 
-                    likedPosts[postId].count + 1 : 
-                    Math.max(0, likedPosts[postId].count - 1);
+        async function toggleLike(postId) {
+            try {
+                // First get the current like count from Supabase
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('likes')
+                    .eq('id', postId)
+                    .single();
+
+                if (error) throw error;
+
+                // Determine if we're liking or unliking
+                const isLiked = likedPosts[postId] && likedPosts[postId].liked;
+                const currentLikes = data.likes || 0;
+                const newLikes = isLiked ? Math.max(0, currentLikes - 1) : currentLikes + 1;
+
+                // Update the like count in Supabase
+                const { error: updateError } = await supabase
+                    .from('posts')
+                    .update({ likes: newLikes })
+                    .eq('id', postId);
+
+                if (updateError) throw updateError;
+
+                // Update local storage
+                if (!likedPosts[postId]) {
+                    likedPosts[postId] = { liked: true, count: newLikes };
+                } else {
+                    likedPosts[postId].liked = !likedPosts[postId].liked;
+                    likedPosts[postId].count = newLikes;
+                }
+                
+                localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+                return likedPosts[postId];
+            } catch (error) {
+                console.error('Error updating like count:', error);
+                
+                // Fallback to local-only like if Supabase update fails
+                if (!likedPosts[postId]) {
+                    likedPosts[postId] = { liked: true, count: 1 };
+                } else {
+                    likedPosts[postId].liked = !likedPosts[postId].liked;
+                    likedPosts[postId].count = likedPosts[postId].liked ? 
+                        likedPosts[postId].count + 1 : 
+                        Math.max(0, likedPosts[postId].count - 1);
+                }
+                
+                localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+                return likedPosts[postId];
             }
-            
-            localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-            return likedPosts[postId];
         }
 
         // Function to toggle bookmark on a post
@@ -2733,14 +2771,45 @@
         }
 
         // Function to increment view count for a post
-        function incrementViewCount(postId) {
-            if (!viewedPosts[postId]) {
-                viewedPosts[postId] = 1;
-            } else {
-                viewedPosts[postId]++;
+        async function incrementViewCount(postId) {
+            try {
+                // First get the current view count from Supabase
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('views')
+                    .eq('id', postId)
+                    .single();
+
+                if (error) throw error;
+
+                // Increment the view count
+                const newViewCount = (data.views || 0) + 1;
+
+                // Update the view count in Supabase
+                const { error: updateError } = await supabase
+                    .from('posts')
+                    .update({ views: newViewCount })
+                    .eq('id', postId);
+
+                if (updateError) throw updateError;
+
+                // Update local storage
+                viewedPosts[postId] = newViewCount;
+                localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+
+                return newViewCount;
+            } catch (error) {
+                console.error('Error updating view count:', error);
+                
+                // Fallback to local-only view count if Supabase update fails
+                if (!viewedPosts[postId]) {
+                    viewedPosts[postId] = 1;
+                } else {
+                    viewedPosts[postId]++;
+                }
+                localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+                return viewedPosts[postId];
             }
-            localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
-            return viewedPosts[postId];
         }
 
         // Function to get view count for a post
@@ -2804,10 +2873,14 @@
             }
             
             // Create the featured article (first post in filtered list)
-            createFeaturedArticle(filteredPosts[0]);
+            if (filteredPosts.length > 0) {
+                createFeaturedArticle(filteredPosts[0]);
+            }
             
             // Create the regular article grid (remaining posts)
-            loadMorePosts(filteredPosts.slice(1));
+            if (filteredPosts.length > 1) {
+                loadMorePosts(filteredPosts.slice(1));
+            }
             
             // Update load more button visibility
             updateLoadMoreButton(filteredPosts.slice(1));
@@ -2888,41 +2961,8 @@
                         <div class="search-result-title">${title}</div>
                         <div class="search-result-category">${post.category}</div>
                     `;
-                    resultItem.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const postId = resultItem.dataset.postId;
-                        
-                        // Update likes in Supabase
-                        const updateLikeCount = async (postId) => {
-                            try {
-                                const { data, error } = await supabase
-                                    .from('posts')
-                                    .select('likes')
-                                    .eq('id', postId)
-                                    .single();
-
-                                if (error) throw error;
-
-                                const currentLikes = data.likes || 0;
-                                const newLikes = currentLikes + 1;
-
-                                const { error: updateError } = await supabase
-                                    .from('posts')
-                                    .update({ likes: newLikes })
-                                    .eq('id', postId);
-
-                                if (updateError) throw updateError;
-
-                                // Update UI after successful database update
-                                updateLikeButtonsInView(postId, { liked: true, count: newLikes });
-                            } catch (error) {
-                                console.error('Error updating like count:', error);
-                            }
-                        };
-
-                        updateLikeCount(postId);
-                        searchResults.appendChild(resultItem);
-                    });   searchResults.appendChild(resultItem);
+                    
+                    searchResults.appendChild(resultItem);
                 });
             }
             
@@ -2935,8 +2975,104 @@
             const postId = urlParams.get('post');
             
             if (postId && allPosts.length > 0) {
-                openArticle(postId, allPosts);
+                const post = allPosts.find(p => p.id == postId);
+                if (post) {
+                    openArticle(postId);
+                }
             }
+        }
+
+        // Function to add event listeners
+        function addEventListeners() {
+            // Add event listeners to all "Read More" buttons
+            document.querySelectorAll('.read-more, .featured-read-more').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Prevent the card click event from firing
+                    const postId = button.getAttribute('data-post-id');
+                    openArticle(postId);
+                });
+            });
+
+            // Add event listeners to all post cards and featured article
+            document.querySelectorAll('.post-card, .post-card-list, .featured-article').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Check if the click is on or within an interactive element
+                    const isInteractive = e.target.closest('.read-more') || 
+                                        e.target.closest('.featured-read-more') ||
+                                        e.target.closest('.share-btn') ||
+                                        e.target.closest('.like-btn') ||
+                                        e.target.closest('.bookmark-btn');
+
+                    if (!isInteractive) {
+                        const postId = card.getAttribute('data-post-id');
+                        openArticle(postId);
+                    }
+                });
+            });
+            
+            // Add event listeners to share buttons
+            document.querySelectorAll('.share-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Prevent the card click event from firing
+                    const postId = button.getAttribute('data-post-id');
+                    const post = allPosts.find(p => p.id == postId);
+                    if (post) {
+                        const postUrl = getPostUrl(post);
+                        copyToClipboard(postUrl);
+                    }
+                });
+            });
+            
+            // Add event listeners to like buttons
+            document.querySelectorAll('.like-btn').forEach(button => {
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                newButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const postId = newButton.getAttribute('data-post-id');
+                    const likeInfo = await toggleLike(postId);
+                    
+                    // Add heart animation
+                    const likeIcon = newButton.querySelector('.like-icon');
+                    likeIcon.classList.add('heart-animation');
+                    setTimeout(() => {
+                        likeIcon.classList.remove('heart-animation');
+                    }, 1000);
+                    
+                    // Update UI
+                    updateLikeButtonsInView(postId, likeInfo);
+                    
+                    // Update popular posts
+                    createPopularPosts(allPosts);
+                });
+            });
+            
+            // Add event listeners to bookmark buttons
+            document.querySelectorAll('.bookmark-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Prevent the card click event from firing
+                    
+                    const postId = button.getAttribute('data-post-id');
+                    const isBookmarked = toggleBookmark(postId);
+                    
+                    // Update UI
+                    updateBookmarkButtonsInView(postId, isBookmarked);
+                });
+            });
+            
+            // Add event listeners to popular posts
+            document.querySelectorAll('.popular-post').forEach(post => {
+                post.addEventListener('click', () => {
+                    const postId = post.dataset.postId;
+                    openArticle(postId);
+                });
+            });
         }
 
         async function fetchPosts() {
@@ -3067,7 +3203,7 @@
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
-                                <span>By: ${post.author}</span>
+                                <span>By: ${post.author || 'Unknown'}</span>
                             </div>
                             <div class="post-meta-item">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3189,7 +3325,7 @@
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>By: ${post.author}</span>
+                            <span>By: ${post.author || 'Unknown'}</span>
                         </div>
                         <div class="post-meta-item">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3236,193 +3372,16 @@
             // Get date information
             const postDate = post.created_at || post.date || post.timestamp;
             const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-            // Need to move addEventListeners() definition before the functions that use it
-            function addEventListeners() {
-                // Add event listeners to all "Read More" buttons
-                document.querySelectorAll('.read-more, .featured-read-more').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        const postId = e.target.getAttribute('data-post-id');
-                        openArticle(postId, allPosts);
-                    });
-                });
-
-                // Add event listeners to all post cards and featured article
-                document.querySelectorAll('.post-card, .post-card-list, .featured-article').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        // Check if the click is on or within an interactive element
-                        const isInteractive = e.target.closest('.read-more') || 
-                                            e.target.closest('.featured-read-more') ||
-                                            e.target.closest('.share-btn') ||
-                                            e.target.closest('.like-btn') ||
-                                            e.target.closest('.bookmark-btn');
-
-                        if (!isInteractive) {
-                            const postId = card.getAttribute('data-post-id');
-                            openArticle(postId, allPosts);
-                        }
-                    });
-                });
-                
-                // Add event listeners to share buttons
-                document.querySelectorAll('.share-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        const postId = button.getAttribute('data-post-id');
-                        const post = allPosts.find(p => p.id == postId);
-                        if (post) {
-                            const postUrl = getPostUrl(post);
-                            copyToClipboard(postUrl);
-                        }
-                    });
-                });
-                
-                // Add event listeners to like buttons
-                document.querySelectorAll('.like-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        
-                        const postId = e.currentTarget.getAttribute('data-post-id');
-                        const likeInfo = toggleLike(postId);
-                        const bookmarkHandler = (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            const postId = button.getAttribute('data-post-id');
-                            const isBookmarked = toggleBookmark(postId);
-                            updateBookmarkButtonsInView(postId, isBookmarked);
-                        };
-                        
-                        // Update the document event listeners to prevent bookmark clicks for read article buttons
-                        const readArticleBtn = document.querySelectorAll('.read-more, .featured-read-more').forEach(button => {
-                            button.removeEventListener('click', bookmarkHandler);
-                            button.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                const postId = e.target.getAttribute('data-post-id');
-                                openArticle(postId, allPosts);
-                            });
-                        });
-
-                        // Add heart animation
-                        const likeIcon = e.currentTarget.querySelector('.like-icon');
-                        likeIcon.classList.add('heart-animation');
-                        setTimeout(() => {
-                            likeIcon.classList.remove('heart-animation');
-                        }, 1000);
-                        
-                        // Update UI
-                        updateLikeButtonsInView(postId, likeInfo);
-                        
-                        // Update popular posts
-                        createPopularPosts(allPosts);
-                    });
-                });
-                
-                // Add event listeners to bookmark buttons
-                document.querySelectorAll('.bookmark-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        
-                        const postId = button.getAttribute('data-post-id');
-                        const isBookmarked = toggleBookmark(postId);
-                        
-                        // Update UI
-                        updateBookmarkButtonsInView(postId, isBookmarked);
-                    });
-                });
-            }
+            
             // Get like information
             const likeCount = getLikeCount(post.id);
             const isLiked = isPostLiked(post.id);
             const isBookmarked = isPostBookmarked(post.id);
-            function addEventListeners() {
-                // Add event listeners to all "Read More" buttons
-                document.querySelectorAll('.read-more, .featured-read-more').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        const postId = e.target.getAttribute('data-post-id');
-                        openArticle(postId, allPosts);
-                    });
-                });
-
-                // Add event listeners to all post cards and featured article
-                document.querySelectorAll('.post-card, .post-card-list, .featured-article').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        // Check if the click is on or within an interactive element
-                        const isInteractive = e.target.closest('.read-more') || 
-                                            e.target.closest('.featured-read-more') ||
-                                            e.target.closest('.share-btn') ||
-                                            e.target.closest('.like-btn') ||
-                                            e.target.closest('.bookmark-btn');
-
-                        if (!isInteractive) {
-                            const postId = card.getAttribute('data-post-id');
-                            openArticle(postId, allPosts);
-                        }
-                    });
-                });
-                
-                // Add event listeners to share buttons
-                document.querySelectorAll('.share-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        const postId = button.getAttribute('data-post-id');
-                        const post = allPosts.find(p => p.id == postId);
-                        if (post) {
-                            const postUrl = getPostUrl(post);
-                            copyToClipboard(postUrl);
-                        }
-                    });
-                });
-                
-                // Add event listeners to like buttons
-                document.querySelectorAll('.like-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        
-                        const postId = e.currentTarget.getAttribute('data-post-id');
-                        const likeInfo = toggleLike(postId);
-                        
-                        // Add heart animation
-                        const likeIcon = e.currentTarget.querySelector('.like-icon');
-                        likeIcon.classList.add('heart-animation');
-                        setTimeout(() => {
-                            likeIcon.classList.remove('heart-animation');
-                        }, 1000);
-                        
-                        // Update UI
-                        updateLikeButtonsInView(postId, likeInfo);
-                        
-                        // Update popular posts
-                        createPopularPosts(allPosts);
-                    });
-                });
-                
-                // Add event listeners to bookmark buttons
-                document.querySelectorAll('.bookmark-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation(); // Prevent the card click event from firing
-                        
-                        const postId = button.getAttribute('data-post-id');
-                        const isBookmarked = toggleBookmark(postId);
-                        
-                        // Update UI
-                        updateBookmarkButtonsInView(postId, isBookmarked);
-                    });
-                });
-            }
+            
             // Get view count
             const viewCount = getViewCount(post.id);
             
-            // Calculate reading time using wordCount
+            // Calculate reading time
             const readingTime = getReadingTime(plainTextContent);
             
             // Determine if post is trending (for demo purposes, posts with more than 5 likes)
@@ -3489,7 +3448,7 @@
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>By: ${post.author}</span>
+                            <span>By: ${post.author || 'Unknown'}</span>
                         </div>
                         <div class="post-meta-item">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3600,24 +3559,28 @@
                 
                 popularPostsContainer.appendChild(popularPostElement);
             });
-            
-            // Add event listeners to popular posts
-            document.querySelectorAll('.popular-post').forEach(post => {
-                post.addEventListener('click', () => {
-                    const postId = post.dataset.postId;
-                    openArticle(postId, allPosts);
-                });
-            });
         }
 
-        function openArticle(postId, posts) {
-            const post = posts.find(p => p.id == postId);
+        function openArticle(postId) {
+            const post = allPosts.find(p => p.id == postId);
             if (!post) return;
 
             currentPostId = postId;
             
             // Increment view count
-            const newViewCount = incrementViewCount(postId);
+            incrementViewCount(postId).then(newViewCount => {
+                // Update view count display in the modal
+                const viewCountDisplay = document.getElementById('viewCountDisplay');
+                if (viewCountDisplay) {
+                    viewCountDisplay.textContent = newViewCount;
+                }
+                
+                // Update view counts in the main view
+                updateViewCountsInView(postId, newViewCount);
+                
+                // Update popular posts to reflect new view count
+                createPopularPosts(allPosts);
+            });
             
             // Update URL without refreshing the page
             const postUrl = getPostUrl(post);
@@ -3635,41 +3598,40 @@
             // Get like information
             const likeCount = getLikeCount(post.id);
             const isLiked = isPostLiked(post.id);
-            const isBookmarked = isPostBookmarked(post.id);
             
             // Calculate reading time
             const readingTime = getReadingTime(plainTextContent);
 
             modalContent.innerHTML = `
-                    <div class="article-header">
-                        <span class="article-category">${post.category}</span>
-                        <h1 class="article-title">${title}</h1>
-                        <div class="article-date">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            ${dateDisplay} · 
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            ${readingTime} min read · 
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            <span id="viewCountDisplay">${getViewCount(postId)}</span> views
-                        </div>
+                <div class="article-header">
+                    <span class="article-category">${post.category}</span>
+                    <h1 class="article-title">${title}</h1>
+                    <div class="article-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        ${dateDisplay} · 
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        ${readingTime} min read · 
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span id="viewCountDisplay">${getViewCount(postId)}</span> views
+                    </div>
                     <div class="article-meta">
                         <div class="article-meta-item">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            By: ${post.author}
+                            By: ${post.author || 'Unknown'}
                         </div>
                         <div class="article-meta-item">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3678,7 +3640,7 @@
                             </svg>
                             ${roleLabel}: ${post.role || 'Unknown'}
                         </div>
-                    
+                    </div>
                 </div>
                 ${hasImage ? `
                 <div class="article-cover">
@@ -3741,12 +3703,12 @@
             });
             
             // Add event listener to like button in modal
-            document.querySelector('.article-like-btn').addEventListener('click', (e) => {
+            document.querySelector('.article-like-btn').addEventListener('click', async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 
                 const postId = e.currentTarget.getAttribute('data-post-id');
-                const likeInfo = toggleLike(postId);
+                const likeInfo = await toggleLike(postId);
                 
                 // Update UI
                 const likeBtn = e.currentTarget;
@@ -3773,38 +3735,6 @@
                 // Update popular posts
                 createPopularPosts(allPosts);
             });
-            
-            // Add event listener to bookmark button in modal
-            document.querySelector('.article-header .bookmark-btn').addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const postId = e.currentTarget.getAttribute('data-post-id');
-                const isBookmarked = toggleBookmark(postId);
-                
-                // Update UI
-                const bookmarkBtn = e.currentTarget;
-                const bookmarkIcon = bookmarkBtn.querySelector('svg');
-                
-                if (isBookmarked) {
-                    bookmarkBtn.classList.add('bookmarked');
-                    bookmarkIcon.setAttribute('fill', 'currentColor');
-                    bookmarkBtn.innerHTML = bookmarkIcon.outerHTML + ' Bookmarked';
-                } else {
-                    bookmarkBtn.classList.remove('bookmarked');
-                    bookmarkIcon.setAttribute('fill', 'none');
-                    bookmarkBtn.innerHTML = bookmarkIcon.outerHTML + ' Bookmark';
-                }
-                
-                // Update bookmark buttons in the main view
-                updateBookmarkButtonsInView(postId, isBookmarked);
-            });
-            
-            // Update view count in the main view
-            updateViewCountsInView(postId, newViewCount);
-            
-            // Update popular posts to reflect new view count
-            createPopularPosts(allPosts);
         }
 
         function updateLikeButtonsInView(postId, likeInfo) {
@@ -3842,110 +3772,13 @@
         
         function updateViewCountsInView(postId, viewCount) {
             // Update all view count displays for this post in the main view
-            document.querySelectorAll(`.article-stats-indicator[data-post-id="${postId}"] .stat:last-child, .post-card[data-post-id="${postId}"] .article-stats-indicator .stat:last-child, .post-card-list[data-post-id="${postId}"] .article-stats-indicator .stat:last-child, .featured-article[data-post-id="${postId}"] .article-stats-indicator .stat:last-child`).forEach(element => {
-                const viewCountElement = element.querySelector('svg + *');
-                if (viewCountElement) {
-                    viewCountElement.textContent = viewCount;
+            document.querySelectorAll(`.article-stats-indicator .stat:last-child`).forEach(element => {
+                if (element.closest(`[data-post-id="${postId}"]`)) {
+                    const viewCountElement = element.querySelector('svg + *');
+                    if (viewCountElement) {
+                        viewCountElement.textContent = viewCount;
+                    }
                 }
-            });
-        }
-
-        function addEventListeners() {
-            // Add event listeners to all "Read More" buttons
-            document.querySelectorAll('.read-more, .featured-read-more').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation(); // Prevent the card click event from firing
-                    const postId = e.target.getAttribute('data-post-id');
-                    openArticle(postId, allPosts);
-                });
-            });
-
-            // Add event listeners to all post cards and featured article
-            document.querySelectorAll('.post-card, .post-card-list, .featured-article').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('read-more') && 
-                        !e.target.classList.contains('featured-read-more') &&
-                        !e.target.classList.contains('share-btn') &&
-                        !e.target.classList.contains('like-btn') &&
-                        !e.target.classList.contains('bookmark-btn') &&
-                        !e.target.closest('.share-btn') &&
-                        !e.target.closest('.like-btn') &&
-                        !e.target.closest('.bookmark-btn')) {
-                        const postId = card.getAttribute('data-post-id');
-                        openArticle(postId, allPosts);
-                    }
-                });
-            });
-            
-            // Add event listeners to share buttons
-            document.querySelectorAll('.share-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation(); // Prevent the card click event from firing
-                    const postId = button.getAttribute('data-post-id');
-                    const post = allPosts.find(p => p.id == postId);
-                    if (post) {
-                        const postUrl = getPostUrl(post);
-                        copyToClipboard(postUrl);
-                    }
-                });
-            });
-            
-            // Remove existing click listeners from like buttons
-            document.querySelectorAll('.like-btn').forEach(button => {
-                const newButton = button.cloneNode(true);
-                button.parentNode.replaceChild(newButton, button);
-                
-                newButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const postId = newButton.getAttribute('data-post-id');
-                    const likeInfo = toggleLike(postId);
-                    
-                    // Add heart animation
-                    const likeIcon = newButton.querySelector('.like-icon');
-                    likeIcon.classList.add('heart-animation');
-                    setTimeout(() => {
-                        likeIcon.classList.remove('heart-animation');
-                    }, 1000);
-                    
-                    if (likeInfo.liked) {
-                        newButton.classList.add('liked');
-                        likeIcon.setAttribute('fill', 'currentColor');
-                    } else {
-                        newButton.classList.remove('liked');
-                        likeIcon.setAttribute('fill', 'none');
-                    }
-                    
-                    // Update like count display
-                    const likeCount = newButton.querySelector('.like-count');
-                    if (likeCount) {
-                        likeCount.textContent = likeInfo.count;
-                    }
-                    
-                    // Update UI
-                    updateLikeButtonsInView(postId, likeInfo);
-                    
-                    // Update popular posts
-                    createPopularPosts(allPosts);
-                });
-            });
-            
-            // Add event listeners to bookmark buttons
-            document.querySelectorAll('.bookmark-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation(); // Prevent the card click event from firing
-                    
-                    const postId = button.getAttribute('data-post-id');
-                    const isBookmarked = toggleBookmark(postId);
-                    
-                    // Update UI
-                                        // Update UI
-                                        updateBookmarkButtonsInView(postId, isBookmarked);
-                });
             });
         }
 
@@ -4088,6 +3921,7 @@
                 overlay.classList.remove('active');
             }
         });
+        
         // View toggle buttons
         gridViewBtn.addEventListener('click', () => {
             toggleView('grid');
@@ -4097,85 +3931,6 @@
             toggleView('list');
         });
 
-        // Modified function to update views in Supabase
-        async function incrementViewCount(postId) {
-            try {
-                // First get the current view count from Supabase
-                const { data, error } = await supabase
-                    .from('posts')
-                    .select('views')
-                    .eq('id', postId)
-                    .single();
-
-                if (error) throw error;
-
-                // Increment the view count
-                const newViewCount = (data.views || 0) + 1;
-
-                // Update the view count in Supabase
-                const { error: updateError } = await supabase
-                    .from('posts')
-                    .update({ views: newViewCount })
-                    .eq('id', postId);
-
-                if (updateError) throw updateError;
-
-                // Update local storage
-                viewedPosts[postId] = newViewCount;
-                localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
-
-                // Update UI
-                updateViewCountsInView(postId, newViewCount);
-
-                return newViewCount;
-            } catch (error) {
-                console.error('Error updating view count:', error);
-                return getViewCount(postId);
-            }
-        }
-
-        // Subscribe to real-time changes
-        const viewsSubscription = supabase
-            .channel('posts_views_channel')
-            .on('postgres_changes', 
-                { 
-                    event: '*', 
-                    schema: 'public', 
-                    table: 'posts',
-                    filter: 'views=neq.null'
-                }, 
-                payload => {
-                    const { new: newRecord } = payload;
-                    if (newRecord && newRecord.id) {
-                        // Update view count in UI
-                        updateViewCountsInView(newRecord.id, newRecord.views);
-                        // Update local storage
-                        viewedPosts[newRecord.id] = newRecord.views;
-                        localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
-                    }
-                }
-            )
-            .subscribe();
-
-        // Load more button event listener
-        loadMoreBtn.addEventListener('click', () => {
-            let filteredPosts = allPosts;
-            
-            if (currentFilter !== 'all') {
-                filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
-            }
-            
-            // Skip the featured article
-            loadMorePosts(filteredPosts.slice(1));
-        });   // View toggle buttons
-        gridViewBtn.addEventListener('click', () => {
-            toggleView('grid');
-        });
-        
-        listViewBtn.addEventListener('click', () => {
-            toggleView('list');
-        });
-        
         // Load more button event listener
         loadMoreBtn.addEventListener('click', () => {
             let filteredPosts = allPosts;
@@ -4205,7 +3960,7 @@
             const resultItem = e.target.closest('.search-result-item');
             if (resultItem) {
                 const postId = resultItem.dataset.postId;
-                openArticle(postId, allPosts);
+                openArticle(postId);
                 searchResults.classList.remove('active');
                 searchInput.value = '';
             }
@@ -4224,7 +3979,7 @@
         // Handle browser back/forward buttons
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.postId) {
-                openArticle(e.state.postId, allPosts);
+                openArticle(e.state.postId);
             } else {
                 // Close modal if open
                 if (articleModal.style.display === "block") {
@@ -4234,6 +3989,89 @@
                 }
             }
         });
+
+        // Subscribe to real-time changes for likes
+        const likesSubscription = supabase
+            .channel('posts_likes_channel')
+            .on('postgres_changes', 
+                { 
+                    event: '*', 
+                    schema: 'public', 
+                    table: 'posts',
+                    filter: 'likes=neq.null'
+                }, 
+                payload => {
+                    const { new: newRecord } = payload;
+                    if (newRecord && newRecord.id) {
+                        // Update like count in UI
+                        const postId = newRecord.id;
+                        const newLikes = newRecord.likes || 0;
+                        
+                        // Update local storage
+                        if (!likedPosts[postId]) {
+                            likedPosts[postId] = { liked: false, count: newLikes };
+                        } else {
+                            // Keep the liked status but update the count
+                            likedPosts[postId].count = newLikes;
+                        }
+                        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+                        
+                        // Update UI
+                        updateLikeButtonsInView(postId, likedPosts[postId]);
+                        
+                        // Update like count in modal if open
+                        if (currentPostId === postId) {
+                            const likeCount = document.querySelector('.article-like-count');
+                            if (likeCount) {
+                                likeCount.textContent = `${newLikes} ${newLikes === 1 ? 'like' : 'likes'}`;
+                            }
+                        }
+                        
+                        // Update popular posts
+                        createPopularPosts(allPosts);
+                    }
+                }
+            )
+            .subscribe();
+
+        // Subscribe to real-time changes for views
+        const viewsSubscription = supabase
+            .channel('posts_views_channel')
+            .on('postgres_changes', 
+                { 
+                    event: '*', 
+                    schema: 'public', 
+                    table: 'posts',
+                    filter: 'views=neq.null'
+                }, 
+                payload => {
+                    const { new: newRecord } = payload;
+                    if (newRecord && newRecord.id) {
+                        // Update view count in UI
+                        const postId = newRecord.id;
+                        const newViews = newRecord.views || 0;
+                        
+                        // Update local storage
+                        viewedPosts[postId] = newViews;
+                        localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+                        
+                        // Update UI
+                        updateViewCountsInView(postId, newViews);
+                        
+                        // Update view count in modal if open
+                        if (currentPostId === postId) {
+                            const viewCountDisplay = document.getElementById('viewCountDisplay');
+                            if (viewCountDisplay) {
+                                viewCountDisplay.textContent = newViews;
+                            }
+                        }
+                        
+                        // Update popular posts
+                        createPopularPosts(allPosts);
+                    }
+                }
+            )
+            .subscribe();
 
         // Initialize
         document.addEventListener("DOMContentLoaded", fetchPosts);
