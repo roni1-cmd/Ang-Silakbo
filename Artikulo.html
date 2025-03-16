@@ -25,6 +25,8 @@
             --accent-light: #7EB2C8;
             --success: #4CAF50;
             --success-light: #E8F5E9;
+            --modal-bg: rgba(0, 0, 0, 0.75);
+            --animation-duration: 0.3s;
         }
 
         * {
@@ -40,6 +42,7 @@
             line-height: 1.6;
             padding: 0;
             margin: 0;
+            overflow-x: hidden;
         }
 
         header {
@@ -163,6 +166,7 @@
 
         .search-results.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .search-result-item {
@@ -239,31 +243,6 @@
             width: 100%;
         }
 
-        .header-banner {
-            background-color: var(--primary-light);
-            padding: 2rem 0;
-            text-align: center;
-            color: var(--white);
-            position: relative;
-            z-index: 90;
-        }
-
-        .banner-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .banner-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .banner-description {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-
         .main-content {
             padding: 2rem 0;
             position: relative;
@@ -299,7 +278,7 @@
             background-color: var(--primary);
         }
 
-        /* View toggle and filter container - Improved for mobile */
+        /* View toggle and filter container */
         .controls-container {
             display: flex;
             justify-content: space-between;
@@ -344,7 +323,7 @@
             height: 18px;
         }
 
-        /* Improved filter container */
+        /* Filter container */
         .filter-container {
             display: flex;
             flex-wrap: wrap;
@@ -382,7 +361,7 @@
             box-shadow: 0 2px 8px rgba(232, 90, 42, 0.3);
         }
 
-        /* Mobile filter dropdown - Improved */
+        /* Mobile filter dropdown */
         .filter-dropdown {
             display: none;
             position: relative;
@@ -423,6 +402,7 @@
 
         .filter-dropdown-content.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .filter-dropdown-item {
@@ -672,17 +652,6 @@
             transform: scale(1.05);
         }
 
-        .no-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
-            color: var(--white);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-        }
-
         .post-category {
             position: absolute;
             top: 1rem;
@@ -829,8 +798,8 @@
             -webkit-line-clamp: 2;
         }
 
-        /* New reading time indicator */
-        .reading-time {
+        /* Reading time indicator */
+        .reading-time-indicator {
             position: absolute;
             bottom: 1rem;
             right: 1rem;
@@ -845,12 +814,12 @@
             z-index: 2;
         }
 
-        .reading-time svg {
+        .reading-time-indicator svg {
             width: 12px;
             height: 12px;
         }
 
-        /* New trending indicator */
+        /* Trending indicator */
         .trending-badge {
             position: absolute;
             top: 1rem;
@@ -872,7 +841,7 @@
             height: 12px;
         }
 
-        /* Improved bookmark button */
+        /* Bookmark button */
         .bookmark-btn {
             position: absolute;
             top: 1rem;
@@ -1244,7 +1213,8 @@
             height: 20px;
         }
 
-        /* Redesigned Modal for full article view */
+        /* ===== ARTICLE MODAL STYLES ===== */
+        /* Enhanced modal with professional animations */
         .modal {
             display: none;
             position: fixed;
@@ -1254,125 +1224,45 @@
             height: 100%;
             z-index: 1000;
             overflow: hidden;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: var(--modal-bg);
             backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity var(--animation-duration) ease;
         }
 
-        /* Elegant modal design with improved UI */
+        .modal.active {
+            opacity: 1;
+        }
+
+        /* Professional modal design */
         .modal-content {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             background-color: var(--background);
             overflow-y: auto;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform var(--animation-duration) cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Improved modal header with social sharing at top */
-        .modal-header {
-            position: sticky;
-            top: 0;
-            background-color: var(--white);
-            z-index: 10;
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--gray-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        .modal.active .modal-content {
+            transform: translateY(0);
         }
 
-        .modal-title-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            max-width: 70%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        /* Social sharing in modal header - Improved layout */
-        .modal-share-options {
-            display: flex;
-            gap: 0.8rem;
-            margin-right: 1rem;
-            background-color: var(--gray-light);
-            padding: 0.5rem;
-            border-radius: 30px;
-        }
-
-        .modal-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            color: var(--text-light);
-        }
-
-        .modal-btn:hover {
-            background-color: var(--primary-light);
-            color: var(--white);
-            transform: translateY(-2px);
-        }
-
-        .modal-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .close-modal {
-            font-size: 1.5rem;
-            line-height: 1;
-            background-color: var(--gray-light);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-modal:hover {
-            background-color: var(--primary-light);
-            color: var(--white);
-        }
-
-        /* Improved article container */
+        /* Article container */
         .article-container {
             max-width: 100%;
             margin: 0 auto;
             padding: 0;
             background-color: transparent;
-            box-shadow: none;
-            border-radius: 0;
-            margin-top: 0;
-            margin-bottom: 0;
+            position: relative;
         }
 
         .article-inner {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 2rem;
             background-color: var(--white);
@@ -1380,10 +1270,59 @@
             border-radius: 8px;
             margin-top: 2rem;
             margin-bottom: 4rem;
+            position: relative;
+        }
+
+        /* Close button - Properly positioned in top right corner */
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background-color: var(--white);
+            color: var(--text-dark);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+
+        /* Mobile close button - Inside the modal */
+        .mobile-close-modal {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--white);
+            color: var(--text-dark);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .article-header {
             margin-bottom: 2rem;
+            padding-right: 3rem; /* Space for close button */
         }
 
         .article-category {
@@ -1397,6 +1336,9 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 1rem;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .article-title {
@@ -1405,6 +1347,9 @@
             margin-bottom: 1.5rem;
             line-height: 1.2;
             color: var(--text-dark);
+            animation: fadeInUp 0.6s 0.1s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .article-meta {
@@ -1416,6 +1361,9 @@
             border-bottom: 1px solid var(--gray-light);
             padding-bottom: 1.5rem;
             align-items: center;
+            animation: fadeInUp 0.6s 0.2s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .article-meta-item {
@@ -1463,7 +1411,7 @@
             height: 18px;
         }
 
-        /* Improved article cover for desktop and mobile */
+        /* Article cover */
         .article-cover {
             width: 100%;
             max-width: 100%;
@@ -1477,6 +1425,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: fadeInUp 0.6s 0.3s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .article-cover img {
@@ -1496,56 +1447,14 @@
             transform: scale(1.02);
         }
 
-        /* Lightbox for article images */
-        .article-image-lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
-        }
-
-        .lightbox-image {
-            max-width: 95%;
-            max-height: 95vh;
-            object-fit: contain;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-            z-index: 2001;
-        }
-
-        .lightbox-close:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-        }
-
+        /* Article content */
         .article-content {
             font-size: 1.1rem;
             line-height: 1.8;
             color: var(--text-dark);
+            animation: fadeInUp 0.6s 0.4s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .article-content p {
@@ -1574,7 +1483,6 @@
             color: var(--text-light);
         }
 
-        /* Make article content images clickable for lightbox view */
         .article-content img {
             max-width: 100%;
             height: auto;
@@ -1588,6 +1496,7 @@
             transform: scale(1.02);
         }
 
+        /* Article tags */
         .article-tags {
             display: flex;
             flex-wrap: wrap;
@@ -1595,6 +1504,9 @@
             margin-top: 2rem;
             padding-top: 1.5rem;
             border-top: 1px solid var(--gray-light);
+            animation: fadeInUp 0.6s 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .article-tag {
@@ -1612,6 +1524,7 @@
             transform: translateY(-2px);
         }
 
+        /* Social sharing in article */
         .article-actions {
             display: flex;
             flex-wrap: wrap;
@@ -1621,6 +1534,9 @@
             padding-top: 1.5rem;
             border-top: 1px solid var(--gray-light);
             gap: 1.5rem;
+            animation: fadeInUp 0.6s 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .share-container {
@@ -1638,42 +1554,108 @@
         .share-options {
             display: flex;
             gap: 0.8rem;
+            background-color: var(--gray-light);
+            padding: 0.5rem;
+            border-radius: 30px;
         }
 
-        .article-navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--gray-light);
-        }
-
-        .article-nav-btn {
+        .share-option {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 500;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            cursor: pointer;
             transition: all 0.3s ease;
+            color: var(--text-dark);
         }
 
-        .article-nav-btn:hover {
-            color: var(--primary);
-            transform: translateX(-5px);
+        .share-option:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+            transform: translateY(-2px);
         }
 
-        .article-nav-btn.next:hover {
-            transform: translateX(5px);
-        }
-
-        .article-nav-btn svg {
+        .share-option svg {
             width: 18px;
             height: 18px;
         }
 
+        /* Mobile social sharing */
+        .mobile-share-container {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 10;
+            display: none;
+        }
+
+        .mobile-share-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-share-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .mobile-share-options {
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .mobile-share-options.active {
+            display: flex;
+        }
+
+        .mobile-share-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray-light);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-share-option:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+
+        /* Related articles */
         .related-articles {
             margin-top: 4rem;
+            animation: fadeInUp 0.6s 0.7s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .related-title {
@@ -1689,11 +1671,70 @@
             gap: 2rem;
         }
 
+        /* Lightbox for article images */
+        .article-image-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .article-image-lightbox.active {
+            opacity: 1;
+        }
+
+        .lightbox-image {
+            max-width: 95%;
+            max-height: 95vh;
+            object-fit: contain;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .article-image-lightbox.active .lightbox-image {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            z-index: 2001;
+        }
+
+        .lightbox-close:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Toast notification */
         .toast {
             position: fixed;
             bottom: 20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(100px);
             background-color: var(--text-dark);
             color: var(--white);
             padding: 0.8rem 1.5rem;
@@ -1701,111 +1742,73 @@
             font-size: 0.9rem;
             z-index: 2000;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
             pointer-events: none;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .toast.show {
             opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
-        footer {
-            background-color: var(--text-dark);
-            color: var(--white);
-            padding: 3rem 0;
-            margin-top: 3rem;
+        /* Reading progress bar */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 4px;
+            background-color: var(--primary);
+            z-index: 1001;
+            transition: width 0.1s ease;
         }
 
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-column {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .footer-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer-logo img {
-            height: 40px;
-            width: auto;
-        }
-
-        .footer-logo span {
-            color: var(--primary);
-        }
-
-        .footer-text {
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1.2rem;
-            color: var(--white);
-        }
-
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .footer-link {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .footer-social-link {
-            display: flex;
+        /* Mobile sidebar toggle */
+        .mobile-sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--white);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        .footer-social-link:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
+        
+        .mobile-sidebar-toggle:hover {
+            transform: scale(1.1);
+            background-color: var(--primary-dark);
         }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
+        
+        /* Mobile sidebar */
+        .mobile-sidebar {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 280px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 98;
+            padding: 1rem;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-sidebar.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
         }
 
         /* Mobile Menu */
@@ -1892,101 +1895,46 @@
             opacity: 1;
         }
 
-        /* Reading progress bar */
-        .reading-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 4px;
-            background-color: var(--primary);
-            z-index: 1001;
-            transition: width 0.1s ease;
+        /* Animation keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* Mobile sidebar toggle */
-        .mobile-sidebar-toggle {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 99;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mobile-sidebar-toggle:hover {
-            transform: scale(1.1);
-            background-color: var(--primary-dark);
-        }
-        
-        /* Mobile sidebar */
-        .mobile-sidebar {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 280px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            z-index: 98;
-            padding: 1rem;
-            transform: translateY(20px);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-        
-        .mobile-sidebar.active {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: all;
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Reading time indicator */
-        .reading-time-indicator {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            z-index: 2;
+        @keyframes fadeInRight {
+            from { 
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        .reading-time-indicator svg {
-            width: 12px;
-            height: 12px;
-        }
-        
-        /* View counter styles */
-        .view-counter {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-        
-        .view-counter svg {
-            width: 16px;
-            height: 16px;
+        @keyframes scaleIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        /* Responsive styles - Improved for mobile */
+        /* Responsive styles */
         @media (max-width: 1200px) {
             .content-wrapper {
                 grid-template-columns: 1fr 250px;
@@ -2053,6 +2001,19 @@
                 padding: 1.5rem;
                 margin-top: 1rem;
                 margin-bottom: 2rem;
+            }
+
+            /* Show mobile close button and share container in article modal */
+            .close-modal {
+                display: none;
+            }
+
+            .mobile-close-modal {
+                display: flex;
+            }
+
+            .mobile-share-container {
+                display: block;
             }
         }
 
@@ -2160,38 +2121,8 @@
                 margin-bottom: 0.3rem;
             }
             
-            /* Improved mobile modal header */
-            .modal-header {
-                padding: 0.8rem 1rem;
-                position: fixed;
-                width: 100%;
-                top: 0;
-                left: 0;
-                z-index: 1002;
-            }
-            
-            .modal-title {
-                font-size: 1rem;
-                max-width: 60%;
-            }
-            
-            .modal-share-options {
-                padding: 0.3rem;
-                gap: 0.4rem;
-            }
-            
-            .modal-btn {
-                width: 32px;
-                height: 32px;
-            }
-            
-            .modal-btn svg {
-                width: 16px;
-                height: 16px;
-            }
-            
             .article-inner {
-                margin-top: 4rem;
+                margin-top: 1rem;
                 padding: 1rem;
                 border-radius: 0;
                 box-shadow: none;
@@ -2313,7 +2244,7 @@
             
             .article-inner {
                 padding: 1rem 0.8rem;
-                margin-top: 3.5rem;
+                margin-top: 1rem;
             }
             
             .article-content {
@@ -2332,24 +2263,9 @@
                 height: 30px;
             }
             
-            /* Compact modal header for small screens */
-            .modal-header {
-                padding: 0.6rem 0.8rem;
-            }
-            
-            .modal-share-options {
-                gap: 0.3rem;
-                padding: 0.2rem;
-            }
-            
-            .modal-btn {
-                width: 28px;
-                height: 28px;
-            }
-            
-            .modal-btn svg {
-                width: 14px;
-                height: 14px;
+            .mobile-close-modal {
+                top: 0.5rem;
+                right: 0.5rem;
             }
         }
     </style>
@@ -2401,7 +2317,7 @@
                 <div class="content-area">
                     <h1 class="page-title">Latest Articles</h1>
                     
-                    <!-- Improved controls container with view toggle and filters -->
+                    <!-- Controls container with view toggle and filters -->
                     <div class="controls-container">
                         <div class="view-toggle">
                             <button class="view-toggle-btn active" id="gridViewBtn" title="Grid View">
@@ -2435,7 +2351,7 @@
                         </div>
                     </div>
                     
-                    <!-- Improved mobile filter dropdown -->
+                    <!-- Mobile filter dropdown -->
                     <div class="filter-dropdown">
                         <button class="filter-dropdown-btn" id="filterDropdownBtn">
                             <span>Filter by: <strong id="currentFilter">All</strong></span>
@@ -2611,42 +2527,19 @@
         <img src="/placeholder.svg" alt="Full size image" class="lightbox-image" id="lightboxImage">
     </div>
 
-    <!-- Redesigned Article Modal with improved UI -->
+    <!-- Enhanced Article Modal with professional animations -->
     <div id="articleModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title-container">
-                    <h3 class="modal-title" id="modalTitle">Article Title</h3>
-                </div>
-                <div class="modal-actions">
-                    <!-- Social sharing options moved to the top with improved layout -->
-                    <div class="modal-share-options">
-                        <button id="shareFacebookModal" class="modal-btn" title="Share on Facebook">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                            </svg>
-                        </button>
-                        <button id="shareTwitterModal" class="modal-btn" title="Share on Twitter">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                            </svg>
-                        </button>
-                        <button id="copyLinkBtn" class="modal-btn" title="Copy link">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <button id="closeModal" class="modal-btn close-modal">×</button>
-                </div>
+            <div class="article-container" id="modalContent">
+                <!-- Article content will be loaded here -->
             </div>
-            <div class="article-container" id="modalContent"></div>
         </div>
     </div>
-    
+
+    <!-- Toast notification -->
     <div id="toast" class="toast">Link copied to clipboard!</div>
 
+    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <div class="logo-container">
@@ -2694,70 +2587,6 @@
     </div>
     <div class="overlay" id="overlay"></div>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <div class="footer-logo">
-                        <img src="SILAKBO (1).png" alt="Silakbo Logo" onerror="this.src='https://via.placeholder.com/40x40?text=S'; this.onerror=null;">
-                        <span>Ang Silakbo</span>
-                    </div>
-                    <p class="footer-text">Ang Silakbo Archives is a platform dedicated to showcasing Filipino literary works, articles, and cultural content that reflects the rich heritage and contemporary issues of the Philippines.</p>
-                    <div class="footer-social">
-                        <a href="#" class="footer-social-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="footer-social-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="footer-social-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-title">Quick Links</h3>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link">Home</a>
-                        <a href="#" class="footer-link">Articles</a>
-                        <a href="#" class="footer-link">Literary Works</a>
-                        <a href="#" class="footer-link">About Us</a>
-                        <a href="#" class="footer-link">Contact</a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-title">Categories</h3>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link">Articles</a>
-                        <a href="#" class="footer-link">Literary</a>
-                        <a href="#" class="footer-link">Poetry</a>
-                        <a href="#" class="footer-link">Essays</a>
-                        <a href="#" class="footer-link">Short Stories</a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-title">Contact Us</h3>
-                    <div class="footer-links">
-                        <a href="mailto:info@silakbo.ph" class="footer-link">angsilakbo@gmail.com</a>
-                        <a href="tel:+639123456789" class="footer-link">+63 912 345 6789</a>
-                        <p class="footer-text">University of Cebu Lapu-Lapu and Mandaue Senior High School</p>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                © 2025 Ang Silakbo Archives. All rights reserved.
-            </div>
-        </div>
-    </footer>
-
     <script>
         const supabaseUrl = "https://uyxgsziyflquisckdwwc.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5eGdzeml5ZmxxdWlzY2tkd3djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1OTQyODUsImV4cCI6MjA1NzE3MDI4NX0.DoIEoWWuajDpBhD2UwLYzrKRyZNyBP4izasROCdIbkk";
@@ -2778,9 +2607,6 @@
         const errorContainer = document.getElementById("errorContainer");
         const articleModal = document.getElementById("articleModal");
         const modalContent = document.getElementById("modalContent");
-        const modalTitle = document.getElementById("modalTitle");
-        const closeModal = document.getElementById("closeModal");
-        const copyLinkBtn = document.getElementById("copyLinkBtn");
         const toast = document.getElementById("toast");
         const popularPostsContainer = document.getElementById("popularPostsContainer");
         const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
@@ -2804,8 +2630,6 @@
         const imageLightbox = document.getElementById("imageLightbox");
         const lightboxImage = document.getElementById("lightboxImage");
         const lightboxClose = document.getElementById("lightboxClose");
-        const shareFacebookModal = document.getElementById("shareFacebookModal");
-        const shareTwitterModal = document.getElementById("shareTwitterModal");
 
         // Category counts
         const categoryCountElements = {
@@ -3552,6 +3376,7 @@
                     </div>
                     <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2  stroke-linejoin="round">
                             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                         </svg>
                     </button>
@@ -3693,11 +3518,25 @@
             // Get view count
             const viewCount = post.views || 0;
 
-            // Update modal title
-            modalTitle.textContent = title;
-
+            // Create the article content
             modalContent.innerHTML = `
                 <div class="article-inner">
+                    <!-- Close button properly positioned in the top right -->
+                    <button id="closeModal" class="close-modal" aria-label="Close article">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    
+                    <!-- Mobile close button inside the modal -->
+                    <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    
                     <div class="article-header">
                         <span class="article-category">${post.category}</span>
                         <h1 class="article-title">${title}</h1>
@@ -3730,9 +3569,7 @@
                                 </svg>
                                 ${roleLabel}: ${post.role || 'Unknown'}
                             </div>
-                        </div>
-                        <div class="article-stats">
-                            <div class="article-stat view-counter">
+                            <div class="article-meta-item view-counter">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
@@ -3741,16 +3578,80 @@
                             </div>
                         </div>
                     </div>
+                    
                     ${hasImage ? `
                     <div class="article-cover">
                         <img src="${post.image_url}" alt="${title}" class="article-main-image" onerror="this.style.display='none'">
                     </div>
                     ` : ''}
+                    
                     <div class="article-content">${post.content}</div>
+                    
                     <div class="article-tags">
                         <span class="article-tag">Filipino</span>
                         <span class="article-tag">Culture</span>
                         <span class="article-tag">${post.category}</span>
+                    </div>
+                    
+                    <!-- Article actions with improved social sharing -->
+                    <div class="article-actions">
+                        <div class="share-container">
+                            <div class="share-label">Share this article:</div>
+                            <div class="share-options">
+                                <button class="share-option" id="shareFacebook" title="Share on Facebook">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                    </svg>
+                                </button>
+                                <button class="share-option" id="shareTwitter" title="Share on Twitter">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                                    </svg>
+                                </button>
+                                <button class="share-option" id="shareLink" title="Copy link">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: var(--gray-light); margin-left: auto;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Mobile share container -->
+                    <div class="mobile-share-container">
+                        <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                        <div id="mobileShareOptions" class="mobile-share-options">
+                            <button id="shareFacebookMobile" class="mobile-share-option" title="Share on Facebook">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                </svg>
+                            </button>
+                            <button id="shareTwitterMobile" class="mobile-share-option" title="Share on Twitter">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                                </svg>
+                            </button>
+                            <button id="copyLinkMobile" class="mobile-share-option" title="Copy link">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Related Articles -->
@@ -3768,6 +3669,9 @@
                 img.addEventListener('click', () => {
                     lightboxImage.src = img.src;
                     imageLightbox.style.display = 'flex';
+                    setTimeout(() => {
+                        imageLightbox.classList.add('active');
+                    }, 10);
                 });
             });
 
@@ -3829,24 +3733,118 @@
                 }
             }
 
+            // Add event listeners to share buttons in article
+            const shareFacebook = document.getElementById('shareFacebook');
+            const shareTwitter = document.getElementById('shareTwitter');
+            const shareLink = document.getElementById('shareLink');
+            const shareFacebookMobile = document.getElementById('shareFacebookMobile');
+            const shareTwitterMobile = document.getElementById('shareTwitterMobile');
+            const copyLinkMobile = document.getElementById('copyLinkMobile');
+            const mobileShareToggle = document.getElementById('mobileShareToggle');
+            const mobileShareOptions = document.getElementById('mobileShareOptions');
+            const closeModalBtn = document.getElementById('closeModal');
+            const mobileCloseModalBtn = document.getElementById('mobileCloseModal');
+
+            if (shareFacebook) {
+                shareFacebook.addEventListener('click', () => {
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+                });
+            }
+
+            if (shareTwitter) {
+                shareTwitter.addEventListener('click', () => {
+                    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+                });
+            }
+
+            if (shareLink) {
+                shareLink.addEventListener('click', () => {
+                    copyToClipboard(postUrl);
+                });
+            }
+
+            if (shareFacebookMobile) {
+                shareFacebookMobile.addEventListener('click', () => {
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+                    mobileShareOptions.classList.remove('active');
+                });
+            }
+
+            if (shareTwitterMobile) {
+                shareTwitterMobile.addEventListener('click', () => {
+                    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+                    mobileShareOptions.classList.remove('active');
+                });
+            }
+
+            if (copyLinkMobile) {
+                copyLinkMobile.addEventListener('click', () => {
+                    copyToClipboard(postUrl);
+                    mobileShareOptions.classList.remove('active');
+                });
+            }
+
+            if (mobileShareToggle) {
+                mobileShareToggle.addEventListener('click', () => {
+                    mobileShareOptions.classList.toggle('active');
+                });
+            }
+
+            // Close modal when clicking the close button
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeArticleModal);
+            }
+
+            // Close modal when clicking the mobile close button
+            if (mobileCloseModalBtn) {
+                mobileCloseModalBtn.addEventListener('click', closeArticleModal);
+            }
+
+            // Add event listeners to bookmark buttons in the article
+            modalContent.querySelectorAll('.bookmark-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const postId = button.getAttribute('data-post-id');
+                    const isBookmarked = toggleBookmark(postId);
+                    
+                    // Update UI
+                    updateBookmarkButtonsInView(postId, isBookmarked);
+                });
+            });
+
+            // Show the modal with animation
             articleModal.style.display = "block";
             document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+            
+            // Trigger animations
+            setTimeout(() => {
+                articleModal.classList.add('active');
+            }, 10);
 
             // Reset reading progress
             readingProgress.style.width = '0';
 
-            // Add event listeners to share buttons in modal header
-            shareFacebookModal.addEventListener('click', () => {
-                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
-            });
-
-            shareTwitterModal.addEventListener('click', () => {
-                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
-            });
-
             // Add scroll event for reading progress
             const modalContentElement = document.querySelector('.modal-content');
             modalContentElement.addEventListener('scroll', updateReadingProgress);
+        }
+
+        // Function to close the article modal
+        function closeArticleModal() {
+            // Animate the modal closing
+            articleModal.classList.remove('active');
+            
+            // After animation completes, hide the modal
+            setTimeout(() => {
+                articleModal.style.display = "none";
+                document.body.style.overflow = "auto"; // Re-enable scrolling
+                
+                // Update URL to remove post parameter
+                window.history.pushState({}, '', window.location.pathname);
+                currentPostId = null;
+            }, 300); // Match the animation duration
         }
 
         // Function to update reading progress
@@ -3875,34 +3873,20 @@
             });
         }
 
-        // Close modal when clicking the close button
-        closeModal.addEventListener('click', () => {
-            articleModal.style.display = "none";
-            document.body.style.overflow = "auto"; // Re-enable scrolling
-            // Update URL to remove post parameter
-            window.history.pushState({}, '', window.location.pathname);
-            currentPostId = null;
-        });
-
         // Close lightbox when clicking the close button or anywhere on the lightbox
         lightboxClose.addEventListener('click', () => {
-            imageLightbox.style.display = "none";
+            imageLightbox.classList.remove('active');
+            setTimeout(() => {
+                imageLightbox.style.display = "none";
+            }, 300);
         });
 
         imageLightbox.addEventListener('click', (e) => {
             if (e.target === imageLightbox) {
-                imageLightbox.style.display = "none";
-            }
-        });
-
-        // Copy link button in modal
-        copyLinkBtn.addEventListener('click', () => {
-            if (currentPostId) {
-                const post = allPosts.find(p => p.id == currentPostId);
-                if (post) {
-                    const postUrl = getPostUrl(post);
-                    copyToClipboard(postUrl);
-                }
+                imageLightbox.classList.remove('active');
+                setTimeout(() => {
+                    imageLightbox.style.display = "none";
+                }, 300);
             }
         });
 
@@ -4054,7 +4038,12 @@
             e.preventDefault();
             const email = e.target.querySelector('.newsletter-input').value;
             if (email) {
-                alert(`Thank you for subscribing with ${email}! You'll receive our latest updates soon.`);
+                // Show toast notification
+                toast.textContent = `Thank you for subscribing with ${email}!`;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
                 e.target.reset();
             }
         });
@@ -4066,9 +4055,7 @@
             } else {
                 // Close modal if open
                 if (articleModal.style.display === "block") {
-                    articleModal.style.display = "none";
-                    document.body.style.overflow = "auto";
-                    currentPostId = null;
+                    closeArticleModal();
                 }
             }
         });
