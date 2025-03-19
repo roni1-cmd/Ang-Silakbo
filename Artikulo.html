@@ -989,23 +989,18 @@
             transform: scale(1.05);
         }
 
-        /* Updated Photostory Card - Title at the top */
+        /* Updated Photostory Card - Title above the photo instead of overlaying it */
         .photostory-title-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(rgba(0,0,0,0.8), transparent);
             padding: 1rem;
-            z-index: 2;
+            background-color: var(--white);
+            border-bottom: 3px solid var(--photostory-color);
         }
 
         .photostory-title {
-            color: white;
+            color: var(--text-dark);
             font-family: 'Playfair Display', serif;
             font-size: 1.3rem;
             margin: 0;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .photostory-category {
@@ -1031,7 +1026,6 @@
             font-size: 1rem;
             line-height: 1.6;
             color: var(--text-dark);
-            border-top: 3px solid var(--photostory-color);
         }
 
         /* Updated Photostory Meta - Below the caption */
@@ -1836,32 +1830,32 @@
             transform: translateY(20px);
         }
 
-        /* Updated Photostory Modal - Title at the top */
+        /* Updated Photostory Modal - Title above the photo */
         .photostory-modal-title-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(rgba(0,0,0,0.8), transparent);
             padding: 2rem;
-            z-index: 2;
+            background-color: var(--white);
+            border-bottom: 3px solid var(--photostory-color);
+            text-align: center;
         }
 
         .photostory-modal-title {
-            color: white;
+            color: var(--text-dark);
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
             margin: 0;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .photostory-modal-image {
             width: 100%;
-            max-height: 70vh;
+            max-height: 80vh;
             overflow: hidden;
             margin-bottom: 0;
             border-radius: 12px;
             position: relative;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .photostory-modal-image img {
@@ -2903,10 +2897,12 @@
                                 </svg>
                             </a>
                             <a href="#" class="social-link">
-                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                </svg>
+                              x2="17.51" y2="6.5"></line>
                                 </svg>
                             </a>
                             <a href="#" class="social-link">
@@ -3653,6 +3649,7 @@ function createFeaturedArticle(post) {
                 </div>
                 <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
                 </button>
@@ -3852,19 +3849,19 @@ function createFeaturedPhotostoryArticle(post) {
     featuredElement.classList.add("featured-article", "featured-photostory");
     featuredElement.dataset.postId = post.id;
 
-    // Updated to have title at the top of the photo
+    // Updated to have title above the photo instead of overlaying it
     featuredElement.innerHTML = `
         <div class="featured-label">Latest Photostory</div>
         <div class="featured-inner" style="grid-template-columns: 1fr;">
+            <!-- Title above the photo -->
+            <div style="padding: 1.5rem; text-align: center; background-color: white; border-bottom: 3px solid #10B981;">
+                <h2 style="margin: 0; font-size: 2rem;">${title}</h2>
+            </div>
+            
             <div style="position: relative; overflow: hidden; padding: 0;">
-                <!-- Title at the top of the photo -->
-                <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(rgba(0,0,0,0.8), transparent); padding: 1.5rem; z-index: 2;">
-                    <h2 style="color: white; margin: 0; font-size: 2rem; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${title}</h2>
-                </div>
-                
                 ${hasImage 
                     ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: auto; max-height: 70vh; object-fit: contain;">` 
-                    : `<div class="no-image" style="height: 400px; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
+                    : `<div style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
                 }
                 
                 <!-- Category badge -->
@@ -4087,13 +4084,13 @@ function createSilakCard(post) {
                 : `<span style="font-size: 2.5rem; font-weight: bold; color: #8B5CF6;">${title.charAt(0).toUpperCase()}</span>`
             }
             <div class="post-category" style="background-color: #8B5CF6;">Silak-salitaan</div>
-                        <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}">
+                        <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark >' : 'Bookmark this word'}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
             </button>
         </div>
-        <div class="post-content">
+               <div class="post-content">
             <h2 class="post-title" style="color: #8B5CF6; font-size: 1.8rem;">${title}</h2>
             <div style="display: flex; align-items: center; margin: 0.5rem 0; font-size: 0.9rem;">
                 <span style="background-color: rgba(139, 92, 246, 0.1); color: #8B5CF6; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 500;">${filipinoPartOfSpeech}</span>
@@ -4164,14 +4161,14 @@ function createPhotostoryCard(post) {
     postElement.classList.add("post-card", "photostory-card");
     postElement.dataset.postId = post.id;
 
-    // Updated photostory card with title at the top, caption below, and meta info at the bottom
+    // Updated photostory card with title above the photo, caption below, and meta info at the bottom
     postElement.innerHTML = `
+        <!-- Title above the photo -->
+        <div class="photostory-title-container">
+            <h2 class="photostory-title">${title}</h2>
+        </div>
+        
         <div class="photostory-image">
-            <!-- Title at the top of the photo -->
-            <div class="photostory-title-container">
-                <h2 class="photostory-title">${title}</h2>
-            </div>
-            
             ${hasImage 
                 ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
                 : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1.5rem;">PHOTOSTORY</div>`
@@ -4473,17 +4470,17 @@ function createPhotostoryCardList(post) {
     postElement.classList.add("post-card-list", "photostory-card-list");
     postElement.dataset.postId = post.id;
 
-    // Updated photostory list card with title at the top, caption below, and meta info at the bottom
+    // Updated photostory list card with title above the photo, caption below, and meta info at the bottom
     postElement.innerHTML = `
         <div class="post-cover" style="width: 200px; position: relative;">
-            <!-- Title at the top of the photo -->
-            <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(rgba(0,0,0,0.8), transparent); padding: 0.8rem; z-index: 2;">
-                <h3 style="color: white; margin: 0; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${title}</h3>
+            <!-- Title above the photo -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; background-color: white; padding: 0.8rem; z-index: 2; text-align: center; border-bottom: 3px solid #10B981;">
+                <h3 style="margin: 0; font-size: 1rem;">${title}</h3>
             </div>
             
             ${hasImage 
-                ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
-                : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1rem;">PHOTOSTORY</div>`
+                ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover; margin-top: 40px;">` 
+                : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1rem; margin-top: 40px;">PHOTOSTORY</div>`
             }
             
             <div class="post-category" style="background-color: #10B981;">Photostory</div>
@@ -5242,7 +5239,7 @@ function openPhotostoryArticle(post) {
     const viewCount = post.views || 0;
 
     // Create the article content with updated layout
-    // Title at the top, caption below the photo, and meta info at the bottom
+    // Title above the photo, caption below, and meta info at the bottom
     modalContent.innerHTML = `
         <div class="article-inner" style="max-width: 100%; padding: 0; margin: 0; box-shadow: none; border-radius: 0;">
             <!-- Close button properly positioned in the top right -->
@@ -5261,12 +5258,12 @@ function openPhotostoryArticle(post) {
                 </svg>
             </button>
             
+            <!-- Title above the photo -->
+            <div class="photostory-modal-title-container">
+                <h1 class="photostory-modal-title">${title}</h1>
+            </div>
+            
             <div style="position: relative; width: 100%; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <!-- Title at the top of the photo -->
-                <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(rgba(0,0,0,0.8), transparent); padding: 2rem 1.5rem; z-index: 2; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 2.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${title}</h1>
-                </div>
-                
                 ${hasImage 
                     ? `<img src="${post.image_url}" alt="${title}" style="max-width: 100%; max-height: 80vh; object-fit: contain;" class="article-main-image">` 
                     : `<div style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
