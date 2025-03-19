@@ -962,17 +962,13 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .photostory-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .photostory-image {
-            width: 100%;
-            height: 300px;
-            position: relative;
         }
 
         .photostory-image {
@@ -993,6 +989,25 @@
             transform: scale(1.05);
         }
 
+        /* Updated Photostory Card - Title at the top */
+        .photostory-title-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(rgba(0,0,0,0.8), transparent);
+            padding: 1rem;
+            z-index: 2;
+        }
+
+        .photostory-title {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin: 0;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
         .photostory-category {
             position: absolute;
             top: 1rem;
@@ -1005,26 +1020,43 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            z-index: 2;
+            z-index: 3;
         }
 
+        /* Updated Photostory Caption - Below the photo */
         .photostory-caption {
-            padding: 1.5rem;
+            padding: 1rem;
             text-align: center;
             font-style: italic;
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.6;
             color: var(--text-dark);
             border-top: 3px solid var(--photostory-color);
         }
 
+        /* Updated Photostory Meta - Below the caption */
         .photostory-meta {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1.5rem 1.5rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0 1rem 1rem;
             color: var(--text-light);
             font-size: 0.9rem;
+            border-top: 1px solid var(--gray-light);
+            padding-top: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .photostory-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .photostory-meta-item svg {
+            width: 16px;
+            height: 16px;
+            color: var(--photostory-color);
         }
 
         /* Reading time indicator */
@@ -1804,12 +1836,32 @@
             transform: translateY(20px);
         }
 
+        /* Updated Photostory Modal - Title at the top */
+        .photostory-modal-title-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(rgba(0,0,0,0.8), transparent);
+            padding: 2rem;
+            z-index: 2;
+        }
+
+        .photostory-modal-title {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin: 0;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
         .photostory-modal-image {
             width: 100%;
             max-height: 70vh;
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 0;
             border-radius: 12px;
+            position: relative;
         }
 
         .photostory-modal-image img {
@@ -1819,14 +1871,43 @@
             cursor: zoom-in;
         }
 
+        /* Updated Photostory Caption - Below the photo */
         .photostory-modal-caption {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             line-height: 1.8;
             color: var(--text-dark);
             text-align: center;
             font-style: italic;
-            margin: 2rem 0;
-            padding: 0 2rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background-color: var(--photostory-light);
+            border-radius: 8px;
+        }
+
+        /* Updated Photostory Meta - Below the caption */
+        .photostory-modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .photostory-modal-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .photostory-modal-meta-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--photostory-color);
         }
 
         /* Article tags */
@@ -2706,7 +2787,7 @@
                         <!-- Desktop filter buttons -->
                         <div class="filter-container">
                             <span class="filter-label">Filter by:</span>
-                            <button class="filter-btn active" data-filter="all">All</button>
+                            <!-- Removed "ALL" filter as requested -->
                             <button class="filter-btn" data-filter="article">Articles</button>
                             <button class="filter-btn" data-filter="literary">Literary</button>
                             <button class="filter-btn" data-filter="feature">Feature</button>
@@ -2718,14 +2799,14 @@
                     <!-- Mobile filter dropdown -->
                     <div class="filter-dropdown">
                         <button class="filter-dropdown-btn" id="filterDropdownBtn">
-                            <span>Filter by: <strong id="currentFilter">All</strong></span>
+                            <span>Filter by: <strong id="currentFilter">Articles</strong></span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </button>
                         <div class="filter-dropdown-content" id="filterDropdownContent">
-                            <div class="filter-dropdown-item active" data-filter="all">All</div>
-                            <div class="filter-dropdown-item" data-filter="article">Articles</div>
+                            <!-- Removed "ALL" filter as requested -->
+                            <div class="filter-dropdown-item active" data-filter="article">Articles</div>
                             <div class="filter-dropdown-item" data-filter="literary">Literary</div>
                             <div class="filter-dropdown-item" data-filter="feature">Feature</div>
                             <div class="filter-dropdown-item" data-filter="silak">Silak-salitaan</div>
@@ -2822,12 +2903,7 @@
                                 </svg>
                             </a>
                             <a href="#" class="social-link">
-                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                                </svg>
-                            </a>
-                            <a href="#" class="social-link">
-                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -2852,9 +2928,6 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="4" y1="12" x2="20" y2="12"></line>
             <line x1="4" y1="6" x2="20" y2="6"></line>
-            <line x1="4" y1="18" x2="20" y2="18"></line>
-        </svg>
-    </div>  y2="6"></line>
             <line x1="4" y1="18" x2="20" y2="18"></line>
         </svg>
     </div>
@@ -3046,7 +3119,7 @@ const filipinoPartsOfSpeech = {
 let allPosts = [];
 let displayedPosts = 0;
 let postsPerPage = 6; // Number of posts to load initially and on each "load more" click
-let currentFilter = 'all';
+let currentFilter = 'article'; // Changed default filter from 'all' to 'article'
 let currentPostId = null;
 let bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
 let viewCounts = JSON.parse(localStorage.getItem('viewCounts')) || {};
@@ -3272,11 +3345,7 @@ function filterPosts(filter) {
     postsContainer.innerHTML = "";
 
     // Filter posts
-    let filteredPosts = allPosts;
-
-    if (filter !== 'all') {
-        filteredPosts = allPosts.filter(post => post.category.toLowerCase() === filter);
-    }
+    let filteredPosts = allPosts.filter(post => post.category.toLowerCase() === filter);
 
     if (filteredPosts.length === 0) {
         postsContainer.innerHTML = `
@@ -3511,8 +3580,8 @@ async function fetchPosts() {
         // Update category counts
         updateCategoryCounts(allPosts);
         
-        // Apply initial filter (all)
-        filterPosts('all');
+        // Apply initial filter (changed from 'all' to 'article')
+        filterPosts('article');
         
         // Create popular posts sidebar
         createPopularPosts(allPosts);
@@ -3684,7 +3753,7 @@ function createFeaturedSilakArticle(post) {
     featuredElement.innerHTML = `
         <div class="featured-label">Latest Silak-salitaan</div>
         <div class="featured-inner">
-            <div class="featured-image" style="background-color: #8B5CF6; display: flex; justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: bold; text-shadow: 2px 2px 4  align-items: center; color: white; font-size: 3rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+            <div class="featured-image" style="background-color: #8B5CF6; display: flex; justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
                 ${hasImage 
                     ? `<img src="${post.image_url}" alt="${title}" style="max-height: 80%; max-width: 80%; object-fit: contain;">` 
                     : `<span>${title.charAt(0).toUpperCase()}</span>`
@@ -3783,54 +3852,78 @@ function createFeaturedPhotostoryArticle(post) {
     featuredElement.classList.add("featured-article", "featured-photostory");
     featuredElement.dataset.postId = post.id;
 
+    // Updated to have title at the top of the photo
     featuredElement.innerHTML = `
         <div class="featured-label">Latest Photostory</div>
         <div class="featured-inner" style="grid-template-columns: 1fr;">
             <div style="position: relative; overflow: hidden; padding: 0;">
+                <!-- Title at the top of the photo -->
+                <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(rgba(0,0,0,0.8), transparent); padding: 1.5rem; z-index: 2;">
+                    <h2 style="color: white; margin: 0; font-size: 2rem; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${title}</h2>
+                </div>
+                
                 ${hasImage 
                     ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: auto; max-height: 70vh; object-fit: contain;">` 
                     : `<div class="no-image" style="height: 400px; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
                 }
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 2rem 1.5rem 1.5rem; color: white;">
-                    <span class="featured-category" style="background-color: #10B981; color: white;">Photostory</span>
-                    <h2 class="featured-title" style="color: white; margin: 0.5rem 0; font-size: 2rem;">${title}</h2>
-                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin: 0.5rem 0;">
-                        <div class="post-meta-item" style="color: rgba(255,255,255,0.9);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <span>By: ${post.author || 'Unknown'}</span>
-                        </div>
-                        <div class="post-meta-item" style="color: rgba(255,255,255,0.9);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                            </svg>
-                            <span>Photojournalist: ${post.role || 'Unknown'}</span>
-                        </div>
-                    </div>
-                    <p style="margin: 0.5rem 0; font-size: 1.1rem; color: rgba(255,255,255,0.9);">${plainTextContent}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-                        <a href="#" class="featured-read-more" data-post-id="${post.id}" style="background-color: #10B981;">View Full Photo</a>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}" style="background-color: rgba(255,255,255,0.2); color: white;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                            </button>
-                            <button class="share-btn" data-post-id="${post.id}" title="Share photostory" style="background-color: rgba(255,255,255,0.2); color: white;">
-                                <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="18" cy="5" r="3"></circle>
-                                    <circle cx="6" cy="12" r="3"></circle>
-                                    <circle cx="18" cy="19" r="3"></circle>
-                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                
+                <!-- Category badge -->
+                <div style="position: absolute; top: 1rem; right: 1rem; background-color: #10B981; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; z-index: 3;">
+                    Photostory
                 </div>
+                
+                <!-- Bookmark button -->
+                <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" style="top: 4rem; right: 1rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Caption below the photo -->
+            <div style="padding: 1.5rem; text-align: center; font-style: italic; border-top: 3px solid #10B981;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">${plainTextContent}</p>
+            </div>
+            
+            <!-- Meta information below the caption -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 1.5rem 1.5rem; border-top: 1px solid var(--gray-light); padding-top: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>By: ${post.author || 'Unknown'}</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    <span>Photojournalist: ${post.role || 'Unknown'}</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Date taken: ${dateDisplay}</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>${viewCount} views</span>
+                </div>
+            </div>
+            
+            <div style="padding: 0 1.5rem 1.5rem; text-align: center;">
+                <a href="#" class="featured-read-more" data-post-id="${post.id}" style="background-color: #10B981;">View Full Photo</a>
             </div>
         </div>
     `;
@@ -3994,7 +4087,7 @@ function createSilakCard(post) {
                 : `<span style="font-size: 2.5rem; font-weight: bold; color: #8B5CF6;">${title.charAt(0).toUpperCase()}</span>`
             }
             <div class="post-category" style="background-color: #8B5CF6;">Silak-salitaan</div>
-            <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}">
+                        <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
@@ -4071,62 +4164,72 @@ function createPhotostoryCard(post) {
     postElement.classList.add("post-card", "photostory-card");
     postElement.dataset.postId = post.id;
 
+    // Updated photostory card with title at the top, caption below, and meta info at the bottom
     postElement.innerHTML = `
-        <div class="post-cover" style="height: 280px; position: relative;">
+        <div class="photostory-image">
+            <!-- Title at the top of the photo -->
+            <div class="photostory-title-container">
+                <h2 class="photostory-title">${title}</h2>
+            </div>
+            
             ${hasImage 
                 ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
                 : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1.5rem;">PHOTOSTORY</div>`
             }
-            <div class="post-category" style="background-color: #10B981;">Photostory</div>
+            
+            <div class="photostory-category">Photostory</div>
+            
             <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
             </button>
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 1rem; color: white;">
-                <h2 class="post-title" style="color: white; font-size: 1.2rem; margin: 0;">${title}</h2>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                    <div style="font-size: 0.8rem; opacity: 0.9;">
-                        <span>By: ${post.author || 'Unknown'}</span>
-                    </div>
-                    <div style="font-size: 0.8rem; opacity: 0.9;">
-                        ${dateDisplay}
-                    </div>
-                </div>
+        </div>
+        
+        <!-- Caption below the photo -->
+        <div class="photostory-caption">
+            ${plainTextContent}
+        </div>
+        
+        <!-- Meta information below the caption -->
+        <div class="photostory-meta">
+            <div class="photostory-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>By: ${post.author || 'Unknown'}</span>
+            </div>
+            
+            <div class="photostory-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+                <span>Photojournalist: ${post.role || 'Unknown'}</span>
+            </div>
+            
+            <div class="photostory-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Date taken: ${dateDisplay}</span>
+            </div>
+            
+            <div class="photostory-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>${viewCount} views</span>
             </div>
         </div>
-        <div class="post-content" style="padding: 1rem;">
-            <p class="post-excerpt" style="font-style: italic; color: var(--text-medium);">${plainTextContent}</p>
-            <div class="post-meta">
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                    </svg>
-                    <span>Photojournalist: ${post.role || 'Unknown'}</span>
-                </div>
-                <div class="post-meta-item view-counter">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${viewCount} views</span>
-                </div>
-            </div>
-            <div class="post-actions">
-                <a href="#" class="read-more" data-post-id="${post.id}" style="background-color: #10B981; color: white; border: none;">View Full Photo</a>
-                <div class="post-action-buttons">
-                    <button class="share-btn" data-post-id="${post.id}" title="Share photostory">
-                        <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+        
+        <div style="padding: 0 1rem 1rem; text-align: center;">
+            <a href="#" class="read-more" data-post-id="${post.id}" style="background-color: #10B981; color: white; border: none;">View Full Photo</a>
         </div>
     `;
 
@@ -4370,60 +4473,71 @@ function createPhotostoryCardList(post) {
     postElement.classList.add("post-card-list", "photostory-card-list");
     postElement.dataset.postId = post.id;
 
+    // Updated photostory list card with title at the top, caption below, and meta info at the bottom
     postElement.innerHTML = `
         <div class="post-cover" style="width: 200px; position: relative;">
+            <!-- Title at the top of the photo -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(rgba(0,0,0,0.8), transparent); padding: 0.8rem; z-index: 2;">
+                <h3 style="color: white; margin: 0; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${title}</h3>
+            </div>
+            
             ${hasImage 
                 ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
                 : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1rem;">PHOTOSTORY</div>`
             }
+            
             <div class="post-category" style="background-color: #10B981;">Photostory</div>
         </div>
+        
         <div class="post-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <h2 class="post-title" style="margin: 0;">${title}</h2>
-                <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}" style="position: static; margin-left: 1rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                </button>
-            </div>
-            ${dateDisplay ? `
-                <div class="post-date">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    ${dateDisplay}
-                </div>` : ''}
-            <div class="post-meta">
+            <!-- Caption below the title -->
+            <div style="font-style: italic; margin-bottom: 1rem; color: var(--text-medium);">${plainTextContent}</div>
+            
+            <!-- Meta information -->
+            <div class="post-meta" style="border-top: 1px solid var(--gray-light); padding-top: 0.8rem;">
                 <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                     <span>By: ${post.author || 'Unknown'}</span>
                 </div>
+                
                 <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                     </svg>
                     <span>Photojournalist: ${post.role || 'Unknown'}</span>
                 </div>
+                
+                <div class="post-meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Date taken: ${dateDisplay}</span>
+                </div>
+                
                 <div class="post-meta-item view-counter">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                     <span>${viewCount} views</span>
                 </div>
             </div>
-            <div class="post-excerpt" style="font-style: italic; color: var(--text-medium);">${plainTextContent}</div>
-            <div class="post-actions">
+            
+            <div class="post-actions" style="margin-top: 1rem;">
                 <a href="#" class="read-more" data-post-id="${post.id}" style="background-color: #10B981; color: white; border: none;">View Full Photo</a>
                 <div class="post-action-buttons">
+                    <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}" style="position: static; margin-left: 1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
                     <button class="share-btn" data-post-id="${post.id}" title="Share photostory">
                         <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="18" cy="5" r="3"></circle>
@@ -4546,7 +4660,6 @@ function openArticle(postId) {
             <!-- Mobile close button inside the modal -->
             <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18"  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
@@ -4990,7 +5103,6 @@ function openSilakArticle(post) {
             <!-- Mobile share container -->
             <div class="mobile-share-container">
                 <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options" style="background-color: #8B5CF6;">
-                  aria-label="Share options" style="background-color: #8B5CF6;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="18" cy="5" r="3"></circle>
                         <circle cx="6" cy="12" r="3"></circle>
@@ -5129,7 +5241,8 @@ function openPhotostoryArticle(post) {
     // Get view count
     const viewCount = post.views || 0;
 
-    // Create the article content
+    // Create the article content with updated layout
+    // Title at the top, caption below the photo, and meta info at the bottom
     modalContent.innerHTML = `
         <div class="article-inner" style="max-width: 100%; padding: 0; margin: 0; box-shadow: none; border-radius: 0;">
             <!-- Close button properly positioned in the top right -->
@@ -5148,76 +5261,90 @@ function openPhotostoryArticle(post) {
                 </svg>
             </button>
             
-            <div style="position: relative; width: 100%; height: 100vh; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div style="position: relative; width: 100%; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <!-- Title at the top of the photo -->
+                <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(rgba(0,0,0,0.8), transparent); padding: 2rem 1.5rem; z-index: 2; text-align: center;">
+                    <h1 style="color: white; margin: 0; font-size: 2.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${title}</h1>
+                </div>
+                
                 ${hasImage 
                     ? `<img src="${post.image_url}" alt="${title}" style="max-width: 100%; max-height: 80vh; object-fit: contain;" class="article-main-image">` 
                     : `<div style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
                 }
                 
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 2rem 1.5rem 4rem; color: white; text-align: center;">
-                    <span style="display: inline-block; background-color: #10B981; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem;">Photostory</span>
-                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${title}</h1>
-                    
-                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 1rem 0;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            By: ${post.author || 'Unknown'}
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                            </svg>
-                            Photojournalist: ${post.role || 'Unknown'}
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            ${dateDisplay}
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            <span>${viewCount} views</span>
-                        </div>
-                    </div>
-                    
-                    <p style="max-width: 800px; margin: 1.5rem auto; font-size: 1.2rem; line-height: 1.6; color: rgba(255,255,255,0.9);">${plainTextContent}</p>
-                    
-                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
-                        <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: rgba(255,255,255,0.2); color: white;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </button>
-                        <div class="share-options" style="display: flex; gap: 0.5rem;">
-                            <button class="share-option" id="shareFacebook" title="Share on Facebook" style="background-color: rgba(255,255,255,0.2); color: white;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                                </svg>
-                            </button>
-                            <button class="share-option" id="shareTwitter" title="Share on Twitter" style="background-color: rgba(255,255,255,0.2); color: white;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                                </svg>
-                            </button>
-                            <button class="share-option" id="shareLink" title="Copy link" style="background-color: rgba(255,255,255,0.2); color: white;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                <!-- Category badge -->
+                <div style="position: absolute; top: 1rem; right: 1rem; background-color: #10B981; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; z-index: 3;">
+                    Photostory
+                </div>
+            </div>
+            
+            <!-- Caption below the photo -->
+            <div style="background-color: white; padding: 2rem; text-align: center;">
+                <p style="font-size: 1.3rem; line-height: 1.8; font-style: italic; margin: 0; color: var(--text-dark);">${plainTextContent}</p>
+            </div>
+            
+            <!-- Meta information below the caption -->
+            <div style="background-color: var(--gray-light); padding: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>By: ${post.author || 'Unknown'}</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    <span>Photojournalist: ${post.role || 'Unknown'}</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Date taken: ${dateDisplay}</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>${viewCount} views</span>
+                </div>
+            </div>
+            
+            <!-- Share and bookmark buttons -->
+            <div style="background-color: white; padding: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+                <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: var(--gray-light);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+                
+                <div class="share-options" style="display: flex; gap: 0.5rem;">
+                    <button class="share-option" id="shareFacebook" title="Share on Facebook" style="background-color: var(--gray-light);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </button>
+                    <button class="share-option" id="shareTwitter" title="Share on Twitter" style="background-color: var(--gray-light);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                    </button>
+                    <button class="share-option" id="shareLink" title="Copy link" style="background-color: var(--gray-light);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
             
@@ -5555,10 +5682,7 @@ listViewBtn.addEventListener('click', () => {
 // Load more button event listener
 loadMoreBtn.addEventListener('click', () => {
     // Get filtered posts
-    let filteredPosts = allPosts;
-    if (currentFilter !== 'all') {
-        filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
-    }
+    let filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
     
     // Skip the first post (featured) and already displayed posts
     filteredPosts = filteredPosts.slice(1);
@@ -5599,6 +5723,6 @@ window.addEventListener('popstate', (e) => {
 
 // Initialize
 fetchPosts();
-       </script>
-       </body>
-         </html>
+    </script>
+</body>
+</html>
