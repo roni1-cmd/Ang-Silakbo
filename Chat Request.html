@@ -21,14 +21,15 @@
             --success-color: #4CAF50;
             --warning-color: #FFC107;
             --error-color: #f44336;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
-            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
-            --transition-fast: 0.2s ease;
-            --transition-normal: 0.3s ease;
-            --border-radius-sm: 4px;
-            --border-radius-md: 8px;
-            --border-radius-lg: 12px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
         }
 
         * {
@@ -45,6 +46,11 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(230, 81, 0, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(230, 81, 0, 0.03) 0%, transparent 20%);
         }
 
         /* Layout */
@@ -54,13 +60,13 @@
             min-height: 100vh;
             position: relative;
             overflow: hidden;
+            flex: 1;
         }
 
         .main-container {
             display: flex;
             flex-direction: column;
             flex: 1;
-            min-height: calc(100vh - 73px); /* 73px is header height */
             position: relative;
             overflow: hidden;
         }
@@ -82,23 +88,55 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all var(--transition-normal);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .header.scrolled {
+            box-shadow: var(--shadow-md);
+            padding: 0.8rem 2rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            text-decoration: none;
         }
 
         .logo img {
             width: 40px;
             height: 40px;
+            transition: transform var(--transition-normal);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .logo:hover img {
+            transform: scale(1.05) rotate(5deg);
         }
 
         .logo h1 {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transform: translateX(-100%);
+            transition: transform var(--transition-normal);
+        }
+
+        .logo:hover h1::after {
+            transform: translateX(0);
         }
 
         .nav-menu {
@@ -118,7 +156,7 @@
             font-weight: 500;
             padding: 0.5rem 0;
             position: relative;
-            transition: color var(--transition-normal);
+            transition: all var(--transition-normal);
         }
 
         .nav-menu a:hover {
@@ -132,7 +170,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background-color: var(--primary-color);
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
             transition: width var(--transition-normal);
         }
 
@@ -152,6 +190,19 @@
             font-size: 1.5rem;
             color: var(--text-color);
             cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-toggle:hover {
+            background-color: rgba(230, 81, 0, 0.1);
+            color: var(--primary-color);
+            transform: scale(1.1);
         }
 
         @media (min-width: 768px) {
@@ -162,19 +213,21 @@
 
         /* Sidebar */
         .sidebar {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #ff7e33 100%);
             color: white;
-            padding: 2rem;
+            padding: 2.5rem;
             position: relative;
             overflow: hidden;
+            transition: transform var(--transition-normal);
+            box-shadow: var(--shadow-md);
         }
 
         @media (min-width: 992px) {
             .sidebar {
                 width: 35%;
-                height: calc(100vh - 73px);
+                height: 100%;
                 position: sticky;
-                top: 73px;
+                top: 0;
                 overflow-y: auto;
             }
         }
@@ -186,9 +239,9 @@
             right: -100px;
             width: 300px;
             height: 300px;
-            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
-            opacity: 0.3;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
             border-radius: 50%;
+            animation: pulse 15s infinite alternate;
         }
 
         .sidebar::after {
@@ -198,9 +251,24 @@
             left: -50px;
             width: 200px;
             height: 200px;
-            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
-            opacity: 0.3;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
             border-radius: 50%;
+            animation: pulse 10s infinite alternate-reverse;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
         }
 
         .sidebar-content {
@@ -209,11 +277,12 @@
         }
 
         .sidebar-title {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
             position: relative;
             display: inline-block;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .sidebar-title::after {
@@ -225,16 +294,29 @@
             height: 4px;
             background-color: white;
             border-radius: 2px;
+            transition: width var(--transition-normal);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .sidebar:hover .sidebar-title::after {
+            width: 100%;
         }
 
         .sidebar-text {
             margin-bottom: 2rem;
             font-size: 1.1rem;
             opacity: 0.9;
+            line-height: 1.8;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .contact-info {
             margin-top: 3rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-md);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .contact-info h3 {
@@ -242,6 +324,7 @@
             margin-bottom: 1.5rem;
             position: relative;
             display: inline-block;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .contact-info h3::after {
@@ -253,17 +336,29 @@
             height: 3px;
             background-color: white;
             border-radius: 2px;
+            transition: width var(--transition-normal);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .contact-info:hover h3::after {
+            width: 100%;
         }
 
         .contact-item {
             display: flex;
             align-items: flex-start;
             margin-bottom: 1.5rem;
-            transition: transform var(--transition-normal);
+            transition: all var(--transition-normal);
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
         }
 
         .contact-item:hover {
             transform: translateX(5px);
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .contact-icon {
@@ -271,6 +366,13 @@
             font-size: 1.2rem;
             width: 24px;
             text-align: center;
+            transition: transform var(--transition-normal);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-item:hover .contact-icon {
+            transform: scale(1.2);
+            color: white;
         }
 
         .social-links {
@@ -283,25 +385,56 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background-color: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             color: white;
             text-decoration: none;
             transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform var(--transition-normal);
+            z-index: 0;
+        }
+
+        .social-link i {
+            position: relative;
+            z-index: 1;
+            transition: all var(--transition-normal);
+            font-size: 1.2rem;
         }
 
         .social-link:hover {
-            background-color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .social-link:hover::before {
+            transform: scale(1);
+        }
+
+        .social-link:hover i {
             color: var(--primary-color);
-            transform: translateY(-3px);
         }
 
         /* Main Content */
         .main-content {
             flex: 1;
-            padding: 2rem;
+            padding: 2.5rem;
             background-color: var(--background-color);
         }
 
@@ -309,23 +442,43 @@
             .main-content {
                 width: 65%;
                 overflow-y: auto;
-                height: calc(100vh - 73px);
             }
         }
 
         .page-title {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 600;
             margin-bottom: 2rem;
             color: var(--text-color);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transition: width var(--transition-normal);
+            border-radius: 3px;
+        }
+
+        .page-title:hover::after {
+            width: 100%;
         }
 
         /* Form Steps */
         .form-steps {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             position: relative;
+            padding: 0 1rem;
         }
 
         .form-steps::before {
@@ -348,8 +501,8 @@
         }
 
         .step-icon {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background-color: var(--border-color);
             display: flex;
@@ -358,23 +511,52 @@
             color: white;
             margin-bottom: 0.5rem;
             transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            transform: scale(0);
+            transition: transform var(--transition-normal);
+            border-radius: 50%;
+        }
+
+        .step.active .step-icon::before,
+        .step.completed .step-icon::before {
+            transform: scale(1);
+        }
+
+        .step-icon span {
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
         }
 
         .step-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-align: center;
             color: var(--text-light);
-            transition: color var(--transition-normal);
+            transition: all var(--transition-normal);
+            font-weight: 500;
         }
 
         .step.active .step-icon {
-            background-color: var(--primary-color);
             transform: scale(1.2);
+            box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.2);
         }
 
         .step.active .step-label {
             color: var(--primary-color);
-            font-weight: 500;
+            font-weight: 600;
+            transform: scale(1.05);
         }
 
         .step.completed .step-icon {
@@ -386,9 +568,25 @@
             background-color: white;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow-md);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-normal);
         }
 
         .form-card:hover {
@@ -396,33 +594,67 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .form-card:hover::before {
+            transform: scaleX(1);
+        }
+
         .form-section {
             display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--transition-normal), transform var(--transition-normal);
         }
 
         .form-section.active {
             display: block;
-            animation: fadeIn 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInUp 0.5s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
         }
 
         .form-section-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             color: var(--primary-color);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .form-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transition: width var(--transition-normal);
+            border-radius: 3px;
+        }
+
+        .form-section-title:hover::after {
+            width: 100%;
         }
 
         /* Form Controls */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             position: relative;
         }
 
@@ -434,29 +666,32 @@
         .floating-label textarea,
         .floating-label select {
             width: 100%;
-            padding: 1rem;
+            padding: 1.2rem;
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
             font-family: 'Poppins', sans-serif;
             background-color: transparent;
             transition: all var(--transition-normal);
             font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            color: var(--text-color);
         }
 
         .floating-label label {
             position: absolute;
             top: 50%;
-            left: 1rem;
+            left: 1.2rem;
             transform: translateY(-50%);
             background-color: transparent;
             padding: 0 0.25rem;
             color: var(--text-light);
             pointer-events: none;
             transition: all var(--transition-normal);
+            font-weight: 500;
         }
 
         .floating-label textarea ~ label {
-            top: 1rem;
+            top: 1.2rem;
             transform: translateY(0);
         }
 
@@ -468,7 +703,7 @@
         .floating-label select:not(:placeholder-shown) {
             border-color: var(--primary-color);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
         }
 
         .floating-label input:focus ~ label,
@@ -482,20 +717,23 @@
             transform: translateY(-50%) scale(0.85);
             background-color: white;
             color: var(--primary-color);
-            font-weight: 500;
+            font-weight: 600;
+            padding: 0 0.5rem;
         }
 
         .floating-label textarea {
-            min-height: 120px;
+            min-height: 150px;
             resize: vertical;
+            line-height: 1.6;
         }
 
         .char-count {
             text-align: right;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-light);
             transition: color var(--transition-fast);
-            margin-top: 0.25rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
         }
 
         .char-count.warning {
@@ -511,6 +749,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            margin-top: 1rem;
         }
 
         .file-upload-input {
@@ -528,59 +767,80 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 2.5rem;
             border: 2px dashed var(--border-color);
-            border-radius: var(--border-radius-sm);
+            border-radius: var(--border-radius-md);
             transition: all var(--transition-normal);
             cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.01);
         }
 
         .file-upload-label:hover,
         .file-upload-input:focus + .file-upload-label {
             border-color: var(--primary-color);
-            background-color: rgba(255, 102, 0, 0.05);
+            background-color: rgba(230, 81, 0, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .file-upload-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            transition: all var(--transition-normal);
+        }
+
+        .file-upload-label:hover .file-upload-icon {
+            transform: translateY(-5px) scale(1.1);
+            color: var(--primary-dark);
         }
 
         .file-upload-text {
             text-align: center;
             font-weight: 500;
+            color: var(--text-color);
+            font-size: 1.1rem;
         }
 
         .file-upload-info {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-light);
-            margin-top: 0.5rem;
+            margin-top: 0.8rem;
             text-align: center;
         }
 
         .file-preview {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding: 0.75rem;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+            padding: 1rem;
             background-color: #f5f5f5;
             border-radius: var(--border-radius-sm);
             animation: fadeIn 0.3s ease;
+            transition: all var(--transition-normal);
+            border-left: 3px solid var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .file-preview:hover {
+            transform: translateX(5px);
+            background-color: #f0f0f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .file-preview-icon {
             color: var(--primary-color);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
         .file-preview-name {
             flex: 1;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-weight: 500;
         }
 
         .file-preview-remove {
@@ -588,22 +848,31 @@
             border: none;
             color: var(--text-light);
             cursor: pointer;
-            transition: color var(--transition-fast);
+            transition: all var(--transition-fast);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .file-preview-remove:hover {
             color: var(--error-color);
+            background-color: rgba(244, 67, 54, 0.1);
+            transform: rotate(90deg);
         }
 
         /* Buttons */
         .form-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
+            gap: 1rem;
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.9rem 1.8rem;
             border: none;
             border-radius: var(--border-radius-sm);
             font-family: 'Poppins', sans-serif;
@@ -613,28 +882,73 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.3);
         }
 
         .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(230, 81, 0, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.3);
         }
 
         .btn-secondary {
             background-color: transparent;
             color: var(--primary-color);
             border: 1px solid var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
 
         .btn-secondary:hover {
-            background-color: rgba(255, 102, 0, 0.1);
-            transform: translateY(-2px);
+            background-color: rgba(230, 81, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn i {
+            transition: transform var(--transition-normal);
+        }
+
+        .btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .btn-secondary:hover i {
+            transform: translateX(-3px);
         }
 
         .btn:disabled {
@@ -644,17 +958,22 @@
             box-shadow: none !important;
         }
 
+        .btn:disabled::before {
+            display: none;
+        }
+
         /* Status Message */
         .status-message {
-            padding: 1rem;
-            margin-top: 1rem;
+            padding: 1.2rem;
+            margin-top: 1.2rem;
             border-radius: var(--border-radius-sm);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
             opacity: 0;
             transform: translateY(-10px);
             transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
         }
 
         .status-message.show {
@@ -685,23 +1004,68 @@
             background-color: white;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow-md);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .faq-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-normal);
+        }
+
+        .faq-section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .faq-section:hover::before {
+            transform: scaleX(1);
         }
 
         .faq-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             color: var(--primary-color);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .faq-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transition: width var(--transition-normal);
+            border-radius: 3px;
+        }
+
+        .faq-title:hover::after {
+            width: 100%;
         }
 
         .faq-list {
             display: grid;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
         .faq-item {
@@ -709,21 +1073,24 @@
             border-radius: var(--border-radius-sm);
             overflow: hidden;
             transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
         }
 
         .faq-item:hover {
             border-color: var(--primary-color);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
         }
 
         .faq-question {
-            padding: 1rem;
+            padding: 1.2rem;
             background-color: #f9f9f9;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all var(--transition-normal);
         }
 
         .faq-question i {
@@ -732,22 +1099,28 @@
 
         .faq-question.active {
             color: var(--primary-color);
+            background-color: rgba(230, 81, 0, 0.05);
+            font-weight: 600;
         }
 
         .faq-question.active i {
             transform: rotate(180deg);
+            color: var(--primary-color);
         }
 
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height var(--transition-normal);
-            padding: 0 1rem;
+            transition: max-height var(--transition-slow), padding var(--transition-normal);
+            padding: 0 1.2rem;
+            background-color: white;
+            line-height: 1.8;
         }
 
         .faq-answer.active {
-            max-height: 200px;
-            padding: 1rem;
+            max-height: 300px;
+            padding: 1.2rem;
+            border-top: 1px solid rgba(230, 81, 0, 0.1);
         }
 
         /* Newsletter */
@@ -755,10 +1128,17 @@
             background-color: white;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow-md);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
             position: relative;
             overflow: hidden;
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .newsletter:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
 
         .newsletter::before {
@@ -766,25 +1146,69 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 150px;
-            height: 150px;
-            background-color: var(--primary-color);
-            opacity: 0.05;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(230, 81, 0, 0.1) 0%, transparent 70%);
             border-radius: 0 var(--border-radius-lg) 0 100%;
+            transition: all var(--transition-normal);
+        }
+
+        .newsletter:hover::before {
+            width: 200px;
+            height: 200px;
+            opacity: 0.15;
+        }
+
+        .newsletter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-normal);
+        }
+
+        .newsletter:hover::after {
+            transform: scaleX(1);
         }
 
         .newsletter-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             color: var(--primary-color);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .newsletter-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            transition: width var(--transition-normal);
+            border-radius: 3px;
+        }
+
+        .newsletter-title:hover::after {
+            width: 100%;
         }
 
         .newsletter-text {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.8;
+            color: var(--text-color);
         }
 
         .newsletter-form {
@@ -800,16 +1224,19 @@
 
         .newsletter-input {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.2rem;
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
             font-family: 'Poppins', sans-serif;
+            transition: all var(--transition-normal);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            font-size: 1rem;
         }
 
         .newsletter-input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
         }
 
         /* Success Modal */
@@ -819,7 +1246,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -827,6 +1254,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all var(--transition-normal);
+            backdrop-filter: blur(5px);
         }
 
         .modal-overlay.active {
@@ -841,63 +1269,93 @@
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 2rem;
+            padding: 2.5rem;
             position: relative;
-            transform: translateY(-20px);
-            transition: transform var(--transition-normal);
+            transform: translateY(-30px) scale(0.95);
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-lg);
         }
 
         .modal-overlay.active .modal {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.2rem;
+            right: 1.2rem;
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-light);
-            transition: color var(--transition-fast);
+            transition: all var(--transition-fast);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.02);
         }
 
         .modal-close:hover {
             color: var(--error-color);
+            background-color: rgba(244, 67, 54, 0.1);
+            transform: rotate(90deg);
         }
 
         .modal-header {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .modal-icon {
-            font-size: 4rem;
+            font-size: 4.5rem;
             color: var(--success-color);
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            animation: scaleIn 0.5s ease;
+            filter: drop-shadow(0 4px 6px rgba(76, 175, 80, 0.3));
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
         }
 
         .modal-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--text-color);
             font-weight: 600;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.05);
         }
 
         .modal-body {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             text-align: center;
+            line-height: 1.8;
         }
 
         .tracking-number {
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: #f5f5f5;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(to right, rgba(230, 81, 0, 0.05), rgba(230, 81, 0, 0.1));
             border-radius: var(--border-radius-sm);
             font-weight: 600;
-            margin: 1rem 0;
-            font-size: 1.2rem;
+            margin: 1.2rem 0;
+            font-size: 1.3rem;
             color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.5s ease 0.3s both;
+            letter-spacing: 1px;
+        }
+
+        .tracking-number:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(to right, rgba(230, 81, 0, 0.08), rgba(230, 81, 0, 0.15));
         }
 
         .modal-footer {
@@ -907,34 +1365,51 @@
 
         /* Footer */
         .footer {
-            background-color: #333;
+            background: linear-gradient(135deg, #333 0%, #222 100%);
             color: white;
-            padding: 1rem 0;
+            padding: 1.5rem 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
         }
 
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* Mobile Menu */
         .mobile-nav {
             position: fixed;
-            top: 73px;
+            top: 0;
             left: 0;
             right: 0;
             background-color: white;
             box-shadow: var(--shadow-md);
-            padding: 1rem;
+            padding: 1.5rem;
             z-index: 99;
             transform: translateY(-100%);
             opacity: 0;
             transition: all var(--transition-normal);
             height: auto;
-            max-height: calc(100vh - 73px);
+            max-height: 100vh;
             overflow-y: auto;
+            border-bottom-left-radius: var(--border-radius-md);
+            border-bottom-right-radius: var(--border-radius-md);
         }
 
         .mobile-nav.active {
@@ -944,39 +1419,69 @@
 
         .mobile-nav-menu {
             list-style: none;
+            margin-top: 3rem;
         }
 
         .mobile-nav-menu li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .mobile-nav-menu a {
             display: block;
-            padding: 0.75rem;
+            padding: 1rem;
             color: var(--text-color);
             text-decoration: none;
             font-weight: 500;
             border-radius: var(--border-radius-sm);
             transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+
+        .mobile-nav-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-color), var(--primary-light));
+            transform: translateX(-4px);
+            transition: transform var(--transition-normal);
+        }
+
+        .mobile-nav-menu a:hover::before,
+        .mobile-nav-menu a.active::before {
+            transform: translateX(0);
         }
 
         .mobile-nav-menu a:hover,
         .mobile-nav-menu a.active {
             background-color: #f5f5f5;
             color: var(--primary-color);
+            padding-left: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
         .mobile-nav-menu a i {
-            margin-right: 0.5rem;
+            margin-right: 0.8rem;
             width: 20px;
             text-align: center;
+            transition: transform var(--transition-normal);
+        }
+
+        .mobile-nav-menu a:hover i,
+        .mobile-nav-menu a.active i {
+            transform: translateX(3px);
+            color: var(--primary-color);
         }
 
         /* Loading Spinner */
         .spinner {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
@@ -990,15 +1495,25 @@
         /* Error Styles */
         .error-text {
             color: var(--error-color);
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
             display: none;
+            animation: fadeIn 0.3s ease;
+            font-weight: 500;
         }
 
         .form-group.error .floating-label input,
         .form-group.error .floating-label textarea,
         .form-group.error .floating-label select {
             border-color: var(--error-color);
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
         }
 
         .form-group.error .floating-label label {
@@ -1009,97 +1524,26 @@
             display: block;
         }
 
-        /* Recent Inquiries */
-        .recent-inquiries {
-            background-color: white;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-md);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .recent-inquiries-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .refresh-button {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            transition: transform var(--transition-fast);
-        }
-
-        .refresh-button:hover {
-            transform: rotate(45deg);
-        }
-
-        .inquiry-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .inquiry-card {
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem;
+        /* Review Content */
+        .review-item {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
             transition: all var(--transition-normal);
         }
 
-        .inquiry-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-sm);
+        .review-item:hover {
+            transform: translateX(5px);
+            border-bottom-color: var(--primary-color);
         }
 
-        .inquiry-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
+        .review-item:last-child {
+            border-bottom: none;
         }
 
-        .inquiry-title {
-            font-weight: 500;
-        }
-
-        .inquiry-date {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .inquiry-content {
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .inquiry-status {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background-color: #FFF3E0;
-            color: #E65100;
-        }
-
-        .status-processing {
-            background-color: #E3F2FD;
-            color: #0D47A1;
-        }
-
-        .status        .status-completed {
-            background-color: #E8F5E9;
-            color: #1B5E20;
+        .review-item strong {
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
         /* Responsive Adjustments */
@@ -1122,17 +1566,66 @@
             .step {
                 min-width: 80px;
             }
+            
+            .sidebar, .main-content {
+                padding: 1.5rem;
+            }
+            
+            .form-card, .faq-section, .newsletter {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Apply animations to elements */
+        .sidebar-title, .page-title {
+            animation: slideInLeft 0.5s ease;
+        }
+
+        .sidebar-text, .contact-info {
+            animation: fadeIn 0.5s ease 0.2s both;
+        }
+
+        .contact-item {
+            animation: slideInLeft 0.5s ease calc(0.2s + var(--i, 0) * 0.1s) both;
+        }
+
+        .social-link {
+            animation: fadeIn 0.5s ease calc(0.5s + var(--i, 0) * 0.1s) both;
+        }
+
+        .form-card, .faq-section, .newsletter {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step {
+            animation: fadeIn 0.5s ease calc(0.1s + var(--i, 0) * 0.1s) both;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <header class="header">
-            <div class="logo">
+        <header class="header" id="header">
+            <a href="#" class="logo">
                 <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
                 <h1>ANG SILAKBO</h1>
-            </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            </a>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
             <nav class="nav-menu">
@@ -1160,20 +1653,20 @@
                     
                     <div class="contact-info">
                         <h3>Contact Information</h3>
-                        <div class="contact-item">
+                        <div class="contact-item" style="--i:0">
                             <i class="fas fa-map-marker-alt contact-icon"></i>
                             <div>
                                 <p><strong>Main Campus:</strong> University of Cebu Lapu-Lapu and Mandaue, A.C. Cortes Ave., Mandaue City, 6014 Cebu</p>
                             </div>
                         </div>
-                        <div class="contact-item">
+                        <div class="contact-item" style="--i:1">
                             <i class="fas fa-phone contact-icon"></i>
                             <div>
                                 <p><strong>Main Line:</strong> +63 (32) 345-6789</p>
                                 <p><strong>Student Affairs:</strong> +63 (32) 345-6790</p>
                             </div>
                         </div>
-                        <div class="contact-item">
+                        <div class="contact-item" style="--i:2">
                             <i class="fas fa-clock contact-icon"></i>
                             <div>
                                 <p><strong>Office Hours:</strong></p>
@@ -1181,7 +1674,7 @@
                                 <p>Saturday: 9:00 AM - 12:00 PM</p>
                             </div>
                         </div>
-                        <div class="contact-item">
+                        <div class="contact-item" style="--i:3">
                             <i class="fas fa-envelope contact-icon"></i>
                             <div>
                                 <p><strong>Email:</strong> info@angsilakbo.com</p>
@@ -1189,13 +1682,13 @@
                         </div>
                         
                         <div class="social-links">
-                            <a href="https://www.facebook.com/AngSilakboUCLM" class="social-link">
+                            <a href="https://www.facebook.com/AngSilakboUCLM" class="social-link" style="--i:0">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="#" class="social-link" style="--i:1">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="#" class="social-link" style="--i:2">
                                 <i class="fab fa-twitter"></i>
                             </a>
                         </div>
@@ -1207,20 +1700,20 @@
                 <h1 class="page-title">Submit an Inquiry</h1>
 
                 <div class="form-steps">
-                    <div class="step active" data-step="1">
-                        <div class="step-icon">1</div>
+                    <div class="step active" data-step="1" style="--i:0">
+                        <div class="step-icon"><span>1</span></div>
                         <div class="step-label">Personal Info</div>
                     </div>
-                    <div class="step" data-step="2">
-                        <div class="step-icon">2</div>
+                    <div class="step" data-step="2" style="--i:1">
+                        <div class="step-icon"><span>2</span></div>
                         <div class="step-label">Inquiry Details</div>
                     </div>
-                    <div class="step" data-step="3">
-                        <div class="step-icon">3</div>
+                    <div class="step" data-step="3" style="--i:2">
+                        <div class="step-icon"><span>3</span></div>
                         <div class="step-label">Message</div>
                     </div>
-                    <div class="step" data-step="4">
-                        <div class="step-icon">4</div>
+                    <div class="step" data-step="4" style="--i:3">
+                        <div class="step-icon"><span>4</span></div>
                         <div class="step-label">Review & Submit</div>
                     </div>
                 </div>
@@ -1320,7 +1813,7 @@
                                 <div id="filePreview" class="file-preview" style="display: none;">
                                     <i class="fas fa-file file-preview-icon"></i>
                                     <span class="file-preview-name"></span>
-                                    <button type="button" class="file-preview-remove">
+                                    <button type="button" class="file-preview-remove" aria-label="Remove file">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
@@ -1354,18 +1847,6 @@
                         </div>
                     </form>
                     <div id="statusMessage" class="status-message"></div>
-                </div>
-
-                <div class="recent-inquiries">
-                    <div class="recent-inquiries-title">
-                        <h3><i class="fas fa-history"></i> Recent Inquiries</h3>
-                        <button class="refresh-button" id="refreshInquiries">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                    <div id="inquiryList" class="inquiry-list">
-                        <!-- Will be filled dynamically -->
-                    </div>
                 </div>
 
                 <div class="faq-section">
@@ -1404,7 +1885,7 @@
                                 <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="faq-answer">
-                                Yes, you will receive a confirmation email with a tracking number. You can use this to check the status of your inquiry on our website. Additionally, you can view your recent inquiries in the "Recent Inquiries" section once you've submitted a form.
+                                Yes, you will receive a confirmation email with a tracking number. You can use this to check the status of your inquiry on our website. Additionally, you can contact our support team directly with your tracking number for updates.
                             </div>
                         </div>
                     </div>
@@ -1433,7 +1914,7 @@
     <!-- Success Modal -->
     <div class="modal-overlay" id="successModal">
         <div class="modal">
-            <button class="modal-close" id="closeSuccessModal">
+            <button class="modal-close" id="closeSuccessModal" aria-label="Close modal">
                 <i class="fas fa-times"></i>
             </button>
             <div class="modal-header">
@@ -1454,25 +1935,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, push, serverTimestamp, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
-            authDomain: "ang-silakbo.firebaseapp.com",
-            databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
-            projectId: "ang-silakbo",
-            storageBucket: "ang-silakbo.appspot.com",
-            messagingSenderId: "1006400633782",
-            appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
-            measurementId: "G-TSDTG2YJ94"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
+    <script>
         // DOM Elements
         const messageRequestForm = document.getElementById('messageRequestForm');
         const messageTextarea = document.getElementById('message');
@@ -1492,20 +1955,33 @@
         const faqQuestions = document.querySelectorAll('.faq-question');
         const newsletterForm = document.getElementById('newsletterForm');
         const newsletterButton = document.getElementById('newsletterButton');
-        const refreshInquiries = document.getElementById('refreshInquiries');
-        const inquiryList = document.getElementById('inquiryList');
         const reviewContent = document.getElementById('reviewContent');
         const nextButtons = document.querySelectorAll('.next-btn');
         const prevButtons = document.querySelectorAll('.prev-btn');
         const formSections = document.querySelectorAll('.form-section');
         const steps = document.querySelectorAll('.step');
+        const header = document.getElementById('header');
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
 
         // Mobile menu toggle
         mobileMenuToggle.addEventListener('click', () => {
             mobileNav.classList.toggle('active');
+            if (mobileNav.classList.contains('active')) {
+                mobileMenuToggle.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
         });
 
-        // Form navigation
+        // Form navigation with animations
         nextButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const currentSection = parseInt(button.getAttribute('data-next')) - 1;
@@ -1513,15 +1989,24 @@
                 
                 // Validate current section
                 if (validateSection(currentSection)) {
-                    // Update form sections
+                    // Update form sections with animation
                     formSections.forEach(section => {
                         section.classList.remove('active');
                     });
-                    document.querySelector(`.form-section[data-section="${nextSection}"]`).classList.add('active');
+                    
+                    // Add a small delay for better animation effect
+                    setTimeout(() => {
+                        document.querySelector(`.form-section[data-section="${nextSection}"]`).classList.add('active');
+                    }, 50);
                     
                     // Update steps
                     steps.forEach(step => {
                         step.classList.remove('active');
+                        if (parseInt(step.getAttribute('data-step')) < nextSection) {
+                            step.classList.add('completed');
+                        } else {
+                            step.classList.remove('completed');
+                        }
                     });
                     document.querySelector(`.step[data-step="${nextSection}"]`).classList.add('active');
                     
@@ -1530,8 +2015,11 @@
                         populateReviewContent();
                     }
                     
-                    // Scroll to top of form
-                    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+                    // Scroll to top of form with smooth animation
+                    document.querySelector('.form-card').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
         });
@@ -1540,11 +2028,15 @@
             button.addEventListener('click', () => {
                 const prevSection = parseInt(button.getAttribute('data-prev'));
                 
-                // Update form sections
+                // Update form sections with animation
                 formSections.forEach(section => {
                     section.classList.remove('active');
                 });
-                document.querySelector(`.form-section[data-section="${prevSection}"]`).classList.add('active');
+                
+                // Add a small delay for better animation effect
+                setTimeout(() => {
+                    document.querySelector(`.form-section[data-section="${prevSection}"]`).classList.add('active');
+                }, 50);
                 
                 // Update steps
                 steps.forEach(step => {
@@ -1552,12 +2044,15 @@
                 });
                 document.querySelector(`.step[data-step="${prevSection}"]`).classList.add('active');
                 
-                // Scroll to top of form
-                document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+                // Scroll to top of form with smooth animation
+                document.querySelector('.form-card').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             });
         });
 
-        // Validate form section
+        // Validate form section with enhanced feedback
         function validateSection(sectionNumber) {
             const section = document.querySelector(`.form-section[data-section="${sectionNumber}"]`);
             let isValid = true;
@@ -1623,7 +2118,7 @@
             return emailPattern.test(email);
         }
 
-        // Populate review content
+        // Populate review content with animation
         function populateReviewContent() {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
@@ -1635,32 +2130,48 @@
             const inquiryTypeText = inquiryType.options[inquiryType.selectedIndex].text;
             const priorityText = priority.options[priority.selectedIndex].text;
             
-            reviewContent.innerHTML = `
-                <div class="review-item">
-                    <strong>Name and Section:</strong> ${name}
-                </div>
-                <div class="review-item">
-                    <strong>Email:</strong> ${email}
-                </div>
-                <div class="review-item">
-                    <strong>Inquiry Type:</strong> ${inquiryTypeText}
-                </div>
-                <div class="review-item">
-                    <strong>Priority:</strong> ${priorityText}
-                </div>
-                <div class="review-item">
-                    <strong>Message:</strong>
-                    <p>${message}</p>
-                </div>
-                ${attachment ? `
-                <div class="review-item">
-                    <strong>Attachment:</strong> ${attachment.name}
-                </div>
-                ` : ''}
-            `;
+            // Clear previous content
+            reviewContent.innerHTML = '';
+            
+            // Create and append review items with staggered animation
+            const items = [
+                { label: 'Name and Section', value: name },
+                { label: 'Email', value: email },
+                { label: 'Inquiry Type', value: inquiryTypeText },
+                { label: 'Priority', value: priorityText },
+                { label: 'Message', value: message, isMessage: true },
+                attachment ? { label: 'Attachment', value: attachment.name } : null
+            ].filter(item => item !== null);
+            
+            items.forEach((item, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'review-item';
+                reviewItem.style.opacity = '0';
+                reviewItem.style.transform = 'translateY(10px)';
+                reviewItem.style.transition = 'all 0.3s ease';
+                
+                if (item.isMessage) {
+                    reviewItem.innerHTML = `
+                        <strong>${item.label}:</strong>
+                        <p>${item.value}</p>
+                    `;
+                } else {
+                    reviewItem.innerHTML = `
+                        <strong>${item.label}:</strong> ${item.value}
+                    `;
+                }
+                
+                reviewContent.appendChild(reviewItem);
+                
+                // Staggered animation
+                setTimeout(() => {
+                    reviewItem.style.opacity = '1';
+                    reviewItem.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
         }
 
-        // Character counter for message textarea
+        // Character counter for message textarea with visual feedback
         messageTextarea.addEventListener('input', function() {
             const currentLength = this.value.length;
             const maxLength = 500;
@@ -1677,31 +2188,53 @@
             }
         });
 
-        // File upload preview
+        // File upload preview with enhanced UI feedback
         fileInput.addEventListener('change', function() {
             if (this.files.length > 0) {
                 const file = this.files[0];
                 filePreviewName.textContent = file.name;
-                filePreview.style.display = 'flex';
+                filePreview.style.display = 'none'; // Hide first for animation
                 
-                // Check file size
+                setTimeout(() => {
+                    filePreview.style.display = 'flex';
+                    filePreview.style.opacity = '0';
+                    filePreview.style.transform = 'translateY(10px)';
+                    
+                    // Trigger animation
+                    setTimeout(() => {
+                        filePreview.style.opacity = '1';
+                        filePreview.style.transform = 'translateY(0)';
+                    }, 10);
+                }, 50);
+                
+                // Check file size with visual feedback
                 if (file.size > 5 * 1024 * 1024) { // 5MB
                     showStatus('File size exceeds the 5MB limit.', 'error');
                     fileInput.value = '';
                     filePreview.style.display = 'none';
                 }
             } else {
-                filePreview.style.display = 'none';
+                filePreview.style.opacity = '0';
+                filePreview.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    filePreview.style.display = 'none';
+                }, 300);
             }
         });
 
-        // Remove file
+        // Remove file with animation
         filePreviewRemove.addEventListener('click', function() {
-            fileInput.value = '';
-            filePreview.style.display = 'none';
+            filePreview.style.opacity = '0';
+            filePreview.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                fileInput.value = '';
+                filePreview.style.display = 'none';
+            }, 300);
         });
 
-        // Form submission
+        // Form submission with enhanced UI feedback
         messageRequestForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1709,7 +2242,7 @@
                 return;
             }
             
-            // Show loading state
+            // Show loading state with animation
             submitButton.disabled = true;
             submitButton.innerHTML = '<div class="spinner"></div> Sending...';
             
@@ -1721,87 +2254,77 @@
             const attachment = fileInput.files[0];
 
             try {
+                // Simulate API call with delay for demo purposes
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
                 // Generate a tracking number
                 const trackingNumber = 'INQ-' + Math.floor(100000 + Math.random() * 900000);
                 
-                // Save to Firebase
-                const messageRequestsRef = ref(db, 'messageRequests');
-                const newRequestRef = await push(messageRequestsRef, {
-                    name,
-                    email,
-                    inquiryType,
-                    priority,
-                    message,
-                    trackingNumber,
-                    timestamp: serverTimestamp(),
-                    status: 'pending',
-                    hasAttachment: !!attachment
-                });
-
-                if (attachment) {
-                    // Here you would typically upload the file to storage
-                    // and add the file reference to the database entry
-                    console.log('Attachment received:', attachment.name);
-                }
-
-                // Add notification
-                const notificationsRef = ref(db, 'notifications');
-                await push(notificationsRef, {
-                    type: 'newMessageRequest',
-                    requestId: newRequestRef.key,
-                    timestamp: serverTimestamp(),
-                    read: false
-                });
-
-                // Show success modal
+                // Set tracking number in modal
                 trackingNumberElement.textContent = trackingNumber;
+                
+                // Show success modal with animation
                 successModal.classList.add('active');
                 
                 // Reset form
                 messageRequestForm.reset();
                 charCount.textContent = '0 / 500';
                 charCount.className = 'char-count';
-                filePreview.style.display = 'none';
                 
-                // Reset form to first step
+                // Hide file preview with animation
+                filePreview.style.opacity = '0';
+                filePreview.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    filePreview.style.display = 'none';
+                }, 300);
+                
+                // Reset form to first step with animation
                 formSections.forEach(section => {
                     section.classList.remove('active');
                 });
-                document.querySelector('.form-section[data-section="1"]').classList.add('active');
+                
+                setTimeout(() => {
+                    document.querySelector('.form-section[data-section="1"]').classList.add('active');
+                }, 50);
                 
                 steps.forEach(step => {
                     step.classList.remove('active');
+                    step.classList.remove('completed');
                 });
                 document.querySelector('.step[data-step="1"]').classList.add('active');
-                
-                // Add to inquiry list
-                const inquiryTypeSelect = document.getElementById('inquiry-type');
-                const inquiryTypeText = inquiryTypeSelect.options[inquiryTypeSelect.selectedIndex].text;
-                
-                addInquiryToList(inquiryTypeText, new Date().toLocaleDateString(), message.substring(0, 50) + (message.length > 50 ? '...' : ''), 'pending');
                 
             } catch (error) {
                 console.error('Error sending message request:', error);
                 showStatus('Failed to send inquiry. Please try again.', 'error');
             } finally {
-                // Reset button state
-                submitButton.disabled = false;
+                // Reset button state with animation
                 submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Inquiry';
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                }, 300);
             }
         });
 
-        // Show status message
+        // Show status message with enhanced animation
         function showStatus(message, type) {
             statusMessage.textContent = message;
             statusMessage.className = `status-message ${type}-message`;
+            
+            // Reset animation
+            statusMessage.style.animation = 'none';
+            statusMessage.offsetHeight; // Trigger reflow
+            statusMessage.style.animation = null;
+            
+            // Show with animation
             statusMessage.classList.add('show');
             
             setTimeout(() => {
+                // Hide with animation
                 statusMessage.classList.remove('show');
             }, 5000);
         }
 
-        // Close modal
+        // Close modal with animation
         closeSuccessModal.addEventListener('click', () => {
             successModal.classList.remove('active');
         });
@@ -1810,34 +2333,43 @@
             successModal.classList.remove('active');
         });
         
-        // Close modal when clicking outside
+        // Close modal when clicking outside with animation
         successModal.addEventListener('click', (e) => {
             if (e.target === successModal) {
                 successModal.classList.remove('active');
             }
         });
 
-        // FAQ toggle functionality
+        // FAQ toggle functionality with smooth animations
         faqQuestions.forEach(question => {
             question.addEventListener('click', () => {
                 const answer = question.nextElementSibling;
                 const isActive = question.classList.contains('active');
                 
-                // Close all other FAQs
+                // Close all other FAQs with animation
                 faqQuestions.forEach(q => {
-                    q.classList.remove('active');
-                    q.nextElementSibling.classList.remove('active');
+                    if (q !== question) {
+                        q.classList.remove('active');
+                        const a = q.nextElementSibling;
+                        a.style.maxHeight = '0';
+                        a.classList.remove('active');
+                    }
                 });
                 
-                // Toggle current FAQ
+                // Toggle current FAQ with animation
                 if (!isActive) {
                     question.classList.add('active');
                     answer.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                } else {
+                    question.classList.remove('active');
+                    answer.classList.remove('active');
+                    answer.style.maxHeight = '0';
                 }
             });
         });
 
-        // Newsletter form
+        // Newsletter form with enhanced UI feedback
         newsletterForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
@@ -1846,132 +2378,25 @@
             
             if (!email) return;
             
-            // Show loading state
+            // Show loading state with animation
             newsletterButton.disabled = true;
             newsletterButton.innerHTML = '<div class="spinner"></div> Subscribing...';
             
             // Simulate API call
             setTimeout(() => {
-                // Save to Firebase
-                const newsletterRef = ref(db, 'newsletter');
-                push(newsletterRef, {
-                    email,
-                    timestamp: serverTimestamp()
-                }).then(() => {
-                    // Show success message
-                    showStatus('You have successfully subscribed to our newsletter!', 'success');
-                    emailInput.value = '';
-                }).catch(error => {
-                    console.error('Error subscribing to newsletter:', error);
-                    showStatus('Failed to subscribe. Please try again.', 'error');
-                }).finally(() => {
-                    // Reset button state
+                // Show success message with animation
+                showStatus('You have successfully subscribed to our newsletter!', 'success');
+                emailInput.value = '';
+                
+                // Reset button state with animation
+                newsletterButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
+                setTimeout(() => {
                     newsletterButton.disabled = false;
-                    newsletterButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
-                });
+                }, 300);
             }, 1500);
         });
 
-        // Add inquiry to list
-        function addInquiryToList(type, date, message, status) {
-            const statusClasses = {
-                'pending': 'status-pending',
-                'processing': 'status-processing',
-                'completed': 'status-completed'
-            };
-            
-            const statusLabels = {
-                'pending': 'Pending',
-                'processing': 'In Progress',
-                'completed': 'Completed'
-            };
-            
-            const inquiryCard = document.createElement('div');
-            inquiryCard.className = 'inquiry-card';
-            inquiryCard.innerHTML = `
-                <div class="inquiry-header">
-                    <span class="inquiry-title">${type}</span>
-                    <span class="inquiry-date">${date}</span>
-                </div>
-                <div class="inquiry-content">${message}</div>
-                <span class="inquiry-status ${statusClasses[status]}">${statusLabels[status]}</span>
-            `;
-            
-            inquiryList.prepend(inquiryCard);
-        }
-
-        // Refresh inquiries
-        refreshInquiries.addEventListener('click', function() {
-            this.classList.add('fa-spin');
-            
-            // Simulate refresh
-            setTimeout(() => {
-                this.classList.remove('fa-spin');
-                
-                // Update a random inquiry status for demo purposes
-                const inquiries = inquiryList.querySelectorAll('.inquiry-card');
-                if (inquiries.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * inquiries.length);
-                    const randomInquiry = inquiries[randomIndex];
-                    const statusElement = randomInquiry.querySelector('.inquiry-status');
-                    
-                    if (statusElement.classList.contains('status-pending')) {
-                        statusElement.classList.remove('status-pending');
-                        statusElement.classList.add('status-processing');
-                        statusElement.textContent = 'In Progress';
-                    } else if (statusElement.classList.contains('status-processing')) {
-                        statusElement.classList.remove('status-processing');
-                        statusElement.classList.add('status-completed');
-                        statusElement.textContent = 'Completed';
-                    }
-                }
-            }, 1000);
-        });
-
-        // Load inquiries from Firebase
-        function loadInquiries() {
-            const inquiriesRef = ref(db, 'messageRequests');
-            onValue(inquiriesRef, (snapshot) => {
-                // Clear existing inquiries
-                inquiryList.innerHTML = '';
-
-                // Check if there are any inquiries
-                if (snapshot.exists()) {
-                    const inquiries = [];
-                    snapshot.forEach((childSnapshot) => {
-                        const inquiry = childSnapshot.val();
-                        inquiries.push({
-                            id: childSnapshot.key,
-                            ...inquiry
-                        });
-                    });
-
-                    // Sort by timestamp (newest first)
-                    inquiries.sort((a, b) => {
-                        return (b.timestamp || 0) - (a.timestamp || 0);
-                    });
-
-                    // Display the 5 most recent inquiries
-                    inquiries.slice(0, 5).forEach(inquiry => {
-                        const date = inquiry.timestamp
-                            ? new Date(inquiry.timestamp).toLocaleDateString()
-                            : new Date().toLocaleDateString();
-
-                        addInquiryToList(
-                            inquiry.inquiryType || 'General',
-                            date,
-                            inquiry.message.substring(0, 50) + (inquiry.message.length > 50 ? '...' : ''),
-                            inquiry.status || 'pending'
-                        );
-                    });
-                } else {
-                    // No inquiries found
-                    inquiryList.innerHTML = '<p class="text-center">No inquiries found.</p>';
-                }
-            });
-        }
-
-        // Drag and drop file upload
+        // Drag and drop file upload with enhanced UI feedback
         const fileUploadLabel = document.querySelector('.file-upload-label');
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -1993,10 +2418,16 @@
 
         function highlight() {
             fileUploadLabel.classList.add('highlight');
+            fileUploadLabel.style.transform = 'scale(1.02)';
+            fileUploadLabel.style.borderColor = 'var(--primary-color)';
+            fileUploadLabel.style.backgroundColor = 'rgba(230, 81, 0, 0.05)';
         }
 
         function unhighlight() {
             fileUploadLabel.classList.remove('highlight');
+            fileUploadLabel.style.transform = '';
+            fileUploadLabel.style.borderColor = '';
+            fileUploadLabel.style.backgroundColor = '';
         }
 
         fileUploadLabel.addEventListener('drop', handleDrop, false);
@@ -2009,9 +2440,22 @@
                 fileInput.files = files;
                 const file = files[0];
                 filePreviewName.textContent = file.name;
-                filePreview.style.display = 'flex';
+                
+                filePreview.style.display = 'none'; // Hide first for animation
+                
+                setTimeout(() => {
+                    filePreview.style.display = 'flex';
+                    filePreview.style.opacity = '0';
+                    filePreview.style.transform = 'translateY(10px)';
+                    
+                    // Trigger animation
+                    setTimeout(() => {
+                        filePreview.style.opacity = '1';
+                        filePreview.style.transform = 'translateY(0)';
+                    }, 10);
+                }, 50);
 
-                // Check file size
+                // Check file size with visual feedback
                 if (file.size > 5 * 1024 * 1024) { // 5MB
                     showStatus('File size exceeds the 5MB limit.', 'error');
                     fileInput.value = '';
@@ -2020,25 +2464,28 @@
             }
         }
 
-        // Initialize the page
+        // Initialize the page with animations
         document.addEventListener('DOMContentLoaded', () => {
-            // Load inquiries
-            loadInquiries();
-
             // Set first FAQ as active
             if (faqQuestions.length > 0) {
-                faqQuestions[0].click();
+                setTimeout(() => {
+                    faqQuestions[0].click();
+                }, 500);
             }
-
-            // Add some sample inquiries for demonstration
-            setTimeout(() => {
-                if (inquiryList.children.length === 0) {
-                    addInquiryToList('Technical Support', 'June 10, 2025', 'Having trouble accessing the member portal...', 'completed');
-                    addInquiryToList('Partnership', 'June 8, 2025', 'Interested in collaborating on the upcoming event...', 'processing');
-                }
-            }, 2000);
+            
+            // Add animation classes to elements
+            document.querySelectorAll('.contact-item').forEach((item, index) => {
+                item.style.setProperty('--i', index);
+            });
+            
+            document.querySelectorAll('.social-link').forEach((link, index) => {
+                link.style.setProperty('--i', index);
+            });
+            
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.style.setProperty('--i', index);
+            });
         });
     </script>
 </body>
 </html>
-
