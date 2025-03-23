@@ -1587,8 +1587,8 @@
             margin: 0 auto;
             padding: 2rem;
             background-color: var(--white);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
+            box-shadow: none;
+            border-radius: 0;
             margin-top: 2rem;
             margin-bottom: 4rem;
             position: relative;
@@ -1598,14 +1598,13 @@
         .modal-header {
             background-color: var(--white);
             padding: 1rem 2rem;
-            border-bottom: 1px solid var(--gray-light);
+            border-bottom: none;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: sticky;
+            position: relative;
             top: 0;
             z-index: 10;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .modal-logo-container {
@@ -1632,7 +1631,7 @@
 
         /* Close button - Properly positioned in top right corner */
         .close-modal {
-            position: absolute;
+            position: fixed;
             top: 1.5rem;
             right: 1.5rem;
             background-color: var(--white);
@@ -1646,7 +1645,7 @@
             border: none;
             cursor: pointer;
             font-size: 1.5rem;
-            z-index: 10;
+            z-index: 1001;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
@@ -1660,7 +1659,7 @@
         /* Mobile close button - Inside the modal */
         .mobile-close-modal {
             display: none;
-            position: absolute;
+            position: fixed;
             top: 1rem;
             right: 1rem;
             background-color: var(--white);
@@ -1673,13 +1672,13 @@
             border: none;
             cursor: pointer;
             font-size: 1.2rem;
-            z-index: 10;
+            z-index: 1001;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .article-header {
             margin-bottom: 2rem;
-            padding-right: 3rem; /* Space for close button */
+            padding-right: 0;
         }
 
         .article-category {
@@ -1720,10 +1719,20 @@
         .article-title {
             font-family: var(--title-font);
             font-size: 2.8rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             line-height: 1.2;
             color: var(--text-dark);
             animation: fadeInUp 0.6s 0.1s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .article-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            animation: fadeInUp 0.6s 0.15s ease forwards;
             opacity: 0;
             transform: translateY(20px);
         }
@@ -4155,525 +4164,217 @@ function createArticleCard(post) {
                 </div>` : ''}
             <div class="post-meta">
                 <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>By: ${post.author || 'Unknown'}</span>
-                </div>
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                    </svg>
-                    <span>${roleLabel}: ${post.role || 'Unknown'}</span>
-                </div>
-                <div class="post-meta-item view-counter">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${viewCount} views</span>
-                </div>
-            </div>
-            <div class="post-excerpt">${excerpt}</div>
-            <div class="post-actions">
-                <a href="#" class="read-more" data-post-id="${post.id}">Read Article</a>
-                <div class="post-action-buttons">
-                    <button class="share-btn" data-post-id="${post.id}" title="Share article">
-                        <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                    </button>
+                        <span>By: ${post.author || 'Unknown'}</span>
+                    </div>
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>${roleLabel}: ${post.role || 'Unknown'}</span>
+                    </div>
+                    <div class="post-meta-item view-counter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>${viewCount} views</span>
+                    </div>
+                </div>
+                <div class="post-excerpt">${excerpt}</div>
+                <div class="post-actions">
+                    <a href="#" class="read-more" data-post-id="${post.id}">Read Article</a>
+                    <div class="post-action-buttons">
+                        <button class="share-btn" data-post-id="${post.id}" title="Share article">
+                            <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
 
-    postsContainer.appendChild(postElement);
-}
-
-function createSilakCard(post) {
-    const hasImage = post.image_url ? true : false;
-    const title = getPostTitle(post);
-
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-
-    // Get bookmark information
-    const isBookmarked = isPostBookmarked(post.id);
-
-    // Get view count
-    const viewCount = post.views || 0;
-
-    // Parse Silak-salitaan content
-    let partOfSpeech = "";
-    let meaning = "";
-
-    try {
-        if (post.content) {
-            const silakData = JSON.parse(post.content);
-            partOfSpeech = silakData.partOfSpeech || "";
-            meaning = silakData.meaning || "";
-        }
-    } catch (e) {
-        console.error("Error parsing silak data:", e);
+        postsContainer.appendChild(postElement);
     }
 
-    // Convert part of speech to Filipino
-    const filipinoPartOfSpeech = filipinoPartsOfSpeech[partOfSpeech.toLowerCase()] || partOfSpeech;
+    function createSilakCard(post) {
+        const hasImage = post.image_url ? true : false;
+        const title = getPostTitle(post);
 
-    const postElement = document.createElement("article");
-    postElement.classList.add("silak-card");
-    postElement.dataset.postId = post.id;
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? getRelativeTime(postDate) : '';
 
-    // Updated silak card with full photo visible and no borders
-    postElement.innerHTML = `
-        <!-- Full image with no borders -->
-        <div class="silak-image-container">
-            ${hasImage 
-                ? `<img src="${post.image_url}" alt="${title}">` 
-                : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 2.5rem; font-weight: bold;">${title.charAt(0).toUpperCase()}</div>`
+        // Get bookmark information
+        const isBookmarked = isPostBookmarked(post.id);
+
+        // Get view count
+        const viewCount = post.views || 0;
+
+        // Parse Silak-salitaan content
+        let partOfSpeech = "";
+        let meaning = "";
+
+        try {
+            if (post.content) {
+                const silakData = JSON.parse(post.content);
+                partOfSpeech = silakData.partOfSpeech || "";
+                meaning = silakData.meaning || "";
             }
-            
-            <!-- Category badge -->
-            <div class="silak-category" style="position: absolute; top: 1rem; left: 1rem;">Silak-salitaan</div>
-            
-            <!-- Bookmark button -->
-            <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </button>
-        </div>
-        
-        <!-- Content section -->
-        <div class="silak-content">
-            <div class="silak-header">
-                <h2 class="silak-title">${title}</h2>
-                <span class="silak-speech-part">${filipinoPartOfSpeech}</span>
-            </div>
-            
-            <div class="silak-meaning">${meaning}</div>
-            
-            <div class="silak-meta">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>By: ${post.author || 'Unknown'}</span>
-                </div>
+        } catch (e) {
+            console.error("Error parsing silak data:", e);
+        }
+
+        // Convert part of speech to Filipino
+        const filipinoPartOfSpeech = filipinoPartsOfSpeech[partOfSpeech.toLowerCase()] || partOfSpeech;
+
+        const postElement = document.createElement("article");
+        postElement.classList.add("silak-card");
+        postElement.dataset.postId = post.id;
+
+        // Updated silak card with full photo visible and no borders
+        postElement.innerHTML = `
+            <!-- Full image with no borders -->
+            <div class="silak-image-container">
+                ${hasImage 
+                    ? `<img src="${post.image_url}" alt="${title}">` 
+                    : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 2.5rem; font-weight: bold;">${title.charAt(0).toUpperCase()}</div>`
+                }
                 
-                ${dateDisplay ? `
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        ${dateDisplay}
-                    </div>` : ''}
-            </div>
-            
-            <div class="silak-actions">
-                <a href="#" class="silak-view-btn" data-post-id="${post.id}">View Details</a>
-                <button class="share-btn" data-post-id="${post.id}" title="Share word">
-                    <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    `;
-
-    postsContainer.appendChild(postElement);
-}
-
-function createPhotostoryCard(post) {
-    const hasImage = post.image_url ? true : false;
-    const plainTextContent = stripHtml(post.content);
-    const title = getPostTitle(post);
-
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-
-    // Get bookmark information
-    const isBookmarked = isPostBookmarked(post.id);
-
-    // Get view count
-    const viewCount = post.views || 0;
-
-    const postElement = document.createElement("article");
-    postElement.classList.add("post-card", "photostory-card");
-    postElement.dataset.postId = post.id;
-
-    // Updated photostory card with title above the photo, caption below, and meta info at the bottom
-    postElement.innerHTML = `
-        <!-- Title above the photo -->
-        <div class="photostory-title-container">
-            <h2 class="photostory-title">${title}</h2>
-        </div>
-        
-        <div class="photostory-image">
-            ${hasImage 
-                ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
-                : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1.5rem;">PHOTOSTORY</div>`
-            }
-            
-            <div class="photostory-category">Photostory</div>
-            
-            <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </button>
-        </div>
-        
-        <!-- Caption below the photo -->
-        <div class="photostory-caption">
-            ${plainTextContent}
-        </div>
-        
-        <!-- Meta information below the caption -->
-        <div class="photostory-meta">
-            <div class="photostory-meta-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>By: ${post.author || 'Unknown'}</span>
-            </div>
-            
-            <div class="photostory-meta-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                </svg>
-                <span>Photojournalist: ${post.role || 'Unknown'}</span>
-            </div>
-            
-            <div class="photostory-meta-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                <span>Date taken: ${dateDisplay}</span>
-            </div>
-            
-            <div class="photostory-meta-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-                <span>${viewCount} views</span>
-            </div>
-        </div>
-        
-        <div style="padding: 0 1rem 1rem; text-align: center;">
-            <a href="#" class="read-more" data-post-id="${post.id}" style="background-color: #10B981; color: white; border: none;">View Full Photo</a>
-        </div>
-    `;
-
-    postsContainer.appendChild(postElement);
-}
-
-function createArticleCardList(post) {
-    const hasImage = post.image_url ? true : false;
-    const plainTextContent = stripHtml(post.content);
-    const excerpt = truncateText(plainTextContent, 30); // Longer excerpt for list view
-    const roleLabel = post.category === "article" || post.category === "feature" ? "Photojournalist" : "Cartoonist";
-    const title = getPostTitle(post);
-
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-
-    // Get bookmark information
-    const isBookmarked = isPostBookmarked(post.id);
-
-    // Calculate reading time
-    const readingTime = getReadingTime(plainTextContent);
-
-    // Get view count
-    const viewCount = post.views || 0;
-
-    // Determine if post is trending (for demo purposes)
-    const isTrending = (post.views || 0) > 5;
-
-    const postElement = document.createElement("article");
-    postElement.classList.add("post-card-list");
-    postElement.dataset.postId = post.id;
-
-    postElement.innerHTML = `
-        <div class="post-cover">
-            ${hasImage 
-                ? `<img src="${post.image_url}" alt="${title}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>${post.category.toUpperCase()}</div>'">` 
-                : `<div class="no-image">${post.category.toUpperCase()}</div>`
-            }
-            <div class="post-category">${post.category}</div>
-            ${isTrending ? `
-                <div class="trending-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                        <polyline points="17 6 23 6 23 12"></polyline>
-                    </svg>
-                    Trending
-                </div>
-            ` : ''}
-            <div class="reading-time-indicator">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                ${readingTime} min read
-            </div>
-            <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </button>
-        </div>
-        <div class="post-content">
-            <h2 class="post-title">${title}</h2>
-            ${dateDisplay ? `
-                <div class="post-date">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    ${dateDisplay}
-                </div>` : ''}
-            <div class="post-meta">
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>By: ${post.author || 'Unknown'}</span>
-                </div>
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                    </svg>
-                    <span>${roleLabel}: ${post.role || 'Unknown'}</span>
-                </div>
-                <div class="post-meta-item view-counter">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${viewCount} views</span>
-                </div>
-            </div>
-            <div class="post-excerpt">${excerpt}</div>
-            <div class="post-actions">
-                <a href="#" class="read-more" data-post-id="${post.id}">Read Article</a>
-                <div class="post-action-buttons">
-                    <button class="share-btn" data-post-id="${post.id}" title="Share article">
-                        <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    postsContainer.appendChild(postElement);
-}
-
-function createSilakCardList(post) {
-    const hasImage = post.image_url ? true : false;
-    const title = getPostTitle(post);
-
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-
-    // Get bookmark information
-    const isBookmarked = isPostBookmarked(post.id);
-
-    // Get view count
-    const viewCount = post.views || 0;
-
-    // Parse Silak-salitaan content
-    let partOfSpeech = "";
-    let meaning = "";
-    let example = "";
-
-    try {
-        if (post.content) {
-            const silakData = JSON.parse(post.content);
-            partOfSpeech = silakData.partOfSpeech || "";
-            meaning = silakData.meaning || "";
-            example = silakData.example || "";
-        }
-    } catch (e) {
-        console.error("Error parsing silak data:", e);
-    }
-
-    // Convert part of speech to Filipino
-    const filipinoPartOfSpeech = filipinoPartsOfSpeech[partOfSpeech.toLowerCase()] || partOfSpeech;
-
-    const postElement = document.createElement("article");
-    postElement.classList.add("silak-card-list");
-    postElement.dataset.postId = post.id;
-
-    // Updated silak card list with full photo visible and no borders
-    postElement.innerHTML = `
-        <!-- Full image with no borders -->
-        <div class="silak-image-container">
-            ${hasImage 
-                ? `<img src="${post.image_url}" alt="${title}">` 
-                : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 2.5rem; font-weight: bold;">${title.charAt(0).toUpperCase()}</div>`
-            }
-            
-            <!-- Category badge -->
-            <div class="silak-category" style="position: absolute; top: 1rem; left: 1rem;">Silak-salitaan</div>
-        </div>
-        
-        <div class="silak-content">
-            <div class="silak-header">
-                <h2 class="silak-title">${title}</h2>
-                <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}" style="position: static; margin-left: 1rem;">
+                <!-- Category badge -->
+                <div class="silak-category" style="position: absolute; top: 1rem; left: 1rem;">Silak-salitaan</div>
+                
+                <!-- Bookmark button -->
+                <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
                 </button>
             </div>
             
-            <div style="display: flex; align-items: center; margin: 0.5rem 0; font-size: 0.9rem;">
-                <span class="silak-speech-part">${filipinoPartOfSpeech}</span>
-                ${dateDisplay ? `
-                    <div class="post-date" style="margin-left: 1rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <!-- Content section -->
+            <div class="silak-content">
+                <div class="silak-header">
+                    <h2 class="silak-title">${title}</h2>
+                    <span class="silak-speech-part">${filipinoPartOfSpeech}</span>
+                </div>
+                
+                <div class="silak-meaning">${meaning}</div>
+                
+                <div class="silak-meta">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        ${dateDisplay}
-                    </div>` : ''}
+                        <span>By: ${post.author || 'Unknown'}</span>
+                    </div>
+                    
+                    ${dateDisplay ? `
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${dateDisplay}
+                        </div>` : ''}
+                </div>
+                
+                <div class="silak-actions">
+                    <a href="#" class="silak-view-btn" data-post-id="${post.id}">View Details</a>
+                    <button class="share-btn" data-post-id="${post.id}" title="Share word">
+                        <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        postsContainer.appendChild(postElement);
+    }
+
+    function createPhotostoryCard(post) {
+        const hasImage = post.image_url ? true : false;
+        const plainTextContent = stripHtml(post.content);
+        const title = getPostTitle(post);
+
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? getRelativeTime(postDate) : '';
+
+        // Get bookmark information
+        const isBookmarked = isPostBookmarked(post.id);
+
+        // Get view count
+        const viewCount = post.views || 0;
+
+        const postElement = document.createElement("article");
+        postElement.classList.add("post-card", "photostory-card");
+        postElement.dataset.postId = post.id;
+
+        // Updated photostory card with title above the photo, caption below, and meta info at the bottom
+        postElement.innerHTML = `
+            <!-- Title above the photo -->
+            <div class="photostory-title-container">
+                <h2 class="photostory-title">${title}</h2>
             </div>
             
-            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin: 0.5rem 0;">
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>By: ${post.author || 'Unknown'}</span>
-                </div>
-                <div class="post-meta-item view-counter">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${viewCount} views</span>
-                </div>
-            </div>
-            
-            <div class="post-excerpt" style="font-style: italic; color: var(--text-medium);">${meaning}</div>
-            
-            <div class="post-actions" style="margin-top: 1rem;">
-                <a href="#" class="silak-view-btn" data-post-id="${post.id}">View Details</a>
-                <button class="share-btn" data-post-id="${post.id}" title="Share word">
-                    <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            <div class="photostory-image">
+                ${hasImage 
+                    ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
+                    : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1.5rem;">PHOTOSTORY</div>`
+                }
+                
+                <div class="photostory-category">Photostory</div>
+                
+                <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
                 </button>
             </div>
-        </div>
-    `;
-
-    postsContainer.appendChild(postElement);
-}
-
-function createPhotostoryCardList(post) {
-    const hasImage = post.image_url ? true : false;
-    const plainTextContent = stripHtml(post.content);
-    const title = getPostTitle(post);
-
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-
-    // Get bookmark information
-    const isBookmarked = isPostBookmarked(post.id);
-
-    // Get view count
-    const viewCount = post.views || 0;
-
-    const postElement = document.createElement("article");
-    postElement.classList.add("post-card-list", "photostory-card-list");
-    postElement.dataset.postId = post.id;
-
-    // Updated photostory list card with title above the photo, caption below, and meta info at the bottom
-    postElement.innerHTML = `
-        <div class="post-cover" style="width: 200px; position: relative;">
-            <!-- Title above the photo -->
-            <div style="position: absolute; top: 0; left: 0; right: 0; background-color: white; padding: 0.8rem; z-index: 2; text-align: center; border-bottom: 3px solid #10B981;">
-                <h3 style="margin: 0; font-size: 1rem;">${title}</h3>
+            
+            <!-- Caption below the photo -->
+            <div class="photostory-caption">
+                ${plainTextContent}
             </div>
             
-            ${hasImage 
-                ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover; margin-top: 40px;">` 
-                : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1rem; margin-top: 40px;">PHOTOSTORY</div>`
-            }
-            
-            <div class="post-category" style="background-color: #10B981;">Photostory</div>
-        </div>
-        
-        <div class="post-content">
-            <!-- Caption below the title -->
-            <div style="font-style: italic; margin-bottom: 1rem; color: var(--text-medium);">${plainTextContent}</div>
-            
-            <!-- Meta information -->
-            <div class="post-meta" style="border-top: 1px solid var(--gray-light); padding-top: 0.8rem;">
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Meta information below the caption -->
+            <div class="photostory-meta">
+                <div class="photostory-meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                     <span>By: ${post.author || 'Unknown'}</span>
                 </div>
                 
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="photostory-meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                     </svg>
                     <span>Photojournalist: ${post.role || 'Unknown'}</span>
                 </div>
                 
-                <div class="post-meta-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="photostory-meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>
                         <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -4682,8 +4383,8 @@ function createPhotostoryCardList(post) {
                     <span>Date taken: ${dateDisplay}</span>
                 </div>
                 
-                <div class="post-meta-item view-counter">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="photostory-meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
@@ -4691,15 +4392,222 @@ function createPhotostoryCardList(post) {
                 </div>
             </div>
             
-            <div class="post-actions" style="margin-top: 1rem;">
+            <div style="padding: 0 1rem 1rem; text-align: center;">
                 <a href="#" class="read-more" data-post-id="${post.id}" style="background-color: #10B981; color: white; border: none;">View Full Photo</a>
-                <div class="post-action-buttons">
-                    <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}" style="position: static; margin-left: 1rem;">
+            </div>
+        `;
+
+        postsContainer.appendChild(postElement);
+    }
+
+    function createArticleCardList(post) {
+        const hasImage = post.image_url ? true : false;
+        const plainTextContent = stripHtml(post.content);
+        const excerpt = truncateText(plainTextContent, 30); // Longer excerpt for list view
+        const roleLabel = post.category === "article" || post.category === "feature" ? "Photojournalist" : "Cartoonist";
+        const title = getPostTitle(post);
+
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? getRelativeTime(postDate) : '';
+
+        // Get bookmark information
+        const isBookmarked = isPostBookmarked(post.id);
+
+        // Calculate reading time
+        const readingTime = getReadingTime(plainTextContent);
+
+        // Get view count
+        const viewCount = post.views || 0;
+
+        // Determine if post is trending (for demo purposes)
+        const isTrending = (post.views || 0) > 5;
+
+        const postElement = document.createElement("article");
+        postElement.classList.add("post-card-list");
+        postElement.dataset.postId = post.id;
+
+        postElement.innerHTML = `
+            <div class="post-cover">
+                ${hasImage 
+                    ? `<img src="${post.image_url}" alt="${title}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>${post.category.toUpperCase()}</div>'">` 
+                    : `<div class="no-image">${post.category.toUpperCase()}</div>`
+                }
+                <div class="post-category">${post.category}</div>
+                ${isTrending ? `
+                    <div class="trending-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                        Trending
+                    </div>
+                ` : ''}
+                <div class="reading-time-indicator">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    ${readingTime} min read
+                </div>
+                <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="post-content">
+                <h2 class="post-title">${title}</h2>
+                ${dateDisplay ? `
+                    <div class="post-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        ${dateDisplay}
+                    </div>` : ''}
+                <div class="post-meta">
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>By: ${post.author || 'Unknown'}</span>
+                    </div>
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>${roleLabel}: ${post.role || 'Unknown'}</span>
+                    </div>
+                    <div class="post-meta-item view-counter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>${viewCount} views</span>
+                    </div>
+                </div>
+                <div class="post-excerpt">${excerpt}</div>
+                <div class="post-actions">
+                    <a href="#" class="read-more" data-post-id="${post.id}">Read Article</a>
+                    <div class="post-action-buttons">
+                        <button class="share-btn" data-post-id="${post.id}" title="Share article">
+                            <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        postsContainer.appendChild(postElement);
+    }
+
+    function createSilakCardList(post) {
+        const hasImage = post.image_url ? true : false;
+        const title = getPostTitle(post);
+
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? getRelativeTime(postDate) : '';
+
+        // Get bookmark information
+        const isBookmarked = isPostBookmarked(post.id);
+
+        // Get view count
+        const viewCount = post.views || 0;
+
+        // Parse Silak-salitaan content
+        let partOfSpeech = "";
+        let meaning = "";
+        let example = "";
+
+        try {
+            if (post.content) {
+                const silakData = JSON.parse(post.content);
+                partOfSpeech = silakData.partOfSpeech || "";
+                meaning = silakData.meaning || "";
+                example = silakData.example || "";
+            }
+        } catch (e) {
+            console.error("Error parsing silak data:", e);
+        }
+
+        // Convert part of speech to Filipino
+        const filipinoPartOfSpeech = filipinoPartsOfSpeech[partOfSpeech.toLowerCase()] || partOfSpeech;
+
+        const postElement = document.createElement("article");
+        postElement.classList.add("silak-card-list");
+        postElement.dataset.postId = post.id;
+
+        // Updated silak card list with full photo visible and no borders
+        postElement.innerHTML = `
+            <!-- Full image with no borders -->
+            <div class="silak-image-container">
+                ${hasImage 
+                    ? `<img src="${post.image_url}" alt="${title}">` 
+                    : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 2.5rem; font-weight: bold;">${title.charAt(0).toUpperCase()}</div>`
+                }
+                
+                <!-- Category badge -->
+                <div class="silak-category" style="position: absolute; top: 1rem; left: 1rem;">Silak-salitaan</div>
+            </div>
+            
+            <div class="silak-content">
+                <div class="silak-header">
+                    <h2 class="silak-title">${title}</h2>
+                    <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}" style="position: static; margin-left: 1rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                         </svg>
                     </button>
-                    <button class="share-btn" data-post-id="${post.id}" title="Share photostory">
+                </div>
+                
+                <div style="display: flex; align-items: center; margin: 0.5rem 0; font-size: 0.9rem;">
+                    <span class="silak-speech-part">${filipinoPartOfSpeech}</span>
+                    ${dateDisplay ? `
+                        <div class="post-date" style="margin-left: 1rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${dateDisplay}
+                        </div>` : ''}
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin: 0.5rem 0;">
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>By: ${post.author || 'Unknown'}</span>
+                    </div>
+                    <div class="post-meta-item view-counter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>${viewCount} views</span>
+                    </div>
+                </div>
+                
+                <div class="post-excerpt" style="font-style: italic; color: var(--text-medium);">${meaning}</div>
+                
+                <div class="post-actions" style="margin-top: 1rem;">
+                    <a href="#" class="silak-view-btn" data-post-id="${post.id}">View Details</a>
+                    <button class="share-btn" data-post-id="${post.id}" title="Share word">
                         <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="18" cy="5" r="3"></circle>
                             <circle cx="6" cy="12" r="3"></circle>
@@ -4710,498 +4618,81 @@ function createPhotostoryCardList(post) {
                     </button>
                 </div>
             </div>
-        </div>
-    `;
-
-    postsContainer.appendChild(postElement);
-}
-
-function createPopularPosts(posts) {
-    popularPostsContainer.innerHTML = '';
-
-    // Sort posts by views
-    const sortedPosts = [...posts].sort((a, b) => {
-        // Sort by views
-        const viewsA = a.views || 0;
-        const viewsB = b.views || 0;
-        
-        return viewsB - viewsA;
-    });
-
-    // Display top 5 posts
-    sortedPosts.slice(0, 5).forEach((post, index) => {
-        const hasImage = post.image_url ? true : false;
-        const title = getPostTitle(post);
-        const postDate = post.created_at || post.date || post.timestamp;
-        const dateDisplay = postDate ? getRelativeTime(postDate) : '';
-        
-        const popularPostElement = document.createElement("div");
-        popularPostElement.classList.add("popular-post");
-        popularPostElement.dataset.postId = post.id;
-        
-        popularPostElement.innerHTML = `
-            <div class="popular-post-img">
-                ${hasImage 
-                    ? `<img src="${post.image_url}" alt="${title}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>${post.category.charAt(0)}</div>'">` 
-                    : `<div class="no-image">${post.category.charAt(0)}</div>`
-                }
-            </div>
-            <div class="popular-post-content">
-                <h4 class="popular-post-title">${title}</h4>
-                ${dateDisplay ? `
-                    <div class="popular-post-date">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        ${dateDisplay}
-                    </div>` : ''}
-                <div class="view-counter" style="font-size: 0.8rem; margin-top: 0.3rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${post.views || 0} views</span>
-                </div>
-            </div>
         `;
-        
-        popularPostsContainer.appendChild(popularPostElement);
-    });
-}
 
-function openArticle(postId) {
-    const post = allPosts.find(p => p.id == postId);
-    if (!post) return;
-
-    currentPostId = postId;
-
-    // Update URL without refreshing the page
-    const postUrl = getPostUrl(post);
-    window.history.pushState({ postId }, '', postUrl);
-
-    // Different article view based on category
-    if (post.category.toLowerCase() === 'silak') {
-        openSilakArticle(post);
-        return;
-    } else if (post.category.toLowerCase() === 'photostory') {
-        openPhotostoryArticle(post);
-        return;
+        postsContainer.appendChild(postElement);
     }
 
-    // For regular articles, literary works, and features
-    const hasImage = post.image_url ? true : false;
-    const roleLabel = post.category === "article" || post.category === "feature" ? "Photojournalist" : "Cartoonist";
-    const title = getPostTitle(post);
-    const plainTextContent = stripHtml(post.content);
+    function createPhotostoryCardList(post) {
+        const hasImage = post.image_url ? true : false;
+        const plainTextContent = stripHtml(post.content);
+        const title = getPostTitle(post);
 
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? formatDate(postDate) : '';
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? getRelativeTime(postDate) : '';
 
-    // Calculate reading time
-    const readingTime = getReadingTime(plainTextContent);
+        // Get bookmark information
+        const isBookmarked = isPostBookmarked(post.id);
 
-    // Get view count
-    const viewCount = post.views || 0;
+        // Get view count
+        const viewCount = post.views || 0;
 
-    // Create the article content
-    modalContent.innerHTML = `
-        <div class="article-inner">
-            <!-- Close button properly positioned in the top right -->
-            <button id="closeModal" class="close-modal" aria-label="Close article">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <!-- Mobile close button inside the modal -->
-            <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <div class="article-header">
-                <span class="article-category">${post.category}</span>
-                <h1 class="article-title">${title}</h1>
-                <div class="article-date">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    ${dateDisplay} · 
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    ${readingTime} min read
+        const postElement = document.createElement("article");
+        postElement.classList.add("post-card-list", "photostory-card-list");
+        postElement.dataset.postId = post.id;
+
+        // Updated photostory list card with title above the photo, caption below, and meta info at the bottom
+        postElement.innerHTML = `
+            <div class="post-cover" style="width: 200px; position: relative;">
+                <!-- Title above the photo -->
+                <div style="position: absolute; top: 0; left: 0; right: 0; background-color: white; padding: 0.8rem; z-index: 2; text-align: center; border-bottom: 3px solid #10B981;">
+                    <h3 style="margin: 0; font-size: 1rem;">${title}</h3>
                 </div>
-                <div class="article-meta">
-                    <div class="article-meta-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                
+                ${hasImage 
+                    ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover; margin-top: 40px;">` 
+                    : `<div class="no-image" style="height: 100%; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 1rem; margin-top: 40px;">PHOTOSTORY</div>`
+                }
+                
+                <div class="post-category" style="background-color: #10B981;">Photostory</div>
+            </div>
+            
+            <div class="post-content">
+                <!-- Caption below the title -->
+                <div style="font-style: italic; margin-bottom: 1rem; color: var(--text-medium);">${plainTextContent}</div>
+                
+                <!-- Meta information -->
+                <div class="post-meta" style="border-top: 1px solid var(--gray-light); padding-top: 0.8rem;">
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        By: ${post.author || 'Unknown'}
+                        <span>By: ${post.author || 'Unknown'}</span>
                     </div>
-                    <div class="article-meta-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                         </svg>
-                        ${roleLabel}: ${post.role || 'Unknown'}
+                        <span>Photojournalist: ${post.role || 'Unknown'}</span>
                     </div>
-                    <div class="article-meta-item view-counter">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        <span>${viewCount} views</span>
-                    </div>
-                </div>
-            </div>
-            
-            ${hasImage ? `
-            <div class="article-cover">
-                <img src="${post.image_url}" alt="${title}" class="article-main-image" onerror="this.style.display='none'">
-            </div>
-            ` : ''}
-            
-            <div class="article-content">${post.content}</div>
-            
-            <div class="article-tags">
-                <span class="article-tag">Filipino</span>
-                <span class="article-tag">Culture</span>
-                <span class="article-tag">${post.category}</span>
-            </div>
-            
-            <!-- Article actions with improved social sharing -->
-            <div class="article-actions">
-                <div class="share-container">
-                    <div class="share-label">Share this article:</div>
-                    <div class="share-options">
-                        <button class="share-option" id="shareFacebook" title="Share on Facebook">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                            </svg>
-                        </button>
-                        <button class="share-option" id="shareTwitter" title="Share on Twitter">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                            </svg>
-                        </button>
-                        <button class="share-option" id="shareLink" title="Copy link">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: var(--gray-light); margin-left: auto;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Mobile share container -->
-            <div class="mobile-share-container">
-                <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                    </svg>
-                </button>
-                <div id="mobileShareOptions" class="mobile-share-options">
-                    <button id="shareFacebookMobile" class="mobile-share-option" title="Share on Facebook">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                        </svg>
-                    </button>
-                    <button id="shareTwitterMobile" class="mobile-share-option" title="Share on Twitter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                        </svg>
-                    </button>
-                    <button id="copyLinkMobile" class="mobile-share-option" title="Copy link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Related Articles -->
-            <div class="related-articles">
-                <h3 class="related-title">You May Also Like</h3>
-                <div class="related-grid" id="relatedArticles"></div>
-            </div>
-        </div>
-    `;
-
-    // Make article images clickable for lightbox view
-    const articleImages = modalContent.querySelectorAll('.article-content img, .article-main-image');
-    articleImages.forEach(img => {
-        img.style.cursor = 'zoom-in';
-        img.addEventListener('click', () => {
-            lightboxImage.src = img.src;
-            imageLightbox.style.display = 'flex';
-            setTimeout(() => {
-                imageLightbox.classList.add('active');
-            }, 10);
-        });
-    });
-
-    // Add related articles
-    const relatedArticlesContainer = document.getElementById('relatedArticles');
-    if (relatedArticlesContainer) {
-        // Get related articles (same category, excluding current)
-        const relatedPosts = allPosts
-            .filter(p => p.category === post.category && p.id !== post.id)
-            .slice(0, 3);
-        
-        if (relatedPosts.length > 0) {
-            relatedPosts.forEach(relatedPost => {
-                const hasRelatedImage = relatedPost.image_url ? true : false;
-                const relatedTitle = getPostTitle(relatedPost);
-                
-                const relatedElement = document.createElement('div');
-                relatedElement.classList.add('post-card');
-                relatedElement.dataset.postId = relatedPost.id;
-                
-                relatedElement.innerHTML = `
-                    <div class="post-cover">
-                        ${hasRelatedImage 
-                            ? `<img src="${relatedPost.image_url}" alt="${relatedTitle}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>${relatedPost.category.toUpperCase()}</div>'">` 
-                            : `<div class="no-image">${relatedPost.category.toUpperCase()}</div>`
-                        }
-                    </div>
-                    <div class="post-content">
-                        <h3 class="post-title" style="font-size: 1.2rem;">${relatedTitle}</h3>
-                        <a href="#" class="read-more" data-post-id="${relatedPost.id}" style="margin-top: 1rem;">Read Article</a>
-                    </div>
-                `;
-                
-                relatedArticlesContainer.appendChild(relatedElement);
-            });
-            
-            // Add event listeners to related articles
-            relatedArticlesContainer.querySelectorAll('.post-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.closest('.read-more')) {
-                        const postId = card.dataset.postId;
-                        openArticle(postId);
-                        incrementViewCount(postId);
-                    }
-                });
-            });
-            
-            relatedArticlesContainer.querySelectorAll('.read-more').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const postId = button.dataset.postId;
-                    openArticle(postId);
-                    incrementViewCount(postId);
-                });
-            });
-        } else {
-            relatedArticlesContainer.parentElement.style.display = 'none';
-        }
-    }
-
-    // Add event listeners to share buttons in article
-    const shareFacebook = document.getElementById('shareFacebook');
-    const shareTwitter = document.getElementById('shareTwitter');
-    const shareLink = document.getElementById('shareLink');
-    const shareFacebookMobile = document.getElementById('shareFacebookMobile');
-    const shareTwitterMobile = document.getElementById('shareTwitterMobile');
-    const copyLinkMobile = document.getElementById('copyLinkMobile');
-    const mobileShareToggle = document.getElementById('mobileShareToggle');
-    const mobileShareOptions = document.getElementById('mobileShareOptions');
-    const closeModalBtn = document.getElementById('closeModal');
-    const mobileCloseModalBtn = document.getElementById('mobileCloseModal');
-
-    if (shareFacebook) {
-        shareFacebook.addEventListener('click', () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
-        });
-    }
-
-    if (shareTwitter) {
-        shareTwitter.addEventListener('click', () => {
-            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
-        });
-    }
-
-    if (shareLink) {
-        shareLink.addEventListener('click', () => {
-            copyToClipboard(postUrl);
-        });
-    }
-
-    if (shareFacebookMobile) {
-        shareFacebookMobile.addEventListener('click', () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
-            mobileShareOptions.classList.remove('active');
-        });
-    }
-
-    if (shareTwitterMobile) {
-        shareTwitterMobile.addEventListener('click', () => {
-            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
-            mobileShareOptions.classList.remove('active');
-        });
-    }
-
-    if (copyLinkMobile) {
-        copyLinkMobile.addEventListener('click', () => {
-            copyToClipboard(postUrl);
-            mobileShareOptions.classList.remove('active');
-        });
-    }
-
-    if (mobileShareToggle) {
-        mobileShareToggle.addEventListener('click', () => {
-            mobileShareOptions.classList.toggle('active');
-        });
-    }
-
-    // Close modal when clicking the close button
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeArticleModal);
-    }
-
-    // Close modal when clicking the mobile close button
-    if (mobileCloseModalBtn) {
-        mobileCloseModalBtn.addEventListener('click', closeArticleModal);
-    }
-
-    // Add event listeners to bookmark buttons in the article
-    modalContent.querySelectorAll('.bookmark-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const postId = button.getAttribute('data-post-id');
-            const isBookmarked = toggleBookmark(postId);
-            
-            // Update UI
-            updateBookmarkButtonsInView(postId, isBookmarked);
-        });
-    });
-
-    // Show the modal with animation
-    articleModal.style.display = "block";
-    document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
-    
-    // Trigger animations
-    setTimeout(() => {
-        articleModal.classList.add('active');
-    }, 10);
-
-    // Reset reading progress
-    readingProgress.style.width = '0';
-
-    // Add scroll event for reading progress
-    const modalContentElement = document.querySelector('.modal-content');
-    modalContentElement.addEventListener('scroll', updateReadingProgress);
-}
-
-function openSilakArticle(post) {
-    const hasImage = post.image_url ? true : false;
-    const title = getPostTitle(post);
-
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? formatDate(postDate) : '';
-
-    // Get view count
-    const viewCount = post.views || 0;
-
-    // Parse Silak-salitaan content
-    let partOfSpeech = "";
-    let meaning = "";
-    let example = "";
-
-    try {
-        if (post.content) {
-            const silakData = JSON.parse(post.content);
-            partOfSpeech = silakData.partOfSpeech || "";
-            meaning = silakData.meaning || "";
-            example = silakData.example || "";
-        }
-    } catch (e) {
-        console.error("Error parsing silak data:", e);
-    }
-
-    // Convert part of speech to Filipino
-    const filipinoPartOfSpeech = filipinoPartsOfSpeech[partOfSpeech.toLowerCase()] || partOfSpeech;
-
-    // Create the article content with updated layout for full photo visibility and no borders
-    modalContent.innerHTML = `
-        <div class="article-inner" style="padding: 0; max-width: 100%; margin: 0; box-shadow: none;">
-            <!-- Close button properly positioned in the top right -->
-            <button id="closeModal" class="close-modal" aria-label="Close article" style="top: 1rem; right: 1rem; z-index: 100;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <!-- Mobile close button inside the modal -->
-            <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article" style="top: 1rem; right: 1rem; z-index: 100;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <!-- Full image with no borders -->
-            <div class="silak-modal-image">
-                ${hasImage 
-                    ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
-                    : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 4rem; font-weight: bold;">${title.charAt(0).toUpperCase()}</div>`
-                }
-            </div>
-            
-            <div class="silak-modal-info">
-                <div class="silak-modal-header">
-                    <h1 class="silak-modal-title">${title}</h1>
-                    <span class="silak-modal-speech-part">${filipinoPartOfSpeech}</span>
-                </div>
-                
-                <div class="article-meta">
-                    <div class="article-meta-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        By: ${post.author || 'Unknown'}
-                    </div>
-                    <div class="article-meta-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    
+                    <div class="post-meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                             <line x1="16" y1="2" x2="16" y2="6"></line>
                             <line x1="8" y1="2" x2="8" y2="6"></line>
                             <line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
-                        Date: ${dateDisplay}
+                        <span>Date taken: ${dateDisplay}</span>
                     </div>
-                    <div class="article-meta-item view-counter">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    
+                    <div class="post-meta-item view-counter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                             <circle cx="12" cy="12" r="3"></circle>
                         </svg>
@@ -5209,20 +4700,202 @@ function openSilakArticle(post) {
                     </div>
                 </div>
                 
-                <div class="silak-modal-meaning">
-                    <h3 style="font-size: 1.5rem; color: #8B5CF6; margin-bottom: 1rem;">Kahulugan:</h3>
-                    <p>${meaning}</p>
+                <div class="post-actions" style="margin-top: 1rem;">
+                    <a href="#" class="read-more" data-post-id="${post.id}" style="background-color: #10B981; color: white; border: none;">View Full Photo</a>
+                    <div class="post-action-buttons">
+                        <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}" title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this photostory'}" style="position: static; margin-left: 1rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                        <button class="share-btn" data-post-id="${post.id}" title="Share photostory">
+                            <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        postsContainer.appendChild(postElement);
+    }
+
+    function createPopularPosts(posts) {
+        popularPostsContainer.innerHTML = '';
+
+        // Sort posts by views
+        const sortedPosts = [...posts].sort((a, b) => {
+            // Sort by views
+            const viewsA = a.views || 0;
+            const viewsB = b.views || 0;
+            
+            return viewsB - viewsA;
+        });
+
+        // Display top 5 posts
+        sortedPosts.slice(0, 5).forEach((post, index) => {
+            const hasImage = post.image_url ? true : false;
+            const title = getPostTitle(post);
+            const postDate = post.created_at || post.date || post.timestamp;
+            const dateDisplay = postDate ? getRelativeTime(postDate) : '';
+            
+            const popularPostElement = document.createElement("div");
+            popularPostElement.classList.add("popular-post");
+            popularPostElement.dataset.postId = post.id;
+            
+            popularPostElement.innerHTML = `
+                <div class="popular-post-img">
+                    ${hasImage 
+                        ? `<img src="${post.image_url}" alt="${title}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>${post.category.charAt(0)}</div>'">` 
+                        : `<div class="no-image">${post.category.charAt(0)}</div>`
+                    }
+                </div>
+                <div class="popular-post-content">
+                    <h4 class="popular-post-title">${title}</h4>
+                    ${dateDisplay ? `
+                        <div class="popular-post-date">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${dateDisplay}
+                        </div>` : ''}
+                    <div class="view-counter" style="font-size: 0.8rem; margin-top: 0.3rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>${post.views || 0} views</span>
+                    </div>
+                </div>
+            `;
+            
+            popularPostsContainer.appendChild(popularPostElement);
+        });
+    }
+
+    function openArticle(postId) {
+        const post = allPosts.find(p => p.id == postId);
+        if (!post) return;
+
+        currentPostId = postId;
+
+        // Update URL without refreshing the page
+        const postUrl = getPostUrl(post);
+        window.history.pushState({ postId }, '', postUrl);
+
+        // Different article view based on category
+        if (post.category.toLowerCase() === 'silak') {
+            openSilakArticle(post);
+            return;
+        } else if (post.category.toLowerCase() === 'photostory') {
+            openPhotostoryArticle(post);
+            return;
+        }
+
+        // For regular articles, literary works, and features
+        const hasImage = post.image_url ? true : false;
+        const roleLabel = post.category === "article" || post.category === "feature" ? "Photojournalist" : "Cartoonist";
+        const title = getPostTitle(post);
+        const plainTextContent = stripHtml(post.content);
+
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? formatDate(postDate) : '';
+
+        // Calculate reading time
+        const readingTime = getReadingTime(plainTextContent);
+
+        // Get view count
+        const viewCount = post.views || 0;
+
+        // Create the article content
+        modalContent.innerHTML = `
+            <div class="article-inner">
+                <!-- Close button properly positioned in the top right -->
+                <button id="closeModal" class="close-modal" aria-label="Close article">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                
+                <!-- Mobile close button inside the modal -->
+                <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                
+                <div class="article-header">
+                    <span class="article-category">${post.category}</span>
+                    <h1 class="article-title">${title}</h1>
+                    <p class="article-description">THE OFFICIAL PUBLICATION OF UCLM-SHS</p>
+                    <div class="article-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        ${dateDisplay} · 
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        ${readingTime} min read
+                    </div>
+                    <div class="article-meta">
+                        <div class="article-meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            By: ${post.author || 'Unknown'}
+                        </div>
+                        <div class="article-meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                            ${roleLabel}: ${post.role || 'Unknown'}
+                        </div>
+                        <div class="article-meta-item view-counter">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span>${viewCount} views</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="silak-modal-example">
-                    <h3 style="font-size: 1.5rem; color: #8B5CF6; margin-bottom: 1rem;">Halimbawa:</h3>
-                    <p>"${example}"</p>
+                ${hasImage ? `
+                <div class="article-cover">
+                    <img src="${post.image_url}" alt="${title}" class="article-main-image" onerror="this.style.display='none'">
+                </div>
+                ` : ''}
+                
+                <div class="article-content">${post.content}</div>
+                
+                <div class="article-tags">
+                    <span class="article-tag">Filipino</span>
+                    <span class="article-tag">Culture</span>
+                    <span class="article-tag">${post.category}</span>
                 </div>
                 
                 <!-- Article actions with improved social sharing -->
                 <div class="article-actions">
                     <div class="share-container">
-                        <div class="share-label">Share this word:</div>
+                        <div class="share-label">Share this article:</div>
                         <div class="share-options">
                             <button class="share-option" id="shareFacebook" title="Share on Facebook">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -5251,7 +4924,7 @@ function openSilakArticle(post) {
                 
                 <!-- Mobile share container -->
                 <div class="mobile-share-container">
-                    <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options" style="background-color: #8B5CF6;">
+                    <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="18" cy="5" r="3"></circle>
                             <circle cx="6" cy="12" r="3"></circle>
@@ -5280,595 +4953,935 @@ function openSilakArticle(post) {
                     </div>
                 </div>
                 
-                <!-- Related Words -->
+                <!-- Related Articles -->
                 <div class="related-articles">
-                    <h3 class="related-title" style="color: #8B5CF6;">Related Words</h3>
+                    <h3 class="related-title">You May Also Like</h3>
                     <div class="related-grid" id="relatedArticles"></div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
 
-    // Add related articles (other Silak-salitaan entries)
-    const relatedArticlesContainer = document.getElementById('relatedArticles');
-    if (relatedArticlesContainer) {
-        // Get related articles (other Silak-salitaan entries, excluding current)
-        const relatedPosts = allPosts
-            .filter(p => p.category.toLowerCase() === 'silak' && p.id !== post.id)
-            .slice(0, 3);
-        
-        if (relatedPosts.length > 0) {
-            relatedPosts.forEach(relatedPost => {
-                const hasRelatedImage = relatedPost.image_url ? true : false;
-                const relatedTitle = getPostTitle(relatedPost);
-                
-                // Parse related post content
-                let relatedPartOfSpeech = "";
-                try {
-                    if (relatedPost.content) {
-                        const silakData = JSON.parse(relatedPost.content);
-                        relatedPartOfSpeech = silakData.partOfSpeech || "";
-                    }
-                } catch (e) {
-                    console.error("Error parsing related silak data:", e);
-                }
-                
-                // Convert part of speech to Filipino
-                const relatedFilipinoPartOfSpeech = filipinoPartsOfSpeech[relatedPartOfSpeech.toLowerCase()] || relatedPartOfSpeech;
-                
-                const relatedElement = document.createElement('div');
-                relatedElement.classList.add('silak-card');
-                relatedElement.dataset.postId = relatedPost.id;
-                
-                relatedElement.innerHTML = `
-                    <div class="silak-image-container">
-                        ${hasRelatedImage 
-                            ? `<img src="${relatedPost.image_url}" alt="${relatedTitle}">` 
-                            : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 2rem; font-weight: bold;">${relatedTitle.charAt(0).toUpperCase()}</div>`
-                        }
-                    </div>
-                    <div class="silak-content">
-                        <h3 class="silak-title" style="font-size: 1.2rem;">${relatedTitle}</h3>
-                        <span class="silak-speech-part">${relatedFilipinoPartOfSpeech}</span>
-                        <a href="#" class="silak-view-btn" data-post-id="${relatedPost.id}">View Details</a>
-                    </div>
-                `;
-                
-                relatedArticlesContainer.appendChild(relatedElement);
+        // Make article images clickable for lightbox view
+        const articleImages = modalContent.querySelectorAll('.article-content img, .article-main-image');
+        articleImages.forEach(img => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', () => {
+                lightboxImage.src = img.src;
+                imageLightbox.style.display = 'flex';
+                setTimeout(() => {
+                    imageLightbox.classList.add('active');
+                }, 10);
             });
+        });
+
+        // Add related articles
+        const relatedArticlesContainer = document.getElementById('relatedArticles');
+        if (relatedArticlesContainer) {
+            // Get related articles (same category, excluding current)
+            const relatedPosts = allPosts
+                .filter(p => p.category === post.category && p.id !== post.id)
+                .slice(0, 3);
             
-            // Add event listeners to related articles
-            relatedArticlesContainer.querySelectorAll('.silak-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.closest('.silak-view-btn')) {
-                        const postId = card.dataset.postId;
+            if (relatedPosts.length > 0) {
+                relatedPosts.forEach(relatedPost => {
+                    const hasRelatedImage = relatedPost.image_url ? true : false;
+                    const relatedTitle = getPostTitle(relatedPost);
+                    
+                    const relatedElement = document.createElement('div');
+                    relatedElement.classList.add('post-card');
+                    relatedElement.dataset.postId = relatedPost.id;
+                    
+                    relatedElement.innerHTML = `
+                        <div class="post-cover">
+                            ${hasRelatedImage 
+                                ? `<img src="${relatedPost.image_url}" alt="${relatedTitle}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>${relatedPost.category.toUpperCase()}</div>'">` 
+                                : `<div class="no-image">${relatedPost.category.toUpperCase()}</div>`
+                            }
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title" style="font-size: 1.2rem;">${relatedTitle}</h3>
+                            <a href="#" class="read-more" data-post-id="${relatedPost.id}" style="margin-top: 1rem;">Read Article</a>
+                        </div>
+                    `;
+                    
+                    relatedArticlesContainer.appendChild(relatedElement);
+                });
+                
+                // Add event listeners to related articles
+                relatedArticlesContainer.querySelectorAll('.post-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('.read-more')) {
+                            const postId = card.dataset.postId;
+                            openArticle(postId);
+                            incrementViewCount(postId);
+                        }
+                    });
+                });
+                
+                relatedArticlesContainer.querySelectorAll('.read-more').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const postId = button.dataset.postId;
                         openArticle(postId);
                         incrementViewCount(postId);
-                    }
+                    });
                 });
-            });
-            
-            relatedArticlesContainer.querySelectorAll('.silak-view-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const postId = button.dataset.postId;
-                    openArticle(postId);
-                    incrementViewCount(postId);
-                });
-            });
-        } else {
-            relatedArticlesContainer.parentElement.style.display = 'none';
+            } else {
+                relatedArticlesContainer.parentElement.style.display = 'none';
+            }
         }
-    }
 
-    // Add event listeners to share buttons in article
-    setupShareButtons(post);
+        // Add event listeners to share buttons in article
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareLink = document.getElementById('shareLink');
+        const shareFacebookMobile = document.getElementById('shareFacebookMobile');
+        const shareTwitterMobile = document.getElementById('shareTwitterMobile');
+        const copyLinkMobile = document.getElementById('copyLinkMobile');
+        const mobileShareToggle = document.getElementById('mobileShareToggle');
+        const mobileShareOptions = document.getElementById('mobileShareOptions');
+        const closeModalBtn = document.getElementById('closeModal');
+        const mobileCloseModalBtn = document.getElementById('mobileCloseModal');
 
-    // Show the modal with animation
-    articleModal.style.display = "block";
-    document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
-    
-    // Trigger animations
-    setTimeout(() => {
-        articleModal.classList.add('active');
-    }, 10);
-}
+        if (shareFacebook) {
+            shareFacebook.addEventListener('click', () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+            });
+        }
 
-function openPhotostoryArticle(post) {
-    const hasImage = post.image_url ? true : false;
-    const plainTextContent = stripHtml(post.content);
-    const title = getPostTitle(post);
+        if (shareTwitter) {
+            shareTwitter.addEventListener('click', () => {
+                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+            });
+        }
 
-    // Get date information
-    const postDate = post.created_at || post.date || post.timestamp;
-    const dateDisplay = postDate ? formatDate(postDate) : '';
+        if (shareLink) {
+            shareLink.addEventListener('click', () => {
+                copyToClipboard(postUrl);
+            });
+        }
 
-    // Get view count
-    const viewCount = post.views || 0;
+        if (shareFacebookMobile) {
+            shareFacebookMobile.addEventListener('click', () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+                mobileShareOptions.classList.remove('active');
+            });
+        }
 
-    // Create the article content with updated layout
-    // Title above the photo, caption below, and meta info at the bottom
-    modalContent.innerHTML = `
-        <div class="article-inner" style="max-width: 100%; padding: 0; margin: 0; box-shadow: none; border-radius: 0;">
-            <!-- Close button properly positioned in the top right -->
-            <button id="closeModal" class="close-modal" aria-label="Close article" style="z-index: 100;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <!-- Mobile close button inside the modal -->
-            <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article" style="z-index: 100;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <!-- Title above the photo -->
-            <div class="photostory-modal-title-container">
-                <h1 class="photostory-modal-title">${title}</h1>
-            </div>
-            
-            <div style="position: relative; width: 100%; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                ${hasImage 
-                    ? `<img src="${post.image_url}" alt="${title}" style="max-width: 100%; max-height: 80vh; object-fit: contain;" class="article-main-image">` 
-                    : `<div style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
-                }
+        if (shareTwitterMobile) {
+            shareTwitterMobile.addEventListener('click', () => {
+                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+                mobileShareOptions.classList.remove('active');
+            });
+        }
+
+        if (copyLinkMobile) {
+            copyLinkMobile.addEventListener('click', () => {
+                copyToClipboard(postUrl);
+                mobileShareOptions.classList.remove('active');
+            });
+        }
+
+        if (mobileShareToggle) {
+            mobileShareToggle.addEventListener('click', () => {
+                mobileShareOptions.classList.toggle('active');
+            });
+        }
+
+        // Close modal when clicking the close button
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeArticleModal);
+        }
+
+        // Close modal when clicking the mobile close button
+        if (mobileCloseModalBtn) {
+            mobileCloseModalBtn.addEventListener('click', closeArticleModal);
+        }
+
+        // Add event listeners to bookmark buttons in the article
+        modalContent.querySelectorAll('.bookmark-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 
-                <!-- Category badge -->
-                <div style="position: absolute; top: 1rem; right: 1rem; background-color: #10B981; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; z-index: 3;">
-                    Photostory
-                </div>
-            </div>
-            
-            <!-- Caption below the photo -->
-            <div style="background-color: white; padding: 2rem; text-align: center;">
-                <p style="font-size: 1.3rem; line-height: 1.8; font-style: italic; margin: 0; color: var(--text-dark);">${plainTextContent}</p>
-            </div>
-            
-            <!-- Meta information below the caption -->
-            <div style="background-color: var(--gray-light); padding: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>By: ${post.author || 'Unknown'}</span>
-                </div>
+                const postId = button.getAttribute('data-post-id');
+                const isBookmarked = toggleBookmark(postId);
                 
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                    </svg>
-                    <span>Photojournalist: ${post.role || 'Unknown'}</span>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span>Date taken: ${dateDisplay}</span>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${viewCount} views</span>
-                </div>
-            </div>
-            
-            <!-- Share and bookmark buttons -->
-            <div style="background-color: white; padding: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
-                <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: var(--gray-light);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                </button>
-                
-                <div class="share-options" style="display: flex; gap: 0.5rem;">
-                    <button class="share-option" id="shareFacebook" title="Share on Facebook" style="background-color: var(--gray-light);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                        </svg>
-                    </button>
-                    <button class="share-option" id="shareTwitter" title="Share on Twitter" style="background-color: var(--gray-light);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                        </svg>
-                    </button>
-                    <button class="share-option" id="shareLink" title="Copy link" style="background-color: var(--gray-light);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Mobile share container -->
-            <div class="mobile-share-container">
-                <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options" style="background-color: #10B981;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                    </svg>
-                </button>
-                <div id="mobileShareOptions" class="mobile-share-options">
-                    <button id="shareFacebookMobile" class="mobile-share-option" title="Share on Facebook">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                        </svg>
-                    </button>
-                    <button id="shareTwitterMobile" class="mobile-share-option" title="Share on Twitter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                        </svg>
-                    </button>
-                    <button id="copyLinkMobile" class="mobile-share-option" title="Copy link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
+                // Update UI
+                updateBookmarkButtonsInView(postId, isBookmarked);
+            });
+        });
 
-    // Make article images clickable for lightbox view
-    const articleImages = modalContent.querySelectorAll('.article-main-image');
-    articleImages.forEach(img => {
-    img.style.cursor = 'zoom-in';
-    img.addEventListener('click', () => {
-        lightboxImage.src = img.src;
-        imageLightbox.style.display = 'flex';
+        // Show the modal with animation
+        articleModal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+        
+        // Trigger animations
         setTimeout(() => {
-            imageLightbox.classList.add('active');
+            articleModal.classList.add('active');
         }, 10);
-    });
-});
 
-    // Add event listeners to share buttons in article
-    setupShareButtons(post);
+        // Reset reading progress
+        readingProgress.style.width = '0';
 
-    // Show the modal with animation
-    articleModal.style.display = "block";
-    document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
-    
-    // Trigger animations
-    setTimeout(() => {
-        articleModal.classList.add('active');
-    }, 10);
-}
-
-function setupShareButtons(post) {
-    const postUrl = getPostUrl(post);
-    const title = getPostTitle(post);
-
-    const shareFacebook = document.getElementById('shareFacebook');
-    const shareTwitter = document.getElementById('shareTwitter');
-    const shareLink = document.getElementById('shareLink');
-    const shareFacebookMobile = document.getElementById('shareFacebookMobile');
-    const shareTwitterMobile = document.getElementById('shareTwitterMobile');
-    const copyLinkMobile = document.getElementById('copyLinkMobile');
-    const mobileShareToggle = document.getElementById('mobileShareToggle');
-    const mobileShareOptions = document.getElementById('mobileShareOptions');
-    const closeModalBtn = document.getElementById('closeModal');
-    const mobileCloseModalBtn = document.getElementById('mobileCloseModal');
-
-    if (shareFacebook) {
-        shareFacebook.addEventListener('click', () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
-        });
+        // Add scroll event for reading progress
+        const modalContentElement = document.querySelector('.modal-content');
+        modalContentElement.addEventListener('scroll', updateReadingProgress);
     }
 
-    if (shareTwitter) {
-        shareTwitter.addEventListener('click', () => {
-            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
-        });
-    }
+    function openSilakArticle(post) {
+        const hasImage = post.image_url ? true : false;
+        const title = getPostTitle(post);
 
-    if (shareLink) {
-        shareLink.addEventListener('click', () => {
-            copyToClipboard(postUrl);
-        });
-    }
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? formatDate(postDate) : '';
 
-    if (shareFacebookMobile) {
-        shareFacebookMobile.addEventListener('click', () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
-            mobileShareOptions.classList.remove('active');
-        });
-    }
+        // Get view count
+        const viewCount = post.views || 0;
 
-    if (shareTwitterMobile) {
-        shareTwitterMobile.addEventListener('click', () => {
-            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
-            mobileShareOptions.classList.remove('active');
-        });
-    }
+        // Parse Silak-salitaan content
+        let partOfSpeech = "";
+        let meaning = "";
+        let example = "";
 
-    if (copyLinkMobile) {
-        copyLinkMobile.addEventListener('click', () => {
-            copyToClipboard(postUrl);
-            mobileShareOptions.classList.remove('active');
-        });
-    }
-
-    if (mobileShareToggle) {
-        mobileShareToggle.addEventListener('click', () => {
-            mobileShareOptions.classList.toggle('active');
-        });
-    }
-
-    // Close modal when clicking the close button
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeArticleModal);
-    }
-
-    // Close modal when clicking the mobile close button
-    if (mobileCloseModalBtn) {
-        mobileCloseModalBtn.addEventListener('click', closeArticleModal);
-    }
-
-    // Add event listeners to bookmark buttons in the article
-    modalContent.querySelectorAll('.bookmark-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const postId = button.getAttribute('data-post-id');
-            const isBookmarked = toggleBookmark(postId);
-            
-            // Update UI
-            updateBookmarkButtonsInView(postId, isBookmarked);
-        });
-    });
-}
-
-// Function to close the article modal
-function closeArticleModal() {
-    // Animate the modal closing
-    articleModal.classList.remove('active');
-    
-    // After animation completes, hide the modal
-    setTimeout(() => {
-        articleModal.style.display = "none";
-        document.body.style.overflow = "auto"; // Re-enable scrolling
-        
-        // Update URL to remove post parameter
-        window.history.pushState({}, '', window.location.pathname);
-        currentPostId = null;
-    }, 300); // Match the animation duration
-}
-
-// Function to update reading progress
-function updateReadingProgress() {
-    const modalContentElement = document.querySelector('.modal-content');
-    const scrollTop = modalContentElement.scrollTop;
-    const scrollHeight = modalContentElement.scrollHeight;
-    const clientHeight = modalContentElement.clientHeight;
-
-    const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
-    readingProgress.style.width = `${Math.min(scrollPercentage, 100)}%`;
-}
-
-function updateBookmarkButtonsInView(postId, isBookmarked) {
-    // Update all bookmark buttons for this post in the main view
-    document.querySelectorAll(`.bookmark-btn[data-post-id="${postId}"]`).forEach(btn => {
-        const bookmarkIcon = btn.querySelector('svg');
-        
-        if (isBookmarked) {
-            btn.classList.add('bookmarked');
-            bookmarkIcon.setAttribute('fill', 'currentColor');
-        } else {
-            btn.classList.remove('bookmarked');
-            bookmarkIcon.setAttribute('fill', 'none');
+        try {
+            if (post.content) {
+                const silakData = JSON.parse(post.content);
+                partOfSpeech = silakData.partOfSpeech || "";
+                meaning = silakData.meaning || "";
+                example = silakData.example || "";
+            }
+        } catch (e) {
+            console.error("Error parsing silak data:", e);
         }
-    });
-}
 
-// Close lightbox when clicking the close button or anywhere on the lightbox
-lightboxClose.addEventListener('click', () => {
-    imageLightbox.classList.remove('active');
-    setTimeout(() => {
-        imageLightbox.style.display = "none";
-    }, 300);
-});
+        // Convert part of speech to Filipino
+        const filipinoPartOfSpeech = filipinoPartsOfSpeech[partOfSpeech.toLowerCase()] || partOfSpeech;
 
-imageLightbox.addEventListener('click', (e) => {
-    if (e.target === imageLightbox) {
+        // Create the article content with updated layout for full photo visibility and no borders
+        modalContent.innerHTML = `
+            <div class="article-inner" style="padding: 0; max-width: 100%; margin: 0; box-shadow: none;">
+                <!-- Close button properly positioned in the top right -->
+                <button id="closeModal" class="close-modal" aria-label="Close article" style="top: 1rem; right: 1rem; z-index: 100;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                
+                <!-- Mobile close button inside the modal -->
+                <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article" style="top: 1rem; right: 1rem; z-index: 100;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                
+                <!-- Full image with no borders -->
+                <div class="silak-modal-image">
+                    ${hasImage 
+                        ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">` 
+                        : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 4rem; font-weight: bold;">${title.charAt(0).toUpperCase()}</div>`
+                    }
+                </div>
+                
+                <div class="silak-modal-info">
+                    <div class="silak-modal-header">
+                        <h1 class="silak-modal-title">${title}</h1>
+                        <span class="silak-modal-speech-part">${filipinoPartOfSpeech}</span>
+                    </div>
+                    
+                    <p class="article-description">THE OFFICIAL PUBLICATION OF UCLM-SHS</p>
+                    
+                    <div class="article-meta">
+                        <div class="article-meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            By: ${post.author || 'Unknown'}
+                        </div>
+                        <div class="article-meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Date: ${dateDisplay}
+                        </div>
+                        <div class="article-meta-item view-counter">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span>${viewCount} views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="silak-modal-meaning">
+                        <h3 style="font-size: 1.5rem; color: #8B5CF6; margin-bottom: 1rem;">Kahulugan:</h3>
+                        <p>${meaning}</p>
+                    </div>
+                    
+                    <div class="silak-modal-example">
+                        <h3 style="font-size: 1.5rem; color: #8B5CF6; margin-bottom: 1rem;">Halimbawa:</h3>
+                        <p>"${example}"</p>
+                    </div>
+                    
+                    <!-- Article actions with improved social sharing -->
+                    <div class="article-actions">
+                        <div class="share-container">
+                            <div class="share-label">Share this word:</div>
+                            <div class="share-options">
+                                <button class="share-option" id="shareFacebook" title="Share on Facebook">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                    </svg>
+                                </button>
+                                <button class="share-option" id="shareTwitter" title="Share on Twitter">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                                    </svg>
+                                </button>
+                                <button class="share-option" id="shareLink" title="Copy link">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: var(--gray-light); margin-left: auto;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Mobile share container -->
+                    <div class="mobile-share-container">
+                        <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options" style="background-color: #8B5CF6;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                        <div id="mobileShareOptions" class="mobile-share-options">
+                            <button id="shareFacebookMobile" class="mobile-share-option" title="Share on Facebook">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                </svg>
+                            </button>
+                            <button id="shareTwitterMobile" class="mobile-share-option" title="Share on Twitter">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                                </svg>
+                            </button>
+                            <button id="copyLinkMobile" class="mobile-share-option" title="Copy link">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Related Words -->
+                    <div class="related-articles">
+                        <h3 class="related-title" style="color: #8B5CF6;">Related Words</h3>
+                        <div class="related-grid" id="relatedArticles"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add related articles (other Silak-salitaan entries)
+        const relatedArticlesContainer = document.getElementById('relatedArticles');
+        if (relatedArticlesContainer) {
+            // Get related articles (other Silak-salitaan entries, excluding current)
+            const relatedPosts = allPosts
+                .filter(p => p.category.toLowerCase() === 'silak' && p.id !== post.id)
+                .slice(0, 3);
+            
+            if (relatedPosts.length > 0) {
+                relatedPosts.forEach(relatedPost => {
+                    const hasRelatedImage = relatedPost.image_url ? true : false;
+                    const relatedTitle = getPostTitle(relatedPost);
+                    
+                    // Parse related post content
+                    let relatedPartOfSpeech = "";
+                    try {
+                        if (relatedPost.content) {
+                            const silakData = JSON.parse(relatedPost.content);
+                            relatedPartOfSpeech = silakData.partOfSpeech || "";
+                        }
+                    } catch (e) {
+                        console.error("Error parsing related silak data:", e);
+                    }
+                    
+                    // Convert part of speech to Filipino
+                    const relatedFilipinoPartOfSpeech = filipinoPartsOfSpeech[relatedPartOfSpeech.toLowerCase()] || relatedPartOfSpeech;
+                    
+                    const relatedElement = document.createElement('div');
+                    relatedElement.classList.add('silak-card');
+                    relatedElement.dataset.postId = relatedPost.id;
+                    
+                    relatedElement.innerHTML = `
+                        <div class="silak-image-container">
+                            ${hasRelatedImage 
+                                ? `<img src="${relatedPost.image_url}" alt="${relatedTitle}">` 
+                                : `<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #8B5CF6; color: white; font-size: 2rem; font-weight: bold;">${relatedTitle.charAt(0).toUpperCase()}</div>`
+                            }
+                        </div>
+                        <div class="silak-content">
+                            <h3 class="silak-title" style="font-size: 1.2rem;">${relatedTitle}</h3>
+                            <span class="silak-speech-part">${relatedFilipinoPartOfSpeech}</span>
+                            <a href="#" class="silak-view-btn" data-post-id="${relatedPost.id}">View Details</a>
+                        </div>
+                    `;
+                    
+                    relatedArticlesContainer.appendChild(relatedElement);
+                });
+                
+                // Add event listeners to related articles
+                relatedArticlesContainer.querySelectorAll('.silak-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('.silak-view-btn')) {
+                            const postId = card.dataset.postId;
+                            openArticle(postId);
+                            incrementViewCount(postId);
+                        }
+                    });
+                });
+                
+                relatedArticlesContainer.querySelectorAll('.silak-view-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const postId = button.dataset.postId;
+                        openArticle(postId);
+                        incrementViewCount(postId);
+                    });
+                });
+            } else {
+                relatedArticlesContainer.parentElement.style.display = 'none';
+            }
+        }
+
+        // Add event listeners to share buttons in article
+        setupShareButtons(post);
+
+        // Show the modal with animation
+        articleModal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+        
+        // Trigger animations
+        setTimeout(() => {
+            articleModal.classList.add('active');
+        }, 10);
+    }
+
+    function openPhotostoryArticle(post) {
+        const hasImage = post.image_url ? true : false;
+        const plainTextContent = stripHtml(post.content);
+        const title = getPostTitle(post);
+
+        // Get date information
+        const postDate = post.created_at || post.date || post.timestamp;
+        const dateDisplay = postDate ? formatDate(postDate) : '';
+
+        // Get view count
+        const viewCount = post.views || 0;
+
+        // Create the article content with updated layout
+        // Title above the photo, caption below, and meta info at the bottom
+        modalContent.innerHTML = `
+            <div class="article-inner" style="max-width: 100%; padding: 0; margin: 0; box-shadow: none; border-radius: 0;">
+                <!-- Close button properly positioned in the top right -->
+                <button id="closeModal" class="close-modal" aria-label="Close article" style="z-index: 100;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                
+                <!-- Mobile close button inside the modal -->
+                <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article" style="z-index: 100;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                
+                <!-- Title above the photo -->
+                <div class="photostory-modal-title-container">
+                    <h1 class="photostory-modal-title">${title}</h1>
+                    <p class="article-description">THE OFFICIAL PUBLICATION OF UCLM-SHS</p>
+                </div>
+                
+                <div style="position: relative; width: 100%; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    ${hasImage 
+                        ? `<img src="${post.image_url}" alt="${title}" style="max-width: 100%; max-height: 80vh; object-fit: contain;" class="article-main-image">` 
+                        : `<div style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; background-color: #10B981; color: white; font-size: 2rem;">PHOTOSTORY</div>`
+                    }
+                    
+                    <!-- Category badge -->
+                    <div style="position: absolute; top: 1rem; right: 1rem; background-color: #10B981; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; z-index: 3;">
+                        Photostory
+                    </div>
+                </div>
+                
+                <!-- Caption below the photo -->
+                <div style="background-color: white; padding: 2rem; text-align: center;">
+                    <p style="font-size: 1.3rem; line-height: 1.8; font-style: italic; margin: 0; color: var(--text-dark);">${plainTextContent}</p>
+                </div>
+                
+                <!-- Meta information below the caption -->
+                <div style="background-color: var(--gray-light); padding: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>By: ${post.author || 'Unknown'}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>Photojournalist: ${post.role || 'Unknown'}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>Date taken: ${dateDisplay}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>${viewCount} views</span>
+                    </div>
+                </div>
+                
+                <!-- Share and bookmark buttons -->
+                <div style="background-color: white; padding: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+                    <button class="bookmark-btn ${isPostBookmarked(post.id) ? 'bookmarked' : ''}" data-post-id="${post.id}" style="position: static; background-color: var(--gray-light);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isPostBookmarked(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="share-options" style="display: flex; gap: 0.5rem;">
+                        <button class="share-option" id="shareFacebook" title="Share on Facebook" style="background-color: var(--gray-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </button>
+                        <button class="share-option" id="shareTwitter" title="Share on Twitter" style="background-color: var(--gray-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                            </svg>
+                        </button>
+                        <button class="share-option" id="shareLink" title="Copy link" style="background-color: var(--gray-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Mobile share container -->
+                <div class="mobile-share-container">
+                    <button id="mobileShareToggle" class="mobile-share-toggle" aria-label="Share options" style="background-color: #10B981;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                    <div id="mobileShareOptions" class="mobile-share-options">
+                        <button id="shareFacebookMobile" class="mobile-share-option" title="Share on Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </button>
+                        <button id="shareTwitterMobile" class="mobile-share-option" title="Share on Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                            </svg>
+                        </button>
+                        <button id="copyLinkMobile" class="mobile-share-option" title="Copy link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Make article images clickable for lightbox view
+        const articleImages = modalContent.querySelectorAll('.article-main-image');
+        articleImages.forEach(img => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', () => {
+                lightboxImage.src = img.src;
+                imageLightbox.style.display = 'flex';
+                setTimeout(() => {
+                    imageLightbox.classList.add('active');
+                }, 10);
+            });
+        });
+
+        // Add event listeners to share buttons in article
+        setupShareButtons(post);
+
+        // Show the modal with animation
+        articleModal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+        
+        // Trigger animations
+        setTimeout(() => {
+            articleModal.classList.add('active');
+        }, 10);
+    }
+
+    function setupShareButtons(post) {
+        const postUrl = getPostUrl(post);
+        const title = getPostTitle(post);
+
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareLink = document.getElementById('shareLink');
+        const shareFacebookMobile = document.getElementById('shareFacebookMobile');
+        const shareTwitterMobile = document.getElementById('shareTwitterMobile');
+        const copyLinkMobile = document.getElementById('copyLinkMobile');
+        const mobileShareToggle = document.getElementById('mobileShareToggle');
+        const mobileShareOptions = document.getElementById('mobileShareOptions');
+        const closeModalBtn = document.getElementById('closeModal');
+        const mobileCloseModalBtn = document.getElementById('mobileCloseModal');
+
+        if (shareFacebook) {
+            shareFacebook.addEventListener('click', () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+            });
+        }
+
+        if (shareTwitter) {
+            shareTwitter.addEventListener('click', () => {
+                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+            });
+        }
+
+        if (shareLink) {
+            shareLink.addEventListener('click', () => {
+                copyToClipboard(postUrl);
+            });
+        }
+
+        if (shareFacebookMobile) {
+            shareFacebookMobile.addEventListener('click', () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+                mobileShareOptions.classList.remove('active');
+            });
+        }
+
+        if (shareTwitterMobile) {
+            shareTwitterMobile.addEventListener('click', () => {
+                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+                mobileShareOptions.classList.remove('active');
+            });
+        }
+
+        if (copyLinkMobile) {
+            copyLinkMobile.addEventListener('click', () => {
+                copyToClipboard(postUrl);
+                mobileShareOptions.classList.remove('active');
+            });
+        }
+
+        if (mobileShareToggle) {
+            mobileShareToggle.addEventListener('click', () => {
+                mobileShareOptions.classList.toggle('active');
+            });
+        }
+
+        // Close modal when clicking the close button
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeArticleModal);
+        }
+
+        // Close modal when clicking the mobile close button
+        if (mobileCloseModalBtn) {
+            mobileCloseModalBtn.addEventListener('click', closeArticleModal);
+        }
+
+        // Add event listeners to bookmark buttons in the article
+        modalContent.querySelectorAll('.bookmark-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const postId = button.getAttribute('data-post-id');
+                const isBookmarked = toggleBookmark(postId);
+                
+                // Update UI
+                updateBookmarkButtonsInView(postId, isBookmarked);
+            });
+        });
+    }
+
+    // Function to close the article modal
+    function closeArticleModal() {
+        // Animate the modal closing
+        articleModal.classList.remove('active');
+        
+        // After animation completes, hide the modal
+        setTimeout(() => {
+            articleModal.style.display = "none";
+            document.body.style.overflow = "auto"; // Re-enable scrolling
+            
+            // Update URL to remove post parameter
+            window.history.pushState({}, '', window.location.pathname);
+            currentPostId = null;
+        }, 300); // Match the animation duration
+    }
+
+    // Function to update reading progress
+    function updateReadingProgress() {
+        const modalContentElement = document.querySelector('.modal-content');
+        const scrollTop = modalContentElement.scrollTop;
+        const scrollHeight = modalContentElement.scrollHeight;
+        const clientHeight = modalContentElement.clientHeight;
+
+        const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
+        readingProgress.style.width = `${Math.min(scrollPercentage, 100)}%`;
+    }
+
+    function updateBookmarkButtonsInView(postId, isBookmarked) {
+        // Update all bookmark buttons for this post in the main view
+        document.querySelectorAll(`.bookmark-btn[data-post-id="${postId}"]`).forEach(btn => {
+            const bookmarkIcon = btn.querySelector('svg');
+            
+            if (isBookmarked) {
+                btn.classList.add('bookmarked');
+                bookmarkIcon.setAttribute('fill', 'currentColor');
+            } else {
+                btn.classList.remove('bookmarked');
+                bookmarkIcon.setAttribute('fill', 'none');
+            }
+        });
+    }
+
+    // Close lightbox when clicking the close button or anywhere on the lightbox
+    lightboxClose.addEventListener('click', () => {
         imageLightbox.classList.remove('active');
         setTimeout(() => {
             imageLightbox.style.display = "none";
         }, 300);
-    }
-});
-
-// Filter buttons event listeners
-filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        // Remove active class from all buttons
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        // Add active class to clicked button
-        button.classList.add('active');
-        // Filter posts
-        const filter = button.getAttribute('data-filter');
-        filterPosts(filter);
     });
-});
 
-// Category links event listeners
-categoryLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Get filter value
-        const filter = link.getAttribute('data-filter');
-        // Update filter buttons UI
-        filterButtons.forEach(btn => {
-            if (btn.getAttribute('data-filter') === filter) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-        // Filter posts
-        filterPosts(filter);
-        // Close mobile menu if open
-        mobileMenu.classList.remove('active');
-        overlay.classList.remove('active');
-        // Close mobile sidebar if open
-        mobileSidebar.classList.remove('active');
-        // Scroll to top of content
-        window.scrollTo({
-            top: document.querySelector('.content-area').offsetTop - 100,
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Mobile menu event listeners
-mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.add('active');
-    overlay.classList.add('active');
-});
-
-mobileMenuClose.addEventListener('click', () => {
-    mobileMenu.classList.remove('active');
-    overlay.classList.remove('active');
-});
-
-overlay.addEventListener('click', () => {
-    mobileMenu.classList.remove('active');
-    mobileSidebar.classList.remove('active');
-    overlay.classList.remove('active');
-});
-
-// Filter dropdown for mobile
-filterDropdownBtn.addEventListener('click', () => {
-    filterDropdownContent.classList.toggle('active');
-});
-
-// Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('#filterDropdownBtn') && !e.target.closest('#filterDropdownContent')) {
-        filterDropdownContent.classList.remove('active');
-    }
-});
-
-// Filter dropdown items event listeners
-filterDropdownItems.forEach(item => {
-    item.addEventListener('click', () => {
-        // Remove active class from all items
-        filterDropdownItems.forEach(i => i.classList.remove('active'));
-        // Add active class to clicked item
-        item.classList.add('active');
-        // Update current filter text
-        currentFilterText.textContent = item.textContent;
-        // Close dropdown
-        filterDropdownContent.classList.remove('active');
-        // Filter posts
-        const filter = item.getAttribute('data-filter');
-        filterPosts(filter);
-    });
-});
-
-// Mobile sidebar toggle
-mobileSidebarToggle.addEventListener('click', () => {
-    mobileSidebar.classList.add('active');
-    overlay.classList.add('active');
-});
-
-// Search input event listener
-searchInput.addEventListener('input', (e) => {
-    const query = e.target.value;
-    searchPosts(query);
-});
-
-// Close search results when clicking outside
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('#searchInput') && !e.target.closest('#searchResults')) {
-        searchResults.classList.remove('active');
-    }
-});
-
-// Search results event listener
-searchResults.addEventListener('click', (e) => {
-    const resultItem = e.target.closest('.search-result-item');
-    if (resultItem) {
-        const postId = resultItem.dataset.postId;
-        openArticle(postId);
-        incrementViewCount(postId);
-        searchResults.classList.remove('active');
-        searchInput.value = '';
-    }
-});
-
-// View toggle buttons event listeners
-gridViewBtn.addEventListener('click', () => {
-    toggleView('grid');
-});
-
-listViewBtn.addEventListener('click', () => {
-    toggleView('list');
-});
-
-// Load more button event listener
-loadMoreBtn.addEventListener('click', () => {
-    // Get filtered posts
-    let filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
-    
-    // Skip the first post (featured) and already displayed posts
-    filteredPosts = filteredPosts.slice(1);
-    
-    // Load more posts
-    loadMorePosts(filteredPosts);
-});
-
-// Close article modal when clicking outside the content
-articleModal.addEventListener('click', (e) => {
-    if (e.target === articleModal) {
-        closeArticleModal();
-    }
-});
-
-// Close article modal when pressing Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (imageLightbox.style.display === 'flex') {
+    imageLightbox.addEventListener('click', (e) => {
+        if (e.target === imageLightbox) {
             imageLightbox.classList.remove('active');
             setTimeout(() => {
                 imageLightbox.style.display = "none";
             }, 300);
-        } else if (articleModal.style.display === 'block') {
+        }
+    });
+
+    // Filter buttons event listeners
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+            // Filter posts
+            const filter = button.getAttribute('data-filter');
+            filterPosts(filter);
+        });
+    });
+
+    // Category links event listeners
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Get filter value
+            const filter = link.getAttribute('data-filter');
+            // Update filter buttons UI
+            filterButtons.forEach(btn => {
+                if (btn.getAttribute('data-filter') === filter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            // Filter posts
+            filterPosts(filter);
+            // Close mobile menu if open
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            // Close mobile sidebar if open
+            mobileSidebar.classList.remove('active');
+            // Scroll to top of content
+            window.scrollTo({
+                top: document.querySelector('.content-area').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Mobile menu event listeners
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.add('active');
+        overlay.classList.add('active');
+    });
+
+    mobileMenuClose.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+
+    overlay.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        mobileSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+
+    // Filter dropdown for mobile
+    filterDropdownBtn.addEventListener('click', () => {
+        filterDropdownContent.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#filterDropdownBtn') && !e.target.closest('#filterDropdownContent')) {
+            filterDropdownContent.classList.remove('active');
+        }
+    });
+
+    // Filter dropdown items event listeners
+    filterDropdownItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove active class from all items
+            filterDropdownItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked item
+            item.classList.add('active');
+            // Update current filter text
+            currentFilterText.textContent = item.textContent;
+            // Close dropdown
+            filterDropdownContent.classList.remove('active');
+            // Filter posts
+            const filter = item.getAttribute('data-filter');
+            filterPosts(filter);
+        });
+    });
+
+    // Mobile sidebar toggle
+    mobileSidebarToggle.addEventListener('click', () => {
+        mobileSidebar.classList.add('active');
+        overlay.classList.add('active');
+    });
+
+    // Search input event listener
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value;
+        searchPosts(query);
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#searchInput') && !e.target.closest('#searchResults')) {
+            searchResults.classList.remove('active');
+        }
+    });
+
+    // Search results event listener
+    searchResults.addEventListener('click', (e) => {
+        const resultItem = e.target.closest('.search-result-item');
+        if (resultItem) {
+            const postId = resultItem.dataset.postId;
+            openArticle(postId);
+            incrementViewCount(postId);
+            searchResults.classList.remove('active');
+            searchInput.value = '';
+        }
+    });
+
+    // View toggle buttons event listeners
+    gridViewBtn.addEventListener('click', () => {
+        toggleView('grid');
+    });
+
+    listViewBtn.addEventListener('click', () => {
+        toggleView('list');
+    });
+
+    // Load more button event listener
+    loadMoreBtn.addEventListener('click', () => {
+        // Get filtered posts
+        let filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
+        
+        // Skip the first post (featured) and already displayed posts
+        filteredPosts = filteredPosts.slice(1);
+        
+        // Load more posts
+        loadMorePosts(filteredPosts);
+    });
+
+    // Close article modal when clicking outside the content
+    articleModal.addEventListener('click', (e) => {
+        if (e.target === articleModal) {
             closeArticleModal();
         }
-    }
-});
+    });
 
-// Handle browser back/forward buttons
-window.addEventListener('popstate', (e) => {
-    if (articleModal.style.display === 'block') {
-        closeArticleModal();
-    } else {
-        checkUrlParams();
-    }
-});
+    // Close article modal when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (imageLightbox.style.display === 'flex') {
+                imageLightbox.classList.remove('active');
+                setTimeout(() => {
+                    imageLightbox.style.display = "none";
+                }, 300);
+            } else if (articleModal.style.display === 'block') {
+                closeArticleModal();
+            }
+        }
+    });
 
-// Initialize
-fetchPosts();
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+        if (articleModal.style.display === 'block') {
+            closeArticleModal();
+        } else {
+            checkUrlParams();
+        }
+    });
+
+    // Initialize
+    fetchPosts();
     </script>
 </body>
 </html>
