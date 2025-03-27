@@ -1894,6 +1894,7 @@
         .secondary-stories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
 
         .two-column-section {
@@ -1920,16 +1921,56 @@
         .article-title {
             font-size: 2rem;
         }
+        
+        .main-story-image-container {
+            height: 400px;
+        }
+        
+        .main-story-title {
+            font-size: 2.2rem;
+        }
     }
 
     @media (max-width: 768px) {
-        .top-bar-left, .top-bar-right {
-            display: none;
-        }
-
+        /* Existing styles... */
+    
         .top-bar {
-            text-align: center;
             padding: 0.3rem 0;
+        }
+    
+        .top-bar-container {
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+    
+        .top-bar-left {
+            font-size: 0.75rem;
+            justify-content: center;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+    
+        .top-bar-left .current-date {
+            width: 100%;
+            margin-bottom: 0.2rem;
+        }
+    
+        .top-bar-left div:nth-child(2) {
+            font-size: 0.7rem;
+        }
+    
+        .top-bar-right {
+            font-size: 0.75rem;
+        }
+        
+        .top-bar-container {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        
+        .top-bar-left, .top-bar-right {
+            justify-content: center;
         }
 
         .header-container {
@@ -1944,6 +1985,7 @@
 
         .news-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
 
         .secondary-stories {
@@ -1952,6 +1994,7 @@
 
         .featured-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
 
         .footer-grid {
@@ -1973,15 +2016,45 @@
             align-items: flex-start;
             gap: 1.5rem;
         }
+        
+        .main-story-image-container {
+            height: 300px;
+        }
+        
+        .main-story-title {
+            font-size: 1.8rem;
+        }
+        
+        .main-story-excerpt {
+            font-size: 1rem;
+        }
+        
+        .story-meta {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
     }
 
     @media (max-width: 576px) {
+        /* Existing styles... */
+    
+        .publication-name {
+            font-size: 1.6rem;
+        }
+    
+        .top-bar-right {
+            display: none; /* Hide "Follow us" on very small screens */
+        }
         .main-story-title {
-            font-size: 2rem;
+            font-size: 1.6rem;
         }
 
         .main-story-excerpt {
-            font-size: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .main-story-image-container {
+            height: 250px;
         }
 
         .secondary-story {
@@ -1991,10 +2064,12 @@
         .secondary-story-image-container {
             width: 100%;
             height: 180px;
+            margin-bottom: 1rem;
         }
 
         .article-inner {
             padding: 1.5rem;
+            margin-top: 4rem;
         }
 
         .article-title {
@@ -2004,25 +2079,54 @@
         .article-content {
             font-size: 1rem;
         }
+        
+        .article-content > p:first-of-type::first-letter {
+            font-size: 3rem;
+        }
+        
+        .close-modal {
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+        }
+        
+        .modal-logo-text {
+            font-size: 1.2rem;
+        }
+        
+        .modal-logo-img {
+            height: 30px;
+        }
+        
+        .search-input {
+            padding: 1rem 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .search-close {
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .publication-name {
+            font-size: 2rem;
+        }
+        
+        .logo-img {
+            height: 50px;
+        }
+        
+        .publication-tagline {
+            font-size: 0.8rem;
+        }
     }
 </style>
 </head>
 <body>
 <!-- Top bar with date and social links -->
-<div class="top-bar">
-    <div class="top-bar-container">
-        <div class="top-bar-left">
-            <div class="current-date" id="currentDate">Monday, March 26, 2025</div>
-            <div> | University of Cebu, Lapu-Lapu and Mandaue Senior High School</div>
-        </div>
-        <div class="top-bar-right">
-            <div class="social-links-mini">
-                <a href="https://www.facebook.com/AngSilakboUCLM" class="social-link-mini">Ang Silakbo</a>
-            </div>
-            <div>Follow Us at Facebook!</div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Main header with logo and search -->
 <header class="header-main">
@@ -2049,6 +2153,13 @@
 <!-- Navigation -->
 <nav class="nav-main">
     <div class="nav-container">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
         <ul class="nav-list">
             <li class="nav-item"><a href="#" class="nav-link active">Home</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Articles</a></li>
@@ -2056,13 +2167,7 @@
             <li class="nav-item"><a href="#" class="nav-link">Feature</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Silak-salitaan</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Photostory</a></li>
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </button>
+        </ul>
     </div>
 </nav>
 
@@ -2821,7 +2926,7 @@ function openArticle(postId) {
                     <div class="share-options">
                         <button class="share-option" id="shareFacebook" title="Share on Facebook">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                             </svg>
                         </button>
                         <button class="share-option" id="shareTwitter" title="Share on Twitter">
