@@ -166,7 +166,7 @@ class ImageProcessingService:
                 return metadata
 
         except Exception as e:
-            # Clean up local file in case of processing error
+            # Clean up local file in case of processing error here
             os.remove(local_path)
             raise HTTPException(status_code=500, detail=str(e))
 
