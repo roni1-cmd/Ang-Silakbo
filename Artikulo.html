@@ -52,6 +52,10 @@
         --headline-font: 'Playfair Display', serif;
         --body-font: 'Source Sans Pro', sans-serif;
         --article-font: 'Merriweather', serif;
+        
+        /* Skeleton loading colors */
+        --skeleton-base: #E9ECEF;
+        --skeleton-highlight: #F8F9FA;
     }
 
     * {
@@ -1935,6 +1939,147 @@
         font-family: var(--article-font);
     }
 
+    /* Skeleton loading styles */
+    .skeleton {
+        background: linear-gradient(90deg, var(--skeleton-base) 0%, var(--skeleton-highlight) 50%, var(--skeleton-base) 100%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 0;
+    }
+
+    .skeleton-card {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--white);
+        border: 1px solid var(--gray-light);
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .skeleton-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .skeleton-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .skeleton-category {
+        width: 80px;
+        height: 16px;
+    }
+
+    .skeleton-title {
+        width: 100%;
+        height: 24px;
+        margin-bottom: 0.5rem;
+    }
+
+    .skeleton-title-small {
+        width: 70%;
+        height: 20px;
+    }
+
+    .skeleton-excerpt {
+        width: 100%;
+        height: 80px;
+    }
+
+    .skeleton-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid var(--gray-light);
+    }
+
+    .skeleton-author {
+        width: 100px;
+        height: 16px;
+    }
+
+    .skeleton-date {
+        width: 80px;
+        height: 16px;
+    }
+
+    .skeleton-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .skeleton-line {
+        width: 100%;
+        height: 16px;
+        margin-bottom: 0.5rem;
+    }
+
+    .skeleton-line-short {
+        width: 60%;
+        height: 16px;
+    }
+
+    .skeleton-main-image {
+        width: 100%;
+        height: 500px;
+    }
+
+    .skeleton-secondary {
+        display: flex;
+        gap: 1rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--gray-light);
+        margin-bottom: 1.5rem;
+    }
+
+    .skeleton-secondary-image {
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+    }
+
+    .skeleton-secondary-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .skeleton-trending-item {
+        display: flex;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--gray-light);
+        margin-bottom: 1rem;
+    }
+
+    .skeleton-trending-number {
+        width: 30px;
+        height: 30px;
+    }
+
+    .skeleton-trending-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    @keyframes skeleton-loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
     /* Animation keyframes */
     @keyframes fadeIn {
         from { opacity: 0; }
@@ -2227,6 +2372,45 @@
             flex: 1;
             justify-content: flex-end;
         }
+        
+        /* Mobile-specific modal improvements */
+        .mobile-close-modal {
+            display: flex;
+        }
+        
+        .close-modal {
+            display: none;
+        }
+        
+        .article-meta {
+            font-size: 0.85rem;
+        }
+        
+        .article-meta-item {
+            width: 100%;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+        }
+        
+        .article-content h3 {
+            font-size: 1.3rem;
+        }
+        
+        .article-content blockquote {
+            padding: 1rem 1rem 1rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .share-label {
+            font-size: 0.9rem;
+        }
+        
+        .share-option {
+            width: 32px;
+            height: 32px;
+        }
     }
 </style>
 </head>
@@ -2240,9 +2424,7 @@
         <div class="top-bar-right">
             <div>Follow us:</div>
             <div class="social-links-mini">
-                <a href="#" class="social-link-mini">Facebook</a>
-                <a href="#" class="social-link-mini">Twitter</a>
-                <a href="#" class="social-link-mini">Instagram</a>
+                <a href="https://www.facebook.com/AngSilakboUCLM" class="social-link-mini">Facebook - Ang Silakbo</a>
             </div>
         </div>
     </div>
@@ -2310,72 +2492,54 @@
     <div class="container">
         <!-- Hero section with main story and secondary stories -->
         <section class="hero-section">
-            <div class="main-story" data-aos="fade-up" data-aos-duration="1000">
+            <!-- Main story skeleton loader -->
+            <div class="main-story" id="mainStorySkeleton">
                 <div class="main-story-image-container">
-                    <img src="https://via.placeholder.com/800x500" alt="Main story image" class="main-story-image">
+                    <div class="skeleton skeleton-main-image"></div>
                 </div>
-                <div class="category-tag">Feature</div>
-                <h1 class="main-story-title">The Evolution of Filipino Literature in the Digital Age</h1>
-                <p class="main-story-excerpt">As technology continues to reshape our world, Filipino literature finds new expressions and audiences through digital platforms, creating unprecedented opportunities for young writers.</p>
+                <div class="skeleton skeleton-category" style="width: 80px; height: 24px;"></div>
+                <div class="skeleton skeleton-title" style="height: 40px; margin-bottom: 1rem;"></div>
+                <div class="skeleton skeleton-title" style="height: 40px; width: 80%; margin-bottom: 1rem;"></div>
+                <div class="skeleton skeleton-excerpt" style="height: 100px;"></div>
                 <div class="story-meta">
-                    <div class="meta-author">By <span>Maria Santos</span></div>
-                    <div class="meta-date">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        March 25, 2025
-                    </div>
-                    <div class="meta-time">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        8 min read
-                    </div>
+                    <div class="skeleton skeleton-author" style="width: 120px;"></div>
+                    <div class="skeleton skeleton-date" style="width: 100px;"></div>
+                    <div class="skeleton skeleton-date" style="width: 80px;"></div>
                 </div>
             </div>
-            <div class="secondary-stories">
-                <div class="secondary-story" data-aos="fade-left" data-aos-duration="800" data-aos-delay="100">
-                    <div class="secondary-story-image-container">
-                        <img src="https://via.placeholder.com/120x120" alt="Secondary story image" class="secondary-story-image">
-                    </div>
-                    <div class="secondary-story-content">
-                        <div class="secondary-story-category">Literary</div>
-                        <h2 class="secondary-story-title">Student Poets Win National Recognition in Annual Competition</h2>
-                        <div class="secondary-story-meta">March 24, 2025</div>
-                    </div>
-                </div>
-                <div class="secondary-story" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
-                    <div class="secondary-story-image-container">
-                        <img src="https://via.placeholder.com/120x120" alt="Secondary story image" class="secondary-story-image">
-                    </div>
-                    <div class="secondary-story-content">
-                        <div class="secondary-story-category">Silak-salitaan</div>
-                        <h2 class="secondary-story-title">Preserving Indigenous Filipino Words Through Modern Media</h2>
-                        <div class="secondary-story-meta">March 23, 2025</div>
+            
+            <!-- Secondary stories skeleton loader -->
+            <div class="secondary-stories" id="secondaryStoriesSkeleton">
+                <div class="skeleton-secondary">
+                    <div class="skeleton skeleton-secondary-image"></div>
+                    <div class="skeleton-secondary-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
                     </div>
                 </div>
-                <div class="secondary-story" data-aos="fade-left" data-aos-duration="800" data-aos-delay="300">
-                    <div class="secondary-story-image-container">
-                        <img src="https://via.placeholder.com/120x120" alt="Secondary story image" class="secondary-story-image">
-                    </div>
-                    <div class="secondary-story-content">
-                        <div class="secondary-story-category">Photostory</div>
-                        <h2 class="secondary-story-title">A Day in the Life: Visual Journey Through Campus Culture</h2>
-                        <div class="secondary-story-meta">March 22, 2025</div>
+                <div class="skeleton-secondary">
+                    <div class="skeleton skeleton-secondary-image"></div>
+                    <div class="skeleton-secondary-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
                     </div>
                 </div>
-                <div class="secondary-story" data-aos="fade-left" data-aos-duration="800" data-aos-delay="400">
-                    <div class="secondary-story-image-container">
-                        <img src="https://via.placeholder.com/120x120" alt="Secondary story image" class="secondary-story-image">
+                <div class="skeleton-secondary">
+                    <div class="skeleton skeleton-secondary-image"></div>
+                    <div class="skeleton-secondary-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
                     </div>
-                    <div class="secondary-story-content">
-                        <div class="secondary-story-category">Feature</div>
-                        <h2 class="secondary-story-title">The Rising Influence of Filipino Youth in Global Literature</h2>
-                        <div class="secondary-story-meta">March 21, 2025</div>
+                </div>
+                <div class="skeleton-secondary">
+                    <div class="skeleton skeleton-secondary-image"></div>
+                    <div class="skeleton-secondary-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
                     </div>
                 </div>
             </div>
@@ -2385,15 +2549,79 @@
         <section>
             <h2 class="section-title" data-aos="fade-right" data-aos-duration="800">Latest Articles</h2>
             <div class="news-grid" id="postsContainer">
-                <!-- Articles will be loaded here -->
+                <!-- Skeleton loaders for news grid -->
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-excerpt"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton skeleton-author"></div>
+                            <div class="skeleton skeleton-date"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-excerpt"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton skeleton-author"></div>
+                            <div class="skeleton skeleton-date"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-excerpt"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton skeleton-author"></div>
+                            <div class="skeleton skeleton-date"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Featured section -->
         <section class="featured-section" data-aos="fade-up" data-aos-duration="1000">
             <h2 class="section-title">Featured Stories</h2>
-            <div class="featured-grid">
-                <!-- Featured stories will be loaded here -->
+            <div class="featured-grid" id="featuredGrid">
+                <!-- Skeleton loaders for featured grid -->
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image" style="height: 180px;"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image" style="height: 180px;"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image" style="height: 180px;"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image" style="height: 180px;"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton skeleton-title-small"></div>
+                        <div class="skeleton skeleton-date"></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -2402,14 +2630,71 @@
             <div class="column-left">
                 <h2 class="section-title" data-aos="fade-right" data-aos-duration="800">Opinion & Analysis</h2>
                 <div id="literaryOpinionContainer">
-                    <!-- Literary posts will be loaded here instead of placeholder content -->
+                    <!-- Skeleton loaders for literary opinion -->
+                    <div class="opinion-card">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="opinion-author">
+                            <div class="skeleton skeleton-circle"></div>
+                            <div class="opinion-author-info" style="width: 100%;">
+                                <div class="skeleton skeleton-line-short"></div>
+                                <div class="skeleton skeleton-line-short" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opinion-card" style="margin-top: 2rem;">
+                        <div class="skeleton skeleton-category"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="opinion-author">
+                            <div class="skeleton skeleton-circle"></div>
+                            <div class="opinion-author-info" style="width: 100%;">
+                                <div class="skeleton skeleton-line-short"></div>
+                                <div class="skeleton skeleton-line-short" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="column-right">
                 <div class="sidebar-widget" data-aos="fade-left" data-aos-duration="800">
                     <h3 class="widget-title">Trending Now</h3>
-                    <div class="trending-list">
-                        <!-- Trending items will be loaded here -->
+                    <div class="trending-list" id="trendingList">
+                        <!-- Skeleton loaders for trending items -->
+                        <div class="skeleton-trending-item">
+                            <div class="skeleton skeleton-trending-number"></div>
+                            <div class="skeleton-trending-content">
+                                <div class="skeleton skeleton-title-small"></div>
+                                <div class="skeleton skeleton-date"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-trending-item">
+                            <div class="skeleton skeleton-trending-number"></div>
+                            <div class="skeleton-trending-content">
+                                <div class="skeleton skeleton-title-small"></div>
+                                <div class="skeleton skeleton-date"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-trending-item">
+                            <div class="skeleton skeleton-trending-number"></div>
+                            <div class="skeleton-trending-content">
+                                <div class="skeleton skeleton-title-small"></div>
+                                <div class="skeleton skeleton-date"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-trending-item">
+                            <div class="skeleton skeleton-trending-number"></div>
+                            <div class="skeleton-trending-content">
+                                <div class="skeleton skeleton-title-small"></div>
+                                <div class="skeleton skeleton-date"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-trending-item" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                            <div class="skeleton skeleton-trending-number"></div>
+                            <div class="skeleton-trending-content">
+                                <div class="skeleton skeleton-title-small"></div>
+                                <div class="skeleton skeleton-date"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="sidebar-widget" data-aos="fade-left" data-aos-duration="800" data-aos-delay="100">
@@ -2540,6 +2825,13 @@
             <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
     </button>
+    <!-- Mobile close button for better mobile UX -->
+    <button id="mobileCloseModal" class="mobile-close-modal" aria-label="Close article">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
 </div>
 
 <!-- Mobile menu -->
@@ -2563,8 +2855,8 @@
         <a href="#" class="mobile-nav-link">Feature</a>
         <a href="#" class="mobile-nav-link">Silak-salitaan</a>
         <a href="#" class="mobile-nav-link">Photostory</a>
-        <a href="#" class="mobile-nav-link">About</a>
-        <a href="#" class="mobile-nav-link">Contact</a>
+        <a href="About Us.html" class="mobile-nav-link">About</a>
+        <a href="Chat Request.html" class="mobile-nav-link">Contact</a>
     </nav>
     <div class="mobile-categories">
         <h3 class="mobile-section-title">Categories</h3>
@@ -2605,10 +2897,15 @@ const searchToggle = document.getElementById("searchToggle");
 const searchOverlay = document.getElementById("searchOverlay");
 const searchClose = document.getElementById("searchClose");
 const closeModal = document.getElementById("closeModal");
+const mobileCloseModal = document.getElementById("mobileCloseModal");
 const mobileMenuBtn = document.getElementById("mobileMenuBtn");
 const mobileMenu = document.getElementById("mobileMenu");
 const mobileMenuClose = document.getElementById("mobileMenuClose");
 const mobileMenuOverlay = document.getElementById("mobileMenuOverlay");
+const mainStorySkeleton = document.getElementById("mainStorySkeleton");
+const secondaryStoriesSkeleton = document.getElementById("secondaryStoriesSkeleton");
+const featuredGrid = document.getElementById("featuredGrid");
+const trendingList = document.getElementById("trendingList");
 
 // Set current date
 const currentDateElement = document.getElementById("currentDate");
@@ -2626,6 +2923,7 @@ let currentFilter = 'article';
 let currentPostId = null;
 let bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
 let viewCounts = JSON.parse(localStorage.getItem('viewCounts')) || {};
+let isLoading = true;
 
 // Initialize AOS animations
 document.addEventListener('DOMContentLoaded', function() {
@@ -2781,23 +3079,49 @@ function getReadingTime(text) {
 function filterPosts(filter) {
     currentFilter = filter;
     displayedPosts = 0;
+    
+    // Show skeleton loaders
     postsContainer.innerHTML = "";
-
-    let filteredPosts = allPosts.filter(post => post.category.toLowerCase() === filter);
-
-    if (filteredPosts.length === 0) {
-        postsContainer.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light);">
-                No articles found in this category. Please try another filter.
+    for (let i = 0; i < 3; i++) {
+        const skeletonCard = document.createElement('div');
+        skeletonCard.className = 'skeleton-card';
+        skeletonCard.innerHTML = `
+            <div class="skeleton skeleton-image"></div>
+            <div class="skeleton-content">
+                <div class="skeleton skeleton-category"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-excerpt"></div>
+                <div class="skeleton-meta">
+                    <div class="skeleton skeleton-author"></div>
+                    <div class="skeleton skeleton-date"></div>
+                </div>
             </div>
         `;
-        loadMoreBtn.style.display = 'none';
-        return;
+        postsContainer.appendChild(skeletonCard);
     }
+    
+    // Hide load more button while loading
+    loadMoreBtn.style.display = 'none';
+    
+    // Short timeout to simulate loading
+    setTimeout(() => {
+        let filteredPosts = allPosts.filter(post => post.category.toLowerCase() === filter);
+        postsContainer.innerHTML = "";
+        
+        if (filteredPosts.length === 0) {
+            postsContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light);">
+                    No articles found in this category. Please try another filter.
+                </div>
+            `;
+            loadMoreBtn.style.display = 'none';
+            return;
+        }
 
-    loadMorePosts(filteredPosts);
-    updateLoadMoreButton(filteredPosts);
-    addEventListeners();
+        loadMorePosts(filteredPosts);
+        updateLoadMoreButton(filteredPosts);
+        addEventListeners();
+    }, 800);
 }
 
 // Function to load more posts
@@ -3162,72 +3486,97 @@ function addEventListeners() {
 
 // Function to search posts
 function searchPosts(query) {
-    // Filter posts that match the query in title, content, or author
-    const results = allPosts.filter(post => {
-        const title = getPostTitle(post).toLowerCase();
-        const content = stripHtml(post.content || '').toLowerCase();
-        const author = (post.author || '').toLowerCase();
-        const category = (post.category || '').toLowerCase();
-        
-        query = query.toLowerCase();
-        
-        return title.includes(query) || 
-               content.includes(query) || 
-               author.includes(query) ||
-               category.includes(query);
-    });
-    
-    // Clear the posts container
-    postsContainer.innerHTML = '';
-    
-    // Show search results heading
-    const searchResultsHeading = document.createElement('h2');
-    searchResultsHeading.className = 'section-title';
-    searchResultsHeading.style.gridColumn = '1 / -1';
-    searchResultsHeading.textContent = `Search Results for "${query}"`;
-    postsContainer.appendChild(searchResultsHeading);
-    
-    // Display results or no results message
-    if (results.length === 0) {
-        const noResults = document.createElement('div');
-        noResults.style.gridColumn = '1 / -1';
-        noResults.style.textAlign = 'center';
-        noResults.style.padding = '3rem 1rem';
-        noResults.style.color = 'var(--text-light)';
-        noResults.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem;">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                <line x1="8" y1="11" x2="14" y2="11"></line>
-            </svg>
-            <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">No results found</h3>
-            <p>We couldn't find any articles matching your search.</p>
+    // Show skeleton loaders
+    postsContainer.innerHTML = "";
+    for (let i = 0; i < 3; i++) {
+        const skeletonCard = document.createElement('div');
+        skeletonCard.className = 'skeleton-card';
+        skeletonCard.innerHTML = `
+            <div class="skeleton skeleton-image"></div>
+            <div class="skeleton-content">
+                <div class="skeleton skeleton-category"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-excerpt"></div>
+                <div class="skeleton-meta">
+                    <div class="skeleton skeleton-author"></div>
+                    <div class="skeleton skeleton-date"></div>
+                </div>
+            </div>
         `;
-        postsContainer.appendChild(noResults);
-    } else {
-        // Create a container for the results
-        const resultsContainer = document.createElement('div');
-        resultsContainer.className = 'news-grid';
-        resultsContainer.style.gridColumn = '1 / -1';
-        postsContainer.appendChild(resultsContainer);
-        
-        // Display each result
-        results.forEach((post, index) => {
-            createNewsCard(post, index, resultsContainer);
-        });
-        
-        // Add event listeners to the new cards
-        addEventListeners();
+        postsContainer.appendChild(skeletonCard);
     }
     
-    // Hide load more button
+    // Hide load more button while loading
     loadMoreBtn.style.display = 'none';
+    
+    // Short timeout to simulate loading
+    setTimeout(() => {
+        // Filter posts that match the query in title, content, or author
+        const results = allPosts.filter(post => {
+            const title = getPostTitle(post).toLowerCase();
+            const content = stripHtml(post.content || '').toLowerCase();
+            const author = (post.author || '').toLowerCase();
+            const category = (post.category || '').toLowerCase();
+            
+            query = query.toLowerCase();
+            
+            return title.includes(query) || 
+                content.includes(query) || 
+                author.includes(query) ||
+                category.includes(query);
+        });
+        
+        // Clear the posts container
+        postsContainer.innerHTML = '';
+        
+        // Show search results heading
+        const searchResultsHeading = document.createElement('h2');
+        searchResultsHeading.className = 'section-title';
+        searchResultsHeading.style.gridColumn = '1 / -1';
+        searchResultsHeading.textContent = `Search Results for "${query}"`;
+        postsContainer.appendChild(searchResultsHeading);
+        
+        // Display results or no results message
+        if (results.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.style.gridColumn = '1 / -1';
+            noResults.style.textAlign = 'center';
+            noResults.style.padding = '3rem 1rem';
+            noResults.style.color = 'var(--text-light)';
+            noResults.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem;">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">No results found</h3>
+                <p>We couldn't find any articles matching your search.</p>
+            `;
+            postsContainer.appendChild(noResults);
+        } else {
+            // Create a container for the results
+            const resultsContainer = document.createElement('div');
+            resultsContainer.className = 'news-grid';
+            resultsContainer.style.gridColumn = '1 / -1';
+            postsContainer.appendChild(resultsContainer);
+            
+            // Display each result
+            results.forEach((post, index) => {
+                createNewsCard(post, index, resultsContainer);
+            });
+            
+            // Add event listeners to the new cards
+            addEventListeners();
+        }
+        
+        // Hide load more button
+        loadMoreBtn.style.display = 'none';
+    }, 800);
 }
 
 // Function to update trending section with real data
 function updateTrendingSection() {
-    const trendingList = document.querySelector('.trending-list');
-    if (!trendingList || allPosts.length === 0) return;
+    if (allPosts.length === 0) return;
     
     // Sort posts by views (descending)
     const trendingPosts = [...allPosts]
@@ -3271,10 +3620,7 @@ function updateTrendingSection() {
 
 // Function to update hero section with real data
 function updateHeroSection() {
-    const mainStory = document.querySelector('.main-story');
-    const secondaryStories = document.querySelector('.secondary-stories');
-    
-    if (!mainStory || !secondaryStories || allPosts.length === 0) return;
+    if (allPosts.length === 0) return;
     
     // Get the most recent post for main story
     const featuredPost = allPosts[0];
@@ -3282,52 +3628,55 @@ function updateHeroSection() {
     // Get the next 4 posts for secondary stories
     const secondaryPosts = allPosts.slice(1, 5);
     
-    // Update main story
-    if (featuredPost) {
-        const title = getPostTitle(featuredPost);
-        const plainTextContent = stripHtml(featuredPost.content || '');
-        const excerpt = truncateText(plainTextContent, 40);
-        const hasImage = featuredPost.image_url ? true : false;
-        const postDate = formatDate(featuredPost.created_at || featuredPost.date || featuredPost.timestamp);
-        
-        mainStory.innerHTML = `
-            <div class="main-story-image-container">
-                <img src="${hasImage ? featuredPost.image_url : 'https://via.placeholder.com/800x500'}" alt="${title}" class="main-story-image" onerror="this.src='https://via.placeholder.com/800x500?text=${featuredPost.category}'">
-            </div>
-            <div class="category-tag">${featuredPost.category}</div>
-            <h1 class="main-story-title">${title}</h1>
-            <p class="main-story-excerpt">${excerpt}</p>
-            <div class="story-meta">
-                <div class="meta-author">By <span>${featuredPost.author || 'Unknown'}</span></div>
-                <div class="meta-date">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    ${postDate}
-                </div>
-                <div class="meta-time">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    ${getReadingTime(plainTextContent)} min read
-                </div>
-            </div>
-        `;
-        
-        // Add click event to main story
-        mainStory.dataset.postId = featuredPost.id;
-        mainStory.addEventListener('click', () => {
-            openArticle(featuredPost.id);
-            incrementViewCount(featuredPost.id);
-        });
-    }
+    // Create main story element
+    const mainStory = document.createElement('div');
+    mainStory.className = 'main-story';
+    mainStory.dataset.postId = featuredPost.id;
+    mainStory.setAttribute('data-aos', 'fade-up');
+    mainStory.setAttribute('data-aos-duration', '1000');
     
-    // Update secondary stories
-    secondaryStories.innerHTML = '';
+    const title = getPostTitle(featuredPost);
+    const plainTextContent = stripHtml(featuredPost.content || '');
+    const excerpt = truncateText(plainTextContent, 40);
+    const hasImage = featuredPost.image_url ? true : false;
+    const postDate = formatDate(featuredPost.created_at || featuredPost.date || featuredPost.timestamp);
+    
+    mainStory.innerHTML = `
+        <div class="main-story-image-container">
+            <img src="${hasImage ? featuredPost.image_url : 'https://via.placeholder.com/800x500'}" alt="${title}" class="main-story-image" onerror="this.src='https://via.placeholder.com/800x500?text=${featuredPost.category}'">
+        </div>
+        <div class="category-tag">${featuredPost.category}</div>
+        <h1 class="main-story-title">${title}</h1>
+        <p class="main-story-excerpt">${excerpt}</p>
+        <div class="story-meta">
+            <div class="meta-author">By <span>${featuredPost.author || 'Unknown'}</span></div>
+            <div class="meta-date">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                ${postDate}
+            </div>
+            <div class="meta-time">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                ${getReadingTime(plainTextContent)} min read
+            </div>
+        </div>
+    `;
+    
+    // Replace skeleton with main story
+    mainStorySkeleton.parentNode.replaceChild(mainStory, mainStorySkeleton);
+    
+    // Create secondary stories container
+    const secondaryStoriesContainer = document.createElement('div');
+    secondaryStoriesContainer.className = 'secondary-stories';
+    
+    // Add secondary stories
     secondaryPosts.forEach((post, index) => {
         const title = getPostTitle(post);
         const hasImage = post.image_url ? true : false;
@@ -3351,10 +3700,18 @@ function updateHeroSection() {
             </div>
         `;
         
-        secondaryStories.appendChild(secondaryStory);
+        secondaryStoriesContainer.appendChild(secondaryStory);
     });
     
-    // Add event listeners to secondary stories
+    // Replace skeleton with secondary stories
+    secondaryStoriesSkeleton.parentNode.replaceChild(secondaryStoriesContainer, secondaryStoriesSkeleton);
+    
+    // Add event listeners
+    mainStory.addEventListener('click', () => {
+        openArticle(featuredPost.id);
+        incrementViewCount(featuredPost.id);
+    });
+    
     document.querySelectorAll('.secondary-story').forEach(story => {
         story.addEventListener('click', () => {
             const postId = story.dataset.postId;
@@ -3368,8 +3725,7 @@ function updateHeroSection() {
 
 // Function to update featured section with real data
 function updateFeaturedSection() {
-    const featuredGrid = document.querySelector('.featured-grid');
-    if (!featuredGrid || allPosts.length === 0) return;
+    if (allPosts.length === 0) return;
     
     // Get posts with feature category or high view count
     const featuredPosts = allPosts.filter(post => 
@@ -3420,8 +3776,7 @@ function updateFeaturedSection() {
 
 // Function to update Opinion & Analysis section with literary posts
 function updateOpinionSection() {
-    const literaryOpinionContainer = document.getElementById('literaryOpinionContainer');
-    if (!literaryOpinionContainer || allPosts.length === 0) return;
+    if (allPosts.length === 0) return;
     
     // Get posts with literary category
     const literaryPosts = allPosts.filter(post => 
@@ -3465,6 +3820,7 @@ function updateDynamicSections() {
     updateTrendingSection();
     updateFeaturedSection();
     updateOpinionSection();
+    isLoading = false;
 }
 
 // Fetch posts from Supabase
@@ -3476,7 +3832,14 @@ async function fetchPosts() {
             throw error;
         }
 
-        if (posts.length === 0) {
+        if (posts && posts.length > 0) {
+            // Sort posts by created_at date (newest first)
+            allPosts = [...posts].sort((a, b) => {
+                const dateA = a.created_at || a.date || a.timestamp || a.id;
+                const dateB = b.created_at || b.date || b.timestamp || b.id;
+                return new Date(dateB) - new Date(dateA);
+            });
+        } else {
             // Create sample posts if no posts exist
             const samplePosts = [
                 {
@@ -3571,32 +3934,37 @@ async function fetchPosts() {
             ];
 
             allPosts = samplePosts;
-        } else {
-            // Sort posts by created_at date (newest first)
-            allPosts = [...posts].sort((a, b) => {
-                const dateA = a.created_at || a.date || a.timestamp || a.id;
-                const dateB = b.created_at || b.date || b.timestamp || b.id;
-                return new Date(dateB) - new Date(dateA);
-            });
         }
         
-        // Apply initial filter
-        filterPosts('article');
-        
-        // Update dynamic sections
-        updateDynamicSections();
-        
-        // Check URL parameters for direct article access
-        checkUrlParams();
+        // Simulate loading delay for skeleton loaders
+        setTimeout(() => {
+            // Update dynamic sections
+            updateDynamicSections();
+                        // Apply initial filter
+                        filterPosts('article');
+            
+            // Check URL parameters for direct article access
+            checkUrlParams();
+        }, 1000); // 1 second delay to show skeleton loaders
 
     } catch (error) {
+        // Show error message in posts container
         postsContainer.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #D33;">
-                Error loading articles: ${error.message || 'Unknown error'}
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Error loading articles</h3>
+                <p>${error.message || 'Unknown error'}</p>
             </div>
         `;
         loadMoreBtn.style.display = 'none';
         console.error("Error fetching posts:", error);
+        
+        // Hide skeleton loaders
+        isLoading = false;
     }
 }
 
@@ -3621,18 +3989,39 @@ document.addEventListener('DOMContentLoaded', () => {
         offset: 100,
         easing: 'ease-out-cubic'
     });
-    
+
     // Fetch posts
     fetchPosts();
 
     // Load more button
     loadMoreBtn.addEventListener('click', () => {
         const filteredPosts = allPosts.filter(post => post.category.toLowerCase() === currentFilter);
-        loadMorePosts(filteredPosts);
+        loadMoreBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+            </svg>
+            Loading...
+        `;
+        
+        // Simulate loading delay
+        setTimeout(() => {
+            loadMorePosts(filteredPosts);
+            loadMoreBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="7 13 12 18 17 13"></polyline>
+                    <polyline points="7 6 12 11 17 6"></polyline>
+                </svg>
+                Load More Articles
+            `;
+        }, 500);
     });
 
     // Close modal
     closeModal.addEventListener('click', closeArticleModal);
+
+    // Mobile close modal
+    mobileCloseModal.addEventListener('click', closeArticleModal);
 
     // Close modal when clicking outside
     articleModal.addEventListener('click', (e) => {
