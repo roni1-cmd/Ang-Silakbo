@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Registered Applicants</title>
+    <title>Silakbo Applicants Dashboard</title>
     <link rel="icon" href="SILAKBO.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1447,6 +1447,27 @@
             line-height: 1.6;
         }
 
+        /* View Experience Button */
+        .view-experience-btn {
+            color: var(--primary-color);
+            background-color: var(--primary-transparent);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .view-experience-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
         /* Loading States */
         .loading-container {
             display: flex;
@@ -1700,6 +1721,21 @@
         @keyframes shimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
+        }
+
+        /* Experience Modal */
+        .experience-modal .modal-body {
+            padding: 0;
+        }
+
+        .experience-list {
+            padding: 1.5rem;
+        }
+
+        .experience-modal-empty {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
         }
     </style>
 </head>
@@ -1984,6 +2020,27 @@
         </div>
     </div>
 
+    <!-- Experience Modal -->
+    <div class="modal" id="experienceModal" class="experience-modal">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <div class="modal-title-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <span id="experienceModalTitle">Applicant's Experience</span>
+            </h2>
+            <button class="modal-close" id="experienceModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="experience-list" id="experienceList">
+                <!-- Experience details will be inserted here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="closeExperienceModalBtn">Close</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
@@ -2029,12 +2086,18 @@
         const uniquePositionsElement = document.getElementById('uniquePositions');
         const applicationRateElement = document.getElementById('applicationRate');
         const themeToggle = document.getElementById('themeToggle');
+        const experienceModal = document.getElementById('experienceModal');
+        const experienceModalClose = document.getElementById('experienceModalClose');
+        const closeExperienceModalBtn = document.getElementById('closeExperienceModalBtn');
+        const experienceModalTitle = document.getElementById('experienceModalTitle');
+        const experienceList = document.getElementById('experienceList');
 
         // State
         let allApplicants = [];
         let currentPage = 1;
         const itemsPerPage = 10;
         let isDarkMode = localStorage.getItem('darkMode') === 'true';
+        let currentApplicant = null;
 
         // Initialize Theme
         if (isDarkMode) {
@@ -2216,7 +2279,11 @@
                     positionCell.innerHTML = `<div class="detail-value"><i class="fas fa-briefcase detail-icon"></i><span class="detail-text">${applicant.position || 'N/A'}</span></div>`;
                     
                     const experienceCell = row.insertCell();
-                    experienceCell.innerHTML = `<div class="detail-value"><i class="fas fa-star detail-icon"></i><span class="detail-text">${formatExperience(applicant.experience)}</span></div>`;
+                    experienceCell.innerHTML = `
+                        <button class="view-experience-btn" data-applicant-id="${index}">
+                            <i class="fas fa-eye"></i> View Applicant's Experience
+                        </button>
+                    `;
                     
                     const dateCell = row.insertCell();
                     if (applicant.timestamp) {
@@ -2250,6 +2317,9 @@
                             showMessage("No email address available for this applicant.", 'warning');
                         }
                     };
+
+                    const viewExperienceBtn = experienceCell.querySelector('.view-experience-btn');
+                    viewExperienceBtn.onclick = () => showExperienceDetails(applicant);
                 });
                 
                 if (pageInfo) {
@@ -2259,6 +2329,44 @@
 
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Show Experience Details
+        function showExperienceDetails(applicant) {
+            currentApplicant = applicant;
+            experienceModalTitle.textContent = `${applicant.name}'s Experience`;
+            
+            if (!applicant.experience || applicant.experience.trim() === '') {
+                experienceList.innerHTML = `
+                    <div class="experience-modal-empty">
+                        <i class="fas fa-info-circle"></i> No experience information provided.
+                    </div>
+                `;
+            } else {
+                const experienceItems = parseExperience(applicant.experience);
+                
+                if (experienceItems.length > 0) {
+                    experienceList.innerHTML = experienceItems.map(exp => `
+                        <div class="experience-card">
+                            ${exp.title ? `<div class="experience-header">
+                                <div class="experience-title">${exp.title}</div>
+                            </div>` : ''}
+                            ${exp.company ? `<div class="experience-company">${exp.company}</div>` : ''}
+                            <div class="experience-description">${exp.description}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    experienceList.innerHTML = `
+                        <div class="experience-card">
+                            <div class="experience-description">${applicant.experience}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            modalBackdrop.style.display = "block";
+            experienceModal.style.display = "block";
+            document.body.style.overflow = "hidden"; // Prevent scrolling
         }
 
         // Format Experience
@@ -2495,18 +2603,11 @@
                         </div>
                         Experience
                     </h3>
-                    ${experienceItems.length > 0 ? 
-                        experienceItems.map(exp => `
-                            <div class="experience-card">
-                                ${exp.title ? `<div class="experience-header">
-                                    <div class="experience-title">${exp.title}</div>
-                                </div>` : ''}
-                                ${exp.company ? `<div class="experience-company">${exp.company}</div>` : ''}
-                                <div class="experience-description">${exp.description}</div>
-                            </div>
-                        `).join('') : 
-                        `<div class="detail-value">${applicant.experience || 'No experience information provided.'}</div>`
-                    }
+                    <div class="detail-value">
+                        <button class="btn btn-primary" id="viewFullExperienceBtn">
+                            <i class="fas fa-eye"></i> View Applicant's Experience
+                        </button>
+                    </div>
                     
                     ${skills.size > 0 ? `
                         <h4 class="detail-section-title" style="margin-top: 1rem; font-size: 0.9rem;">
@@ -2535,6 +2636,15 @@
             const detailsElement = document.getElementById('applicantDetails');
             if (detailsElement) {
                 detailsElement.innerHTML = detailsHTML;
+                
+                // Add event listener to the view experience button
+                const viewFullExperienceBtn = document.getElementById('viewFullExperienceBtn');
+                if (viewFullExperienceBtn) {
+                    viewFullExperienceBtn.addEventListener('click', () => {
+                        closeModal();
+                        showExperienceDetails(applicant);
+                    });
+                }
             }
             
             modalBackdrop.style.display = "block";
@@ -2546,6 +2656,7 @@
         function closeModal() {
             modalBackdrop.style.display = "none";
             applicantModal.style.display = "none";
+            experienceModal.style.display = "none";
             document.body.style.overflow = ""; // Re-enable scrolling
         }
 
@@ -2590,6 +2701,8 @@
         exportBtn.addEventListener('click', exportToCSV);
         modalClose.addEventListener('click', closeModal);
         closeModalBtn.addEventListener('click', closeModal);
+        experienceModalClose.addEventListener('click', closeModal);
+        closeExperienceModalBtn.addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
         downloadResumeBtn.addEventListener('click', () => {
             showMessage("Resume download functionality not implemented yet.", 'warning');
