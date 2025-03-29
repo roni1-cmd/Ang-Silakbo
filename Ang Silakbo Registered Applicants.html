@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Applicants</title>
+    <title>Ang Silakbo - Applicants </title>
     <link rel="icon" href="SILAKBO.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1097,6 +1097,35 @@
             box-shadow: none;
         }
 
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #F87171, #EF4444);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-danger:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger-outline {
+            background-color: transparent;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .btn-danger-outline:hover {
+            background-color: var(--danger-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px var(--danger-bg);
+        }
+
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -1250,6 +1279,10 @@
             background: linear-gradient(to right, var(--primary-transparent), transparent);
         }
 
+        .modal-header.danger {
+            background: linear-gradient(to right, var(--danger-bg), transparent);
+        }
+
         .modal-title {
             font-size: 1.25rem;
             font-weight: 800;
@@ -1269,6 +1302,11 @@
             align-items: center;
             justify-content: center;
             border-radius: 12px;
+        }
+
+        .modal-title-icon.danger {
+            color: var(--danger-color);
+            background: var(--danger-bg);
         }
 
         .modal-close {
@@ -1466,6 +1504,52 @@
         .view-experience-btn:hover {
             background-color: var(--primary-color);
             color: white;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            color: var(--danger-color);
+            background-color: var(--danger-bg);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Confirmation Modal */
+        .confirmation-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .confirmation-warning {
+            background-color: var(--danger-bg);
+            color: var(--danger-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .confirmation-warning i {
+            font-size: 1.25rem;
         }
 
         /* Loading States */
@@ -2041,9 +2125,39 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteConfirmationModal">
+        <div class="modal-header danger">
+            <h2 class="modal-title">
+                <div class="modal-title-icon danger">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                Confirm Deletion
+            </h2>
+            <button class="modal-close" id="deleteModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="confirmation-text">Are you sure you want to delete this application? This action cannot be undone.</p>
+            <div class="confirmation-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>All data associated with this application will be permanently removed from the system.</span>
+            </div>
+            <div class="applicant-info" id="deleteApplicantInfo">
+                <!-- Applicant info will be inserted here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">
+                <i class="fas fa-trash-alt"></i>
+                Delete Application
+            </button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -2091,6 +2205,11 @@
         const closeExperienceModalBtn = document.getElementById('closeExperienceModalBtn');
         const experienceModalTitle = document.getElementById('experienceModalTitle');
         const experienceList = document.getElementById('experienceList');
+        const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+        const deleteModalClose = document.getElementById('deleteModalClose');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteApplicantInfo = document.getElementById('deleteApplicantInfo');
 
         // State
         let allApplicants = [];
@@ -2098,6 +2217,7 @@
         const itemsPerPage = 10;
         let isDarkMode = localStorage.getItem('darkMode') === 'true';
         let currentApplicant = null;
+        let applicantToDelete = null;
 
         // Initialize Theme
         if (isDarkMode) {
@@ -2226,7 +2346,11 @@
             onValue(applicationsRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    allApplicants = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+                    allApplicants = Object.entries(data).map(([key, value]) => ({
+                        id: key,
+                        ...value
+                    })).sort((a, b) => b.timestamp - a.timestamp);
+                    
                     updateTable();
                     updateStats();
                     populateFilters();
@@ -2303,6 +2427,9 @@
                             <button class="btn btn-outline btn-sm contact-btn">
                                 <i class="fas fa-envelope"></i>
                             </button>
+                            <button class="btn btn-danger-outline btn-sm delete-btn">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     `;
                     
@@ -2318,6 +2445,9 @@
                         }
                     };
 
+                    const deleteBtn = actionsCell.querySelector('.delete-btn');
+                    deleteBtn.onclick = () => showDeleteConfirmation(applicant);
+
                     const viewExperienceBtn = experienceCell.querySelector('.view-experience-btn');
                     viewExperienceBtn.onclick = () => showExperienceDetails(applicant);
                 });
@@ -2329,6 +2459,63 @@
 
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Show Delete Confirmation
+        function showDeleteConfirmation(applicant) {
+            applicantToDelete = applicant;
+            
+            // Populate applicant info in the confirmation modal
+            deleteApplicantInfo.innerHTML = `
+                <div class="detail-section" style="margin-top: 1rem;">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Name</div>
+                            <div class="detail-value"><i class="fas fa-user detail-icon"></i><span class="detail-text">${applicant.name || 'N/A'}</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value"><i class="fas fa-envelope detail-icon"></i><span class="detail-text">${applicant.email || 'N/A'}</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Position</div>
+                            <div class="detail-value"><i class="fas fa-briefcase detail-icon"></i><span class="detail-text">${applicant.position || 'N/A'}</span></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modalBackdrop.style.display = "block";
+            deleteConfirmationModal.style.display = "block";
+            document.body.style.overflow = "hidden"; // Prevent scrolling
+        }
+
+        // Delete Application
+        async function deleteApplication(applicant) {
+            try {
+                const applicationRef = ref(database, `applications/${applicant.id}`);
+                await remove(applicationRef);
+                
+                showMessage(`Application for ${applicant.name} has been deleted successfully.`, 'success');
+                
+                // Remove from local array and update table
+                allApplicants = allApplicants.filter(app => app.id !== applicant.id);
+                updateTable();
+                updateStats();
+                
+                closeDeleteModal();
+            } catch (error) {
+                console.error("Error deleting application:", error);
+                showMessage(`Error deleting application: ${error.message}`, 'error');
+            }
+        }
+
+        // Close Delete Modal
+        function closeDeleteModal() {
+            modalBackdrop.style.display = "none";
+            deleteConfirmationModal.style.display = "none";
+            document.body.style.overflow = ""; // Re-enable scrolling
+            applicantToDelete = null;
         }
 
         // Show Experience Details
@@ -2657,6 +2844,7 @@
             modalBackdrop.style.display = "none";
             applicantModal.style.display = "none";
             experienceModal.style.display = "none";
+            deleteConfirmationModal.style.display = "none";
             document.body.style.overflow = ""; // Re-enable scrolling
         }
 
@@ -2703,6 +2891,14 @@
         closeModalBtn.addEventListener('click', closeModal);
         experienceModalClose.addEventListener('click', closeModal);
         closeExperienceModalBtn.addEventListener('click', closeModal);
+        deleteModalClose.addEventListener('click', closeDeleteModal);
+        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (applicantToDelete) {
+                deleteApplication(applicantToDelete);
+            }
+        });
+        
         modalBackdrop.addEventListener('click', closeModal);
         downloadResumeBtn.addEventListener('click', () => {
             showMessage("Resume download functionality not implemented yet.", 'warning');
