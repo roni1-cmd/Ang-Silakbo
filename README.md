@@ -36,7 +36,7 @@ For inquiries or collaboration, reach out to us:
 
 - **Email:** [info@angsilakbo.com](mailto:angsilakbo@gmail.com)
 - **Facebook:** [Ang Silakbo](https://www.facebook.com/AngSilakboUCLM/)
-- **Website:** [angsilakbo.netlify.app](https://angsilakbo.netlify.app/chatrequest)
+- **Website:** [angsilakbo.netlify.app]([https://angsilakbo.netlify.app/chatrequest](https://angsilakbo.netlify.app/Chat%20Request.html))
 
 ## ⭐ Contributing
 We welcome contributions! If you have suggestions or improvements, feel free to fork this repository and submit a pull request.
