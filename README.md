@@ -1,4 +1,4 @@
-# Ang Silakbo Website
+# Ang Silakbo 
 
 Welcome to the official repository for **Ang Silakbo**, the student publication of the University of Cebu Lapu-Lapu and Mandaue Senior High School (UCLM-SHS). Our website serves as a platform for student journalism, creative writing, and university updates.
 
