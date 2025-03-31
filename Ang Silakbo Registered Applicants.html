@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ang Silakbo - Applicants </title>
+    <title> Ang Silakbo - Applicants</title>
     <link rel="icon" href="SILAKBO.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -896,6 +896,9 @@
         thead {
             background-color: rgba(0, 0, 0, 0.02);
             transition: background-color var(--transition);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .dark thead {
@@ -913,6 +916,7 @@
             border-bottom: 1px solid var(--border-color);
             transition: color var(--transition), border-color var(--transition);
             position: relative;
+            white-space: nowrap;
         }
 
         th:after {
@@ -937,6 +941,7 @@
             font-size: 0.875rem;
             color: var(--text-color);
             transition: color var(--transition), border-color var(--transition), background-color var(--transition);
+            vertical-align: middle;
         }
 
         tr:last-child td {
@@ -949,6 +954,66 @@
 
         tr:hover td {
             background-color: var(--primary-transparent);
+        }
+
+        /* Improved table layout for better data visibility */
+        .table-cell-primary {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .table-cell-secondary {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .table-cell-portfolio {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .portfolio-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all var(--transition-fast);
+        }
+
+        .portfolio-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .availability-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .availability-badge.available {
+            background-color: var(--success-bg);
+            color: var(--success-color);
+        }
+
+        .availability-badge.unavailable {
+            background-color: var(--danger-bg);
+            color: var(--danger-color);
+        }
+
+        .availability-badge.partial {
+            background-color: var(--warning-bg);
+            color: var(--warning-color);
         }
 
         .table-footer {
@@ -1124,6 +1189,11 @@
             background-color: var(--danger-bg);
             transform: translateY(-2px);
             box-shadow: 0 2px 8px var(--danger-bg);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none;
         }
 
         .btn:disabled {
@@ -2007,6 +2077,12 @@
                                     <option value="advanced">Advanced</option>
                                     <option value="expert">Expert</option>
                                 </select>
+                                <select id="availabilityFilter" class="filter-select">
+                                    <option value="">All Availability</option>
+                                    <option value="available">Available</option>
+                                    <option value="partial">Partially Available</option>
+                                    <option value="unavailable">Unavailable</option>
+                                </select>
                                 <button id="searchBtn" class="btn btn-primary">
                                     <i class="fas fa-search"></i>
                                     <span>Search</span>
@@ -2047,8 +2123,10 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Email</th>
+                                        <th>Contact Info</th>
                                         <th>Position</th>
+                                        <th>Portfolio</th>
+                                        <th>Availability</th>
                                         <th>Experience</th>
                                         <th>Application Date</th>
                                         <th>Actions</th>
@@ -2190,6 +2268,7 @@
         const pageInfo = document.getElementById('pageInfo');
         const positionFilter = document.getElementById('positionFilter');
         const experienceFilter = document.getElementById('experienceFilter');
+        const availabilityFilter = document.getElementById('availabilityFilter');
         const exportBtn = document.getElementById('exportBtn');
         const modalBackdrop = document.getElementById('modalBackdrop');
         const applicantModal = document.getElementById('applicantModal');
@@ -2291,7 +2370,7 @@
         function showLoading() {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6">
+                    <td colspan="8">
                         <div class="loading-container">
                             <div class="loading-spinner"></div>
                         </div>
@@ -2305,7 +2384,7 @@
         function showEmptyState(message = 'No applicants found') {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6">
+                    <td colspan="8">
                         <div class="empty-state">
                             <i class="fas fa-search empty-state-icon"></i>
                             <h3 class="empty-state-title">No Results Found</h3>
@@ -2322,6 +2401,7 @@
                 searchInput.value = '';
                 positionFilter.value = '';
                 experienceFilter.value = '';
+                availabilityFilter.value = '';
                 currentPage = 1;
                 updateTable();
             });
@@ -2376,7 +2456,8 @@
                  (applicant.email && applicant.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
                  (applicant.position && applicant.position.toLowerCase().includes(searchTerm.toLowerCase()))) &&
                 (positionFilter.value === '' || (applicant.position && applicant.position === positionFilter.value)) &&
-                (experienceFilter.value === '' || filterExperience(applicant.experience, experienceFilter.value))
+                (experienceFilter.value === '' || filterExperience(applicant.experience, experienceFilter.value)) &&
+                (availabilityFilter.value === '' || filterAvailability(applicant.availability, availabilityFilter.value))
             );
 
             const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
@@ -2393,22 +2474,58 @@
                     row.className = 'animate-fade-in';
                     row.style.animationDelay = `${index * 0.05}s`;
                     
+                    // Name Cell
                     const nameCell = row.insertCell();
-                    nameCell.innerHTML = `<div class="detail-value"><i class="fas fa-user-circle detail-icon"></i><span class="detail-text">${applicant.name || 'N/A'}</span></div>`;
+                    nameCell.innerHTML = `
+                        <div class="table-cell-primary">${applicant.name || 'N/A'}</div>
+                    `;
                     
-                    const emailCell = row.insertCell();
-                    emailCell.innerHTML = `<div class="detail-value"><i class="fas fa-envelope detail-icon"></i><span class="detail-text">${applicant.email || 'N/A'}</span></div>`;
+                    // Contact Info Cell
+                    const contactCell = row.insertCell();
+                    contactCell.innerHTML = `
+                        <div class="table-cell-primary">${applicant.email || 'N/A'}</div>
+                        <div class="table-cell-secondary">${applicant.phone || 'No phone'}</div>
+                    `;
                     
+                    // Position Cell
                     const positionCell = row.insertCell();
-                    positionCell.innerHTML = `<div class="detail-value"><i class="fas fa-briefcase detail-icon"></i><span class="detail-text">${applicant.position || 'N/A'}</span></div>`;
+                    positionCell.innerHTML = `
+                        <div class="table-cell-primary">${applicant.position || 'N/A'}</div>
+                    `;
                     
+                    // Portfolio Cell
+                    const portfolioCell = row.insertCell();
+                    if (applicant.portfolio) {
+                        portfolioCell.innerHTML = `
+                            <div class="table-cell-portfolio">
+                                <a href="${applicant.portfolio}" target="_blank" class="portfolio-link">
+                                    <i class="fas fa-external-link-alt"></i> View Portfolio
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        portfolioCell.innerHTML = `<div class="table-cell-secondary">Not provided</div>`;
+                    }
+                    
+                    // Availability Cell
+                    const availabilityCell = row.insertCell();
+                    const availabilityStatus = getAvailabilityStatus(applicant.availability);
+                    availabilityCell.innerHTML = `
+                        <div class="availability-badge ${availabilityStatus.class}">
+                            <i class="fas ${availabilityStatus.icon}"></i> ${availabilityStatus.text}
+                        </div>
+                        ${applicant.availability ? `<div class="table-cell-secondary">${applicant.availability}</div>` : ''}
+                    `;
+                    
+                    // Experience Cell
                     const experienceCell = row.insertCell();
                     experienceCell.innerHTML = `
                         <button class="view-experience-btn" data-applicant-id="${index}">
-                            <i class="fas fa-eye"></i> View Applicant's Experience
+                            <i class="fas fa-eye"></i> View Experience
                         </button>
                     `;
                     
+                    // Date Cell
                     const dateCell = row.insertCell();
                     if (applicant.timestamp) {
                         const date = new Date(applicant.timestamp);
@@ -2418,6 +2535,7 @@
                         dateCell.innerHTML = `<div class="detail-value"><i class="fas fa-calendar-alt detail-icon"></i><span class="detail-text">N/A</span></div>`;
                     }
                     
+                    // Actions Cell
                     const actionsCell = row.insertCell();
                     actionsCell.innerHTML = `
                         <div class="table-actions">
@@ -2459,6 +2577,62 @@
 
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Get Availability Status
+        function getAvailabilityStatus(availability) {
+            if (!availability) {
+                return { text: 'Unknown', class: 'info', icon: 'fa-question-circle' };
+            }
+            
+            const availabilityLower = availability.toLowerCase();
+            
+            if (availabilityLower.includes('immediate') || 
+                availabilityLower.includes('now') || 
+                availabilityLower.includes('full time') ||
+                availabilityLower.includes('available')) {
+                return { text: 'Available', class: 'available', icon: 'fa-check-circle' };
+            } else if (availabilityLower.includes('part time') || 
+               availabilityLower.includes('partial') || 
+               availabilityLower.includes('limited') ||
+               availabilityLower.includes('week') ||
+               availabilityLower.includes('month')) {
+        return { text: 'Partially Available', class: 'partial', icon: 'fa-clock' };
+    } else if (availabilityLower.includes('not available') || 
+               availabilityLower.includes('unavailable') || 
+               availabilityLower.includes('busy')) {
+        return { text: 'Unavailable', class: 'unavailable', icon: 'fa-times-circle' };
+    }
+    
+    // Default to "Available" if we have availability data but it doesn't match any patterns
+    return { text: 'Available', class: 'available', icon: 'fa-check-circle' };
+}
+
+        // Filter Availability
+        function filterAvailability(availability, filter) {
+            if (!availability) return false;
+            
+            const availabilityLower = availability.toLowerCase();
+            
+            switch(filter) {
+                case 'available':
+                    return availabilityLower.includes('immediate') || 
+                           availabilityLower.includes('now') || 
+                           availabilityLower.includes('full time') ||
+                           availabilityLower.includes('available');
+                case 'partial':
+                    return availabilityLower.includes('part time') || 
+                           availabilityLower.includes('partial') || 
+                           availabilityLower.includes('limited') ||
+                           availabilityLower.includes('week') ||
+                           availabilityLower.includes('month');
+                case 'unavailable':
+                    return availabilityLower.includes('not available') || 
+                           availabilityLower.includes('unavailable') || 
+                           availabilityLower.includes('busy');
+                default:
+                    return true;
+            }
         }
 
         // Show Delete Confirmation
@@ -2651,7 +2825,7 @@
 
         // Export to CSV
         function exportToCSV() {
-            const headers = ['Name', 'Email', 'Phone', 'Position', 'Experience', 'Application Date'];
+            const headers = ['Name', 'Email', 'Phone', 'Position', 'Portfolio', 'Availability', 'Experience', 'Application Date'];
             const csvContent = [
                 headers.join(','),
                 ...allApplicants.map(applicant => [
@@ -2659,6 +2833,8 @@
                     applicant.email || '',
                     applicant.phone || '',
                     applicant.position || '',
+                    applicant.portfolio || '',
+                    applicant.availability || '',
                     applicant.experience || '',
                     applicant.timestamp ? new Date(applicant.timestamp).toLocaleString() : ''
                 ].map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
@@ -2740,6 +2916,8 @@
                 });
             }
             
+            const availabilityStatus = getAvailabilityStatus(applicant.availability);
+            
             const detailsHTML = `
                 <div class="detail-section">
                     <h3 class="detail-section-title">
@@ -2762,6 +2940,7 @@
                             <div class="detail-value"><i class="fas fa-phone detail-icon"></i><span class="detail-text">${applicant.phone || 'N/A'}</span></div>
                         </div>
                     </div>
+                
                 </div>
                 
                 <div class="detail-section">
@@ -2775,6 +2954,30 @@
                         <div class="detail-item">
                             <div class="detail-label">Position</div>
                             <div class="detail-value"><i class="fas fa-briefcase detail-icon"></i><span class="detail-text">${applicant.position || 'N/A'}</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Portfolio</div>
+                            <div class="detail-value">
+                                ${applicant.portfolio ? 
+                                    `<i class="fas fa-globe detail-icon"></i>
+                                    <a href="${applicant.portfolio}" target="_blank" class="portfolio-link">
+                                        <span class="detail-text">${applicant.portfolio}</span>
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>` : 
+                                    '<i class="fas fa-globe detail-icon"></i><span class="detail-text">Not provided</span>'}
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Availability</div>
+                            <div class="detail-value">
+                                <i class="fas ${availabilityStatus.icon} detail-icon"></i>
+                                <span class="detail-text">
+                                    ${applicant.availability ? 
+                                        `<span class="availability-badge ${availabilityStatus.class}">${availabilityStatus.text}</span>
+                 - ${applicant.availability}` : 
+                                        `<span class="availability-badge info">Unknown</span>`}
+                                </span>
+                            </div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Application Date</div>
@@ -2886,6 +3089,11 @@
             updateTable(searchInput.value);
         });
 
+        availabilityFilter.addEventListener('change', () => {
+            currentPage = 1;
+            updateTable(searchInput.value);
+        });
+
         exportBtn.addEventListener('click', exportToCSV);
         modalClose.addEventListener('click', closeModal);
         closeModalBtn.addEventListener('click', closeModal);
@@ -2950,3 +3158,4 @@
     </script>
 </body>
 </html>
+
