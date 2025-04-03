@@ -1,0 +1,3105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Silakbo - Content Submission</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- TinyMCE CDN -->
+    <script src="https://cdn.tiny.cloud/1/n92j01vjprp9xy96v0uxd2kgqi5vnd50dwm5i47veg2u1bur/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Lottie Animation -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+        :root {
+            --primary-color: #e65100;
+            --primary-light: #FF9A3D;
+            --primary-dark: #E56C00;
+            --secondary-color: #FFF1E5;
+            --accent-color: #FF4500;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #E0E0E0;
+            --success-color: #4CAF50;
+            --white: #FFFFFF;
+            --gray-100: #F8F9FA;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--gray-100);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .header.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            height: 50px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .brand-name:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .editor-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            height: fit-content;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .sidebar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            position: relative;
+        }
+        
+        .sidebar-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--gradient-primary);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu-item {
+            margin-bottom: 0.75rem;
+        }
+        
+        .sidebar-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .sidebar-menu-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+            z-index: -1;
+            border-radius: 8px;
+        }
+        
+        .sidebar-menu-link:hover::before,
+        .sidebar-menu-link.active::before {
+            width: 100%;
+        }
+        
+        .sidebar-menu-link:hover,
+        .sidebar-menu-link.active {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+        
+        .sidebar-menu-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-menu-link:hover .sidebar-menu-icon,
+        .sidebar-menu-link.active .sidebar-menu-icon {
+            transform: scale(1.1);
+        }
+        
+        /* Editor Form */
+        .editor-form-container {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .editor-form-container:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .editor-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            position: relative;
+        }
+        
+        .editor-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background: var(--gradient-primary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        
+        .form-group:focus-within label {
+            color: var(--primary-color);
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gray-100);
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.2);
+            background-color: var(--white);
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 10px;
+            top: 40px;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        
+        .form-group:focus-within .input-icon {
+            color: var(--primary-color);
+        }
+        
+        .upload-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 10px rgba(255, 122, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 122, 0, 0.3);
+        }
+        
+        .upload-btn:hover::before {
+            width: 100%;
+        }
+        
+        .upload-btn:active {
+            transform: translateY(0);
+        }
+        
+        .upload-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .upload-btn:hover svg {
+            transform: scale(1.1);
+        }
+        
+        #photoPreview {
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        #photoPreview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease;
+        }
+        
+        #photoPreview img:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .cancel-btn {
+            background-color: var(--gray-200);
+            color: var(--text-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .cancel-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .cancel-btn:hover {
+            background-color: var(--gray-300);
+            transform: translateY(-2px);
+        }
+        
+        .cancel-btn:hover::before {
+            width: 100%;
+        }
+        
+        .cancel-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 69, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 69, 0, 0.3);
+        }
+        
+        .submit-btn:hover::before {
+            width: 100%;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: var(--gray-200);
+            border-radius: 10px;
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 25%;
+            position: relative;
+            padding-top: 30px;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            border: 2px solid var(--gray-300);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .step-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        .step-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.active .step-icon {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+            box-shadow: 0 0 0 5px rgba(255, 122, 0, 0.2);
+        }
+        
+        .progress-step.active .step-icon svg {
+            color: var(--white);
+        }
+        
+        .progress-step.active .step-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .progress-step.completed .step-icon {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .progress-step.completed .step-icon svg {
+            color: var(--white);
+        }
+        
+        .progress-bar {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            height: 4px;
+            background-color: var(--gray-300);
+            width: 100%;
+            z-index: 1;
+        }
+        
+        .progress-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 25%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #FF5722 100%);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+            margin-top: auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-logo img {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .footer-logo:hover img {
+            transform: scale(1.05);
+        }
+        
+        .footer-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        
+        .footer-description {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .social-icon svg {
+            width: 18px;
+            height: 18px;
+            color: var(--white);
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .footer-link {
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-link:hover {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+        
+        .footer-link svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-contact-item:hover {
+            opacity: 1;
+        }
+        
+        .footer-contact-icon {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .footer-newsletter {
+            margin-top: 1rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            margin-top: 1rem;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 0.9rem;
+        }
+        
+        .newsletter-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0 1rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .newsletter-btn:hover {
+            background-color: #E03E00;
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding: 1.5rem 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .footer-bottom-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-bottom-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .footer-bottom-link:hover {
+            opacity: 1;
+        }
+        
+        /* Success Modal - Landscape Orientation */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 900px; /* Increased width for landscape orientation */
+            width: 90%;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            animation: modalFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two-column layout for landscape */
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .success-left {
+            text-align: center;
+        }
+        
+        .success-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .success-icon-container {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .success-icon-bg {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success-color);
+            animation: successPulse 2s infinite;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: confettiFall 3s linear infinite;
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100px) rotate(360deg); opacity: 0; }
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .success-message {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .success-image {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .success-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            grid-column: span 2; /* Make buttons span both columns */
+        }
+        
+        .view-submission-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 180px;
+        }
+        
+        .view-submission-btn:hover {
+            background-color: rgba(255, 122, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .close-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 122, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 180px;
+        }
+        
+        .close-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 122, 0, 0.3);
+        }
+        
+        .close-btn:hover::before {
+            width: 100%;
+        }
+        
+        .close-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Support Modal */
+        .support-modal-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            animation: modalFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+        }
+        
+        .support-modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        .support-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .support-modal-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .support-modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+            font-size: 1.5rem;
+        }
+        
+        .support-modal-close:hover {
+            color: var(--primary-color);
+        }
+        
+        .support-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 1.5rem;
+        }
+        
+        .support-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .support-tab.active {
+            color: var(--primary-color);
+        }
+        
+        .support-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .support-tab.active::after {
+            width: 100%;
+        }
+        
+        .support-tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .support-tab:hover::after {
+            width: 100%;
+        }
+        
+        .support-content {
+            display: none;
+        }
+        
+        .support-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .support-section {
+            margin-bottom: 2rem;
+        }
+        
+        .support-section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .support-section-title svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .support-text {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .support-list {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .support-list li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 0.5rem;
+        }
+        
+        .support-list li::before {
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 0.6rem;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+        
+        .support-tip {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .support-tip-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .support-tip-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary-color);
+        }
+        
+        .support-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Loading Spinner */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--gray-200);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text-color) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--white);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--primary-color);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-message {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        
+        .notification-close:hover {
+            color: var(--text-color);
+        }
+        
+        /* Submission Details Modal */
+        .submission-details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .submission-details-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            animation: modalFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .submission-details-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        .submission-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .submission-details-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .submission-details-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+            font-size: 1.5rem;
+        }
+        
+        .submission-details-close:hover {
+            color: var(--primary-color);
+        }
+        
+        .submission-details-info {
+            margin-bottom: 1.5rem;
+        }
+        
+        .submission-info-item {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+        
+        .submission-info-label {
+            font-weight: 600;
+            width: 150px;
+            color: var(--text-color);
+        }
+        
+        .submission-info-value {
+            flex: 1;
+            color: var(--text-light);
+        }
+        
+        .submission-content {
+            background-color: var(--gray-100);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .submission-content-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .submission-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .submission-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .submission-action-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .submission-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 122, 0, 0.3);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--white);
+            z-index: 1000;
+            padding: 2rem;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-menu.open {
+            right: 0;
+        }
+        
+        .mobile-menu-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .mobile-menu-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .mobile-menu-link:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                margin-bottom: 2rem;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .sidebar-menu-item {
+                margin-bottom: 0;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                right: -300px;
+                width: 300px;
+                height: 100vh;
+                background-color: var(--white);
+                z-index: 1000;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .mobile-menu.open {
+                right: 0;
+            }
+            
+            .mobile-menu-close {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: var(--text-color);
+            }
+            
+            .mobile-menu-links {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                margin-top: 3rem;
+            }
+            
+            .mobile-menu-link {
+                color: var(--text-color);
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: 500;
+                transition: color 0.3s ease;
+            }
+            
+            .mobile-menu-link:hover {
+                color: var(--primary-color);
+            }
+            
+            .modal-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .modal-actions {
+                grid-column: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container, .editor-container, .footer-container, .footer-bottom {
+                padding: 0 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .submit-btn, .cancel-btn {
+                width: 100%;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-bottom-links {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+            
+            .progress-step {
+                padding-top: 20px;
+            }
+            
+            .step-icon {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .step-icon svg {
+                width: 15px;
+                height: 15px;
+            }
+            
+            .step-text {
+                font-size: 0.7rem;
+            }
+            
+            .progress-bar {
+                top: 35px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .view-submission-btn, .close-btn {
+                width: 100%;
+            }
+            
+            .support-tabs {
+                flex-direction: column;
+                border-bottom: none;
+            }
+            
+            .support-tab {
+                border-bottom: 1px solid var(--gray-200);
+            }
+            
+            .support-tab::after {
+                bottom: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .brand-name {
+                font-size: 1.5rem;
+            }
+            
+            .logo {
+                height: 40px;
+            }
+            
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .success-title {
+                font-size: 1.5rem;
+            }
+            
+            .success-message {
+                font-size: 1rem;
+            }
+            
+            .support-modal-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <svg class="notification-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <div class="notification-content">
+            <div class="notification-title">Information</div>
+            <div class="notification-message">Your changes have been saved.</div>
+        </div>
+        <button class="notification-close" id="notificationClose">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" id="mobileMenuClose">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="mobile-menu-links">
+            <a href="index.html" class="mobile-menu-link">Home</a>
+            <a href="#" class="mobile-menu-link">Submissions</a>
+            <a href="Guidelines.html" class="mobile-menu-link">Guidelines</a>
+            <a href="About Us.html" class="mobile-menu-link">About</a>
+            <a href="#" class="mobile-menu-link" id="mobileSupportLink">Support</a>
+        </div>
+    </div>
+   
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="/placeholder.svg?height=50&width=50" alt="Ang Silakbo Logo" class="logo" id="headerLogo">
+                <h1 class="brand-name">ANG SILAKBO</h1>
+            </div>
+            <!-- Desktop navigation - only show on desktop -->
+            <div class="nav-links desktop-only">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Submissions</a>
+                <a href="#" class="nav-link">Guidelines</a>
+                <a href="#" class="nav-link">About</a>
+                <a href="#" class="nav-link" id="supportLink">Support</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="editor-container">
+            <!-- Sidebar -->
+            <aside class="sidebar" data-aos="fade-right" data-aos-duration="800">
+                <h2 class="sidebar-title">Content Dashboard</h2>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link active">
+                            <svg class="sidebar-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            New Submission
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link">
+                            <svg class="sidebar-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                                <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                            </svg>
+                            Drafts
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link">
+                            <svg class="sidebar-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Saved
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="Guidelines.html" class="sidebar-menu-link">
+                            <svg class="sidebar-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            Guidelines
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="sidebarSupportLink">
+                            <svg class="sidebar-menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                            Support
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+            
+            <!-- Editor Form -->
+            <div class="editor-form-container" data-aos="fade-up" data-aos-duration="800">
+                <h2 class="editor-title">Create New Submission</h2>
+                
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-steps">
+                        <div class="progress-step active" id="step1">
+                            <div class="step-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div class="step-text">Author Info</div>
+                        </div>
+                        <div class="progress-step" id="step2">
+                            <div class="step-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </div>
+                            <div class="step-text">Content</div>
+                        </div>
+                        <div class="progress-step" id="step3">
+                            <div class="step-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <div class="step-text">Media</div>
+                        </div>
+                        <div class="progress-step" id="step4">
+                            <div class="step-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="step-text">Review</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
+                    </div>
+                </div>
+                
+                <form id="submissionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="authorName">Author Name</label>
+                            <div class="tooltip">
+                                <input type="text" id="authorName" name="authorName" required placeholder="Your full name">
+                                <span class="tooltip-text">Enter your full name as you want it to appear with your submission</span>
+                            </div>
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="authorEmail">Email Address</label>
+                            <input type="email" id="authorEmail" name="authorEmail" required placeholder="your.email@example.com">
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workTitle">Work Title</label>
+                        <input type="text" id="workTitle" name="workTitle" required placeholder="Title of your submission">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workContent">Content</label>
+                        <textarea id="workContent" name="workContent"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workPhoto">Featured Image</label>
+                        <button type="button" id="uploadPhotoBtn" class="upload-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            Upload Featured Image
+                        </button>
+                        <input type="hidden" id="photoUrl" name="photoUrl">
+                        <div id="photoPreview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="otherDetails">Additional Notes</label>
+                        <textarea id="otherDetails" name="otherDetails" rows="3" placeholder="Any additional information about your work"></textarea>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="cancel-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Cancel
+                        </button>
+                        <button type="submit" class="submit-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            Submit Work
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <img src="/placeholder.svg?height=40&width=40" alt="Ang Silakbo Logo" id="footerLogo">
+                    <span class="footer-logo-text">ANG SILAKBO</span>
+                </div>
+                <p class="footer-description">A platform for creative expression and literary works. Share your work with us</p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/AngSilakboUCLM" class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Quick Links</h3>
+                <div class="footer-links">
+                    <a href="index.html" class="footer-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        Home
+                    </a>
+                    <a href="About Us.html" class="footer-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        About Us
+                    </a>
+                    <a href="#" class="footer-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        Submissions
+                    </a>
+                    <a href="Guidelines.html" class="footer-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        Guidelines
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Contact Us</h3>
+                <div class="footer-contact-item">
+                    <svg class="footer-contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>University of Cebu Lapu-Lapu and Mandaue</span>
+                </div>
+                <div class="footer-contact-item">
+                    <svg class="footer-contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>contact@angsilakbo.com</span>
+                </div>
+                <div class="footer-contact-item">
+                    <svg class="footer-contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    <span>+1 (123) 456-7890</span>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Newsletter</h3>
+                <p class="footer-description">Subscribe to our newsletter for the latest updates and featured content.</p>
+                <div class="footer-newsletter">
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Your email address">
+                        <button type="submit" class="newsletter-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p class="footer-copyright">© 2025 Ang Silakbo. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="Guidelines.html" class="footer-bottom-link">Guidelines</a>
+                <a href="ToS.html" class="footer-bottom-link">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Success Modal - Landscape Layout -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-left">
+                <div class="success-icon-container">
+                    <div class="success-icon-bg">
+                        <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_s2lryxtd.json" background="transparent" speed="1" style="width: 100px; height: 100px;" autoplay loop></lottie-player>
+                    </div>
+                    <!-- Confetti elements -->
+                    <div class="confetti" style="left: 10%; animation-delay: 0.2s; background-color: #FF7A00;"></div>
+                    <div class="confetti" style="left: 20%; animation-delay: 0.5s; background-color: #FF4500;"></div>
+                    <div class="confetti" style="left: 30%; animation-delay: 0.1s; background-color: #4CAF50;"></div>
+                    <div class="confetti" style="left: 40%; animation-delay: 0.7s; background-color: #FF9A3D;"></div>
+                </div>
+                <img src="Congratulations.gif" alt="Celebration" class="success-image">
+            </div>
+            <div class="success-right">
+                <h2 class="success-title">Congratulations!</h2>
+                <p class="success-message">Your work has been successfully submitted to Ang Silakbo. Our editorial team will review your submission and get back to you soon.</p>
+                <p class="success-message">Your submission ID is <strong id="submissionId">#SLK-2025-0001</strong>. Please keep this for your reference.</p>
+            </div>
+            <div class="modal-actions">
+                <button id="viewSubmissionBtn" class="view-submission-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View Submission
+                </button>
+                <button id="closeModal" class="close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5l7 7-7 7"></path>
+                    </svg>
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Submission Details Modal -->
+    <div id="submissionDetailsModal" class="submission-details-modal">
+        <div class="submission-details-content">
+            <div class="submission-details-header">
+                <h2 class="submission-details-title">Submission Details</h2>
+                <button id="closeSubmissionDetails" class="submission-details-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="submission-details-info">
+                <div class="submission-info-item">
+                    <div class="submission-info-label">Author:</div>
+                    <div class="submission-info-value" id="submissionAuthor"></div>
+                </div>
+                <div class="submission-info-item">
+                    <div class="submission-info-label">Email:</div>
+                    <div class="submission-info-value" id="submissionEmail"></div>
+                </div>
+                <div class="submission-info-item">
+                    <div class="submission-info-label">Submission Date:</div>
+                    <div class="submission-info-value" id="submissionDate"></div>
+                </div>
+                <div class="submission-info-item">
+                    <div class="submission-info-label">Status:</div>
+                    <div class="submission-info-value" id="submissionStatus">Under Review</div>
+                </div>
+            </div>
+            
+            <div class="submission-content">
+                <h3 class="submission-content-title" id="submissionTitle"></h3>
+                <div id="submissionContent"></div>
+            </div>
+            
+            <div id="submissionImageContainer">
+                <img id="submissionImage" class="submission-image" alt="Submission Featured Image">
+            </div>
+            
+            <div class="submission-info-item">
+                <div class="submission-info-label">Additional Notes:</div>
+                <div class="submission-info-value" id="submissionNotes"></div>
+            </div>
+            
+            <div class="submission-actions">
+                <button class="submission-action-btn" id="editSubmissionBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Submission
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Support Modal -->
+    <div id="supportModal" class="modal">
+        <div class="support-modal-content">
+            <div class="support-modal-header">
+                <h2 class="support-modal-title">Support Center</h2>
+                <button id="closeSupportModal" class="support-modal-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="support-tabs">
+                <div class="support-tab active" data-tab="how-to-submit">How to Submit</div>
+                <div class="support-tab" data-tab="guidelines">Submission Guidelines</div>
+                <div class="support-tab" data-tab="faq">FAQ</div>
+                <div class="support-tab" data-tab="contact">Contact Us</div>
+            </div>
+            
+            <div class="support-content active" id="how-to-submit-content">
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Submission Process Overview
+                    </h3>
+                    <p class="support-text">
+                        Submitting your work to Ang Silakbo is a simple process that involves four main steps:
+                    </p>
+                    <ol class="support-list">
+                        <li><strong>Author Information:</strong> Provide your name and contact details.</li>
+                        <li><strong>Content Creation:</strong> Write or paste your literary work into our editor.</li>
+                        <li><strong>Media Upload:</strong> Add a featured image that represents your work (optional but recommended).</li>
+                        <li><strong>Review & Submit:</strong> Check your submission and send it to our editorial team.</li>
+                    </ol>
+                    <p class="support-text">
+                        After submission, our editorial team will review your work and get back to you within 3-4 class days.
+                    </p>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Step-by-Step Guide
+                    </h3>
+                    <h4>Step 1: Fill in Author Information</h4>
+                    <p class="support-text">
+                        Enter your full name as you want it to appear with your published work. Provide a valid email address where we can contact you regarding your submission.
+                    </p>
+                    <div class="support-tip">
+                        <div class="support-tip-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Pro Tip
+                        </div>
+                        <p>Consider using a pen name if you prefer to publish under a pseudonym. Just make sure to provide your real email address for communication purposes.</p>
+                  Just make sure to provide your real email address for communication purposes.</p>
+                    </div>
+                    
+                    <h4>Step 2: Create Your Content</h4>
+                    <p class="support-text">
+                        Give your work a compelling title. Use our rich text editor to write or paste your content. The editor allows you to format your text with bold, italic, headings, and more.
+                    </p>
+                    <div class="support-tip">
+                        <div class="support-tip-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Pro Tip
+                        </div>
+                        <p>If you're pasting content from another document, use the "Paste as plain text" option (Ctrl+Shift+V) to avoid formatting issues.</p>
+                    </div>
+                    
+                    <h4>Step 3: Upload Media</h4>
+                    <p class="support-text">
+                        Click the "Upload Featured Image" button to add a visual element to your submission. You can upload images from your device, Google Drive, or other sources. The ideal image should represent the theme or mood of your work.
+                    </p>
+                    <div class="support-tip">
+                        <div class="support-tip-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Pro Tip
+                        </div>
+                        <p>Use high-quality images with a 16:9 aspect ratio for the best display on our platform. Make sure you have the rights to use any image you upload.</p>
+                    </div>
+                    
+                    <h4>Step 4: Review and Submit</h4>
+                    <p class="support-text">
+                        Add any additional notes or context about your work in the "Additional Notes" field. Review all your information carefully before clicking the "Submit Work" button.
+                    </p>
+                    <div class="support-tip">
+                        <div class="support-tip-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Pro Tip
+                        </div>
+                        <p>Save your work as a draft if you need to come back to it later. Your draft will be available in the "Drafts" section of your dashboard.</p>
+                    </div>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        After Submission
+                    </h3>
+                    <p class="support-text">
+                        Once you submit your work, you'll receive:
+                    </p>
+                    <ul class="support-list">
+                        <li>An immediate confirmation on screen</li>
+                        <li>A confirmation email with your submission details</li>
+                        <li>A unique submission ID for tracking purposes</li>
+                    </ul>
+                    <p class="support-text">
+                        You can view your submission status at any time by logging into your account and checking the "Submissions" section of your dashboard.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="support-content" id="guidelines-content">
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Content Guidelines
+                    </h3>
+                    <p class="support-text">
+                        Ang Silakbo accepts a wide range of literary works, including:
+                    </p>
+                    <ul class="support-list">
+                        <li><strong>Poetry:</strong> Up to 5 poems per submission, maximum 50 lines each</li>
+                        <li><strong>Short Stories:</strong> 1,000-5,000 words</li>
+                        <li><strong>Flash Fiction:</strong> Up to 1,000 words</li>
+                        <li><strong>Essays:</strong> 1,000-3,000 words</li>
+                        <li><strong>Literary Criticism:</strong> 1,500-4,000 words</li>
+                    </ul>
+                    <p class="support-text">
+                        All submissions must be original work that has not been previously published elsewhere (including personal blogs and social media).
+                    </p>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Formatting Requirements
+                    </h3>
+                    <ul class="support-list">
+                        <li>Use standard fonts (our editor defaults to an easy-to-read font)</li>
+                        <li>Double-space prose submissions</li>
+                        <li>Use single spacing for poetry</li>
+                        <li>Include paragraph breaks where appropriate</li>
+                        <li>Avoid excessive formatting (such as colored text or unusual fonts)</li>
+                    </ul>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                            <line x1="6" y1="1" x2="6" y2="4"></line>
+                            <line x1="10" y1="1" x2="10" y2="4"></line>
+                            <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                        Content Restrictions
+                    </h3>
+                    <p class="support-text">
+                        Ang Silakbo does not accept content that:
+                    </p>
+                    <ul class="support-list">
+                        <li>Promotes hate speech or discrimination</li>
+                        <li>Contains explicit or gratuitous violence</li>
+                        <li>Includes pornographic material</li>
+                        <li>Violates copyright or intellectual property rights</li>
+                        <li>Promotes illegal activities</li>
+                    </ul>
+                    <p class="support-text">
+                        We reserve the right to reject any submission that does not align with our community values.
+                    </p>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        Image Guidelines
+                    </h3>
+                    <p class="support-text">
+                        If you choose to include images with your submission:
+                    </p>
+                    <ul class="support-list">
+                        <li>Images should be high-resolution (at least 1200px wide)</li>
+                        <li>Acceptable formats: JPG, PNG, BMP, JPEG and GIF</li>
+                        <li>Maximum file size: 5MB</li>
+                        <li>You must have the rights to use and publish the image</li>
+                        <li>Images should be relevant to your written content</li>
+                    </ul>
+                    <div class="support-tip">
+                        <div class="support-tip-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Important Note
+                        </div>
+                        <p>If you don't own the image, make sure it's licensed for use (e.g., Creative Commons) or in the public domain. Always provide attribution when required.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="support-content" id="faq-content">
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Frequently Asked Questions
+                    </h3>
+                    
+                    <h4>General Questions</h4>
+                    
+                    <p class="support-text"><strong>Q: Is there a fee to submit work to Ang Silakbo?</strong></p>
+                    <p class="support-text">A: No, submissions to Ang Silakbo are completely free.</p>
+                    
+                    <p class="support-text"><strong>Q: How long does the review process take?</strong></p>
+                    <p class="support-text">A: Our editorial team typically reviews submissions within 7-10 business days. You will receive an email notification when your submission status changes.</p>
+                    
+                    <p class="support-text"><strong>Q: Can I submit multiple works at once?</strong></p>
+                    <p class="support-text">A: Yes, you can submit up to 5 poems in a single poetry submission. For prose works, we recommend submitting one piece at a time.</p>
+                    
+                    <p class="support-text"><strong>Q: What happens if my work is accepted?</strong></p>
+                    <p class="support-text">A: If your work is accepted, you will receive an acceptance email with further instructions. Your work will be published on our platform according to our publishing schedule.</p>
+                    
+                    <h4>Technical Questions</h4>
+                    
+                    <p class="support-text"><strong>Q: Can I save my submission as a draft and come back to it later?</strong></p>
+                    <p class="support-text">A: Yes, you can save your work as a draft by clicking the "Save Draft" button at the bottom of the form. Your drafts will be available in the "Drafts" section of your dashboard.</p>
+                    
+                    <p class="support-text"><strong>Q: I'm having trouble uploading images. What should I do?</strong></p>
+                    <p class="support-text">A: Make sure your image meets our guidelines (under 5MB, JPG/PNG/GIF format). If you continue to have issues, try using a different browser or device, or contact our support team.</p>
+                    
+                    <p class="support-text"><strong>Q: Can I edit my submission after it's been submitted?</strong></p>
+                    <p class="support-text">A: You can make minor edits to your submission while it's still in the "Under Review" status. Once it's been accepted or published, you'll need to contact our editorial team for any changes.</p>
+                    
+                    <h4>Rights and Publication</h4>
+                    
+                    <p class="support-text"><strong>Q: Who retains the rights to my work?</strong></p>
+                    <p class="support-text">A: You retain all rights to your work. Ang Silakbo requests non-exclusive rights to publish your work on our platform and in potential anthologies or collections.</p>
+                    
+                    <p class="support-text"><strong>Q: Can I publish my work elsewhere after it appears on Ang Silakbo?</strong></p>
+                    <p class="support-text">A: Yes, you are free to publish your work elsewhere after it appears on Ang Silakbo. We simply ask that you acknowledge that it was first published with us.</p>
+                </div>
+            </div>
+            
+            <div class="support-content" id="contact-content">
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Contact Information
+                    </h3>
+                    <p class="support-text">
+                        If you have questions or need assistance that isn't covered in our support resources, please don't hesitate to contact us:
+                    </p>
+                    
+                    <div class="support-info">
+                        <p><strong>Email:</strong> angsilakbo@gmail.com</p>
+                        <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+                        <p><strong>Office Hours:</strong> Monday to Friday, 9:00 AM - 5:00 PM (Philippine Time)</p>
+                    </div>
+                    
+                    <p class="support-text">
+                        For editorial inquiries or questions about your submission status, please email: editorial@angsilakbo.com
+                    </p>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 8v4"></path>
+                            <path d="M12 16h.01"></path>
+                        </svg>
+                        Report an Issue
+                    </h3>
+                    <p class="support-text">
+                        If you encounter technical issues with our submission platform, please provide the following information when contacting us:
+                    </p>
+                    <ul class="support-list">
+                        <li>Your browser and version</li>
+                        <li>Your device type (desktop, tablet, mobile)</li>
+                        <li>A detailed description of the issue</li>
+                        <li>Screenshots of any error messages (if possible)</li>
+                    </ul>
+                    <p class="support-text">
+                        This information will help us resolve your issue more quickly.
+                    </p>
+                </div>
+                
+                <div class="support-section">
+                    <h3 class="support-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Visit Us
+                    </h3>
+                    <p class="support-text">
+                        Our office is located at:
+                    </p>
+                    <p class="support-text">
+                        University of Cebu<br>
+                        Lapu-Lapu and Mandaue<br>
+                        Senior High School
+                    </p>
+                    <p class="support-text">
+                        Contact us via email to schedule a meeting.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize AOS Animation Library
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init();
+            
+            // Add desktop-only class to nav-links
+            document.querySelector('.nav-links').classList.add('desktop-only');
+            
+            // Add CSS for desktop-only class
+            const style = document.createElement('style');
+            style.textContent = `
+                @media (max-width: 992px) {
+                    .desktop-only {
+                        display: none !important;
+                    }
+                }
+                
+                /* Fix for edit mode scrolling */
+                .tox-tinymce {
+                    height: 400px !important;
+                    max-height: 400px !important;
+                    overflow: auto !important;
+                }
+                
+                .submission-details-content {
+                    max-height: 80vh;
+                    overflow-y: auto;
+                }
+                
+                /* Ensure body scroll works in edit mode */
+                body.edit-mode {
+                    overflow-y: auto !important;
+                }
+                
+                /* Improve modal scrolling */
+                .modal-content, .support-modal-content {
+                    max-height: 80vh;
+                    overflow-y: auto;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Load logo image
+            const logoPath = "SILAKBO (1).png";
+            
+            // Try to load the logo
+            const headerLogo = document.getElementById('headerLogo');
+            const footerLogo = document.getElementById('footerLogo');
+            
+            // Set the logo source
+            headerLogo.src = logoPath;
+            footerLogo.src = logoPath;
+            
+            // Fallback if logo doesn't load
+            headerLogo.onerror = function() {
+                this.src = "/placeholder.svg?height=50&width=50";
+            };
+            
+            footerLogo.onerror = function() {
+                this.src = "/placeholder.svg?height=40&width=40";
+            };
+            
+            // Header scroll effect
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuClose = document.getElementById('mobileMenuClose');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            mobileMenuClose.addEventListener('click', function() {
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Notification functionality
+            const notification = document.getElementById('notification');
+            const notificationClose = document.getElementById('notificationClose');
+            
+            notificationClose.addEventListener('click', function() {
+                notification.classList.remove('show');
+            });
+            
+            function showNotification(title, message) {
+                const notificationTitle = notification.querySelector('.notification-title');
+                const notificationMessage = notification.querySelector('.notification-message');
+                
+                notificationTitle.textContent = title;
+                notificationMessage.textContent = message;
+                
+                notification.classList.add('show');
+                
+                setTimeout(function() {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
+            
+            // Progress steps functionality
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressBarFill = document.getElementById('progressBarFill');
+            let currentStep = 0;
+            
+            function updateProgress(step) {
+                progressSteps.forEach((stepEl, index) => {
+                    if (index < step) {
+                        stepEl.classList.add('completed');
+                        stepEl.classList.remove('active');
+                    } else if (index === step) {
+                        stepEl.classList.add('active');
+                        stepEl.classList.remove('completed');
+                    } else {
+                        stepEl.classList.remove('active');
+                        stepEl.classList.remove('completed');
+                    }
+                });
+                
+                progressBarFill.style.width = `${(step / (progressSteps.length - 1)) * 100}%`;
+            }
+            
+            // For demo purposes, let's simulate progress on form field focus
+            const authorName = document.getElementById('authorName');
+            const workTitle = document.getElementById('workTitle');
+            const workContent = document.getElementById('workContent');
+            const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+            
+            authorName.addEventListener('focus', function() {
+                currentStep = 0;
+                updateProgress(currentStep);
+            });
+            
+            workTitle.addEventListener('focus', function() {
+                currentStep = 1;
+                updateProgress(currentStep);
+            });
+            
+            // TinyMCE will handle this
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.tox-editor-container')) {
+                    currentStep = 1;
+                    updateProgress(currentStep);
+                }
+            });
+            
+            uploadPhotoBtn.addEventListener('click', function() {
+                currentStep = 2;
+                updateProgress(currentStep);
+            });
+            
+            // Support Modal Functionality
+            const supportModal = document.getElementById('supportModal');
+            const supportLink = document.getElementById('supportLink');
+            const sidebarSupportLink = document.getElementById('sidebarSupportLink');
+            const mobileSupportLink = document.getElementById('mobileSupportLink');
+            const closeSupportModal = document.getElementById('closeSupportModal');
+            
+            function showSupportModal() {
+                supportModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                // Close mobile menu if open
+                mobileMenu.classList.remove('open');
+            }
+            
+            function hideSupportModal() {
+                supportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            supportLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSupportModal();
+            });
+            
+            sidebarSupportLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSupportModal();
+            });
+            
+            mobileSupportLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSupportModal();
+            });
+            
+            closeSupportModal.addEventListener('click', hideSupportModal);
+            
+            // Support Tabs Functionality
+            const supportTabs = document.querySelectorAll('.support-tab');
+            
+            supportTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    supportTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all content
+                    document.querySelectorAll('.support-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show corresponding content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+
+            // Initialize TinyMCE with enhanced configuration
+            tinymce.init({
+                selector: '#workContent',
+                plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount emoticons quickbars',
+                toolbar: 'undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | removeformat help',
+                height: 400,
+                menubar: 'file edit view insert format tools table help',
+                content_style: 'body { font-family: "Poppins", sans-serif; font-size: 16px; }',
+                skin: 'oxide',
+                promotion: false,
+                branding: false,
+                quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
+                contextmenu: 'link image table',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        editor.save();
+                    });
+                    
+                    editor.on('focus', function() {
+                        currentStep = 1;
+                        updateProgress(currentStep);
+                        // Add edit-mode class to body for better scrolling
+                        document.body.classList.add('edit-mode');
+                    });
+                    
+                    editor.on('blur', function() {
+                        // Remove edit-mode class when not editing
+                        document.body.classList.remove('edit-mode');
+                    });
+                }
+            });
+
+            // Initialize Supabase
+            const supabaseUrl = 'https://dnwktuuhiywkjsnvgowj.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRud2t0dXVoaXl3a2pzbnZnb3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzOTg1OTgsImV4cCI6MjA1Nzk3NDU5OH0.7bnD-M04K3Kr69v64XPbC0UFsjdcYAWJexLzJ0rA2UI';
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+            // Enhanced Cloudinary Upload Widget
+            document.getElementById('uploadPhotoBtn').addEventListener('click', function() {
+                cloudinary.openUploadWidget(
+                    {
+                        cloudName: 'dz3sdis2x',
+                        uploadPreset: 'Ang Silakbo 1',
+                        sources: ['local', 'url', 'camera', 'google_drive', 'dropbox'],
+                        multiple: false,
+                        defaultSource: 'local',
+                        styles: {
+                            palette: {
+                                window: "#FFFFFF",
+                                sourceBg: "#FFFFFF",
+                                windowBorder: "#E0E0E0",
+                                tabIcon: "#FF7A00",
+                                inactiveTabIcon: "#666666",
+                                menuIcons: "#555555",
+                                link: "#FF7A00",
+                                action: "#FF4500",
+                                inProgress: "#FF7A00",
+                                complete: "#4CAF50",
+                                error: "#FF0000",
+                                textDark: "#333333",
+                                textLight: "#FFFFFF"
+                            },
+                            fonts: {
+                                default: {
+                                    active: true,
+                                    url: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+                                }
+                            }
+                        },
+                        cropping: true,
+                        croppingAspectRatio: 16/9,
+                        showSkipCropButton: false,
+                        croppingShowDimensions: true,
+                        croppingCoordinatesMode: 'custom',
+                        showAdvancedOptions: false,
+                        showUploadMoreButton: false,
+                        singleUploadAutoClose: true,
+                        thumbnails: false
+                    },
+                    (error, result) => {
+                        if (!error && result && result.event === "success") {
+                            document.getElementById('photoUrl').value = result.info.secure_url;
+                            document.getElementById('photoPreview').innerHTML = `
+                                <img src="${result.info.secure_url}" alt="Uploaded image" data-aos="fade-up">
+                            `;
+                            
+                            // Show notification
+                            showNotification('Success', 'Image uploaded successfully!');
+                            
+                            // Update progress
+                            currentStep = 3;
+                            updateProgress(currentStep);
+                        }
+                    }
+                );
+            });
+
+            // Loading spinner functions
+            function showSpinner() {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+            }
+            
+            function hideSpinner() {
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+
+            // Success Modal Functions
+            const modal = document.getElementById('successModal');
+            const closeBtn = document.getElementById('closeModal');
+            const cancelBtn = document.querySelector('.cancel-btn');
+            const viewSubmissionBtn = document.getElementById('viewSubmissionBtn');
+            const submissionDetailsModal = document.getElementById('submissionDetailsModal');
+            const closeSubmissionDetails = document.getElementById('closeSubmissionDetails');
+            
+            // Store submission data globally for the view submission functionality
+            let currentSubmission = {};
+
+            function showSuccessModal() {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                // Generate a random submission ID
+                const submissionId = 'SLK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('submissionId').textContent = '#' + submissionId;
+            }
+
+            function hideSuccessModal() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                // Reset form after closing modal
+                document.getElementById('submissionForm').reset();
+                document.getElementById('photoPreview').innerHTML = '';
+                tinymce.get('workContent').setContent('');
+                
+                // Reset progress
+                currentStep = 0;
+                updateProgress(currentStep);
+            }
+
+            closeBtn.addEventListener('click', hideSuccessModal);
+            
+            // View Submission functionality
+            viewSubmissionBtn.addEventListener('click', function() {
+                // Hide success modal
+                modal.style.display = 'none';
+                
+                // Populate submission details modal with current submission data
+                document.getElementById('submissionAuthor').textContent = currentSubmission.author_name;
+                document.getElementById('submissionEmail').textContent = currentSubmission.author_email;
+                document.getElementById('submissionDate').textContent = new Date(currentSubmission.created_at).toLocaleString();
+                document.getElementById('submissionTitle').textContent = currentSubmission.work_title;
+                document.getElementById('submissionContent').innerHTML = currentSubmission.work_content;
+                document.getElementById('submissionNotes').textContent = currentSubmission.other_details || 'No additional notes provided.';
+                
+                // Handle image
+                const imageContainer = document.getElementById('submissionImageContainer');
+                const submissionImage = document.getElementById('submissionImage');
+                
+                if (currentSubmission.photo_url) {
+                    submissionImage.src = currentSubmission.photo_url;
+                    imageContainer.style.display = 'block';
+                } else {
+                    imageContainer.style.display = 'none';
+                }
+                
+                // Show submission details modal
+                submissionDetailsModal.style.display = 'flex';
+            });
+            
+            // Close submission details modal
+            closeSubmissionDetails.addEventListener('click', function() {
+                submissionDetailsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Edit submission button
+            document.getElementById('editSubmissionBtn').addEventListener('click', function() {
+                // Hide submission details modal
+                submissionDetailsModal.style.display = 'none';
+                
+                // Populate form with current submission data
+                document.getElementById('authorName').value = currentSubmission.author_name;
+                document.getElementById('authorEmail').value = currentSubmission.author_email;
+                document.getElementById('workTitle').value = currentSubmission.work_title;
+                tinymce.get('workContent').setContent(currentSubmission.work_content);
+                document.getElementById('otherDetails').value = currentSubmission.other_details || '';
+                
+                // Handle image
+                if (currentSubmission.photo_url) {
+                    document.getElementById('photoUrl').value = currentSubmission.photo_url;
+                    document.getElementById('photoPreview').innerHTML = `
+                        '<img src="' + currentSubmission.photo_url + '" alt="Uploaded image" data-aos="fade-up">'
+                    `;
+                }
+                
+                // Show notification
+                showNotification('Edit Mode', 'You can now edit your submission.');
+                
+                // Enable scrolling in edit mode
+                document.body.classList.add('edit-mode');
+            });
+            
+            // Cancel button functionality with enhanced confirmation
+            cancelBtn.addEventListener('click', function() {
+                // Create a custom confirmation dialog instead of using the browser's default
+                const confirmationHTML = 
+                    '<div class="modal-content" style="max-width: 400px;">' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF7A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="48" height="48" style="margin-bottom: 1rem;">' +
+                            '<circle cx="12" cy="12" r="10"></circle>' +
+                            '<line x1="12" y1="8" x2="12" y2="12"></line>' +
+                            '<line x1="12" y1="16" x2="12.01" y2="16"></line>' +
+                        '</svg>' +
+                        '<h2 class="success-title" style="font-size: 1.5rem;">Confirm Cancellation</h2>' +
+                        '<p class="success-message" style="margin-bottom: 1.5rem;">Are you sure you want to cancel? All your changes will be lost.</p>' +
+                        '<div class="modal-actions">' +
+                            '<button id="cancelNo" class="view-submission-btn">No, Keep Editing</button>' +
+                            '<button id="cancelYes" class="close-btn">Yes, Cancel</button>' +
+                        '</div>' +
+                    '</div>';
+                
+                const confirmModal = document.createElement('div');
+                confirmModal.className = 'modal';
+                confirmModal.style.display = 'flex';
+                confirmModal.innerHTML = confirmationHTML;
+                document.body.appendChild(confirmModal);
+                document.body.style.overflow = 'hidden';
+                
+                document.getElementById('cancelNo').addEventListener('click', function() {
+                    document.body.removeChild(confirmModal);
+                    document.body.style.overflow = 'auto';
+                });
+                
+                document.getElementById('cancelYes').addEventListener('click', function() {
+                    document.getElementById('submissionForm').reset();
+                    document.getElementById('photoPreview').innerHTML = '';
+                    tinymce.get('workContent').setContent('');
+                    document.body.removeChild(confirmModal);
+                    document.body.style.overflow = 'auto';
+                    
+                    // Reset progress
+                    currentStep = 0;
+                    updateProgress(currentStep);
+                    
+                    // Show notification
+                    showNotification('Cancelled', 'Your submission has been cancelled.');
+                });
+            });
+
+            // Form submission with enhanced validation and animation
+            document.getElementById('submissionForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Form validation
+                const authorName = document.getElementById('authorName').value;
+                const authorEmail = document.getElementById('authorEmail').value;
+                const workTitle = document.getElementById('workTitle').value;
+                const workContent = tinymce.get('workContent').getContent();
+                const photoUrl = document.getElementById('photoUrl').value;
+                const otherDetails = document.getElementById('otherDetails').value;
+                
+                // Simple validation
+                if (!authorName || !authorEmail || !workTitle || !workContent) {
+                    showNotification('Error', 'Please fill in all required fields.');
+                    return;
+                }
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(authorEmail)) {
+                    showNotification('Error', 'Please enter a valid email address.');
+                    return;
+                }
+                
+                // Show loading spinner
+                showSpinner();
+                
+                try {
+                    // Simulate network delay for demo purposes
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Create submission object
+                    currentSubmission = {
+                        author_name: authorName,
+                        author_email: authorEmail,
+                        work_title: workTitle,
+                        work_content: workContent,
+                        photo_url: photoUrl,
+                        other_details: otherDetails,
+                        created_at: new Date().toISOString()
+                    };
+                    
+                    const { data, error } = await supabaseClient
+                        .from('submissions')
+                        .insert([currentSubmission]);
+                    
+                    if (error) throw error;
+                    
+                    // Hide spinner
+                    hideSpinner();
+                    
+                    // Show success modal
+                    showSuccessModal();
+                } catch (error) {
+                    console.error('Error submitting:', error);
+                    hideSpinner();
+                    showNotification('Error', 'Submission failed. Please try again.');
+                }
+            });
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    hideSuccessModal();
+                }
+                if (event.target === submissionDetailsModal) {
+                    submissionDetailsModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+                if (event.target === supportModal) {
+                    supportModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
