@@ -123,13 +123,12 @@
         }
 
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--gray-100);
-            border-radius: var(--radius-full);
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -144,27 +143,35 @@
         /* ===== LAYOUT ===== */
         .app-container {
             display: flex;
-            flex-direction: column;
             min-height: 100vh;
         }
 
-        /* ===== HEADER ===== */
-        .top-header {
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
             background-color: var(--bg-white);
             box-shadow: var(--shadow-md);
-            position: sticky;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
             top: 0;
+            left: 0;
+            bottom: 0;
             z-index: 100;
+            transition: var(--transition);
+            overflow-y: auto;
         }
 
-        .header-container {
+        .sidebar-collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem 2rem;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .logo-container {
@@ -190,12 +197,237 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--gray-100);
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: var(--gray-200);
+            color: var(--primary);
+        }
+
+        .sidebar-menu {
+            padding: 1.5rem 0;
+            flex: 1;
+        }
+
+        .menu-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed .menu-title {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .menu-item {
+            list-style: none;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-medium);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .menu-link.active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        .menu-icon {
+            width: 1.5rem;
+            text-align: center;
+            font-size: 1.125rem;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .menu-link:hover .menu-icon,
+        .menu-link.active .menu-icon {
+            color: var(--primary);
+        }
+
+        .menu-text {
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed .menu-text {
+            display: none;
+        }
+
+        .menu-badge {
+            margin-left: auto;
+            background-color: var(--gray-200);
+            color: var(--text-medium);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-full);
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed .menu-badge {
+            display: none;
+        }
+
+        .menu-link:hover .menu-badge,
+        .menu-link.active .menu-badge {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed .user-info {
+            display: none;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-collapsed + .main-content {
+            margin-left: 80px;
+        }
+
+        /* ===== HEADER ===== */
+        .top-header {
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
         .header-actions {
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--gray-100);
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .header-btn:hover {
+            background-color: var(--gray-200);
+            color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .theme-toggle {
@@ -218,162 +450,48 @@
             transform: rotate(15deg);
         }
 
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            background-color: var(--gray-100);
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid var(--gray-300);
             border-radius: var(--radius-full);
-            cursor: pointer;
+            font-size: 0.875rem;
             transition: var(--transition);
-        }
-
-        .user-menu:hover {
-            background-color: var(--gray-200);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-full);
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .user-name {
-            font-weight: 500;
+            background-color: var(--bg-white);
             color: var(--text-dark);
         }
 
-        /* ===== NAVIGATION ===== */
-        .main-nav {
-            background-color: var(--bg-white);
-            border-bottom: 1px solid var(--gray-200);
-            box-shadow: var(--shadow-sm);
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2);
         }
 
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 0 2rem;
-        }
-
-        .nav-tabs {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none; /* Firefox */
-        }
-
-        .nav-tabs::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Edge */
-        }
-
-        .nav-tab {
-            padding: 1rem 1.5rem;
-            color: var(--text-medium);
-            font-weight: 500;
-            position: relative;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: none;
-            background: none;
-        }
-
-        .nav-tab::after {
-            content: '';
+        .search-icon {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            transform: scaleX(0);
-            transition: var(--transition);
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.875rem;
         }
 
-        .nav-tab:hover {
-            color: var(--primary);
-        }
-
-        .nav-tab:hover::after {
-            transform: scaleX(0.5);
-        }
-
-        .nav-tab.active {
-            color: var(--primary);
-        }
-
-        .nav-tab.active::after {
-            transform: scaleX(1);
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .nav-btn {
-            padding: 0.5rem 1rem;
-            background-color: var(--gray-100);
-            color: var(--text-medium);
-            border: none;
-            border-radius: var(--radius-full);
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-btn:hover {
-            background-color: var(--gray-200);
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            color: white;
-        }
-
-        .nav-btn.primary:hover {
-            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.3);
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .main-content {
+        /* ===== CONTENT AREA ===== */
+        .content-area {
             flex: 1;
             padding: 2rem;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
+            background-color: var(--bg-light);
         }
 
         /* ===== DASHBOARD LAYOUT ===== */
-        .dashboard {
+        .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
-            gap: 1.5rem;
-        }
-
-        .dashboard-sidebar {
-            grid-column: span 3;
-            display: flex;
-            flex-direction: column;
             gap: 1.5rem;
         }
 
@@ -384,23 +502,30 @@
             gap: 1.5rem;
         }
 
-        /* ===== CATEGORY MENU ===== */
-        .category-menu {
+        .dashboard-sidebar {
+            grid-column: span 3;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
             background-color: var(--bg-white);
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow);
             overflow: hidden;
         }
 
-        .category-menu-header {
-            padding: 1.25rem;
+        .card-header {
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--gray-200);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .category-menu-title {
+        .card-title {
             font-size: 1.125rem;
             font-weight: 600;
             color: var(--text-dark);
@@ -409,195 +534,78 @@
             gap: 0.5rem;
         }
 
-        .category-menu-title i {
+        .card-title i {
             color: var(--primary);
         }
 
-        .category-menu-list {
-            padding: 1rem 0;
-        }
-
-        .category-item {
-            list-style: none;
-        }
-
-        .category-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.25rem;
-            color: var(--text-medium);
-            text-decoration: none;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .category-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, var(--primary), var(--accent));
-            transform: scaleY(0);
-            transition: var(--transition);
-        }
-
-        .category-link:hover {
-            background-color: var(--gray-100);
-            color: var(--primary);
-        }
-
-        .category-link:hover::before {
-            transform: scaleY(0.6);
-        }
-
-        .category-link.active {
-            background-color: var(--gray-100);
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .category-link.active::before {
-            transform: scaleY(1);
-        }
-
-        .category-icon {
-            width: 1.5rem;
-            text-align: center;
-            font-size: 1.125rem;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
-
-        .category-link:hover .category-icon,
-        .category-link.active .category-icon {
-            color: var(--primary);
-        }
-
-        .category-badge {
-            margin-left: auto;
-            background-color: var(--gray-200);
-            color: var(--text-medium);
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-full);
-            transition: var(--transition);
-        }
-
-        .category-link:hover .category-badge,
-        .category-link.active .category-badge {
-            background-color: var(--primary-light);
-            color: white;
-        }
-
-        /* ===== WRITING TIPS CARD ===== */
-        .tips-card {
-            background-color: var(--bg-white);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .tips-card-header {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-            color: white;
-        }
-
-        .tips-card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .tips-card-body {
-            padding: 1.25rem;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .writing-tip {
-            margin-bottom: 1rem;
-            padding: 1rem 1rem 1rem 2.5rem;
-            position: relative;
-            font-size: 0.875rem;
-            color: var(--text-medium);
-            line-height: 1.6;
-            transition: var(--transition);
-            background-color: var(--gray-100);
-            border-radius: var(--radius-lg);
-        }
-
-        .writing-tip::before {
-            content: '\f0eb';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 1rem;
-            top: 1rem;
-            color: var(--primary);
-            font-size: 1rem;
-        }
-
-        .writing-tip:hover {
-            transform: translateX(5px);
-            color: var(--text-dark);
-            background-color: var(--gray-200);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .writing-tip:last-child {
-            margin-bottom: 0;
-        }
-
-        /* ===== CONTENT CARD ===== */
-        .content-card {
-            background-color: var(--bg-white);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .content-card-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .content-card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .content-card-title i {
-            color: var(--primary);
-        }
-
-        .content-card-body {
+        .card-body {
             padding: 1.5rem;
         }
 
-        .content-card-footer {
+        .card-footer {
             padding: 1.25rem 1.5rem;
             border-top: 1px solid var(--gray-200);
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            color: var(--text-medium);
+            font-weight: 500;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            border: none;
+            background: none;
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            transform: scaleX(1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
         }
 
         /* ===== FORMS ===== */
@@ -648,6 +656,13 @@
             background-repeat: no-repeat;
             background-position: right 12px center;
             padding-right: 2.5rem;
+        }
+
+        .form-hint {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
         }
 
         /* ===== FILE UPLOAD ===== */
@@ -1432,102 +1447,183 @@
             background-color: var(--gray-100) !important;
         }
 
-        /* ===== RESPONSIVE STYLES ===== */
-        @media (max-width: 1200px) {
-            .dashboard-sidebar {
-                grid-column: span 4;
-            }
-            
-            .dashboard-main {
-                grid-column: span 8;
-            }
+        /* ===== HELP CENTER STYLES ===== */
+        .help-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
         }
 
-        @media (max-width: 992px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard-sidebar, .dashboard-main {
-                grid-column: span 1;
-            }
-            
-            .posts-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
+        .help-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
-        @media (max-width: 768px) {
-            .header-container, .nav-container {
-                padding: 0 1rem;
-            }
-            
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .user-name {
-                display: none;
-            }
-            
-            .nav-tab {
-                padding: 0.75rem 1rem;
-            }
-            
-            .nav-tab span {
-                display: none;
-            }
-            
-            .nav-btn span {
-                display: none;
-            }
+        .help-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        @media (max-width: 576px) {
-            .modal-footer {
-                flex-direction: column;
-            }
-            
-            .modal-footer .btn {
-                width: 100%;
-            }
-            
-            .form-group {
-                margin-bottom: 1rem;
-            }
-            
-            .content-card-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-            
-            .content-card-header > div {
-                width: 100%;
-                display: flex;
-                gap: 0.5rem;
-            }
-            
-            .content-card-header .btn {
-                flex: 1;
-            }
+        .help-title i {
+            color: var(--primary);
         }
 
-        /* Tab content styles */
-        #createTab, #manageTab {
-            display: none;
-            animation: fadeIn 0.3s ease-out;
+        .help-text {
+            margin-bottom: 1rem;
+            color: var(--text-medium);
+            line-height: 1.6;
         }
 
-        #createTab.active, #manageTab.active {
-            display: block;
+        .help-list {
+            list-style: none;
+            padding-left: 1.5rem;
         }
 
-        /* Status bar */
-        .status-bar {
+        .help-list-item {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-medium);
+        }
+
+        .help-list-item::before {
+            content: '\f054';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            color: var(--primary);
+            font-size: 0.75rem;
+        }
+
+        .help-card {
             background-color: var(--gray-100);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .help-card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .help-shortcut {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 1rem 0.5rem 0;
+        }
+
+        .help-key {
+            background-color: var(--bg-white);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-medium);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ===== WRITING TIPS CARD ===== */
+        .tips-card {
+            background-color: var(--bg-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .tips-card-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+            color: white;
+        }
+
+        .tips-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tips-card-body {
+            padding: 1.25rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .writing-tip {
+            margin-bottom: 1rem;
+            padding: 1rem 1rem 1rem 2.5rem;
+            position: relative;
+            font-size: 0.875rem;
+            color: var(--text-medium);
+            line-height: 1.6;
+            transition: var(--transition);
+            background-color: var(--gray-100);
+            border-radius: var(--radius-lg);
+        }
+
+        .writing-tip::before {
+            content: '\f0eb';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .writing-tip:hover {
+            transform: translateX(5px);
+            color: var(--text-dark);
+            background-color: var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .writing-tip:last-child {
+            margin-bottom: 0;
+        }
+
+        .writing-tip-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .writing-tip-example {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-left: 3px solid var(--primary);
+            font-style: italic;
+            font-size: 0.8rem;
+        }
+
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            background-color: var(--bg-white);
             border-top: 1px solid var(--gray-200);
-            padding: 0.5rem 2rem;
+            padding: 0.75rem 2rem;
             display: flex;
             align-items: center;
             font-size: 0.75rem;
@@ -1551,349 +1647,488 @@
             gap: 1.5rem;
             align-items: center;
         }
+
+        /* ===== RESPONSIVE STYLES ===== */
+        @media (max-width: 1200px) {
+            .dashboard-main {
+                grid-column: span 8;
+            }
+            
+            .dashboard-sidebar {
+                grid-column: span 4;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar .logo-text,
+            .sidebar .menu-text,
+            .sidebar .menu-badge,
+            .sidebar .menu-title,
+            .sidebar .user-info {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-main, .dashboard-sidebar {
+                grid-column: span 1;
+            }
+            
+            .search-container {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+                width: 280px;
+            }
+            
+            .sidebar.active .logo-text,
+            .sidebar.active .menu-text,
+            .sidebar.active .menu-badge,
+            .sidebar.active .menu-title,
+            .sidebar.active .user-info {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .top-header {
+                padding: 1rem;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .search-container {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 1.25rem;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-footer .btn {
+                width: 100%;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .card-header > div {
+                width: 100%;
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .card-header .btn {
+                flex: 1;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="top-header">
-            <div class="header-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
                 <div class="logo-container">
                     <img src="SILAKBO (1).png" alt="Silakbo Logo" class="logo">
                     <span class="logo-text">ANG SILAKBO</span>
                 </div>
-                <div class="header-actions">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <div class="user-menu">
-                        <div class="user-avatar">A</div>
-                        <span class="user-name">Admin</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h3 class="menu-title">Main</h3>
+                    <ul>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link active" id="navCreate">
+                                <i class="fas fa-plus-circle menu-icon"></i>
+                                <span class="menu-text">Create New Post</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="navManage">
+                                <i class="fas fa-list menu-icon"></i>
+                                <span class="menu-text">Published Works</span>
+                                <span class="menu-badge">All</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="menu-section">
+                    <h3 class="menu-title">Categories</h3>
+                    <ul>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="navArticles">
+                                <i class="fas fa-newspaper menu-icon"></i>
+                                <span class="menu-text">Articles</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="navLiterary">
+                                <i class="fas fa-book menu-icon"></i>
+                                <span class="menu-text">Literary Works</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="navFeature">
+                                <i class="fas fa-star menu-icon"></i>
+                                <span class="menu-text">Feature</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="navSilak">
+                                <i class="fas fa-language menu-icon"></i>
+                                <span class="menu-text">Silak-salitaan</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="navPhotostory">
+                                <i class="fas fa-camera menu-icon"></i>
+                                <span class="menu-text">Photostory</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="menu-section">
+                    <h3 class="menu-title">Tools</h3>
+                    <ul>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="helpBtn">
+                                <i class="fas fa-question-circle menu-icon"></i>
+                                <span class="menu-text">Help Center</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <i class="fas fa-cog menu-icon"></i>
+                                <span class="menu-text">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </header>
-
-        <!-- Navigation -->
-        <nav class="main-nav">
-            <div class="nav-container">
-                <div class="nav-tabs">
-                    <button class="nav-tab active" data-tab="create">
-                        <i class="fas fa-plus-circle"></i> <span>Create New Post</span>
-                    </button>
-                    <button class="nav-tab" data-tab="manage">
-                        <i class="fas fa-list"></i> <span>Published Works</span>
-                    </button>
-                </div>
-                <div class="nav-actions">
-                    <button class="nav-btn" id="helpBtn">
-                        <i class="fas fa-question-circle"></i> <span>Help</span>
-                    </button>
-                    <button class="nav-btn primary" id="createNewBtn">
-                        <i class="fas fa-plus"></i> <span>New Post</span>
-                    </button>
+            <div class="sidebar-footer">
+                <div class="user-avatar">A</div>
+                <div class="user-info">
+                    <div class="user-name">Admin</div>
+                    <div class="user-role">Administrator</div>
                 </div>
             </div>
-        </nav>
+        </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Alerts -->
-            <div id="alertSuccess" class="alert alert-success">
-                <i class="fas fa-check-circle"></i> 
-                <span>Operation completed successfully!</span>
-                <button class="alert-close">&times;</button>
-            </div>
-            <div id="alertError" class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i> 
-                <span id="errorMessage">An error occurred.</span>
-                <button class="alert-close">&times;</button>
-            </div>
-            
-            <!-- Create Tab Content -->
-            <div id="createTab" class="active">
-                <div class="dashboard">
-                    <div class="dashboard-main">
-                        <div class="content-card">
-                            <div class="content-card-header">
-                                <h2 class="content-card-title">
-                                    <i class="fas fa-pen-fancy"></i> Create a New Post
-                                </h2>
+            <!-- Header -->
+            <header class="top-header">
+                <h1 class="page-title" id="pageTitle">Create New Post</h1>
+                <div class="header-actions">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search...">
+                    </div>
+                    <button class="header-btn" id="createNewBtn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Alerts -->
+                <div id="alertSuccess" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> 
+                    <span>Operation completed successfully!</span>
+                    <button class="alert-close">&times;</button>
+                </div>
+                <div id="alertError" class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i> 
+                    <span id="errorMessage">An error occurred.</span>
+                    <button class="alert-close">&times;</button>
+                </div>
+                
+                <!-- Create Tab Content -->
+                <div id="createTab" class="tab-content active">
+                    <div class="dashboard-grid">
+                        <div class="dashboard-main">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        <i class="fas fa-pen-fancy"></i> Create a New Post
+                                    </h2>
+                                </div>
+                                <div class="card-body">
+                                    <form id="postForm">
+                                        <div class="form-group">
+                                            <label class="form-label" for="category">
+                                                <i class="fas fa-tag"></i> Category:
+                                            </label>
+                                            <select id="category" class="form-control" required>
+                                                <option value="article">Article</option>
+                                                <option value="literary">Literary</option>
+                                                <option value="feature">Feature</option>
+                                                <option value="silak">Silak-salitaan</option>
+                                                <option value="photostory">Photostory</option>
+                                            </select>
+                                            <span class="form-hint">Select the type of content you're creating. Each category has specific formatting and requirements.</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="title">
+                                                <i class="fas fa-heading"></i> Title:
+                                            </label>
+                                            <input type="text" id="title" class="form-control" required placeholder="Enter post title">
+                                            <span class="form-hint">Create a compelling title that captures the essence of your content (50-70 characters recommended).</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="author">
+                                                <i class="fas fa-user-edit"></i> Author:
+                                            </label>
+                                            <input type="text" id="author" class="form-control" required placeholder="Enter author's name">
+                                        </div>
+
+                                        <div class="form-group" id="additionalFields">
+                                            <label class="form-label" id="roleLabel" for="additionalField">
+                                                <i class="fas fa-camera"></i> Photojournalist:
+                                            </label>
+                                            <input type="text" id="additionalField" class="form-control" placeholder="Enter photojournalist's name">
+                                            <span class="form-hint">Credit the visual contributor appropriately based on the content type.</span>
+                                        </div>
+
+                                        <!-- Silak-salitaan specific fields -->
+                                        <div class="silak-fields" id="silakFields">
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    <i class="fas fa-language"></i> Part of Speech:
+                                                </label>
+                                                <div class="parts-of-speech">
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="noun" checked> Noun
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="verb"> Verb
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="adjective"> Adjective
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="adverb"> Adverb
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="pronoun"> Pronoun
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="preposition"> Preposition
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="conjunction"> Conjunction
+                                                    </label>
+                                                    <label class="part-of-speech-option">
+                                                        <input type="radio" name="partOfSpeech" value="interjection"> Interjection
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="meaning">
+                                                    <i class="fas fa-book-open"></i> Meaning:
+                                                </label>
+                                                <textarea id="meaning" class="form-control" rows="4" placeholder="Enter the meaning of the word"></textarea>
+                                                <span class="form-hint">Provide a clear, comprehensive definition that captures all nuances of the word.</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="example">
+                                                    <i class="fas fa-quote-right"></i> Example Usage:
+                                                </label>
+                                                <textarea id="example" class="form-control" rows="3" placeholder="Enter an example sentence using this word"></textarea>
+                                                <span class="form-hint">Include a contextual example that demonstrates proper usage of the word.</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="imageUpload">
+                                                <i class="fas fa-image"></i> Upload Image:
+                                            </label>
+                                            <div class="file-upload">
+                                                <div class="file-input-container">
+                                                    <label class="file-input-label">
+                                                        <i class="fas fa-upload"></i> Choose File
+                                                        <input type="file" id="imageUpload" accept="image/*">
+                                                    </label>
+                                                    <span class="file-name" id="fileName">
+                                                        <i class="fas fa-file-image"></i> No file chosen
+                                                    </span>
+                                                </div>
+                                                <div class="image-preview-container">
+                                                    <img id="imagePreview" alt="Image Preview">
+                                                </div>
+                                                <span class="form-hint">Recommended image size: 1200x630 pixels. Use high-quality images that enhance your content.</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="contentContainer">
+                                            <label class="form-label" for="content">
+                                                <i class="fas fa-paragraph"></i> Content:
+                                            </label>
+                                            <textarea id="content" class="form-control"></textarea>
+                                            <span class="form-hint">Write your content using the rich text editor. Use headings, lists, and formatting to improve readability.</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
+                                    <button type="button" class="btn" id="saveBtn">
+                                        <span class="spinner" id="submitSpinner"></span>
+                                        <i class="fas fa-save"></i> Save Draft
+                                    </button>
+                                    <button type="button" class="btn btn-success" id="publishBtn">
+                                        <i class="fas fa-paper-plane"></i> Publish Post
+                                    </button>
+                                </div>
                             </div>
-                            <div class="content-card-body">
-                                <form id="postForm">
-                                    <div class="form-group">
-                                        <label class="form-label" for="category">
-                                            <i class="fas fa-tag"></i> Category:
-                                        </label>
-                                        <select id="category" class="form-control" required>
-                                            <option value="article">Article</option>
-                                            <option value="literary">Literary</option>
-                                            <option value="feature">Feature</option>
-                                            <option value="silak">Silak-salitaan</option>
-                                            <option value="photostory">Photostory</option>
-                                        </select>
+                        </div>
+                        
+                        <div class="dashboard-sidebar">
+                            <div class="tips-card">
+                                <div class="tips-card-header">
+                                    <h3 class="tips-card-title">
+                                        <i class="fas fa-lightbulb"></i> Writing Tips
+                                    </h3>
+                                </div>
+                                <div class="tips-card-body">
+                                    <div id="writingTipsContent">
+                                        <!-- Tips will be loaded dynamically based on category -->
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="title">
-                                            <i class="fas fa-heading"></i> Title:
-                                        </label>
-                                        <input type="text" id="title" class="form-control" required placeholder="Enter post title">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="author">
-                                            <i class="fas fa-user-edit"></i> Author:
-                                        </label>
-                                        <input type="text" id="author" class="form-control" required placeholder="Enter author's name">
-                                    </div>
-
-                                    <div class="form-group" id="additionalFields">
-                                        <label class="form-label" id="roleLabel" for="additionalField">
-                                            <i class="fas fa-camera"></i> Photojournalist:
-                                        </label>
-                                        <input type="text" id="additionalField" class="form-control" placeholder="Enter photojournalist's name">
-                                    </div>
-
-                                    <!-- Silak-salitaan specific fields -->
-                                    <div class="silak-fields" id="silakFields">
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <i class="fas fa-language"></i> Part of Speech:
-                                            </label>
-                                            <div class="parts-of-speech">
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="noun" checked> Noun
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="verb"> Verb
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="adjective"> Adjective
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="adverb"> Adverb
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="pronoun"> Pronoun
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="preposition"> Preposition
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="conjunction"> Conjunction
-                                                </label>
-                                                <label class="part-of-speech-option">
-                                                    <input type="radio" name="partOfSpeech" value="interjection"> Interjection
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="meaning">
-                                                <i class="fas fa-book-open"></i> Meaning:
-                                            </label>
-                                            <textarea id="meaning" class="form-control" rows="4" placeholder="Enter the meaning of the word"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="example">
-                                                <i class="fas fa-quote-right"></i> Example Usage:
-                                            </label>
-                                            <textarea id="example" class="form-control" rows="3" placeholder="Enter an example sentence using this word"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="imageUpload">
-                                            <i class="fas fa-image"></i> Upload Image:
-                                        </label>
-                                        <div class="file-upload">
-                                            <div class="file-input-container">
-                                                <label class="file-input-label">
-                                                    <i class="fas fa-upload"></i> Choose File
-                                                    <input type="file" id="imageUpload" accept="image/*">
-                                                </label>
-                                                <span class="file-name" id="fileName">
-                                                    <i class="fas fa-file-image"></i> No file chosen
-                                                </span>
-                                            </div>
-                                            <div class="image-preview-container">
-                                                <img id="imagePreview" alt="Image Preview">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group" id="contentContainer">
-                                        <label class="form-label" for="content">
-                                            <i class="fas fa-paragraph"></i> Content:
-                                        </label>
-                                        <textarea id="content" class="form-control"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="content-card-footer">
-                                <button type="button" class="btn btn-secondary" id="resetBtn">
-                                    <i class="fas fa-undo"></i> Reset
-                                </button>
-                                <button type="button" class="btn" id="saveBtn">
-                                    <span class="spinner" id="submitSpinner"></span>
-                                    <i class="fas fa-save"></i> Save Draft
-                                </button>
-                                <button type="button" class="btn btn-success" id="publishBtn">
-                                    <i class="fas fa-paper-plane"></i> Publish Post
-                                </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="dashboard-sidebar">
-                        <div class="category-menu">
-                            <div class="category-menu-header">
-                                <h3 class="category-menu-title">
-                                    <i class="fas fa-folder"></i> Categories
-                                </h3>
+                </div>
+                
+                <!-- Manage Tab Content -->
+                <div id="manageTab" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-list-alt"></i> Published Works
+                            </h2>
+                            <div>
+                                <button class="btn btn-secondary" id="toggleViewBtn">
+                                    <i class="fas fa-th-large"></i> Toggle View
+                                </button>
+                                <button class="btn" id="refreshPostsBtn">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
                             </div>
-                            <ul class="category-menu-list">
-                                <li class="category-item">
-                                    <a href="#" class="category-link active" id="navCreate">
-                                        <i class="fas fa-plus-circle category-icon"></i>
-                                        <span>Create New Post</span>
-                                    </a>
-                                </li>
-                                <li class="category-item">
-                                    <a href="#" class="category-link" id="navManage">
-                                        <i class="fas fa-list category-icon"></i>
-                                        <span>Published Works</span>
-                                        <span class="category-badge">All</span>
-                                    </a>
-                                </li>
-                                <li class="category-item">
-                                    <a href="#" class="category-link" id="navArticles">
-                                        <i class="fas fa-newspaper category-icon"></i>
-                                        <span>Articles</span>
-                                    </a>
-                                </li>
-                                <li class="category-item">
-                                    <a href="#" class="category-link" id="navLiterary">
-                                        <i class="fas fa-book category-icon"></i>
-                                        <span>Literary Works</span>
-                                    </a>
-                                </li>
-                                <li class="category-item">
-                                    <a href="#" class="category-link" id="navFeature">
-                                        <i class="fas fa-star category-icon"></i>
-                                        <span>Feature</span>
-                                    </a>
-                                </li>
-                                <li class="category-item">
-                                    <a href="#" class="category-link" id="navSilak">
-                                        <i class="fas fa-language category-icon"></i>
-                                        <span>Silak-salitaan</span>
-                                    </a>
-                                </li>
-                                <li class="category-item">
-                                    <a href="#" class="category-link" id="navPhotostory">
-                                        <i class="fas fa-camera category-icon"></i>
-                                        <span>Photostory</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </div>
-                        
-                        <div class="tips-card">
-                            <div class="tips-card-header">
-                                <h3 class="tips-card-title">
-                                    <i class="fas fa-lightbulb"></i> Writing Tips
-                                </h3>
-                            </div>
-                            <div class="tips-card-body">
-                                <div id="writingTipsContent">
-                                    <!-- Tips will be loaded dynamically based on category -->
+                        <div class="card-body">
+                            <div id="postsTableContainer">
+                                <div id="loadingPosts" class="loading-container">
+                                    <div class="loading-spinner"></div>
+                                    <p class="loading-text">Loading posts...</p>
+                                </div>
+                                
+                                <!-- Table View -->
+                                <div class="table-container" id="postsTable" style="display: none;">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><i class="fas fa-tag"></i> Category</th>
+                                                <th><i class="fas fa-heading"></i> Title</th>
+                                                <th><i class="fas fa-user-edit"></i> Author</th>
+                                                <th><i class="fas fa-user-tag"></i> Photo/Art</th>
+                                                <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                                <th><i class="fas fa-cogs"></i> Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="postsTableBody">
+                                            <!-- Posts will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Grid View -->
+                                <div class="posts-grid" id="postsGrid" style="display: none;">
+                                    <!-- Posts will be loaded here as cards -->
+                                </div>
+                                
+                                <div id="noPostsMessage" class="empty-state" style="display: none;">
+                                    <i class="fas fa-inbox empty-icon"></i>
+                                    <p class="empty-text">No posts found.</p>
+                                    <button class="btn" id="createFirstPostBtn">
+                                        <i class="fas fa-plus-circle"></i> Create Your First Post
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Manage Tab Content -->
-            <div id="manageTab">
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h2 class="content-card-title">
-                            <i class="fas fa-list-alt"></i> Published Works
-                        </h2>
-                        <div>
-                            <button class="btn btn-secondary" id="toggleViewBtn">
-                                <i class="fas fa-th-large"></i> Toggle View
-                            </button>
-                            <button class="btn" id="refreshPostsBtn">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-item">
+                    <i class="fas fa-check-circle"></i> Ready
+                </div>
+                <div class="status-right">
+                    <div class="status-item" id="wordCount">
+                        <i class="fas fa-font"></i> Words: 0
                     </div>
-                    <div class="content-card-body">
-                        <div id="postsTableContainer">
-                            <div id="loadingPosts" class="loading-container">
-                                <div class="loading-spinner"></div>
-                                <p class="loading-text">Loading posts...</p>
-                            </div>
-                            
-                            <!-- Table View -->
-                            <div class="table-container" id="postsTable" style="display: none;">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th><i class="fas fa-tag"></i> Category</th>
-                                            <th><i class="fas fa-heading"></i> Title</th>
-                                            <th><i class="fas fa-user-edit"></i> Author</th>
-                                            <th><i class="fas fa-user-tag"></i> Photo/Art</th>
-                                            <th><i class="fas fa-calendar-alt"></i> Date</th>
-                                            <th><i class="fas fa-cogs"></i> Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="postsTableBody">
-                                        <!-- Posts will be loaded here -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <!-- Grid View -->
-                            <div class="posts-grid" id="postsGrid" style="display: none;">
-                                <!-- Posts will be loaded here as cards -->
-                            </div>
-                            
-                            <div id="noPostsMessage" class="empty-state" style="display: none;">
-                                <i class="fas fa-inbox empty-icon"></i>
-                                <p class="empty-text">No posts found.</p>
-                                <button class="btn" id="createFirstPostBtn">
-                                    <i class="fas fa-plus-circle"></i> Create Your First Post
-                                </button>
-                            </div>
-                        </div>
+                    <div class="status-item" id="characterCount">
+                        <i class="fas fa-text-width"></i> Characters: 0
+                    </div>
+                    <div class="status-item">
+                        <i class="far fa-clock"></i> <span id="currentTime">00:00</span>
                     </div>
                 </div>
             </div>
         </main>
-
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <div class="status-item">
-                <i class="fas fa-check-circle"></i> Ready
-            </div>
-            <div class="status-right">
-                <div class="status-item" id="wordCount">
-                    <i class="fas fa-font"></i> Words: 0
-                </div>
-                <div class="status-item" id="characterCount">
-                    <i class="fas fa-text-width"></i> Characters: 0
-                </div>
-                <div class="status-item">
-                    <i class="far fa-clock"></i> <span id="currentTime">00:00</span>
-                </div>
-            </div>
-        </div>
 
         <!-- Floating Action Button -->
         <button class="fab" id="createFab">
@@ -2099,8 +2334,16 @@
                 <div class="help-section">
                     <h3 class="help-title"><i class="fas fa-info-circle"></i> About Ang Silakbo Workstation</h3>
                     <p class="help-text">
-                        Ang Silakbo Workstation is a content management system designed for writers, journalists, and content creators. It provides a streamlined workflow for creating, editing, and managing articles and literary works.
+                        Ang Silakbo Workstation is a comprehensive content management system designed for writers, journalists, and content creators. It provides a streamlined workflow for creating, editing, and managing various types of content including articles, literary works, features, photostories, and Filipino language entries.
                     </p>
+                    <div class="help-card">
+                        <div class="help-card-title"><i class="fas fa-keyboard"></i> Keyboard Shortcuts</div>
+                        <div class="help-shortcut"><span class="help-key">Ctrl</span> + <span class="help-key">S</span> Save current work</div>
+                        <div class="help-shortcut"><span class="help-key">Ctrl</span> + <span class="help-key">B</span> Bold text</div>
+                        <div class="help-shortcut"><span class="help-key">Ctrl</span> + <span class="help-key">I</span> Italic text</div>
+                        <div class="help-shortcut"><span class="help-key">Ctrl</span> + <span class="help-key">Z</span> Undo</div>
+                        <div class="help-shortcut"><span class="help-key">Ctrl</span> + <span class="help-key">Y</span> Redo</div>
+                    </div>
                 </div>
 
                 <div class="help-section">
@@ -2109,7 +2352,7 @@
                         To create a new post, follow these steps:
                     </p>
                     <ul class="help-list">
-                        <li class="help-list-item">Navigate to the "Create New Post" tab from the top navigation or sidebar.</li>
+                        <li class="help-list-item">Navigate to the "Create New Post" tab from the sidebar.</li>
                         <li class="help-list-item">Select a category (Article, Literary, Feature, Silak-salitaan, or Photostory) from the dropdown menu.</li>
                         <li class="help-list-item">Fill in the required fields: Title and Author.</li>
                         <li class="help-list-item">Add a photojournalist or cartoonist name if applicable.</li>
@@ -2118,6 +2361,17 @@
                         <li class="help-list-item">Write your content in the rich text editor (except for Silak-salitaan).</li>
                         <li class="help-list-item">Click "Save Draft" to save your work or "Publish Post" to make it live.</li>
                     </ul>
+                    <div class="help-card">
+                        <div class="help-card-title"><i class="fas fa-exclamation-circle"></i> Important Tips</div>
+                        <p>For best results, prepare your content in advance and consider these guidelines:</p>
+                        <ul class="help-list">
+                            <li class="help-list-item">Articles should be 500-1500 words with a clear introduction, body, and conclusion.</li>
+                            <li class="help-list-item">Literary works benefit from careful proofreading and attention to style.</li>
+                            <li class="help-list-item">Features typically include more in-depth reporting and multiple sources.</li>
+                            <li class="help-list-item">Photostories should have high-quality images with descriptive captions.</li>
+                            <li class="help-list-item">Silak-salitaan entries should be thoroughly researched for accuracy.</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="help-section">
@@ -2131,6 +2385,22 @@
                         <li class="help-list-item">Use the "Edit" button to modify an existing post.</li>
                         <li class="help-list-item">Use the "Delete" button to remove a post (requires confirmation).</li>
                         <li class="help-list-item">Click "Refresh" to update the list with the latest changes.</li>
+                        <li class="help-list-item">Filter content by category using the sidebar navigation.</li>
+                    </ul>
+                </div>
+
+                <div class="help-section">
+                    <h3 class="help-title"><i class="fas fa-image"></i> Working with Images</h3>
+                    <p class="help-text">
+                        Images are an important part of your content. Here's how to work with them effectively:
+                    </p>
+                    <ul class="help-list">
+                        <li class="help-list-item">Use high-resolution images (recommended: 1200x630 pixels).</li>
+                        <li class="help-list-item">Supported formats include JPG, PNG, and GIF.</li>
+                        <li class="help-list-item">Keep file sizes under 5MB for optimal performance.</li>
+                        <li class="help-list-item">Use descriptive file names for better organization.</li>
+                        <li class="help-list-item">Consider image composition and relevance to your content.</li>
+                        <li class="help-list-item">For photostories, prepare a series of 5-10 related images.</li>
                     </ul>
                 </div>
             </div>
@@ -2151,49 +2421,164 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 // Writing Tips Data
 const writingTips = {
     article: [
-        "Start with a compelling headline that grabs attention and summarizes your main point.",
-        "Use the inverted pyramid structure: put the most important information first.",
-        "Include relevant statistics and data to support your claims.",
-        "Break up long paragraphs into shorter ones for better readability.",
-        "Use subheadings to organize your content and guide readers through your article.",
-        "Incorporate quotes from experts or relevant sources to add credibility.",
-        "End with a strong conclusion that reinforces your main message."
+        {
+            title: "Craft a Compelling Headline",
+            content: "Start with a headline that grabs attention and summarizes your main point. Use strong verbs, numbers, or questions to increase engagement.",
+            example: "Example: \"5 Ways Climate Change is Reshaping Our Coastlines\" is more compelling than \"Climate Change Effects\""
+        },
+        {
+            title: "Follow the Inverted Pyramid Structure",
+            content: "Put the most important information first, followed by supporting details and background information. This helps readers get the key points even if they don't read the entire article.",
+            example: "Example: Start with \"The city council approved the new budget yesterday\" rather than building up to this information."
+        },
+        {
+            title: "Include Relevant Data and Statistics",
+            content: "Support your claims with credible data, statistics, and research findings. This adds authority and credibility to your article.",
+            example: "Example: \"According to a 2023 study by the University of Manila, 78% of respondents reported increased anxiety levels\" is more powerful than \"Many people feel more anxious nowadays.\""
+        },
+        {
+            title: "Use Short, Focused Paragraphs",
+            content: "Break up long blocks of text into shorter paragraphs (3-5 sentences) for better readability, especially for online readers.",
+            example: "Example: Each paragraph should focus on a single idea or point."
+        },
+        {
+            title: "Incorporate Expert Quotes",
+            content: "Include quotes from experts or relevant sources to add credibility and different perspectives to your article.",
+            example: "Example: \"'This policy will have far-reaching implications for small businesses,' said Maria Santos, president of the Local Business Association.\""
+        },
+        {
+            title: "End with a Strong Conclusion",
+            content: "Summarize your main points and end with a thought-provoking statement or call to action that reinforces your message.",
+            example: "Example: \"As these trends continue, communities must prepare now for the challenges ahead. The time for action is not tomorrow—it's today.\""
+        }
     ],
     literary: [
-        "Show, don't tell. Use descriptive language to create vivid imagery.",
-        "Develop complex, multi-dimensional characters with unique voices.",
-        "Experiment with different literary devices like metaphor, simile, and symbolism.",
-        "Pay attention to rhythm and pacing in your narrative.",
-        "Create a strong sense of setting that immerses readers in your world.",
-        "Use dialogue to reveal character and advance the plot naturally.",
-        "Revise and edit ruthlessly, focusing on language precision and emotional impact."
+        {
+            title: "Show, Don't Tell",
+            content: "Use descriptive language to create vivid imagery that allows readers to experience the story through sensory details rather than simply being told what happens.",
+            example: "Example: Instead of \"She was sad,\" write \"Her shoulders slumped as tears silently traced paths down her cheeks, each drop carrying the weight of her broken promises.\""
+        },
+        {
+            title: "Develop Multi-dimensional Characters",
+            content: "Create complex characters with unique voices, motivations, flaws, and growth arcs that readers can connect with emotionally.",
+            example: "Example: A character who is outwardly confident but harbors deep insecurities that affect their decisions in subtle ways."
+        },
+        {
+            title: "Master Literary Devices",
+            content: "Experiment with metaphor, simile, symbolism, foreshadowing, and other literary techniques to add depth and meaning to your writing.",
+            example: "Example: \"The old house stood like a sentinel at the edge of town, its windows dark eyes watching the comings and goings of generations.\""
+        },
+        {
+            title: "Pay Attention to Rhythm and Pacing",
+            content: "Vary sentence length and structure to create rhythm. Use short sentences for impact and longer ones for elaboration or to slow the pace.",
+            example: "Example: \"He ran. The forest blurred around him. Each breath burned in his lungs as he pushed forward, desperate to escape the shadows that had haunted him since childhood.\""
+        },
+        {
+            title: "Create Immersive Settings",
+            content: "Develop a strong sense of place that immerses readers in your world, whether real or imagined, through carefully chosen details.",
+            example: "Example: \"The marketplace buzzed with life—vendors calling out prices, the aroma of fresh bread mixing with incense, colorful fabrics fluttering in the warm breeze.\""
+        },
+        {
+            title: "Craft Natural Dialogue",
+            content: "Write dialogue that reveals character and advances the plot while sounding natural. Avoid exposition dumps through conversation.",
+            example: "Example: \"'You always do this,' she said, dropping her bag by the door. 'What?' he replied, not looking up from his phone. 'Exactly.'\""
+        }
     ],
     feature: [
-        "Focus on human interest and compelling storytelling.",
-        "Use a narrative structure with a clear beginning, middle, and end.",
-        "Include detailed descriptions and scene-setting elements.",
-        "Incorporate multiple perspectives and voices through interviews.",
-        "Balance factual reporting with creative storytelling techniques.",
-        "Take time to develop themes and deeper meanings.",
-        "End with a thought-provoking conclusion that resonates with readers."
+        {
+            title: "Focus on Human Interest",
+            content: "Center your feature around compelling human stories that illustrate larger issues or themes, creating emotional connection with readers.",
+            example: "Example: Profile a local farmer's struggle with climate change rather than just presenting climate statistics."
+        },
+        {
+            title: "Use Narrative Structure",
+            content: "Organize your feature with a clear beginning, middle, and end, creating a narrative arc that keeps readers engaged throughout.",
+            example: "Example: Begin with a specific scene, develop the story with background and context, and conclude with resolution or future implications."
+        },
+        {
+            title: "Include Rich Descriptions",
+            content: "Paint vivid pictures with detailed descriptions of scenes, people, and environments to immerse readers in the story.",
+            example: "Example: \"In his workshop, tools hang in perfect alignment on the wall—each hammer, chisel, and plane positioned precisely where his hands have reached for them daily for over fifty years.\""
+        },
+        {
+            title: "Incorporate Multiple Voices",
+            content: "Include diverse perspectives through interviews with various stakeholders to provide a well-rounded view of your subject.",
+            example: "Example: For a feature on urban development, interview residents, business owners, city officials, and urban planners."
+        },
+        {
+            title: "Balance Reporting and Storytelling",
+            content: "Combine factual reporting with creative storytelling techniques to create an engaging yet informative feature.",
+            example: "Example: Use scene-setting and character development while incorporating research and data."
+        },
+        {
+            title: "Develop Thematic Depth",
+            content: "Explore underlying themes and deeper meanings that give your feature relevance beyond the immediate story.",
+            example: "Example: A feature about a local restaurant might explore themes of cultural preservation, immigration, family legacy, and community bonds."
+        }
     ],
     silak: [
-        "Research the etymology and historical usage of the word.",
-        "Provide clear, concise definitions that capture all meanings.",
-        "Include example sentences that demonstrate proper usage.",
-        "Note any regional variations or specific cultural contexts.",
-        "Compare with similar words to highlight subtle differences.",
-        "Document any idiomatic expressions that use the word.",
-        "Cite authoritative sources to support your definitions."
+        {
+            title: "Research Etymology Thoroughly",
+            content: "Investigate the historical origins and evolution of the word, including its roots in native Filipino languages or foreign influences.",
+            example: "Example: The word 'kalesa' comes from the Spanish 'calesa', which itself derives from French 'calèche', showing the layers of linguistic influence in Filipino vocabulary."
+        },
+        {
+            title: "Provide Comprehensive Definitions",
+            content: "Offer clear, concise definitions that capture all meanings and nuances of the word, including regional variations if applicable.",
+            example: "Example: 'Lambing' can refer to affection, sweetness, or the act of showing endearment, but can also imply a subtle request or form of persuasion through affection."
+        },
+        {
+            title: "Include Contextual Examples",
+            content: "Demonstrate proper usage through example sentences that show the word in different contexts and highlight subtle meaning differences.",
+            example: "Example: 'Ang mga mangingisda ay naglalayag sa dagat kahit marahas ang alon.' (The fishermen sail the sea despite the violent waves.)"
+        },
+        {
+            title: "Note Cultural Significance",
+            content: "Explain any cultural contexts, connotations, or significance that might not be apparent from the definition alone.",
+            example: "Example: The concept of 'utang na loob' goes beyond simple gratitude or indebtedness—it reflects the deeply relational nature of Filipino culture and social obligations."
+        },
+        {
+            title: "Compare Similar Terms",
+            content: "Highlight differences between similar words to help readers understand subtle distinctions in meaning and usage.",
+            example: "Example: While both 'takot' and 'kilabot' relate to fear, 'takot' is general fear while 'kilabot' suggests a shuddering or trembling fear often mixed with awe."
+        },
+        {
+            title: "Document Idiomatic Expressions",
+            content: "Include common sayings, expressions, or idioms that use the word to show how it functions in everyday language.",
+            example: "Example: The word 'pusô' (heart) appears in expressions like 'bukas-pusô' (open-hearted), 'pusô ng saging' (banana blossom), and 'may pusô' (compassionate)."
+        }
     ],
     photostory: [
-        "Select images that tell a cohesive narrative when viewed in sequence.",
-        "Write concise, impactful captions that complement rather than describe the images.",
-        "Consider the visual flow and how one image transitions to the next.",
-        "Balance close-up detail shots with wider contextual images.",
-        "Use consistent visual style and editing across all images.",
-        "Ensure the opening and closing images are particularly strong.",
-        "Let the images do most of the storytelling; keep text minimal but meaningful."
+        {
+            title: "Create a Visual Narrative",
+            content: "Select images that tell a cohesive story when viewed in sequence, with a clear beginning, middle, and end.",
+            example: "Example: A photostory about a traditional craft might begin with gathering materials, progress through the creation process, and end with the finished product in use."
+        },
+        {
+            title: "Write Impactful Captions",
+            content: "Craft concise, informative captions that complement rather than merely describe what's visible in the images.",
+            example: "Example: Instead of \"A woman weaving a basket,\" write \"Maria Santos continues a weaving tradition passed down through five generations of her family.\""
+        },
+        {
+            title: "Balance Detail and Context",
+            content: "Include both close-up detail shots and wider contextual images to give viewers a complete understanding of your subject.",
+            example: "Example: For a market photostory, include close-ups of produce and crafts alongside wider shots showing the bustling atmosphere and vendor-customer interactions."
+        },
+        {
+            title: "Maintain Visual Consistency",
+            content: "Use consistent visual style, editing, and composition across all images to create a unified look and feel.",
+            example: "Example: Maintain similar lighting, color grading, and framing techniques throughout your photostory."
+        },
+        {
+            title: "Capture Authentic Moments",
+            content: "Focus on genuine, unposed moments that reveal truth about your subject rather than staged or artificial scenes.",
+            example: "Example: The natural interaction between a grandmother teaching her granddaughter to cook tells more than posed portraits."
+        },
+        {
+            title: "Bookend with Strong Images",
+            content: "Begin and end your photostory with particularly powerful images that draw viewers in and leave a lasting impression.",
+            example: "Example: A photostory about environmental change might begin with a pristine landscape and end with a thought-provoking image of human impact or conservation efforts."
+        }
     ]
 };
 
@@ -2205,6 +2590,9 @@ let darkMode = false;
 
 // Current category filter
 let currentCategoryFilter = null;
+
+// Sidebar collapsed state
+let sidebarCollapsed = false;
 
 // Initialize document
 document.addEventListener('DOMContentLoaded', function() {
@@ -2326,17 +2714,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Tab Navigation
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Update active tab
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Show corresponding content
-            const tabId = this.getAttribute('data-tab');
-            showTab(tabId);
-        });
+    // Sidebar toggle
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        sidebarCollapsed = !sidebarCollapsed;
+        const sidebar = document.getElementById('sidebar');
+        
+        if (sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            this.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            this.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        }
     });
     
     // Sidebar navigation
@@ -2344,6 +2733,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         showTab('create');
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Create New Post';
     });
     
     document.getElementById('navManage').addEventListener('click', function(e) {
@@ -2352,6 +2742,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = null; // Reset filter
         loadPosts(); // Load all posts
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Published Works';
     });
     
     document.getElementById('navArticles').addEventListener('click', function(e) {
@@ -2360,6 +2751,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'article';
         loadPosts('article'); // Load only articles
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Articles';
     });
     
     document.getElementById('navLiterary').addEventListener('click', function(e) {
@@ -2368,6 +2760,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'literary';
         loadPosts('literary'); // Load only literary works
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Literary Works';
     });
 
     document.getElementById('navFeature').addEventListener('click', function(e) {
@@ -2376,6 +2769,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'feature';
         loadPosts('feature'); // Load only features
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Features';
     });
 
     document.getElementById('navSilak').addEventListener('click', function(e) {
@@ -2384,6 +2778,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'silak';
         loadPosts('silak'); // Load only silak-salitaan
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Silak-salitaan';
     });
 
     document.getElementById('navPhotostory').addEventListener('click', function(e) {
@@ -2392,12 +2787,14 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'photostory';
         loadPosts('photostory'); // Load only photostories
         updateActiveNavLink(this);
+        document.getElementById('pageTitle').textContent = 'Photostories';
     });
     
     // Create new post button
     document.getElementById('createNewBtn').addEventListener('click', function() {
         showTab('create');
         updateActiveNavLink(document.getElementById('navCreate'));
+        document.getElementById('pageTitle').textContent = 'Create New Post';
     });
     
     // Toggle view button (table/grid)
@@ -2436,16 +2833,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('createFirstPostBtn').addEventListener('click', function() {
         showTab('create');
         updateActiveNavLink(document.getElementById('navCreate'));
+        document.getElementById('pageTitle').textContent = 'Create New Post';
     });
 
     // Floating action button
     document.getElementById('createFab').addEventListener('click', function() {
         showTab('create');
         updateActiveNavLink(document.getElementById('navCreate'));
+        document.getElementById('pageTitle').textContent = 'Create New Post';
     });
 
     // Help button
-    document.getElementById('helpBtn').addEventListener('click', function() {
+    document.getElementById('helpBtn').addEventListener('click', function(e) {
+        e.preventDefault();
         openHelpModal();
     });
 
@@ -2495,7 +2895,7 @@ function openHelpModal() {
 
 // Update active navigation link
 function updateActiveNavLink(activeLink) {
-    document.querySelectorAll('.category-link').forEach(link => {
+    document.querySelectorAll('.menu-link').forEach(link => {
         link.classList.remove('active');
     });
     activeLink.classList.add('active');
@@ -2529,7 +2929,22 @@ function updateWritingTips(category) {
     tips.forEach(tip => {
         const tipElement = document.createElement('div');
         tipElement.className = 'writing-tip';
-        tipElement.textContent = tip;
+        
+        const titleElement = document.createElement('div');
+        titleElement.className = 'writing-tip-title';
+        titleElement.textContent = tip.title;
+        
+        const contentElement = document.createElement('div');
+        contentElement.textContent = tip.content;
+        
+        const exampleElement = document.createElement('div');
+        exampleElement.className = 'writing-tip-example';
+        exampleElement.textContent = tip.example;
+        
+        tipElement.appendChild(titleElement);
+        tipElement.appendChild(contentElement);
+        tipElement.appendChild(exampleElement);
+        
         tipsContainer.appendChild(tipElement);
     });
 }
@@ -2557,19 +2972,12 @@ function updateTime() {
 // Show tab (create or manage)
 function showTab(tabId) {
     // Hide all tabs
-    document.getElementById('createTab').classList.remove('active');
-    document.getElementById('manageTab').classList.remove('active');
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
     
     // Show selected tab
     document.getElementById(tabId + 'Tab').classList.add('active');
-    
-    // Update tab buttons
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.getAttribute('data-tab') === tabId) {
-            tab.classList.add('active');
-        }
-    });
     
     // If switching to manage tab, load posts with current filter
     if (tabId === 'manage') {
