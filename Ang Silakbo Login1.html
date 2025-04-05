@@ -3,1103 +3,872 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Login</title>
+    <title>ANG SILAKBO - Log In</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root {
-            --primary: #ff6b00;
-            --primary-light: #ff9e40;
-            --primary-dark: #e65100;
-            --secondary: #ff9100;
-            --text: #333;
-            --text-light: #666;
-            --background: #fff5e6;
-            --card-bg: #ffffff;
-            --border-radius: 16px;
-            --box-shadow: 0 10px 30px rgba(255, 107, 0, 0.15);
-            --transition: all 0.3s ease;
-        }
-
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #FF7A00;
+            --primary-light: #FF9A3D;
+            --primary-dark: #E56A00;
+            --secondary: #FFF0E0;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --white: #FFFFFF;
+            --shadow: 0 10px 30px rgba(255, 122, 0, 0.15);
+            --error: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
+            --gradient-bg: linear-gradient(135deg, #FFF0E0 0%, #FFF8F0 100%);
         }
 
         body {
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-dark);
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            background: var(--background);
-            padding: 2rem;
+            align-items: center;
+            min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Card Styles */
+        .card {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            animation: fadeIn 0.6s ease-out;
+            margin: 40px 0;
+        }
+
+        .card-left {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: var(--secondary);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .card-right {
+            width: 45%;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Logo */
+        .logo-container {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            width: 80px;
+            height: auto;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Illustration */
+        .illustration-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
             position: relative;
         }
 
-        body::before {
-            content: '';
+        .illustration {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 10% 20%, rgba(255, 107, 0, 0.05) 0%, transparent 50%),
-                        radial-gradient(circle at 90% 80%, rgba(255, 145, 0, 0.05) 0%, transparent 50%);
-            z-index: -1;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 1200px;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            display: flex;
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.8s ease-out forwards;
-            position: relative;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-form {
-            width: 50%;
-            padding: 3.5rem;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1) 0%, rgba(255, 240, 224, 0.2) 100%);
             z-index: 1;
         }
 
-        .login-form::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: -1;
+        /* Form Styles */
+        .form-header {
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-out;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            color: var(--primary);
-            font-weight: 600;
-            margin-bottom: 2.5rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 12px;
-            animation: pulse 2s infinite;
-            filter: drop-shadow(0 2px 4px rgba(255, 107, 0, 0.3));
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .welcome-text {
-            margin-bottom: 2.5rem;
-        }
-
-        .welcome-text h1 {
+        .form-title {
+            font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
-            color: var(--text);
-            margin-bottom: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            position: relative;
             line-height: 1.2;
         }
 
-        .welcome-text h1 span {
-            color: var(--primary);
-            font-weight: 700;
-            position: relative;
-            display: inline-block;
-        }
-
-        .welcome-text h1 span::after {
+        .form-title::after {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 3px;
-            bottom: 0;
             left: 0;
-            background-color: var(--primary);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.4s ease-out;
+            bottom: -10px;
+            width: 70px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
         }
 
-        .welcome-text h1 span:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-
-        .welcome-text p {
+        .form-subtitle {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
             color: var(--text-light);
-            font-size: 1.05rem;
+            margin-top: 20px;
             line-height: 1.6;
         }
 
         .form-group {
-            margin-bottom: 1.8rem;
+            margin-bottom: 25px;
             position: relative;
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 1.1rem 1.1rem 1.1rem 3.2rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: var(--transition);
-            background: transparent;
-        }
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-check { animation-delay: 0.3s; }
+        .btn-container { animation-delay: 0.4s; }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
-        }
-
-        .form-group label {
-            position: absolute;
-            left: 3.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-            transition: var(--transition);
-            pointer-events: none;
-            background: var(--card-bg);
-            padding: 0 5px;
-        }
-
-        .form-group input:focus + label,
-        .form-group input:not(:placeholder-shown) + label {
-            top: 0;
-            font-size: 0.875rem;
-            color: var(--primary);
-            left: 12px;
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
         }
 
-        .form-group i {
+        .form-control {
+            width: 100%;
+            padding: 18px 20px;
+            padding-left: 50px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.2);
+            background-color: var(--white);
+        }
+
+        .form-icon {
             position: absolute;
-            left: 1.2rem;
-            top: 50%;
+            left: 20px;
+            top: calc(50% + 4px);
             transform: translateY(-50%);
             color: var(--text-light);
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
-        .form-group input:focus ~ i {
+        .form-control:focus + .form-icon {
             color: var(--primary);
         }
 
-        .login-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.8rem;
-        }
-
-        .remember-me {
+        .form-check {
             display: flex;
             align-items: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
-        .remember-me input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
-
-        .remember-me label {
-            position: relative;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding-left: 28px;
-            color: var(--text-light);
-            user-select: none;
-        }
-
-        .remember-me label:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
+        .form-check-input {
             width: 18px;
             height: 18px;
-            border: 2px solid #e5e7eb;
-            border-radius: 4px;
-            transition: var(--transition);
+            margin-right: 10px;
+            accent-color: var(--primary);
+            cursor: pointer;
         }
 
-        .remember-me input:checked + label:before {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .remember-me label:after {
-            content: '';
-            position: absolute;
-            left: 6px;
-            top: 3px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .remember-me input:checked + label:after {
-            opacity: 1;
-        }
-
-        .forgot-password a {
-            color: var(--primary);
-            text-decoration: none;
+        .form-check-label {
+            font-family: 'Merriweather', serif;
             font-size: 0.9rem;
-            transition: var(--transition);
-            position: relative;
+            color: var(--text-light);
+            cursor: pointer;
         }
 
-        .forgot-password a:hover {
-            color: var(--primary-dark);
-        }
-
-        .forgot-password a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--primary);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.3s ease-out;
-        }
-
-        .forgot-password a:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-
-        .buttons {
+        .btn-container {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2.5rem;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
         .btn {
-            padding: 0.9rem 2rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .btn-login {
+            padding: 18px 30px;
             background: var(--primary);
-            color: white;
+            color: var(--white);
             border: none;
-            flex: 2;
-            box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3);
-        }
-
-        .btn-login:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(255, 107, 0, 0.4);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 8px rgba(255, 107, 0, 0.3);
-        }
-
-        .btn-login::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 1;
-            }
-            20% {
-                transform: scale(25, 25);
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: scale(40, 40);
-            }
-        }
-
-        .btn-login:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-
-        .btn-source {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            flex: 1;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transition);
-        }
-
-        .btn-source i {
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .btn-source:hover {
-            background: rgba(255, 107, 0, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .btn-source:hover i {
-            transform: translateX(3px);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e5e7eb;
-        }
-
-        .divider::before {
-            margin-right: 1rem;
-        }
-
-        .divider::after {
-            margin-left: 1rem;
-        }
-
-        .social {
-            margin-top: auto;
-        }
-
-        .social p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .social-icons a {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: var(--transition);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--background);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .social-icons a:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(255, 107, 0, 0.2);
-        }
-
-        .info-box {
-            background-color: rgba(255, 158, 64, 0.1);
-            border-left: 4px solid var(--primary);
-            padding: 1.2rem;
-            border-radius: 8px;
-            margin-top: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .info-box::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .info-box h3 {
-            margin-bottom: 0.5rem;
-            color: var(--primary-dark);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
             font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 122, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-decoration: none;
         }
 
-        .info-box h3 i {
-            font-size: 1rem;
+        .btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 8px 20px rgba(255, 122, 0, 0.4);
         }
 
-        .info-box p {
+        .btn:active {
+            box-shadow: 0 3px 10px rgba(255, 122, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--primary-dark);
+            box-shadow: 0 5px 15px rgba(255, 122, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #FFE0C0;
+        }
+
+        .btn-icon {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Error message */
+        .error-message {
+            color: var(--error);
+            font-family: 'Merriweather', serif;
             font-size: 0.9rem;
-            color: var(--text-light);
-            line-height: 1.5;
+            margin-top: -15px;
+            margin-bottom: 20px;
+            display: none;
+            padding: 12px 15px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--error);
         }
 
-        .design-area {
-            width: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .design-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
-            opacity: 0.3;
-        }
-
-        .slideshow {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slideshow::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.3), transparent);
-            z-index: 1;
-        }
-
-        .slideshow-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out, transform 8s ease-in-out;
-            transform: scale(1.1);
-        }
-
-        .slideshow-image.active {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .slideshow-content {
-            position: absolute;
-            bottom: 80px;
-            left: 40px;
-            z-index: 2;
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background: var(--success);
             color: white;
-            max-width: 80%;
-        }
-
-        .slideshow-content h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-family: 'Poppins', sans-serif;
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .slideshow-content p {
-            font-size: 1rem;
-            line-height: 1.6;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
-        }
-
-        .slideshow-content.active h2,
-        .slideshow-content.active p {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .slideshow-indicators {
-            position: absolute;
-            bottom: 30px;
-            left: 40px;
-            z-index: 2;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .indicator {
-            width: 30px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: var(--transition);
+        .success-message.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
         }
 
-        .indicator.active {
-            background: white;
-            width: 50px;
+        .success-icon {
+            font-size: 1.2rem;
         }
 
-        .credits {
+        /* Loading indicator */
+        .loading-indicator {
+            display: none;
             position: absolute;
-            bottom: 1rem;
-            right: 1.5rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.75rem;
-            z-index: 10;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        #error-message {
-            color: #e53935;
-            margin-top: 10px;
-            text-align: center;
-            font-size: 0.9rem;
-            background-color: rgba(229, 57, 53, 0.1);
-            padding: 0.5rem;
-            border-radius: 6px;
-            display: none;
-        }
-
-        #error-message.show {
-            display: block;
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
-
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
-            40%, 60% { transform: translate3d(3px, 0, 0); }
-        }
-
-        .loading {
-            display: none;
-            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 100;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            gap: 1rem;
+            border-radius: 24px;
+            backdrop-filter: blur(5px);
         }
 
-        .loading-spinner {
+        .spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(255, 107, 0, 0.2);
-            border-top: 3px solid var(--primary);
+            border: 4px solid rgba(255, 122, 0, 0.1);
             border-radius: 50%;
+            border-top-color: var(--primary);
             animation: spin 1s linear infinite;
         }
 
-        .loading p {
+        /* Footer Styles */
+        .site-footer {
+            width: 100%;
+            max-width: 1100px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-family: 'Merriweather', serif;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--primary-dark);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        .footer-link:hover {
             color: var(--primary);
-            font-weight: 500;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border-left: 4px solid var(--primary);
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .copyright {
+            margin-top: 15px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            transform: translateX(120%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
+            justify-content: center;
+            gap: 5px;
         }
 
-        .notification.show {
-            transform: translateX(0);
+        .copyright-icon {
+            font-size: 0.8rem;
         }
 
-        .notification i {
-            color: var(--primary);
-            font-size: 1.2rem;
-        }
-
-        .notification-content h4 {
-            margin-bottom: 4px;
-            color: var(--text);
-        }
-
-        .notification-content p {
-            font-size: 0.85rem;
+        /* Language selector */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
             color: var(--text-light);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 18px;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            backdrop-filter: blur(5px);
         }
 
-        .features {
+        .language-selector select {
+            padding: 5px;
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .language-selector select:focus {
+            outline: none;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: rgba(46, 204, 113, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Version indicator */
+        .version-indicator {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            display: flex;
-            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
             z-index: 10;
+            backdrop-filter: blur(5px);
         }
 
-        .feature-badge {
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--primary);
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
+        /* Date and time display */
+        .datetime-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            backdrop-filter: blur(5px);
         }
 
-        .feature-badge i {
+        /* Branding watermark */
+        .branding-watermark {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Playfair Display', serif;
             font-size: 0.7rem;
+            color: rgba(0, 0, 0, 0.1);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        @media (max-width: 992px) {
-            .login-container {
-                max-width: 90%;
+        /* Form validation styles */
+        .form-control:valid {
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        .form-control:invalid:not(:placeholder-shown) {
+            border-color: rgba(231, 76, 60, 0.2);
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            display: flex;
+            margin-top: 8px;
+            gap: 5px;
+            height: 4px;
+        }
+
+        .strength-segment {
+            flex: 1;
+            height: 100%;
+            background-color: #ddd;
+            border-radius: 2px;
+        }
+
+        .strength-segment.active {
+            background-color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
             }
         }
 
-        @media (max-width: 768px) {
-            .login-container {
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 900px) {
+            .card {
                 flex-direction: column;
-                max-width: 95%;
+                margin: 20px 0;
+                max-width: 500px;
             }
-
-            .login-form, .design-area {
+            .card-left, .card-right {
                 width: 100%;
             }
-
-            .login-form {
-                padding: 2.5rem 2rem;
+            .card-left {
+                height: 300px;
             }
-
-            .design-area {
-                order: -1;
-                height: 250px;
+            .card-right {
+                padding: 40px 30px;
             }
-
-            .welcome-text h1 {
-                font-size: 2rem;
+            .form-title {
+                font-size: 2.2rem;
             }
-
-            .slideshow-content {
-                bottom: 60px;
-                left: 20px;
+            .btn-container {
+                flex-direction: column;
             }
-
-            .slideshow-content h2 {
-                font-size: 1.5rem;
+            .language-selector {
+                top: 10px;
+                right: 10px;
             }
-
-            .slideshow-indicators {
-                bottom: 20px;
-                left: 20px;
+            .logo-container {
+                top: 15px;
+                left: 15px;
             }
+            .logo {
+                width: 60px;
+            }
+            .datetime-display {
+                top: 10px;
+            }
+            .version-indicator, .status-indicator {
+                position: static;
+                margin-top: 10px;
+                justify-content: center;
+            }
+            .site-footer {
+                padding: 15px 10px;
+            }
+        }
 
-            .features {
+        @media (max-width: 500px) {
+            .card-right {
+                padding: 30px 20px;
+            }
+            .form-title {
+                font-size: 1.8rem;
+            }
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .datetime-display {
                 display: none;
             }
         }
 
-        @media (max-width: 576px) {
-            body {
-                padding: 1rem;
-            }
-
-            .login-form {
-                padding: 2rem 1.5rem;
-            }
-
-            .welcome-text h1 {
-                font-size: 1.8rem;
-            }
-
-            .buttons {
-                flex-direction: column;
-            }
-
-            .btn-login, .btn-source {
-                width: 100%;
-            }
-
-            .login-options {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .design-area {
-                height: 200px;
-            }
-
-            .slideshow-content {
-                bottom: 50px;
-                left: 15px;
-            }
-
-            .slideshow-content h2 {
-                font-size: 1.3rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .slideshow-content p {
-                font-size: 0.9rem;
-            }
-
-            .slideshow-indicators {
-                bottom: 15px;
-                left: 15px;
-            }
-        }
-
-        /* New feature: Dark mode toggle */
-        .dark-mode-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-
-        .dark-mode-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .dark-mode-toggle i {
-            color: var(--primary);
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
-
-        body.dark {
-            --background: #1a1a1a;
-            --card-bg: #2a2a2a;
-            --text: #f5f5f5;
-            --text-light: #aaaaaa;
-        }
-
-        body.dark .form-group input {
-            border-color: #444;
-            color: var(--text);
-        }
-
-        body.dark .form-group label {
-            background: var(--card-bg);
-            color: var(--text-light);
-        }
-
-        body.dark .remember-me label:before {
-            border-color: #444;
-        }
-
-        body.dark .remember-me label {
-            color: var(--text-light);
-        }
-
-        body.dark .divider::before,
-        body.dark .divider::after {
-            background: #444;
-        }
-
-        body.dark .divider {
-            color: var(--text-light);
-        }
-
-        body.dark .dark-mode-toggle {
-            background: #444;
-        }
-
-        body.dark .dark-mode-toggle i {
-            color: #fff;
-        }
-
-        body.dark .info-box {
-            background-color: rgba(255, 158, 64, 0.05);
-        }
-
-        body.dark .social-icons a {
-            background: #333;
-        }
-
-        body.dark .notification {
-            background: #2a2a2a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        body.dark .notification-content h4 {
-            color: var(--text);
-        }
-
-        /* New feature: Tooltip */
-        .tooltip {
+        /* Tooltip */
+        [data-tooltip] {
             position: relative;
-            display: inline-block;
+            cursor: help;
         }
 
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--primary-dark);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
             position: absolute;
-            z-index: 1;
             bottom: 125%;
             left: 50%;
             transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
             font-size: 0.8rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
         }
 
-        .tooltip .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: var(--primary-dark) transparent transparent transparent;
-        }
-
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
+        [data-tooltip]:hover::after {
             opacity: 1;
+            visibility: visible;
+        }
+
+        /* Professional UI elements */
+        .form-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .form-info i {
+            color: var(--info);
+        }
+
+        /* Session timer */
+        .session-timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Brand logo in footer */
+        .footer-logo {
+            margin-bottom: 15px;
+        }
+
+        .footer-logo img {
+            height: 40px;
+            width: auto;
+            opacity: 0.8;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent);
+            margin: 20px 0;
+        }
+
+        /* Card decoration */
+        .card-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            z-index: 5;
         }
     </style>
 </head>
 <body>
-    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
-        <i class="fas fa-moon"></i>
-    </button>
-
-    <div class="notification" id="notification">
-        <i class="fas fa-info-circle"></i>
-        <div class="notification-content">
-            <h4>Welcome Back!</h4>
-            <p>Login to access your admin dashboard</p>
-        </div>
+    <!-- Language selector -->
+    <div class="language-selector">
+        <i class="fas fa-globe"></i>
+        <select id="language">
+            <option value="en">English</option>
+            <option value="tl">Filipino</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+        </select>
     </div>
 
-    <div class="login-container">
-        <div class="login-form">
-            <div class="logo">
-                <img src="SILAKBO.png" alt="SILAKBO Logo">
-                ANG SILAKBO
+    <!-- Date and time display -->
+    <div class="datetime-display">
+        <i class="far fa-clock"></i>
+        <span id="current-datetime">Loading...</span>
+    </div>
+
+    <div class="card">
+        <!-- Card decoration -->
+        <div class="card-decoration"></div>
+        
+        <!-- Loading indicator -->
+        <div class="loading-indicator" id="loadingIndicator">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="card-left">
+            <div class="logo-container">
+                <img src="SILAKBO.png" alt="Ang Silakbo Logo" class="logo">
             </div>
-            <div class="welcome-text">
-                <h1>Hello, <span>welcome!</span></h1>
-                <p>Enter your credentials to access your admin dashboard</p>
+            <div class="illustration-container">
+                <img src="Login.gif" alt="Ang Silakbo Login" class="illustration">
+                <div class="overlay"></div>
             </div>
+        </div>
+        <div class="card-right">
+            <div class="form-header">
+                <h2 class="form-title">Welcome Back</h2>
+                <p class="form-subtitle">Sign in to access your Ang Silakbo admin dashboard</p>
+            </div>
+            
             <form id="loginForm">
                 <div class="form-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" placeholder=" " required>
-                    <label for="email">Email address</label>
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    <i class="fas fa-envelope form-icon"></i>
+                    <div class="form-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Use your registered email address</span>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" placeholder=" " required>
-                    <label for="password">Password</label>
-                </div>
-                <div class="login-options">
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <div class="forgot-password">
-                        <a href="#" id="forgotPassword" class="tooltip">Reset password
-                            <span class="tooltip-text">Click here if you forgot your password</span>
-                        </a>
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    <i class="fas fa-lock form-icon"></i>
+                    <div class="password-strength">
+                        <div class="strength-segment"></div>
+                        <div class="strength-segment"></div>
+                        <div class="strength-segment"></div>
+                        <div class="strength-segment"></div>
                     </div>
                 </div>
-                <div class="buttons">
-                    <button type="submit" class="btn btn-login">
-                        <span>Login</span>
+                <div id="errorMessage" class="error-message"></div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                </div>
+                <div class="btn-container">
+                    <button type="submit" class="btn" id="loginBtn" data-tooltip="Secure login with Firebase">
+                        <i class="fas fa-sign-in-alt btn-icon"></i>
+                        <span>Sign In</span>
                     </button>
-                    <a href="Project Repository.html" class="btn btn-source">
-                        <span>Source</span>
-                        <i class="fas fa-arrow-right"></i>
+                    <a href="Project Repository.html" class="btn btn-secondary" data-tooltip="View project files">
+                        <i class="fas fa-folder-open btn-icon"></i>
+                        <span>Repository</span>
                     </a>
                 </div>
-                <div id="error-message"></div>
+                <div class="divider"></div>
+                <div class="form-info" style="justify-content: center; margin-top: 10px;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Your connection is secure and encrypted</span>
+                </div>
             </form>
-            
-            <div class="divider">OR CONNECT WITH</div>
-            
-            <div class="social">
-                <div class="social-icons">
-                    <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" aria-label="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="info-box">
-                <h3><i class="fas fa-shield-alt"></i> Admin Portal</h3>
-                <p>This secure portal is for authorized personnel only. If you're having trouble logging in, please contact the system administrator for assistance.</p>
-            </div>
         </div>
-        <div class="design-area">
-            <div class="slideshow">
-                <img src="Featured 3.jpg" alt="Nature" class="slideshow-image">
-                <img src="Feature 7.jpg" alt="Technology" class="slideshow-image">
-                <img src="Photo 3.jpg" alt="Architecture" class="slideshow-image">
-                <img src="Photo 8.jpg" alt="Business" class="slideshow-image">
-                <img src="Photo 9.jpg" alt="Travel" class="slideshow-image">
-            </div>
-            
-            <div class="slideshow-content">
-                <h2>Manage Your Content</h2>
-                <p>Access all your organization's resources in one place</p>
-            </div>
-            
-            <div class="slideshow-indicators">
-                <div class="indicator active" data-index="0"></div>
-                <div class="indicator" data-index="1"></div>
-                <div class="indicator" data-index="2"></div>
-                <div class="indicator" data-index="3"></div>
-                <div class="indicator" data-index="4"></div>
-            </div>
-            
-            <div class="features">
-                <div class="feature-badge">
-                    <i class="fas fa-lock"></i> Secure Login
-                </div>
-                <div class="feature-badge">
-                    <i class="fas fa-bolt"></i> Fast Access
-                </div>
-            </div>
-            
-            <div class="credits">ANG SILAKBO © 2023 | ALL RIGHTS RESERVED</div>
+
+        <!-- Status indicator -->
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Systems Up and Runnig</span>
         </div>
+
+        <!-- Version indicator -->
+        <div class="version-indicator">
+            <i class="fas fa-code-branch"></i>
+            <span>Version 1.9.0</span>
+        </div>
+
+        <!-- Branding watermark -->
+        <div class="branding-watermark">Ang Silakbo - The Official Publication Page of UCLM-SHS</div>
     </div>
 
-    <div class="loading">
-        <div class="loading-spinner"></div>
-        <p>Authenticating...</p>
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle success-icon"></i>
+        <span>Login successful!</span>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-logo">
+            <img src="SILAKBO.png" alt="Ang Silakbo Logo">
+        </div>
+        <div class="footer-links">
+            <a href="About Us.html" class="footer-link">About Ang Silakbo</a>
+            <a href="Dev's Note.html" class="footer-link">Developer's Note</a>
+            <a href="ToS.html" class="footer-link">Terms of Service</a>
+        </div>
+        <p>Ang Silakbo is a platform dedicated to Filipino literature and cultural expression.</p>
+        <p class="copyright">
+            <i class="far fa-copyright copyright-icon"></i>
+            2025 Ang Silakbo. All rights reserved.
+        </p>
+    </footer>
 
     <script>
         // Firebase configuration
@@ -1113,212 +882,293 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+        
+        // Login attempt counter
+        let loginAttempts = 0;
+        
+        // Error messages based on login attempts
+        const errorMessages = [
+            "Uh-oh, maybe try again?",
+            "Uhm I see you're in struggle logging in, do you have your credentials with you?",
+            "Hmmm is this really your account?",
+            "You are suspicious!",
+            "Maybe contact Roni for support, you are really struggling:(("
+        ];
+        
+        // Form submission handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessageElement = document.getElementById('errorMessage');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            // Show loading indicator
+            loadingIndicator.style.display = 'flex';
+            
+            // Authenticate with Firebase
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Successful login
+                    console.log("Login successful!");
+                    
+                    // Hide loading indicator
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Show success message
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.classList.add('show');
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = "Ang Silakbo Admin Panel.html";
+                    }, 1500);
+                })
+                .catch((error) => {
+                    // Failed login
+                    console.error("Login error:", error);
+                    
+                    // Hide loading indicator
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Increment login attempts
+                    loginAttempts++;
+                    
+                    // Get appropriate error message based on attempt count
+                    const messageIndex = Math.min(loginAttempts - 1, errorMessages.length - 1);
+                    const message = errorMessages[messageIndex];
+                    
+                    // Display error message
+                    errorMessageElement.textContent = message;
+                    errorMessageElement.style.display = 'block';
+                });
+        });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('loginForm');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const loginButton = document.querySelector('.btn-login');
-            const errorMessage = document.getElementById('error-message');
-            const loadingElement = document.querySelector('.loading');
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-            const rememberMeCheckbox = document.getElementById('remember');
-            const slideshowImages = document.querySelectorAll('.slideshow-image');
-            const slideshowContent = document.querySelector('.slideshow-content');
-            const indicators = document.querySelectorAll('.indicator');
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            const notification = document.getElementById('notification');
+        // Input focus effects
+        const formControls = document.querySelectorAll('.form-control');
+        
+        formControls.forEach(input => {
+            input.addEventListener('focus', function() {
+                // No movement on focus
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
 
-            const errorMessages = [
-                "Oops! That didn't work. Please try again.",
-                "Still having trouble? Double-check your credentials.",
-                "Hmm, this is unusual. Are you sure you have an admin account?",
-                "Multiple failed attempts. Please contact support if you're having issues."
-            ];
-
-            const slideshowTexts = [
-                {
-                    title: "Manage Your Content",
-                    description: "Access all your organization's resources in one place"
-                },
-                {
-                    title: "Track Performance",
-                    description: "Monitor engagement and growth with detailed analytics"
-                },
-                {
-                    title: "Collaborate Effectively",
-                    description: "Work together with your team in real-time"
-                },
-                {
-                    title: "Secure Platform",
-                    description: "Your data is protected with enterprise-grade security"
-                },
-                {
-                    title: "Customizable Dashboard",
-                    description: "Tailor your workspace to fit your specific needs"
-                }
-            ];
-
-            let loginAttempts = 0;
-            let currentIndex = 0;
-
-            // Show notification
-            setTimeout(() => {
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 5000);
-            }, 1000);
-
-            // Dark mode toggle
-            darkModeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark');
-                if (document.body.classList.contains('dark')) {
-                    darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        // Password strength indicator
+        const passwordInput = document.getElementById('password');
+        const strengthSegments = document.querySelectorAll('.strength-segment');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            if (password.length > 0) strength++;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            
+            strengthSegments.forEach((segment, index) => {
+                if (index < strength) {
+                    segment.classList.add('active');
                 } else {
-                    darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                }
-            });
-
-            function updateSlideshow(index) {
-                // Update images
-                slideshowImages.forEach((img, i) => {
-                    img.classList.remove('active');
-                    if (i === index) {
-                        img.classList.add('active');
-                    }
-                });
-
-                // Update indicators
-                indicators.forEach((indicator, i) => {
-                    indicator.classList.remove('active');
-                    if (i === index) {
-                        indicator.classList.add('active');
-                    }
-                });
-
-                // Update content
-                slideshowContent.classList.remove('active');
-                setTimeout(() => {
-                    slideshowContent.querySelector('h2').textContent = slideshowTexts[index].title;
-                    slideshowContent.querySelector('p').textContent = slideshowTexts[index].description;
-                    slideshowContent.classList.add('active');
-                }, 300);
-            }
-
-            function startSlideshow() {
-                updateSlideshow(currentIndex);
-
-                setInterval(() => {
-                    currentIndex = (currentIndex + 1) % slideshowImages.length;
-                    updateSlideshow(currentIndex);
-                }, 8000);
-            }
-
-            // Manual slideshow navigation
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => {
-                    currentIndex = index;
-                    updateSlideshow(currentIndex);
-                });
-            });
-
-            startSlideshow();
-
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const email = emailInput.value;
-                const password = passwordInput.value;
-                const rememberMe = rememberMeCheckbox.checked;
-                
-                loginButton.innerHTML = '<span>Logging in...</span>';
-                loginButton.disabled = true;
-                loadingElement.style.display = 'flex';
-                errorMessage.classList.remove('show');
-
-                firebase.auth().signInWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        // Signed in 
-                        const user = userCredential.user;
-                        loginButton.innerHTML = '<span>Success!</span>';
-                        errorMessage.textContent = '';
-                        
-                        // Redirect to admin panel
-                        setTimeout(() => {
-                            window.location.href = 'Ang Silakbo Admin Panel.html';
-                        }, 1500);
-                    })
-                    .catch((error) => {
-                        loginButton.innerHTML = '<span>Login</span>';
-                        loginAttempts++;
-                        const messageIndex = Math.min(loginAttempts - 1, errorMessages.length - 1);
-                        errorMessage.textContent = errorMessages[messageIndex];
-                        errorMessage.classList.add('show');
-                    })
-                    .finally(() => {
-                        loginButton.disabled = false;
-                        loadingElement.style.display = 'none';
-                    });
-            });
-
-            forgotPasswordLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const email = emailInput.value;
-                if (email) {
-                    loadingElement.style.display = 'flex';
-                    firebase.auth().sendPasswordResetEmail(email)
-                        .then(() => {
-                            loadingElement.style.display = 'none';
-                            alert(`Password reset email sent to ${email}. Please check your inbox.`);
-                        })
-                        .catch((error) => {
-                            loadingElement.style.display = 'none';
-                            alert('Error sending password reset email. Please try again.');
-                        });
-                } else {
-                    alert('Please enter your email address to reset your password.');
-                }
-            });
-
-            // Add animation to welcome text
-            const welcomeSpan = document.querySelector('.welcome-text h1 span');
-            welcomeSpan.addEventListener('mouseover', () => {
-                welcomeSpan.style.transition = 'color 0.3s ease';
-                welcomeSpan.style.color = 'var(--primary-dark)';
-            });
-            welcomeSpan.addEventListener('mouseout', () => {
-                welcomeSpan.style.transition = 'color 0.3s ease';
-                welcomeSpan.style.color = 'var(--primary)';
-            });
-
-            // Add ripple effect to login button
-            loginButton.addEventListener('click', function(e) {
-                let ripple = document.createElement('span');
-                this.appendChild(ripple);
-                let x = e.clientX - e.target.offsetLeft;
-                let y = e.clientY - e.target.offsetTop;
-                ripple.style.left = `${x}px`;
-                ripple.style.top = `${y}px`;
-                setTimeout(() => {
-                    ripple.remove();
-                }, 300);
-            });
-
-            // Check if user has previously saved credentials
-            if (localStorage.getItem('rememberedEmail')) {
-                emailInput.value = localStorage.getItem('rememberedEmail');
-                rememberMeCheckbox.checked = true;
-            }
-
-            // Save credentials if remember me is checked
-            rememberMeCheckbox.addEventListener('change', () => {
-                if (!rememberMeCheckbox.checked) {
-                    localStorage.removeItem('rememberedEmail');
+                    segment.classList.remove('active');
                 }
             });
         });
+
+        // Language selector functionality
+        document.getElementById('language').addEventListener('change', function() {
+            const language = this.value;
+            
+            // Translation object (complete and corrected)
+            const translations = {
+                en: {
+                    title: "Welcome Back",
+                    subtitle: "Sign in to access your Ang Silakbo admin dashboard",
+                    email: "Email Address",
+                    emailPlaceholder: "Enter your email",
+                    emailInfo: "Use your registered email address",
+                    password: "Password",
+                    passwordPlaceholder: "Enter your password",
+                    remember: "Remember me",
+                    signin: "Sign In",
+                    repository: "Repository",
+                    system: "System Online",
+                    version: "Version 2.3.0",
+                    secure: "Your connection is secure and encrypted",
+                    about: "About Ang Silakbo",
+                    privacy: "Privacy Policy",
+                    contact: "Contact Support",
+                    terms: "Terms of Service",
+                    description: "Ang Silakbo is a platform dedicated to Filipino literature and cultural expression.",
+                    copyright: "2023 Ang Silakbo. All rights reserved.",
+                    success: "Login successful!"
+                },
+                tl: {
+                    title: "Maligayang Pagbabalik",
+                    subtitle: "Mag-sign in upang ma-access ang iyong Ang Silakbo admin dashboard",
+                    email: "Email Address",
+                    emailPlaceholder: "Ilagay ang iyong email",
+                    emailInfo: "Gamitin ang iyong nakarehistrong email address",
+                    password: "Password",
+                    passwordPlaceholder: "Ilagay ang iyong password",
+                    remember: "Tandaan ako",
+                    signin: "Mag-sign In",
+                    repository: "Repository",
+                    system: "System Online",
+                    version: "Bersyon 2.3.0",
+                    secure: "Ang iyong koneksyon ay ligtas at naka-encrypt",
+                    about: "Tungkol sa Ang Silakbo",
+                    privacy: "Patakaran sa Privacy",
+                    contact: "Makipag-ugnayan sa Support",
+                    terms: "Mga Tuntunin ng Serbisyo",
+                    description: "Ang Silakbo ay isang platform na nakatuon sa panitikang Filipino at kultural na pagpapahayag.",
+                    copyright: "2023 Ang Silakbo. Lahat ng karapatan ay nakalaan.",
+                    success: "Matagumpay na pag-login!"
+                },
+                es: {
+                    title: "Bienvenido de Nuevo",
+                    subtitle: "Inicie sesión para acceder a su panel de administración de Ang Silakbo",
+                    email: "Correo Electrónico",
+                    emailPlaceholder: "Ingrese su correo electrónico",
+                    emailInfo: "Utilice su dirección de correo electrónico registrada",
+                    password: "Contraseña",
+                    passwordPlaceholder: "Ingrese su contraseña",
+                    remember: "Recuérdame",
+                    signin: "Iniciar Sesión",
+                    repository: "Repositorio",
+                    system: "Sistema en Línea",
+                    version: "Versión 2.3.0",
+                    secure: "Su conexión es segura y está cifrada",
+                    about: "Acerca de Ang Silakbo",
+                    privacy: "Política de Privacidad",
+                    contact: "Contactar Soporte",
+                    terms: "Términos de Servicio",
+                    description: "Ang Silakbo es una plataforma dedicada a la literatura filipina y la expresión cultural.",
+                    copyright: "2023 Ang Silakbo. Todos los derechos reservados.",
+                    success: "¡Inicio de sesión exitoso!"
+                },
+                fr: {
+                    title: "Bon Retour",
+                    subtitle: "Connectez-vous pour accéder à votre tableau de bord administrateur Ang Silakbo",
+                    email: "Adresse Email",
+                    emailPlaceholder: "Entrez votre email",
+                    emailInfo: "Utilisez votre adresse e-mail enregistrée",
+                    password: "Mot de Passe",
+                    passwordPlaceholder: "Entrez votre mot de passe",
+                    remember: "Se souvenir de moi",
+                    signin: "Se Connecter",
+                    repository: "Dépôt",
+                    system: "Système en Ligne",
+                    version: "Version 2.3.0",
+                    secure: "Votre connexion est sécurisée et cryptée",
+                    about: "À propos d'Ang Silakbo",
+                    privacy: "Politique de Confidentialité",
+                    contact: "Contacter le Support",
+                    terms: "Conditions d'Utilisation",
+                    description: "Ang Silakbo est une plateforme dédiée à la littérature philippine et à l'expression culturelle.",
+                    copyright: "2023 Ang Silakbo. Tous droits réservés.",
+                    success: "Connexion réussie!"
+                }
+            };
+            
+            // Apply translations
+            const trans = translations[language];
+            document.querySelector('.form-title').textContent = trans.title;
+            document.querySelector('.form-subtitle').textContent = trans.subtitle;
+            
+            // Update form labels and placeholders
+            const emailLabel = document.querySelector('label[for="email"]');
+            const passwordLabel = document.querySelector('label[for="password"]');
+            emailLabel.textContent = trans.email;
+            passwordLabel.textContent = trans.password;
+            
+            document.querySelector('#email').placeholder = trans.emailPlaceholder;
+            document.querySelector('#password').placeholder = trans.passwordPlaceholder;
+            
+            document.querySelector('.form-check-label').textContent = trans.remember;
+            document.querySelector('#loginBtn span').textContent = trans.signin;
+            document.querySelector('.btn-secondary span').textContent = trans.repository;
+            
+            // Update form info
+            document.querySelector('.form-info span').textContent = trans.emailInfo;
+            document.querySelector('.form-info[style] span').textContent = trans.secure;
+            
+            // Update status indicators
+            document.querySelector('.status-indicator span').textContent = trans.system;
+            document.querySelector('.version-indicator span').textContent = trans.version;
+            
+            // Update success message
+            document.querySelector('#successMessage span').textContent = trans.success;
+            
+            // Update footer
+            const footerLinks = document.querySelectorAll('.footer-link');
+            footerLinks[0].textContent = trans.about;
+            footerLinks[1].textContent = trans.privacy;
+            footerLinks[2].textContent = trans.contact;
+            footerLinks[3].textContent = trans.terms;
+            
+            document.querySelector('.site-footer p').textContent = trans.description;
+            document.querySelector('.copyright').innerHTML = `
+                <i class="far fa-copyright copyright-icon"></i>
+                ${trans.copyright}
+            `;
+        });
+
+        // Button ripple effect
+        const buttons = document.querySelectorAll('.btn');
+        
+        buttons.forEach(button => {
+            button.addEventListener('mousedown', function(e) {
+                const x = e.clientX - this.getBoundingClientRect().left;
+                const y = e.clientY - this.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '0';
+                ripple.style.height = '0';
+                ripple.style.borderRadius = '50%';
+                ripple.style.transform = 'translate(-50%, -50%)';
+                ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.style.width = '300px';
+                    ripple.style.height = '300px';
+                    ripple.style.opacity = '0';
+                    ripple.style.transition = 'all 0.6s ease-out';
+                }, 10);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('current-datetime').textContent = now.toLocaleDateString(undefined, options);
+        }
+        
+        updateDateTime();
+        setInterval(updateDateTime, 60000); // Update every minute
     </script>
 </body>
 </html>
-
