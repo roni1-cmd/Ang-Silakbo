@@ -27,9 +27,9 @@
             --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 15px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
         }
 
         * {
@@ -48,98 +48,90 @@
             flex-direction: column;
         }
 
-        .container {
-            max-width: 95%; /* Increased from 1400px to 95% of viewport width */
-            width: 95%;
-            margin: 0 auto;
-            padding: 1rem;
-            flex: 1;
-        }
-
-        .app-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        @media (min-width: 1024px) {
-            .app-layout {
-                grid-template-columns: 250px 1fr; /* Reduced sidebar width slightly */
-            }
-        }
-
-        /* Header Styles */
-        .header {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: var(--background-color);
-            padding: 1rem 2rem; /* Increased horizontal padding */
+        /* New Dashboard Layout */
+        .dashboard {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-md);
-            border-radius: var(--radius-md);
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
+            min-height: 100vh;
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            position: fixed;
+            height: 100vh;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: translateX(-100%);
-            transition: transform 1s;
-            z-index: -1;
+            top: 0;
+            z-index: 100;
+            transition: all 0.4s var(--transition-easing);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
         }
 
-        .header:hover::before {
-            transform: translateX(100%);
+        .sidebar.collapsed {
+            transform: translateX(-280px);
         }
 
-        .header-content {
+        .sidebar-toggle {
+            position: absolute;
+            right: -15px;
+            top: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            z-index: 101;
+            transition: all 0.3s var(--transition-easing);
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
             display: flex;
             align-items: center;
             gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .header img {
+        .sidebar-header img {
+            width: 40px;
             height: 40px;
+            object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-            transition: transform 0.3s var(--transition-easing);
+            animation: pulse 2s infinite;
         }
 
-        .header img:hover {
-            transform: scale(1.1) rotate(5deg);
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        .header h1 {
-            font-size: 1.5rem;
+        .sidebar-header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
             margin: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            background-color: var(--background-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-md);
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            height: fit-content;
-            position: sticky;
-            top: 1.5rem;
+            gap: 2rem;
         }
 
         .sidebar-section {
@@ -149,8 +141,10 @@
         }
 
         .sidebar-section h3 {
-            font-size: 1.1rem;
-            color: var(--primary-color);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
@@ -161,24 +155,77 @@
             font-size: 1rem;
         }
 
-        .calendar-filters {
+        .nav-item {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s var(--transition-easing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s var(--transition-easing);
+            z-index: -1;
+        }
+
+        .nav-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .nav-item:hover {
+            transform: translateX(5px);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
         }
 
         .filter-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.5rem;
+            padding: 0.75rem 1rem;
             border-radius: var(--radius-sm);
-            transition: all 0.3s var(--transition-easing);
             cursor: pointer;
+            transition: all 0.3s var(--transition-easing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s var(--transition-easing);
+            z-index: -1;
+        }
+
+        .filter-item:hover::before {
+            transform: scaleX(1);
         }
 
         .filter-item:hover {
-            background-color: rgba(230, 81, 0, 0.05);
             transform: translateX(5px);
         }
 
@@ -187,83 +234,143 @@
             height: 16px;
             border-radius: 50%;
             display: inline-block;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
         }
 
         .filter-label {
             font-size: 0.9rem;
         }
 
-        .upcoming-events {
+        .filter-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
-        .event-card {
-            background-color: var(--light-bg);
-            padding: 0.75rem;
-            border-radius: var(--radius-sm);
-            border-left: 3px solid var(--primary-color);
-            transition: all 0.3s var(--transition-easing);
-            cursor: pointer;
-        }
-
-        .event-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .event-card-title {
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .event-card-time {
-            font-size: 0.8rem;
-            color: #666;
+        .add-event-btn {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-        }
-
-        .weather-widget {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 1rem;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: white;
+            color: var(--primary-color);
             border-radius: var(--radius-sm);
-            text-align: center;
-        }
-
-        .weather-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .weather-temp {
-            font-size: 1.5rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-easing);
+            border: none;
+            box-shadow: var(--shadow-md);
         }
 
-        .weather-desc {
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
+        .add-event-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
         }
 
-        /* Main Content Styles */
+        .add-event-btn i {
+            font-size: 1rem;
+        }
+
+        /* Main Content */
         .main-content {
+            flex: 1;
+            margin-left: 280px;
+            transition: margin 0.4s var(--transition-easing);
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
-        .calendar-header {
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Header */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
             gap: 1rem;
-            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: width 0.3s var(--transition-easing);
+        }
+
+        .page-title:hover::after {
+            width: 100%;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Calendar Card */
+        .calendar-card {
+            background-color: var(--background-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all 0.3s var(--transition-easing);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .calendar-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .view-selector {
@@ -271,7 +378,7 @@
             gap: 0.5rem;
             background-color: var(--light-bg);
             padding: 0.25rem;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
         }
 
         .view-option {
@@ -294,61 +401,47 @@
             background-color: rgba(230, 81, 0, 0.1);
         }
 
-        .calendar-actions {
+        .calendar-navigation {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
-        .calendar-container {
-            background-color: var(--background-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-md);
+        .calendar-body {
             padding: 1.5rem;
-            transition: all 0.4s var(--transition-easing);
-            transform-origin: center;
-            width: 100%; /* Ensure it takes full width */
-        }
-
-        .calendar-container:hover {
-            box-shadow: var(--shadow-lg);
+            flex: 1;
         }
 
         #calendar {
             height: 100%;
-            min-height: 700px; /* Increased from 600px */
-            width: 100%; /* Ensure it takes full width */
+            min-height: 600px;
         }
 
+        /* Widgets */
         .widgets-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .widgets-container {
-                grid-template-columns: 1fr 1fr;
-            }
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
 
         .widget {
             background-color: var(--background-color);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
-            padding: 1.5rem;
+            overflow: hidden;
             transition: all 0.3s var(--transition-easing);
         }
 
         .widget:hover {
-            transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
         }
 
         .widget-header {
+            padding: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .widget-title {
@@ -360,57 +453,53 @@
             gap: 0.5rem;
         }
 
-        .widget-content {
-            height: 100%;
+        .widget-body {
+            padding: 1.5rem;
         }
 
-        #quote-widget {
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-            color: var(--background-color);
-            position: relative;
-            overflow: hidden;
+        /* Upcoming Events Widget */
+        .upcoming-events {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        #quote-widget::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.6s var(--transition-easing);
+        .event-card {
+            background-color: var(--light-bg);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s var(--transition-easing);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        #quote-widget:hover::before {
-            opacity: 1;
-            animation: rotateBg 10s linear infinite;
+        .event-card:hover {
+            transform: translateY(-3px) translateX(5px);
+            box-shadow: var(--shadow-md);
         }
 
-        @keyframes rotateBg {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .event-card-title {
+            font-weight: 600;
+            font-size: 1rem;
         }
 
-        .quote-content {
-            position: relative;
-            z-index: 1;
+        .event-card-time {
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .quote-text {
-            font-style: italic;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
+        .event-card-time i {
+            color: var(--primary-color);
         }
 
-        .quote-author {
-            text-align: right;
-            font-weight: 500;
-        }
-
-        #stats-widget .stats-grid {
+        /* Stats Widget */
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
@@ -419,7 +508,7 @@
         .stat-item {
             text-align: center;
             padding: 1rem;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             background-color: var(--light-bg);
             transition: all 0.3s var(--transition-easing);
         }
@@ -430,15 +519,94 @@
         }
 
         .stat-value {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.8rem;
+            font-weight: 700;
             color: var(--primary-color);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
             font-size: 0.9rem;
             color: #666;
+        }
+
+        /* Quote Widget */
+        #quote-widget {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+        }
+
+        .quote-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quote-text {
+            font-style: italic;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .quote-text::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -0.5rem;
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+
+        .quote-author {
+            text-align: right;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /* Weather Widget */
+        .weather-widget {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+        }
+
+        .weather-icon {
+            font-size: 2.5rem;
+            animation: weatherFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes weatherFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .weather-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .weather-temp {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .weather-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         /* Button Styles */
@@ -447,8 +615,8 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-md);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s var(--transition-easing);
@@ -479,7 +647,7 @@
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-primary {
@@ -508,8 +676,8 @@
         }
 
         .btn-icon {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             padding: 0;
             border-radius: 50%;
             display: inline-flex;
@@ -519,14 +687,6 @@
 
         .btn-icon i {
             font-size: 1rem;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
         }
 
         /* Modal Styles */
@@ -546,27 +706,39 @@
         .modal.show {
             display: block;
             background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(5px);
+            animation: modalFadeIn 0.4s var(--transition-easing);
+        }
+
+        @keyframes modalFadeIn {
+            from { background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); }
+            to { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); }
         }
 
         .modal-content {
             background-color: var(--background-color);
             margin: 5% auto;
-            padding: 25px;
+            padding: 2rem;
             border-radius: var(--radius-lg);
             width: 90%;
-            max-width: 800px; /* Increased from 600px */
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
             opacity: 0;
-            transform: scale(0.8) translateY(-20px);
+            transform: scale(0.8) translateY(-30px);
             transition: all 0.5s var(--transition-easing);
         }
 
         .modal.show .modal-content {
             opacity: 1;
             transform: scale(1) translateY(0);
+            animation: modalContentShow 0.5s var(--transition-easing);
+        }
+
+        @keyframes modalContentShow {
+            from { opacity: 0; transform: scale(0.8) translateY(-30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .modal-header {
@@ -574,7 +746,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -593,8 +765,8 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s var(--transition-easing);
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -628,7 +800,7 @@
 
         @media (min-width: 768px) {
             .form-grid {
-                grid-template-columns: repeat(3, 1fr); /* Changed from 2 to 3 columns */
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
@@ -647,17 +819,25 @@
             font-weight: 500;
             transition: color 0.3s var(--transition-easing);
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-group:hover label {
             color: var(--primary-color);
         }
 
+        .form-group label i {
+            color: var(--primary-color);
+            opacity: 0.8;
+        }
+
         .form-control {
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.75rem 1rem;
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             transition: all 0.3s var(--transition-easing);
             box-shadow: var(--shadow-sm);
             font-family: 'Poppins', sans-serif;
@@ -667,7 +847,7 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2);
             outline: none;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
 
         .form-group.full-width {
@@ -687,7 +867,7 @@
             min-width: 100%;
             box-shadow: var(--shadow-lg);
             z-index: 10;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             max-height: 250px;
             overflow-y: auto;
             transform-origin: top center;
@@ -708,7 +888,7 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s var(--transition-easing);
+            transition: all 0.3s var(--transition-easing);
         }
 
         .color-option:hover {
@@ -729,41 +909,198 @@
             transform: scale(1.2);
         }
 
-        /* Footer Styles */
-        .footer {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: var(--background-color);
-            text-align: center;
-            padding: 1.2rem 0;
-            margin-top: 2.5rem;
+        /* Notification System */
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .notification {
+            padding: 15px 20px;
             border-radius: var(--radius-md);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+            max-width: 350px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s var(--transition-easing);
+            pointer-events: auto;
             position: relative;
             overflow: hidden;
-            width: 95%; /* Match container width */
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        .footer::before {
+        .notification::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shine 3s infinite;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.5);
+            animation: notificationTimer 3s linear forwards;
         }
 
-        @keyframes shine {
-            to { left: 100%; }
+        @keyframes notificationTimer {
+            to { width: 100%; }
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+            animation: notificationBounce 0.5s var(--transition-easing);
+        }
+
+        @keyframes notificationBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-10px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .notification-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .notification-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .notification-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .notification-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s var(--transition-easing);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            --background-color: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333333;
+        }
+
+        .dark-mode .fc-theme-standard .fc-scrollgrid,
+        .dark-mode .fc-theme-standard td,
+        .dark-mode .fc-theme-standard th {
+            border-color: #333333;
+        }
+
+        .dark-mode .fc-col-header-cell {
+            background-color: #1e1e1e;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .color-dropdown-content,
+        .dark-mode .color-option {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .color-option:hover {
+            background-color: #2a2a2a;
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
 
         /* FullCalendar Custom Styles */
         .fc .fc-toolbar {
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.8rem;
             margin-bottom: 1.5rem !important;
         }
 
@@ -784,15 +1121,15 @@
             border-color: var(--secondary-color);
             transition: all 0.3s var(--transition-easing);
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-md);
             box-shadow: var(--shadow-sm);
         }
 
         .fc .fc-button-primary:hover {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-md);
         }
 
@@ -803,12 +1140,11 @@
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Make calendar cells larger */
         .fc .fc-daygrid-day-frame {
-            min-height: 100px; /* Increased height */
+            min-height: 100px;
+            transition: background-color 0.3s var(--transition-easing);
         }
 
-        /* View Transitions */
         .fc-view-harness {
             transition: height 0.5s var(--transition-easing) !important;
         }
@@ -828,7 +1164,6 @@
             }
         }
 
-        /* Day/Week/Month transition animations */
         .fc .fc-dayGridMonth-view .fc-daygrid-body {
             animation: fadeSlideIn 0.6s var(--transition-easing);
         }
@@ -874,7 +1209,6 @@
             }
         }
 
-        /* Calendar cells hover effect */
         .fc-day {
             transition: background-color 0.3s var(--transition-easing);
         }
@@ -883,7 +1217,6 @@
             background-color: rgba(255, 140, 0, 0.05);
         }
 
-        /* Today highlight animation */
         .fc .fc-day-today {
             position: relative;
             overflow: hidden;
@@ -918,7 +1251,7 @@
         .fc-event {
             cursor: pointer;
             transition: all 0.3s var(--transition-easing);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
         }
@@ -929,123 +1262,14 @@
             z-index: 5;
         }
 
-        /* Loading animation */
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Notification System */
-        #notification-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-        }
-
-        .notification {
-            padding: 12px 20px;
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 250px;
-            max-width: 350px;
-            transform: translateX(100%);
-            opacity: 0;
-            transition: all 0.3s var(--transition-easing);
-            pointer-events: auto;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .notification-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .notification-error {
-            background-color: var(--error-color);
-            color: white;
-        }
-
-        .notification-warning {
-            background-color: var(--warning-color);
-            color: white;
-        }
-
-        .notification-info {
-            background-color: var(--info-color);
-            color: white;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 1.2rem;
-            }
-
-            .header-content {
-                width: 100%;
-                justify-content: space-between;
-                margin-bottom: 1rem;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .calendar-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .view-selector {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .calendar-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-
         /* Animation Styles */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
         .new-event-highlight {
             animation: pulse 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 3;
             box-shadow: 0 0 0 3px var(--accent-color) !important;
         }
         
         .print-animation {
-            animation: pulse 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            animation: flash 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
         
         .capture-animation {
@@ -1054,96 +1278,66 @@
         
         @keyframes flash {
             0% { filter: brightness(1); }
-            50% { filter: brightness(1.2); }
+            50% { filter: brightness(1.3); }
             100% { filter: brightness(1); }
-        }
-
-        /* Dark Mode Support */
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s var(--transition-easing);
-        }
-
-        .dark-mode-toggle:hover {
-            transform: scale(1.1) rotate(10deg);
-        }
-
-        .dark-mode {
-            --background-color: #121212;
-            --light-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --border-color: #333333;
-        }
-
-        .dark-mode .fc-theme-standard .fc-scrollgrid,
-        .dark-mode .fc-theme-standard td,
-        .dark-mode .fc-theme-standard th {
-            border-color: #333333;
-        }
-
-        .dark-mode .fc-col-header-cell {
-            background-color: #1e1e1e;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-toggle" id="sidebar-toggle">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="sidebar-header">
                 <img src="SILAKBO.png" alt="SILAKBO Logo">
-                <h1>ANG SILAKBO Memos</h1>
+                <h1>ANG SILAKBO</h1>
             </div>
-            <div class="header-actions">
-                <a href="Ang Silakbo Admin Panel.html" class="btn btn-secondary">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <button class="btn btn-outline" id="sync-button">
-                    <i class="fas fa-sync-alt"></i> Sync
-                </button>
-            </div>
-        </header>
-        
-        <div class="app-layout">
-            <!-- Sidebar -->
-            <div class="sidebar">
+            <div class="sidebar-content">
                 <div class="sidebar-section">
-                    <h3><i class="fas fa-filter"></i> Filters</h3>
-                    <div class="calendar-filters">
-                        <div class="filter-item">
-                            <span class="filter-color" style="background-color: #FF0000;"></span>
-                            <span class="filter-label">Important</span>
-                        </div>
-                        <div class="filter-item">
-                            <span class="filter-color" style="background-color: #0000FF;"></span>
-                            <span class="filter-label">Meetings</span>
-                        </div>
-                        <div class="filter-item">
-                            <span class="filter-color" style="background-color: #00FF00;"></span>
-                            <span class="filter-label">Personal</span>
-                        </div>
-                        <div class="filter-item">
-                            <span class="filter-color" style="background-color: #FFA500;"></span>
-                            <span class="filter-label">Events</span>
-                        </div>
+                    <h3><i class="fas fa-home"></i> Navigation</h3>
+                    <div class="nav-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendar</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tasks</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
                     </div>
                 </div>
-
+                
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-filter"></i> Filters</h3>
+                    <div class="filter-item">
+                        <span class="filter-color" style="background-color: #FF0000;"></span>
+                        <span class="filter-label">Important</span>
+                    </div>
+                    <div class="filter-item">
+                        <span class="filter-color" style="background-color: #0000FF;"></span>
+                        <span class="filter-label">Meetings</span>
+                    </div>
+                    <div class="filter-item">
+                        <span class="filter-color" style="background-color: #00FF00;"></span>
+                        <span class="filter-label">Personal</span>
+                    </div>
+                    <div class="filter-item">
+                        <span class="filter-color" style="background-color: #FFA500;"></span>
+                        <span class="filter-label">Events</span>
+                    </div>
+                </div>
+                
                 <div class="sidebar-section">
                     <h3><i class="fas fa-calendar-day"></i> Upcoming</h3>
-                    <div class="upcoming-events" id="upcoming-events-list">
+                    <div id="upcoming-events-list">
                         <div class="event-card" style="border-left-color: #FF0000;">
                             <div class="event-card-title">Board Meeting</div>
                             <div class="event-card-time"><i class="far fa-clock"></i> Today, 2:00 PM</div>
@@ -1158,65 +1352,78 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="sidebar-section">
                     <h3><i class="fas fa-cloud-sun"></i> Weather</h3>
                     <div class="weather-widget">
                         <div class="weather-icon"><i class="fas fa-sun"></i></div>
-                        <div class="weather-temp">28°C</div>
-                        <div class="weather-desc">Sunny (eme eme ra ni mess hart)</div>
+                        <div class="weather-info">
+                            <div class="weather-temp">28°C</div>
+                            <div class="weather-desc">Sunny (eme eme ra ni mess hart)</div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="add-event-btn" id="add-event-btn">
+                    <i class="fas fa-plus"></i> Add New Event
+                </button>
+            </div>
+        </div>
 
-                <div class="sidebar-section">
-                    <button class="btn btn-primary" style="width: 100%;" id="add-event-btn">
-                        <i class="fas fa-plus"></i> Add New Event
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Ang Silakbo Memos</h1>
+                </div>
+                <div class="header-actions">
+                    <a href="Ang Silakbo Admin Panel.html" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <button class="btn btn-outline" id="sync-button">
+                        <i class="fas fa-sync-alt"></i> Sync
                     </button>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="main-content">
-                <div class="calendar-header">
-                    <div class="view-selector">
-                        <div class="view-option active" data-view="dayGridMonth">
-                            <i class="fas fa-calendar-alt"></i> Month
+            <div class="dashboard-grid">
+                <div class="calendar-card">
+                    <div class="calendar-header">
+                        <div class="view-selector">
+                            <div class="view-option active" data-view="dayGridMonth">
+                                <i class="fas fa-calendar-alt"></i> Month
+                            </div>
+                            <div class="view-option" data-view="timeGridWeek">
+                                <i class="fas fa-calendar-week"></i> Week
+                            </div>
+                            <div class="view-option" data-view="timeGridDay">
+                                <i class="fas fa-calendar-day"></i> Day
+                            </div>
                         </div>
-                        <div class="view-option" data-view="timeGridWeek">
-                            <i class="fas fa-calendar-week"></i> Week
-                        </div>
-                        <div class="view-option" data-view="timeGridDay">
-                            <i class="fas fa-calendar-day"></i> Day
+                        <div class="calendar-navigation">
+                            <button class="btn btn-outline btn-icon" id="today-btn">
+                                <i class="fas fa-calendar-day"></i>
+                            </button>
+                            <button class="btn btn-outline btn-icon" id="prev-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-outline btn-icon" id="next-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="calendar-actions">
-                        <button class="btn btn-outline" id="today-btn">
-                            <i class="fas fa-calendar-day"></i> Today
-                        </button>
-                        <button class="btn btn-outline" id="prev-btn">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="btn btn-outline" id="next-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                    <div class="calendar-body">
+                        <div id="calendar"></div>
                     </div>
-                </div>
-
-                <div class="calendar-container">
-                    <div id="calendar"></div>
                 </div>
 
                 <div class="widgets-container">
-                    <div class="widget" id="quote-widget">
-                        <div class="quote-content">
-                            <div class="loading-spinner"></div>
-                        </div>
-                    </div>
                     <div class="widget" id="stats-widget">
                         <div class="widget-header">
                             <div class="widget-title"><i class="fas fa-chart-pie"></i> Statistics</div>
                         </div>
-                        <div class="widget-content">
+                        <div class="widget-body">
                             <div class="stats-grid">
                                 <div class="stat-item">
                                     <div class="stat-value" id="total-events">0</div>
@@ -1237,21 +1444,39 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="printCalendar()">
-                        <i class="fas fa-print"></i> Print Calendar
-                    </button>
-                    <button class="btn btn-primary" onclick="saveAsImage()">
-                        <i class="fas fa-image"></i> Save as Image
-                    </button>
-                    <button class="btn btn-primary" id="export-btn">
-                        <i class="fas fa-file-export"></i> Export Events
-                    </button>
-                    <button class="btn btn-primary" id="import-btn">
-                        <i class="fas fa-file-import"></i> Import Events
-                    </button>
+                    <div class="widget" id="quote-widget">
+                        <div class="widget-header">
+                            <div class="widget-title"><i class="fas fa-quote-left"></i> Inspiration</div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="quote-content">
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <div class="widget-title"><i class="fas fa-tools"></i> Actions</div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="printCalendar()">
+                                    <i class="fas fa-print"></i> Print Calendar
+                                </button>
+                                <button class="btn btn-primary" onclick="saveAsImage()">
+                                    <i class="fas fa-image"></i> Save as Image
+                                </button>
+                                <button class="btn btn-primary" id="export-btn">
+                                    <i class="fas fa-file-export"></i> Export Events
+                                </button>
+                                <button class="btn btn-primary" id="import-btn">
+                                    <i class="fas fa-file-import"></i> Import Events
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1414,10 +1639,6 @@
 
     <div id="notification-container"></div>
 
-    <footer class="footer">
-        <p>&copy; 2025 ANG SILAKBO. All rights reserved.</p>
-    </footer>
-
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -1505,7 +1726,7 @@
                     
                     return {
                         html: `
-                            <div class="fc-event-main-frame" style="background-color: ${arg.event.backgroundColor}; color: ${getContrastColor(arg.event.backgroundColor)}; padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <div class="fc-event-main-frame" style="background-color: ${arg.event.backgroundColor}; color: ${getContrastColor(arg.event.backgroundColor)}; padding: 6px 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
                                 ${timeText}
                                 <div class="fc-event-title-container">
                                     <div class="fc-event-title fc-sticky">${priorityIcon}${arg.event.title}</div>
@@ -1564,6 +1785,24 @@
         }
 
         function setupEventListeners() {
+            // Sidebar toggle
+            document.getElementById('sidebar-toggle').addEventListener('click', function() {
+                const sidebar = document.querySelector('.sidebar');
+                const mainContent = document.getElementById('main-content');
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+                
+                // Change icon direction
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.classList.remove('fa-chevron-left');
+                    icon.classList.add('fa-chevron-right');
+                } else {
+                    icon.classList.remove('fa-chevron-right');
+                    icon.classList.add('fa-chevron-left');
+                }
+            });
+            
             // View selector
             document.querySelectorAll('.view-option').forEach(option => {
                 option.addEventListener('click', function() {
@@ -1650,11 +1889,15 @@
             
             // Sync button
             document.getElementById('sync-button').addEventListener('click', function() {
-                this.classList.add('rotating');
+                this.querySelector('i').classList.add('fa-spin');
+                showNotification('Syncing calendar...', 'info');
+                
                 loadEvents();
+                
                 setTimeout(() => {
-                    this.classList.remove('rotating');
-                }, 1000);
+                    this.querySelector('i').classList.remove('fa-spin');
+                    showNotification('Calendar synced successfully!', 'success');
+                }, 1500);
             });
             
             // Dark mode toggle
@@ -1663,9 +1906,11 @@
                 if (document.body.classList.contains('dark-mode')) {
                     localStorage.setItem('darkMode', 'enabled');
                     this.innerHTML = '<i class="fas fa-sun"></i>';
+                    showNotification('Dark mode enabled', 'info');
                 } else {
                     localStorage.setItem('darkMode', 'disabled');
                     this.innerHTML = '<i class="fas fa-moon"></i>';
+                    showNotification('Light mode enabled', 'info');
                 }
             });
             
@@ -1688,6 +1933,25 @@
                     this.classList.toggle('active');
                     const color = this.querySelector('.filter-color').style.backgroundColor;
                     filterEventsByColor(color);
+                });
+            });
+            
+            // Event category change
+            document.getElementById('eventCategory').addEventListener('change', function() {
+                const category = this.value;
+                const color = categoryColors[category] || colors[0].value;
+                selectColor(color);
+            });
+            
+            // Navigation items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show notification for demo purposes
+                    const navText = this.querySelector('span').textContent;
+                    showNotification(`Navigated to ${navText}`, 'info');
                 });
             });
         }
@@ -1723,6 +1987,12 @@
             const colorButton = document.querySelector('.color-dropdown .btn');
             colorButton.style.backgroundColor = color;
             colorButton.style.color = getContrastColor(color);
+            colorButton.innerHTML = `<i class="fas fa-palette"></i> ${getColorName(color)}`;
+        }
+        
+        function getColorName(colorValue) {
+            const color = colors.find(c => c.value.toLowerCase() === colorValue.toLowerCase());
+            return color ? color.name : 'Custom';
         }
 
         function openModal(start, end, event = null) {
@@ -1963,7 +2233,7 @@
                 return;
             }
             
-            upcomingEvents.forEach(event => {
+            upcomingEvents.forEach((event, index) => {
                 const eventDate = new Date(event.start);
                 let dateText;
                 
@@ -1987,6 +2257,7 @@
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.style.borderLeftColor = event.backgroundColor;
+                eventCard.style.animationDelay = `${index * 0.1}s`;
                 eventCard.innerHTML = `
                     <div class="event-card-title">${event.title}</div>
                     <div class="event-card-time"><i class="far fa-clock"></i> ${dateText}, ${timeText}</div>
@@ -1997,6 +2268,12 @@
                 });
                 
                 upcomingList.appendChild(eventCard);
+                
+                // Add entrance animation
+                setTimeout(() => {
+                    eventCard.style.opacity = '1';
+                    eventCard.style.transform = 'translateX(0)';
+                }, 50 + (index * 100));
             });
         }
 
@@ -2006,23 +2283,46 @@
             const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
             const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
             
-            // Total events
-            document.getElementById('total-events').textContent = events.length;
+            // Animate counting up
+            animateCounter('total-events', events.length);
             
             // Upcoming events
             const upcomingCount = events.filter(event => new Date(event.start) >= now).length;
-            document.getElementById('upcoming-events').textContent = upcomingCount;
+            animateCounter('upcoming-events', upcomingCount);
             
             // This month events
             const thisMonthCount = events.filter(event => {
                 const eventDate = new Date(event.start);
                 return eventDate >= monthStart && eventDate <= monthEnd;
             }).length;
-            document.getElementById('this-month').textContent = thisMonthCount;
+            animateCounter('this-month', thisMonthCount);
             
             // Completed events
             const completedCount = events.filter(event => new Date(event.end) < now).length;
-            document.getElementById('completed-events').textContent = completedCount;
+            animateCounter('completed-events', completedCount);
+        }
+        
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const startValue = parseInt(element.textContent) || 0;
+            const duration = 1000; // ms
+            const stepTime = 50;
+            const steps = duration / stepTime;
+            const increment = (targetValue - startValue) / steps;
+            let currentValue = startValue;
+            let currentStep = 0;
+            
+            const timer = setInterval(() => {
+                currentStep++;
+                currentValue += increment;
+                
+                if (currentStep >= steps) {
+                    clearInterval(timer);
+                    element.textContent = targetValue;
+                } else {
+                    element.textContent = Math.round(currentValue);
+                }
+            }, stepTime);
         }
 
         function filterEventsByColor(color) {
@@ -2038,6 +2338,8 @@
             // Add print animation
             const calendarEl = document.getElementById('calendar');
             calendarEl.classList.add('print-animation');
+            
+            showNotification('Preparing to print...', 'info');
             
             setTimeout(() => {
                 calendarEl.classList.remove('print-animation');
@@ -2354,7 +2656,7 @@
                     
                     setTimeout(() => {
                         quoteWidget.querySelector('.quote-content').innerHTML = `
-                            <div class="quote-text">“What would life be if we had no courage to attempt anything? The sadness will last forever—but so will the beauty, the wonder, and the love that we leave behind. Even in the darkest moments, there is light if we choose to see it. Keep going, keep creating, and never stop believing that something inside you is worth sharing with the world."</div>
+                            <div class="quote-text">"What would life be if we had no courage to attempt anything? The sadness will last forever—but so will the beauty, the wonder, and the love that we leave behind. Even in the darkest moments, there is light if we choose to see it. Keep going, keep creating, and never stop believing that something inside you is worth sharing with the world."</div>
                             <div class="quote-author">- Vincent Van Gogh</div>
                         `;
                         
@@ -2435,20 +2737,6 @@
                 }, 300);
             }, 3000);
         }
-
-        // Add animation styles
-        const animStyles = document.createElement('style');
-        animStyles.textContent = `
-            .rotating {
-                animation: rotate 1s linear;
-            }
-            
-            @keyframes rotate {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(animStyles);
     </script>
 </body>
 </html>
