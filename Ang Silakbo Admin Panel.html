@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Variables */
         :root {
             --primary: #E65100;
             --primary-light: #FF8A50;
@@ -47,11 +48,12 @@
             
             --transition: 0.3s ease;
             
-            --sidebar-width: 280px;
-            --sidebar-collapsed: 80px;
-            --header-height: 70px;
+            --sidebar-width: 260px;
+            --sidebar-collapsed: 70px;
+            --header-height: 64px;
         }
 
+        /* Dark Mode */
         .dark {
             --background: #121212;
             --surface: #1E1E1E;
@@ -65,6 +67,7 @@
             --shadow: rgba(0, 0, 0, 0.3);
         }
 
+        /* Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -80,7 +83,7 @@
         }
 
         /* Layout */
-        .app {
+        .dashboard {
             display: flex;
             min-height: 100vh;
         }
@@ -88,21 +91,23 @@
         /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
             height: 100vh;
             position: fixed;
             z-index: 100;
-            transition: width var(--transition), transform var(--transition);
+            transition: all var(--transition);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            box-shadow: 4px 0 10px var(--shadow);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .sidebar.collapsed {
             width: var(--sidebar-collapsed);
         }
 
-        .sidebar-header {
+        .sidebar-brand {
             height: var(--header-height);
             display: flex;
             align-items: center;
@@ -119,14 +124,19 @@
         }
 
         .sidebar-logo img {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-sm);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             object-fit: cover;
+            transition: transform var(--transition);
+        }
+
+        .sidebar.collapsed .sidebar-logo img {
+            transform: scale(1.2);
         }
 
         .sidebar-logo-text {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 600;
             white-space: nowrap;
             transition: opacity var(--transition);
@@ -139,12 +149,12 @@
 
         .sidebar-toggle {
             margin-left: auto;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
             cursor: pointer;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -153,23 +163,23 @@
         }
 
         .sidebar-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .sidebar-content {
+        .sidebar-menu {
             flex: 1;
-            overflow-y: auto;
             padding: var(--spacing-md) 0;
+            overflow-y: auto;
         }
 
-        .sidebar-section {
+        .menu-category {
             margin-bottom: var(--spacing-lg);
         }
 
-        .sidebar-section-title {
+        .menu-title {
             padding: 0 var(--spacing-lg);
             margin-bottom: var(--spacing-sm);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: rgba(255, 255, 255, 0.6);
@@ -177,103 +187,104 @@
             transition: opacity var(--transition);
         }
 
-        .sidebar.collapsed .sidebar-section-title {
+        .sidebar.collapsed .menu-title {
             opacity: 0;
         }
 
-        .sidebar-nav {
+        .menu-items {
             list-style: none;
         }
 
-        .sidebar-nav-item {
+        .menu-item {
             position: relative;
         }
 
-        .sidebar-link {
+        .menu-link {
             display: flex;
             align-items: center;
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-sm) var(--spacing-lg);
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: all var(--transition);
             white-space: nowrap;
             border-left: 3px solid transparent;
+            margin: 2px 0;
         }
 
-        .sidebar-link:hover, .sidebar-link.active {
+        .menu-link:hover, .menu-link.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            border-left-color: white;
+            border-left-color: var(--secondary);
         }
 
-        .sidebar-link-icon {
+        .menu-icon {
             width: 20px;
             margin-right: var(--spacing-md);
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-align: center;
             transition: margin var(--transition);
         }
 
-        .sidebar.collapsed .sidebar-link-icon {
+        .sidebar.collapsed .menu-icon {
             margin-right: 0;
         }
 
-        .sidebar-link-text {
+        .menu-text {
             transition: opacity var(--transition);
         }
 
-        .sidebar.collapsed .sidebar-link-text {
+        .sidebar.collapsed .menu-text {
             opacity: 0;
             width: 0;
         }
 
         .sidebar-footer {
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-md);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .sidebar-user {
+        .user-profile {
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
             padding: var(--spacing-sm) 0;
         }
 
-        .sidebar-user-avatar {
-            width: 40px;
-            height: 40px;
+        .user-avatar {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.2);
             flex-shrink: 0;
         }
 
-        .sidebar-user-info {
+        .user-info {
             min-width: 0;
             transition: opacity var(--transition);
         }
 
-        .sidebar.collapsed .sidebar-user-info {
+        .sidebar.collapsed .user-info {
             opacity: 0;
             width: 0;
         }
 
-        .sidebar-user-name {
+        .user-name {
             color: white;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .sidebar-user-role {
+        .user-role {
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.75rem;
             white-space: nowrap;
         }
 
-        .sidebar-logout {
+        .logout-btn {
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
@@ -286,25 +297,25 @@
             cursor: pointer;
             transition: all var(--transition);
             width: 100%;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
         }
 
-        .sidebar-logout:hover {
+        .logout-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
-        .sidebar-logout-text {
+        .logout-text {
             transition: opacity var(--transition);
         }
 
-        .sidebar.collapsed .sidebar-logout-text {
+        .sidebar.collapsed .logout-text {
             opacity: 0;
             width: 0;
         }
 
         /* Main Content */
-        .main {
+        .main-content {
             flex: 1;
             margin-left: var(--sidebar-width);
             transition: margin-left var(--transition);
@@ -313,7 +324,7 @@
             flex-direction: column;
         }
 
-        .main.expanded {
+        .main-content.expanded {
             margin-left: var(--sidebar-collapsed);
         }
 
@@ -346,15 +357,15 @@
             cursor: pointer;
         }
 
-        .header-search {
+        .search-bar {
             position: relative;
             width: 300px;
         }
 
-        .header-search input {
+        .search-input {
             width: 100%;
-            height: 40px;
-            padding: 0 var(--spacing-md) 0 40px;
+            height: 38px;
+            padding: 0 var(--spacing-md) 0 38px;
             border: 1px solid var(--border);
             border-radius: 20px;
             background: var(--surface-variant);
@@ -363,13 +374,13 @@
             transition: all var(--transition);
         }
 
-        .header-search input:focus {
+        .search-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
         }
 
-        .header-search i {
+        .search-icon {
             position: absolute;
             left: var(--spacing-md);
             top: 50%;
@@ -383,15 +394,15 @@
             gap: var(--spacing-lg);
         }
 
-        .header-actions {
+        .action-buttons {
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
         }
 
-        .header-action-btn {
-            width: 40px;
-            height: 40px;
+        .action-btn {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -404,17 +415,17 @@
             position: relative;
         }
 
-        .header-action-btn:hover {
+        .action-btn:hover {
             background: var(--border);
             transform: translateY(-2px);
         }
 
-        .notification-badge {
+        .badge {
             position: absolute;
             top: -5px;
             right: -5px;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
@@ -426,7 +437,7 @@
             border: 2px solid var(--surface);
         }
 
-        .user-dropdown {
+        .user-menu {
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
@@ -436,36 +447,36 @@
             transition: background-color var(--transition);
         }
 
-        .user-dropdown:hover {
+        .user-menu:hover {
             background: var(--surface-variant);
         }
 
-        .user-dropdown img {
-            width: 40px;
-            height: 40px;
+        .user-menu img {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--primary-light);
         }
 
-        .user-dropdown-info {
+        .user-menu-info {
             display: flex;
             flex-direction: column;
         }
 
-        .user-dropdown-name {
+        .user-menu-name {
             font-weight: 500;
             font-size: 0.9rem;
             color: var(--on-surface);
         }
 
-        .user-dropdown-role {
+        .user-menu-role {
             font-size: 0.75rem;
             color: var(--on-surface-variant);
         }
 
-        /* Content */
-        .content {
+        /* Page Content */
+        .page-content {
             flex: 1;
             padding: var(--spacing-xl);
             background: var(--background);
@@ -487,18 +498,18 @@
             color: var(--on-surface-variant);
         }
 
-        /* Dashboard Layout */
-        .dashboard-layout {
+        /* Dashboard Grid */
+        .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             gap: var(--spacing-lg);
         }
 
         /* Stats Cards */
-        .stats-container {
+        .stats-row {
             grid-column: span 12;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: var(--spacing-lg);
             margin-bottom: var(--spacing-xl);
         }
@@ -522,42 +533,42 @@
 
         .stat-card-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             margin-bottom: var(--spacing-md);
         }
 
-        .stat-card-icon {
-            width: 50px;
-            height: 50px;
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
         }
 
-        .stat-card-icon.primary {
+        .stat-icon-primary {
             background: rgba(230, 81, 0, 0.1);
             color: var(--primary);
         }
 
-        .stat-card-icon.success {
+        .stat-icon-success {
             background: rgba(76, 175, 80, 0.1);
             color: var(--success);
         }
 
-        .stat-card-icon.warning {
+        .stat-icon-warning {
             background: rgba(255, 193, 7, 0.1);
             color: var(--warning);
         }
 
-        .stat-card-icon.info {
+        .stat-icon-info {
             background: rgba(33, 150, 243, 0.1);
             color: var(--info);
         }
 
-        .stat-card-trend {
+        .stat-trend {
             display: flex;
             align-items: center;
             gap: var(--spacing-xs);
@@ -577,20 +588,20 @@
             color: var(--danger);
         }
 
-        .stat-card-value {
-            font-size: 2.5rem;
+        .stat-value {
+            font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: var(--spacing-sm);
             color: var(--on-surface);
         }
 
-        .stat-card-label {
+        .stat-label {
             font-size: 1rem;
             color: var(--on-surface-variant);
             font-weight: 500;
         }
 
-        .stat-card-bg-icon {
+        .stat-bg-icon {
             position: absolute;
             bottom: -20px;
             right: -20px;
@@ -601,7 +612,7 @@
             color: var(--on-surface);
         }
 
-        .stat-card:hover .stat-card-bg-icon {
+        .stat-card:hover .stat-bg-icon {
             transform: rotate(0) scale(1.1);
             opacity: 0.08;
         }
@@ -616,7 +627,7 @@
             margin-bottom: var(--spacing-xl);
         }
 
-        .chart-header {
+        .section-header {
             padding: var(--spacing-lg);
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -624,7 +635,7 @@
             justify-content: space-between;
         }
 
-        .chart-title {
+        .section-title {
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--on-surface);
@@ -652,7 +663,7 @@
             color: var(--on-primary);
         }
 
-        .chart-content {
+        .chart-container {
             padding: var(--spacing-lg);
             height: 350px;
             position: relative;
@@ -671,17 +682,9 @@
         }
 
         .calendar-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-
-        .calendar-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--on-surface);
         }
 
         .calendar-nav {
@@ -690,8 +693,8 @@
         }
 
         .calendar-nav-btn {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -826,26 +829,12 @@
 
         /* Activity Section */
         .activity-section {
-            grid-column: span 8;
+            grid-column: span 6;
             background: var(--surface);
             border-radius: var(--radius-lg);
             box-shadow: 0 4px 12px var(--shadow);
             overflow: hidden;
             margin-bottom: var(--spacing-xl);
-        }
-
-        .activity-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .activity-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--on-surface);
         }
 
         .view-all {
@@ -881,8 +870,8 @@
         }
 
         .activity-icon {
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -891,31 +880,31 @@
             flex-shrink: 0;
         }
 
-        .activity-icon.primary {
+        .activity-icon-primary {
             background: rgba(230, 81, 0, 0.1);
             color: var(--primary);
         }
 
-        .activity-icon.success {
+        .activity-icon-success {
             background: rgba(76, 175, 80, 0.1);
             color: var(--success);
         }
 
-        .activity-icon.warning {
+        .activity-icon-warning {
             background: rgba(255, 193, 7, 0.1);
             color: var(--warning);
         }
 
-        .activity-icon.info {
+        .activity-icon-info {
             background: rgba(33, 150, 243, 0.1);
             color: var(--info);
         }
 
-        .activity-content-inner {
+        .activity-details {
             flex: 1;
         }
 
-        .activity-title-text {
+        .activity-title {
             font-weight: 500;
             margin-bottom: var(--spacing-xs);
             color: var(--on-surface);
@@ -948,20 +937,7 @@
             border-radius: var(--radius-lg);
             box-shadow: 0 4px 12px var(--shadow);
             overflow: hidden;
-        }
-
-        .tasks-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .tasks-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--on-surface);
+            margin-bottom: var(--spacing-xl);
         }
 
         .tasks-content {
@@ -1005,7 +981,7 @@
             color: white;
         }
 
-        .task-content {
+        .task-details {
             flex: 1;
         }
 
@@ -1016,7 +992,7 @@
             color: var(--on-surface);
         }
 
-        .task-checkbox.checked + .task-content .task-title {
+        .task-checkbox.checked + .task-details .task-title {
             text-decoration: line-through;
             color: var(--on-surface-variant);
         }
@@ -1048,11 +1024,6 @@
         }
 
         .priority-medium {
-            background: rgba(255, 193,  67, 54, 0.1);
-            color: var(--danger);
-        }
-
-        .priority-medium {
             background: rgba(255, 193, 7, 0.1);
             color: var(--warning);
         }
@@ -1060,88 +1031,6 @@
         .priority-low {
             background: rgba(76, 175, 80, 0.1);
             color: var(--success);
-        }
-
-        /* System Status Section */
-        .status-section {
-            grid-column: span 6;
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 12px var(--shadow);
-            overflow: hidden;
-        }
-
-        .status-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .status-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--on-surface);
-        }
-
-        .status-content {
-            padding: var(--spacing-lg);
-        }
-
-        .status-item {
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .status-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .status-item-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .status-label {
-            font-weight: 500;
-            font-size: 0.95rem;
-            color: var(--on-surface);
-        }
-
-        .status-value {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--on-surface);
-        }
-
-        .progress-container {
-            height: 8px;
-            background: var(--surface-variant);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-primary {
-            background: var(--primary);
-        }
-
-        .progress-success {
-            background: var(--success);
-        }
-
-        .progress-warning {
-            background: var(--warning);
-        }
-
-        .progress-danger {
-            background: var(--danger);
         }
 
         /* Notification Panel */
@@ -1243,8 +1132,8 @@
             color: var(--on-surface-variant);
         }
 
-        /* User Menu */
-        .user-menu {
+        /* User Menu Dropdown */
+        .user-dropdown {
             position: absolute;
             top: calc(var(--header-height) - 5px);
             right: var(--spacing-xl);
@@ -1259,13 +1148,13 @@
             border: 1px solid var(--border);
         }
 
-        .user-menu-header {
+        .user-dropdown-header {
             padding: var(--spacing-xl) var(--spacing-lg);
             border-bottom: 1px solid var(--border);
             text-align: center;
         }
 
-        .user-menu-avatar {
+        .user-dropdown-avatar {
             width: 70px;
             height: 70px;
             border-radius: 50%;
@@ -1274,23 +1163,23 @@
             padding: 3px;
         }
 
-        .user-menu-name {
+        .user-dropdown-name {
             font-weight: 600;
             margin-bottom: var(--spacing-xs);
             color: var(--on-surface);
         }
 
-        .user-menu-email {
+        .user-dropdown-email {
             font-size: 0.85rem;
             color: var(--on-surface-variant);
         }
 
-        .user-menu-list {
+        .user-dropdown-menu {
             list-style: none;
             padding: var(--spacing-sm) 0;
         }
 
-        .user-menu-item {
+        .user-dropdown-item {
             padding: var(--spacing-md) var(--spacing-lg);
             display: flex;
             align-items: center;
@@ -1300,16 +1189,16 @@
             color: var(--on-surface);
         }
 
-        .user-menu-item:hover {
+        .user-dropdown-item:hover {
             background: var(--surface-variant);
         }
 
-        .user-menu-item i {
+        .user-dropdown-item i {
             width: 20px;
             color: var(--on-surface-variant);
         }
 
-        .user-menu-divider {
+        .user-dropdown-divider {
             height: 1px;
             background: var(--border);
             margin: var(--spacing-sm) 0;
@@ -1438,8 +1327,8 @@
             position: fixed;
             bottom: var(--spacing-xl);
             right: var(--spacing-xl);
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
@@ -1512,7 +1401,7 @@
 
         /* Responsive Styles */
         @media (max-width: 1400px) {
-            .dashboard-layout {
+            .dashboard-grid {
                 grid-template-columns: repeat(8, 1fr);
             }
             
@@ -1524,39 +1413,31 @@
                 grid-column: span 8;
             }
             
-            .activity-section {
+            .activity-section, .tasks-section {
                 grid-column: span 8;
-            }
-            
-            .tasks-section {
-                grid-column: span 4;
-            }
-            
-            .status-section {
-                grid-column: span 4;
             }
         }
 
         @media (max-width: 1200px) {
-            .dashboard-layout {
+            .dashboard-grid {
                 grid-template-columns: repeat(6, 1fr);
             }
             
-            .tasks-section, .status-section {
+            .chart-section, .calendar-section, .activity-section, .tasks-section {
                 grid-column: span 6;
             }
             
-            .header-search {
+            .search-bar {
                 width: 250px;
             }
         }
 
         @media (max-width: 992px) {
-            .dashboard-layout {
+            .dashboard-grid {
                 grid-template-columns: repeat(1, 1fr);
             }
             
-            .chart-section, .calendar-section, .activity-section, .tasks-section, .status-section {
+            .chart-section, .calendar-section, .activity-section, .tasks-section {
                 grid-column: span 1;
             }
             
@@ -1569,7 +1450,7 @@
                 transform: translateX(0);
             }
             
-            .main {
+            .main-content {
                 margin-left: 0 !important;
             }
             
@@ -1577,17 +1458,17 @@
                 display: block;
             }
             
-            .header-search {
+            .search-bar {
                 display: none;
             }
         }
 
         @media (max-width: 768px) {
-            .content {
+            .page-content {
                 padding: var(--spacing-lg);
             }
             
-            .stats-container {
+            .stats-row {
                 grid-template-columns: 1fr;
             }
             
@@ -1595,7 +1476,7 @@
                 padding: 0 var(--spacing-lg);
             }
             
-            .notification-panel, .user-menu {
+            .notification-panel, .user-dropdown {
                 right: var(--spacing-lg);
                 width: calc(100% - var(--spacing-lg) * 2);
                 max-width: 350px;
@@ -1619,7 +1500,7 @@
         }
 
         @media (max-width: 576px) {
-            .user-dropdown-info {
+            .user-menu-info {
                 display: none;
             }
             
@@ -1631,17 +1512,17 @@
                 font-size: 1.5rem;
             }
             
-            .stat-card-value {
+            .stat-value {
                 font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app">
+    <div class="dashboard">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
+            <div class="sidebar-brand">
                 <a href="#" class="sidebar-logo">
                     <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
                     <span class="sidebar-logo-text">ANG SILAKBO</span>
@@ -1650,142 +1531,142 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
             </div>
-            <div class="sidebar-content">
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Main</div>
-                    <ul class="sidebar-nav">
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link active" id="dashboardBtn">
-                                <i class="fas fa-chart-line sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Dashboard</span>
+            <div class="sidebar-menu">
+                <div class="menu-category">
+                    <div class="menu-title">Main</div>
+                    <ul class="menu-items">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link active" id="dashboardBtn">
+                                <i class="fas fa-chart-line menu-icon"></i>
+                                <span class="menu-text">Dashboard</span>
                             </a>
                         </li>
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="checkApplicantsBtn">
-                                <i class="fas fa-users sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Applicants</span>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="checkApplicantsBtn">
+                                <i class="fas fa-users menu-icon"></i>
+                                <span class="menu-text">Applicants</span>
                             </a>
                         </li>
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="calendarBtn">
-                                <i class="fas fa-calendar-alt sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Calendar</span>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="calendarBtn">
+                                <i class="fas fa-calendar-alt menu-icon"></i>
+                                <span class="menu-text">Calendar</span>
                             </a>
                         </li>
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="inquiriesBtn">
-                                <i class="fas fa-question-circle sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Inquiries</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Management</div>
-                    <ul class="sidebar-nav">
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="communicationsBtn">
-                                <i class="fas fa-comments sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Communications</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="editContentBtn">
-                                <i class="fas fa-edit sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Content Management</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="memosBtn">
-                                <i class="fas fa-sticky-note sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Memos</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <a href="Submission.html" class="sidebar-link" id="memosBtn">
-                                <i class="fas fa-book sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Submissions</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="taskManagerBtn">
-                                <i class="fas fa-tasks sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Task Manager</span>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="inquiriesBtn">
+                                <i class="fas fa-question-circle menu-icon"></i>
+                                <span class="menu-text">Inquiries</span>
                             </a>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Settings</div>
-                    <ul class="sidebar-nav">
-                        <li class="sidebar-nav-item">
-                            <a href="#" class="sidebar-link" id="settingsBtn">
-                                <i class="fas fa-cog sidebar-link-icon"></i>
-                                <span class="sidebar-link-text">Settings</span>
+                <div class="menu-category">
+                    <div class="menu-title">Management</div>
+                    <ul class="menu-items">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="communicationsBtn">
+                                <i class="fas fa-comments menu-icon"></i>
+                                <span class="menu-text">Communications</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="editContentBtn">
+                                <i class="fas fa-edit menu-icon"></i>
+                                <span class="menu-text">Content Management</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="memosBtn">
+                                <i class="fas fa-sticky-note menu-icon"></i>
+                                <span class="menu-text">Memos</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="Submission.html" class="menu-link">
+                                <i class="fas fa-book menu-icon"></i>
+                                <span class="menu-text">Submissions</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="taskManagerBtn">
+                                <i class="fas fa-tasks menu-icon"></i>
+                                <span class="menu-text">Task Manager</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="menu-category">
+                    <div class="menu-title">Settings</div>
+                    <ul class="menu-items">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link" id="settingsBtn">
+                                <i class="fas fa-cog menu-icon"></i>
+                                <span class="menu-text">Settings</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="sidebar-footer">
-                <div class="sidebar-user">
-                    <img src="SILAKBO (1).png" alt="User Avatar" class="sidebar-user-avatar">
-                    <div class="sidebar-user-info">
-                        <div class="sidebar-user-name">Admin</div>
-                        <div class="sidebar-user-role">Administrator</div>
+                <div class="user-profile">
+                    <img src="SILAKBO (1).png" alt="User Avatar" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Administrator</div>
                     </div>
                 </div>
-                <button class="sidebar-logout" id="logoutBtn">
+                <button class="logout-btn" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i>
-                    <span class="sidebar-logout-text">Logout</span>
+                    <span class="logout-text">Logout</span>
                 </button>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="main" id="main">
+        <main class="main-content" id="mainContent">
             <!-- Header -->
             <header class="header">
                 <div class="header-left">
                     <button class="mobile-toggle" id="mobileToggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search...">
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search...">
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="header-actions">
-                        <button class="header-action-btn" title="New Post">
+                    <div class="action-buttons">
+                        <button class="action-btn" title="New Post">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <button class="header-action-btn" title="Calendar">
+                        <button class="action-btn" title="Calendar">
                             <i class="fas fa-calendar"></i>
                         </button>
-                        <button class="header-action-btn" title="Reports">
+                        <button class="action-btn" title="Reports">
                             <i class="fas fa-chart-bar"></i>
                         </button>
-                        <button class="header-action-btn" id="notificationBtn" title="Notifications">
+                        <button class="action-btn" id="notificationBtn" title="Notifications">
                             <i class="fas fa-bell"></i>
-                            <span class="notification-badge" id="notificationCount">0</span>
+                            <span class="badge" id="notificationCount">0</span>
                         </button>
                     </div>
-                    <div class="user-dropdown" id="userDropdown">
+                    <div class="user-menu" id="userMenu">
                         <img src="SILAKBO (1).png" alt="User Avatar">
-                        <div class="user-dropdown-info">
-                            <div class="user-dropdown-name">Admin</div>
-                            <div class="user-dropdown-role">Administrator</div>
+                        <div class="user-menu-info">
+                            <div class="user-menu-name">Admin</div>
+                            <div class="user-menu-role">Administrator</div>
                         </div>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </header>
 
-            <!-- Content -->
-            <div class="content" id="content">
+            <!-- Page Content -->
+            <div class="page-content" id="pageContent">
                 <!-- Dashboard content will be dynamically inserted here -->
             </div>
         </main>
@@ -1802,18 +1683,18 @@
         </ul>
     </div>
 
-    <!-- User Menu -->
-    <div class="user-menu" id="userMenu">
-        <div class="user-menu-header">
-            <img src="SILAKBO (1).png" alt="User Avatar" class="user-menu-avatar">
-            <div class="user-menu-name">Admin User</div>
-            <div class="user-menu-email" id="userEmail">admin@angsilakbo.com</div>
+    <!-- User Dropdown Menu -->
+    <div class="user-dropdown" id="userDropdown">
+        <div class="user-dropdown-header">
+            <img src="SILAKBO (1).png" alt="User Avatar" class="user-dropdown-avatar">
+            <div class="user-dropdown-name">Admin User</div>
+            <div class="user-dropdown-email" id="userEmail">admin@angsilakbo.com</div>
         </div>
-        <ul class="user-menu-list">
-            <li class="user-menu-item"><i class="fas fa-user"></i> My Profile</li>
-            <li class="user-menu-item"><i class="fas fa-cog"></i> Account Settings</li>
-            <div class="user-menu-divider"></div>
-            <li class="user-menu-item" id="userMenuLogout"><i class="fas fa-sign-out-alt"></i> Logout</li>
+        <ul class="user-dropdown-menu">
+            <li class="user-dropdown-item"><i class="fas fa-user"></i> My Profile</li>
+            <li class="user-dropdown-item"><i class="fas fa-cog"></i> Account Settings</li>
+            <div class="user-dropdown-divider"></div>
+            <li class="user-dropdown-item" id="userMenuLogout"><i class="fas fa-sign-out-alt"></i> Logout</li>
         </ul>
     </div>
 
@@ -1852,9 +1733,9 @@
         const db = getDatabase(app);
 
         // DOM Elements
-        const content = document.getElementById('content');
+        const pageContent = document.getElementById('pageContent');
         const sidebar = document.getElementById('sidebar');
-        const main = document.getElementById('main');
+        const mainContent = document.getElementById('mainContent');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const mobileToggle = document.getElementById('mobileToggle');
         const overlay = document.getElementById('overlay');
@@ -1862,8 +1743,8 @@
         const notificationPanel = document.getElementById('notificationPanel');
         const notificationList = document.getElementById('notificationList');
         const notificationCount = document.getElementById('notificationCount');
-        const userDropdown = document.getElementById('userDropdown');
         const userMenu = document.getElementById('userMenu');
+        const userDropdown = document.getElementById('userDropdown');
         const userEmail = document.getElementById('userEmail');
         const markAllRead = document.getElementById('markAllRead');
         const themeToggle = document.getElementById('themeToggle');
@@ -1886,7 +1767,7 @@
         // Apply sidebar state if saved in localStorage
         if (isSidebarCollapsed) {
             sidebar.classList.add('collapsed');
-            main.classList.add('expanded');
+            mainContent.classList.add('expanded');
             sidebarToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
         }
 
@@ -1912,7 +1793,7 @@
         // Toggle sidebar
         function toggleSidebar() {
             sidebar.classList.toggle('collapsed');
-            main.classList.toggle('expanded');
+            mainContent.classList.toggle('expanded');
             
             isSidebarCollapsed = sidebar.classList.contains('collapsed');
             localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
@@ -1927,14 +1808,8 @@
         // Toggle sidebar on mobile
         function toggleMobileSidebar() {
             sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
+            overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
             document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
-            
-            if (sidebar.classList.contains('open')) {
-                overlay.style.display = 'block';
-            } else {
-                overlay.style.display = 'none';
-            }
         }
 
         // Check for new applications
@@ -2094,7 +1969,7 @@
                         showToast('success', 'Welcome', 'You have successfully logged in');
                     } else {
                         signOut(auth).then(() => {
-                            content.innerHTML = '<div class="page-header"><h2 class="page-title">Access denied</h2><p class="page-subtitle">You are not authorized to access this panel.</p></div>';
+                            pageContent.innerHTML = '<div class="page-header"><h2 class="page-title">Access denied</h2><p class="page-subtitle">You are not authorized to access this panel.</p></div>';
                             showToast('error', 'Access Denied', 'You are not authorized to access this panel');
                             setTimeout(() => {
                                 window.location.href = 'Ang Silakbo Login1.html';
@@ -2102,7 +1977,7 @@
                         });
                     }
                 } else {
-                    content.innerHTML = '<div class="page-header"><h2 class="page-title">Authentication Required</h2><p class="page-subtitle">Please log in to access the admin panel. Redirecting to login page...</p></div>';
+                    pageContent.innerHTML = '<div class="page-header"><h2 class="page-title">Authentication Required</h2><p class="page-subtitle">Please log in to access the admin panel. Redirecting to login page...</p></div>';
                     showToast('info', 'Authentication Required', 'Please log in to access the admin panel');
                     setTimeout(() => {
                         window.location.href = 'Ang Silakbo Login1.html';
@@ -2113,88 +1988,88 @@
 
         // Show dashboard content
         function showDashboard() {
-            content.innerHTML = `
+            pageContent.innerHTML = `
                 <div class="page-header">
                     <h2 class="page-title" id="welcomeMessage">Welcome to Ang Silakbo</h2>
                     <p class="page-subtitle" id="dateTime">Loading date and time...</p>
                 </div>
                 
-                <div class="stats-container">
+                <div class="stats-row">
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <div class="stat-card-icon primary">
+                            <div class="stat-icon-wrapper stat-icon-primary">
                                 <i class="fas fa-file-alt"></i>
                             </div>
-                            <div class="stat-card-trend trend-up">
+                            <div class="stat-trend trend-up">
                                 <i class="fas fa-arrow-up"></i> 12%
                             </div>
                         </div>
-                        <div class="stat-card-value" id="totalApplications">0</div>
-                        <div class="stat-card-label">Total Applications</div>
-                        <i class="fas fa-file-alt stat-card-bg-icon"></i>
+                        <div class="stat-value" id="totalApplications">0</div>
+                        <div class="stat-label">Total Applications</div>
+                        <i class="fas fa-file-alt stat-bg-icon"></i>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <div class="stat-card-icon success">
+                            <div class="stat-icon-wrapper stat-icon-success">
                                 <i class="fas fa-user-plus"></i>
                             </div>
-                            <div class="stat-card-trend trend-up">
+                            <div class="stat-trend trend-up">
                                 <i class="fas fa-arrow-up"></i> 5%
                             </div>
                         </div>
-                        <div class="stat-card-value" id="newApplications">0</div>
-                        <div class="stat-card-label">New Applications</div>
-                        <i class="fas fa-user-plus stat-card-bg-icon"></i>
+                        <div class="stat-value" id="newApplications">0</div>
+                        <div class="stat-label">New Applications</div>
+                        <i class="fas fa-user-plus stat-bg-icon"></i>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <div class="stat-card-icon warning">
+                            <div class="stat-icon-wrapper stat-icon-warning">
                                 <i class="fas fa-users"></i>
                             </div>
-                            <div class="stat-card-trend trend-down">
+                            <div class="stat-trend trend-down">
                                 <i class="fas fa-arrow-down"></i> 3%
                             </div>
                         </div>
-                        <div class="stat-card-value" id="activeUsers">0</div>
-                        <div class="stat-card-label">Active Users</div>
-                        <i class="fas fa-users stat-card-bg-icon"></i>
+                        <div class="stat-value" id="activeUsers">0</div>
+                        <div class="stat-label">Active Users</div>
+                        <i class="fas fa-users stat-bg-icon"></i>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <div class="stat-card-icon info">
+                            <div class="stat-icon-wrapper stat-icon-info">
                                 <i class="fas fa-sync"></i>
                             </div>
-                            <div class="stat-card-trend trend-up">
+                            <div class="stat-trend trend-up">
                                 <i class="fas fa-arrow-up"></i> 8%
                             </div>
                         </div>
-                        <div class="stat-card-value" id="contentUpdates">0</div>
-                        <div class="stat-card-label">Content Updates</div>
-                        <i class="fas fa-sync stat-card-bg-icon"></i>
+                        <div class="stat-value" id="contentUpdates">0</div>
+                        <div class="stat-label">Content Updates</div>
+                        <i class="fas fa-sync stat-bg-icon"></i>
                     </div>
                 </div>
                 
-                <div class="dashboard-layout">
+                <div class="dashboard-grid">
                     <div class="chart-section">
-                        <div class="chart-header">
-                            <div class="chart-title">Application Statistics</div>
+                        <div class="section-header">
+                            <div class="section-title">Application Statistics</div>
                             <div class="chart-tabs">
                                 <button class="chart-tab active">Weekly</button>
                                 <button class="chart-tab">Monthly</button>
                                 <button class="chart-tab">Yearly</button>
                             </div>
                         </div>
-                        <div class="chart-content">
+                        <div class="chart-container">
                             <canvas id="applicationsChart"></canvas>
                         </div>
                     </div>
                     
                     <div class="calendar-section">
-                        <div class="calendar-header">
-                            <div class="calendar-title">Upcoming Events</div>
+                        <div class="section-header">
+                            <div class="section-title">Upcoming Events</div>
                             <div class="calendar-nav">
                                 <button class="calendar-nav-btn">
                                     <i class="fas fa-chevron-left"></i>
@@ -2229,8 +2104,8 @@
                     </div>
                     
                     <div class="activity-section">
-                        <div class="activity-header">
-                            <div class="activity-title">Recent Activity</div>
+                        <div class="section-header">
+                            <div class="section-title">Recent Activity</div>
                             <a href="#" class="view-all">View All</a>
                         </div>
                         <div class="activity-content">
@@ -2241,60 +2116,13 @@
                     </div>
                     
                     <div class="tasks-section">
-                        <div class="tasks-header">
-                            <div class="tasks-title">Pending Tasks</div>
+                        <div class="section-header">
+                            <div class="section-title">Pending Tasks</div>
                         </div>
                         <div class="tasks-content">
                             <ul class="tasks-list" id="taskList">
                                 <!-- Tasks will be loaded here -->
                             </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="status-section">
-                        <div class="status-header">
-                            <div class="status-title">System Status</div>
-                        </div>
-                        <div class="status-content">
-                            <div class="status-item">
-                                <div class="status-item-header">
-                                    <div class="status-label">Server Load</div>
-                                    <div class="status-value">42%</div>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar progress-success" style="width: 42%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="status-item">
-                                <div class="status-item-header">
-                                    <div class="status-label">Database Usage</div>
-                                    <div class="status-value">68%</div>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar progress-warning" style="width: 68%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="status-item">
-                                <div class="status-item-header">
-                                    <div class="status-label">Storage</div>
-                                    <div class="status-value">23%</div>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar progress-primary" style="width: 23%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="status-item">
-                                <div class="status-item-header">
-                                    <div class="status-label">Memory Usage</div>
-                                    <div class="status-value">85%</div>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar progress-danger" style="width: 85%"></div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -2468,13 +2296,6 @@
                     title: 'Application Approved',
                     description: 'Maria Garcia was approved for Editor position',
                     time: '2 days ago'
-                },
-                {
-                    type: 'primary',
-                    icon: 'cog',
-                    title: 'System Update',
-                    description: 'System was updated to version 2.3.0',
-                    time: '3 days ago'
                 }
             ];
             
@@ -2483,11 +2304,11 @@
                 li.className = 'activity-item';
                 
                 li.innerHTML = `
-                    <div class="activity-icon ${activity.type}">
+                    <div class="activity-icon activity-icon-${activity.type}">
                         <i class="fas fa-${activity.icon}"></i>
                     </div>
-                    <div class="activity-content-inner">
-                        <div class="activity-title-text">${activity.title}</div>
+                    <div class="activity-details">
+                        <div class="activity-title">${activity.title}</div>
                         <div class="activity-description">${activity.description}</div>
                         <div class="activity-meta">
                             <div class="activity-time">
@@ -2547,7 +2368,7 @@
                     <div class="task-checkbox ${task.completed ? 'checked' : ''}">
                         ${task.completed ? '<i class="fas fa-check"></i>' : ''}
                     </div>
-                    <div class="task-content">
+                    <div class="task-details">
                         <div class="task-title">${task.title}</div>
                         <div class="task-meta">
                             <div class="task-date">
@@ -2720,9 +2541,9 @@
             });
         }
 
-        // Set active sidebar link
+        // Set active menu link
         function setActiveLink(linkId) {
-            const links = document.querySelectorAll('.sidebar-link');
+            const links = document.querySelectorAll('.menu-link');
             links.forEach(link => link.classList.remove('active'));
             document.getElementById(linkId).classList.add('active');
         }
@@ -2734,11 +2555,11 @@
         
         notificationBtn.addEventListener('click', () => {
             notificationPanel.style.display = notificationPanel.style.display === 'block' ? 'none' : 'block';
-            userMenu.style.display = 'none';
+            userDropdown.style.display = 'none';
         });
         
-        userDropdown.addEventListener('click', () => {
-            userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+        userMenu.addEventListener('click', () => {
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
             notificationPanel.style.display = 'none';
         });
         
@@ -2758,8 +2579,8 @@
                 notificationPanel.style.display = 'none';
             }
             
-            if (!userDropdown.contains(event.target) && !userMenu.contains(event.target)) {
-                userMenu.style.display = 'none';
+            if (!userMenu.contains(event.target) && !userDropdown.contains(event.target)) {
+                userDropdown.style.display = 'none';
             }
         });
 
@@ -2847,7 +2668,7 @@
         });
 
         // Header action buttons
-        document.querySelectorAll('.header-action-btn').forEach(btn => {
+        document.querySelectorAll('.action-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 if (this === notificationBtn) return;
                 
@@ -2870,7 +2691,6 @@
         window.addEventListener('resize', () => {
             if (window.innerWidth > 992) {
                 sidebar.classList.remove('open');
-                overlay.classList.remove('active');
                 overlay.style.display = 'none';
                 document.body.style.overflow = '';
             }
