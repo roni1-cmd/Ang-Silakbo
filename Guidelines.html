@@ -45,7 +45,7 @@
         
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 80px;
+            scroll-padding-top: 90px;
         }
         
         body {
@@ -78,22 +78,39 @@
             visibility: hidden;
         }
 
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--light-orange);
-            border-top-color: var(--primary-orange);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        @keyframes loaderAnim {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 1; }
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .loader {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .loader span {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--primary-orange);
+            opacity: 0;
+            animation: loaderAnim 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+        }
+
+        .loader span:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .loader span:nth-child(3) {
+            animation-delay: 1.2s;
         }
 
         /* Header & Navigation */
         .nav-header {
-            background-color: var(--primary-orange);
+            background-color: white;
             box-shadow: var(--shadow);
             padding: 0.75rem 0;
             position: sticky;
@@ -104,7 +121,7 @@
 
         .nav-header.scrolled {
             padding: 0.5rem 0;
-            background-color: rgba(255, 87, 34, 0.95);
+            box-shadow: var(--shadow-md);
             backdrop-filter: blur(10px);
         }
 
@@ -123,7 +140,7 @@
             gap: 0.75rem;
             font-size: 1.25rem;
             font-weight: 600;
-            color: white;
+            color: var(--primary-orange);
             text-decoration: none;
             transition: var(--transition);
         }
@@ -146,7 +163,7 @@
         }
 
         .nav-links a {
-            color: white;
+            color: var(--gray-900);
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition);
@@ -154,33 +171,25 @@
             align-items: center;
             gap: 0.5rem;
             position: relative;
-            padding: 0.5rem 0;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: white;
-            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-xl);
         }
 
         .nav-links a:hover {
-            color: var(--light-orange);
+            color: var(--primary-orange);
+            background-color: var(--light-orange);
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        .nav-links a.active {
+            color: white;
+            background-color: var(--primary-orange);
         }
         
         .mobile-menu-btn {
             display: none;
             background: none;
             border: none;
-            color: white;
+            color: var(--primary-orange);
             font-size: 1.5rem;
             cursor: pointer;
             transition: var(--transition);
@@ -199,50 +208,165 @@
             flex: 1;
         }
         
-        .page-title {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--primary-orange);
+        .page-title-container {
             text-align: center;
-            padding: 1rem 0 2rem;
             position: relative;
-        }
-
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(to right, var(--light-orange), var(--primary-orange), var(--light-orange));
-            border-radius: var(--border-radius);
-        }
-        
-        .section {
+            padding: 4rem 0;
             margin-bottom: 3rem;
-            padding: 2rem;
             background-color: white;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow);
-            transition: var(--transition);
-            border-top: 5px solid var(--primary-orange);
-            position: relative;
             overflow: hidden;
         }
 
-        .section::before {
+        .page-title-container::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--light-orange) 0%, transparent 100%);
-            opacity: 0.05;
-            z-index: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23FFE0D6' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        .page-title-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-orange), transparent);
+        }
+        
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--primary-orange);
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray-700);
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: max-content;
+            margin-bottom: 2rem;
+        }
+        
+        .table-of-contents {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .table-of-contents h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--light-orange);
+            font-size: 1.2rem;
+        }
+
+        .toc-links {
+            list-style: none;
+        }
+
+        .toc-links li {
+            margin-bottom: 0.5rem;
+            padding-left: 0;
+        }
+
+        .toc-links a {
+            color: var(--gray-800);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .toc-links a:hover, .toc-links a.active {
+            background-color: var(--light-orange);
+            color: var(--primary-orange);
+            transform: translateX(5px);
+        }
+
+        .quick-actions {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .quick-actions h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--light-orange);
+            font-size: 1.2rem;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--light-orange);
+            color: var(--primary-orange);
+            padding: 0.875rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-bottom: 1rem;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        .action-button:hover {
+            background-color: var(--primary-orange);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .action-button:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            position: relative;
         }
 
         .section:hover {
@@ -251,46 +375,45 @@
         }
 
         .section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            background-color: var(--primary-orange);
+            color: white;
+            padding: 1.5rem;
             position: relative;
             z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='white' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: -1;
         }
 
         .section-header i {
-            color: var(--primary-orange);
-            background-color: var(--light-orange);
-            padding: 0.75rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
-            width: 2.5rem;
-            height: 2.5rem;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
         }
         
         .section-title {
-            color: var(--primary-orange);
-            font-size: 1.8rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--light-orange);
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 50px;
-            height: 2px;
-            background-color: var(--primary-orange);
+            font-size: 1.5rem;
+            margin: 0;
         }
         
         .section-content {
+            padding: 2rem;
             position: relative;
             z-index: 1;
         }
@@ -459,8 +582,20 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 10px;
-            background: linear-gradient(to right, var(--primary-orange), var(--dark-orange), var(--primary-orange));
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23333' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        footer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--primary-orange);
+            z-index: 1;
         }
 
         .footer-content {
@@ -470,6 +605,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 3rem;
+            position: relative;
+            z-index: 1;
         }
 
         .footer-section h3 {
@@ -528,15 +665,14 @@
 
         .social-links a {
             color: white;
-            padding: 0.75rem;
-            border-radius: 50%;
             background-color: rgba(255, 87, 34, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
             width: 2.5rem;
             height: 2.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
         }
 
         .social-links a:hover {
@@ -551,6 +687,8 @@
             margin-top: 3rem;
             border-top: 1px solid var(--gray-800);
             color: var(--gray-300);
+            position: relative;
+            z-index: 1;
         }
 
         .contact-info {
@@ -672,15 +810,14 @@
 
         .faq-item {
             margin-bottom: 1rem;
-            border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
             overflow: hidden;
             transition: var(--transition);
             background-color: white;
+            box-shadow: var(--shadow-sm);
         }
 
         .faq-item:hover {
-            border-color: var(--primary-orange);
             box-shadow: var(--shadow);
         }
 
@@ -693,22 +830,24 @@
             justify-content: space-between;
             align-items: center;
             transition: var(--transition);
-            background-color: var(--gray-50);
-            border-bottom: 1px solid transparent;
+            background-color: white;
+            border-left: 4px solid var(--light-orange);
         }
 
         .faq-question:hover {
             color: var(--primary-orange);
+            border-left-color: var(--primary-orange);
         }
 
         .faq-question.active {
             color: var(--primary-orange);
-            background-color: white;
+            border-left-color: var(--primary-orange);
             border-bottom: 1px solid var(--gray-200);
         }
 
         .faq-question i {
             transition: var(--transition);
+            color: var(--primary-orange);
         }
 
         .faq-question.active i {
@@ -747,6 +886,8 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
+            border: none;
+            cursor: pointer;
         }
 
         .cta-button::before {
@@ -761,25 +902,9 @@
             transition: var(--transition);
         }
 
-        .cta-button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, var(--dark-orange), var(--primary-orange));
-            z-index: -1;
-            transition: var(--transition);
-        }
-
         .cta-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px -5px rgba(230, 74, 25, 0.4);
-        }
-
-        .cta-button:hover::after {
-            left: 0;
         }
 
         /* Genre List */
@@ -909,42 +1034,12 @@
             gap: 0.5rem;
             font-weight: 500;
             font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .newsletter-form button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, var(--primary-orange), var(--dark-orange));
-            z-index: -1;
-            transition: var(--transition);
-        }
-
-        .newsletter-form button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, var(--dark-orange), var(--primary-orange));
-            z-index: -1;
-            transition: var(--transition);
         }
 
         .newsletter-form button:hover {
+            background-color: var(--dark-orange);
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px -5px rgba(230, 74, 25, 0.4);
-        }
-
-        .newsletter-form button:hover::after {
-            left: 0;
+            box-shadow: var(--shadow);
         }
 
         /* Back to Top Button */
@@ -979,63 +1074,35 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Section Divider */
-        .section-divider {
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 4px;
-            background: linear-gradient(to right, transparent, var(--primary-orange), transparent);
-            margin: 4rem 0;
-            border-radius: var(--border-radius);
-            position: relative;
+            background: transparent;
+            z-index: 1000;
         }
 
-        .section-divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            background-color: white;
-            border: 4px solid var(--primary-orange);
-            border-radius: 50%;
-            box-shadow: var(--shadow);
-        }
-
-        .section-divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 20px;
-            height: 20px;
-            background-color: var(--primary-orange);
-            border-radius: 50%;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        .animate-pulse {
-            animation: pulse 2s infinite;
+        .progress-bar {
+            height: 4px;
+            background: var(--primary-orange);
+            width: 0%;
         }
 
         /* Mobile Styles */
         @media screen and (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: relative;
+                top: 0;
+                order: -1;
+            }
+
             .timeline::before {
                 left: 30px;
             }
@@ -1067,7 +1134,7 @@
                 right: -100%;
                 width: 80%;
                 height: 100vh;
-                background-color: var(--gray-900);
+                background-color: white;
                 flex-direction: column;
                 padding: 6rem 2rem 2rem;
                 transition: var(--transition);
@@ -1082,14 +1149,10 @@
             }
 
             .nav-links a {
-                padding: 1rem 0;
+                padding: 1rem;
                 width: 100%;
-                border-bottom: 1px solid var(--gray-800);
+                border-bottom: 1px solid var(--gray-200);
                 font-size: 1.1rem;
-            }
-
-            .nav-links a::after {
-                display: none;
             }
 
             .mobile-menu-btn {
@@ -1105,24 +1168,19 @@
                 right: 1.5rem;
             }
 
-            .section {
-                padding: 1.5rem;
-            }
-
             .section-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
+                padding: 1rem;
             }
 
             .section-title {
                 font-size: 1.5rem;
             }
 
-            .schedule-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
+            .section-content {
+                padding: 1.5rem;
             }
 
             .newsletter-form {
@@ -1152,14 +1210,20 @@
                 padding: 1.5rem 1rem;
             }
 
-            .page-title {
-                font-size: 1.8rem;
-                padding: 0.5rem 0 1.5rem;
+            .page-title-container {
+                padding: 2rem 1rem;
             }
 
-            .section {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-content {
                 padding: 1.25rem;
-                margin-bottom: 2rem;
             }
 
             .footer-content {
@@ -1197,19 +1261,43 @@
                 font-size: 1.1rem;
             }
         }
+
+        /* Code Protection */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* This prevents F12, right-click, and other developer tools access */
+        @media print {
+            html, body {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
     <!-- Preloader -->
     <div class="preloader">
-        <div class="loader"></div>
+        <div class="loader">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 
     <nav class="nav-header">
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="SILAKBO.png" alt="Ang Silakbo Logo">
-                <strong>ANG SILAKBO</strong>
+                <span>ANG SILAKBO</span>
             </a>
             <button class="mobile-menu-btn" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
@@ -1220,294 +1308,325 @@
                 </button>
                 <a href="index.html"><i class="fas fa-home"></i> Home</a>
                 <a href="About Us.html"><i class="fas fa-info-circle"></i> About</a>
-                <a href="https://angsilakbo.netlify.app/submissionposts"><i class="fas fa-paper-plane"></i> Submit</a>
+                <a href="Submissionposts.html" class="active"><i class="fas fa-paper-plane"></i> Submit</a>
                 <a href="https://angsilakbo.netlify.app/chat%20request"><i class="fas fa-envelope"></i> Contact</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <h1 class="page-title animate-fade-in">Comprehensive Publication Guidelines</h1>
+        <div class="page-title-container">
+            <h1 class="page-title">Comprehensive Publication Guidelines</h1>
+            <p class="page-subtitle">Discover how to submit your work to Ang Silakbo and become part of our growing literary community</p>
+        </div>
         
-        <section class="section animate-fade-in" id="submission-guidelines">
-            <div class="section-header">
-                <i class="fas fa-file-alt"></i>
-                <h2 class="section-title">Submission Guidelines</h2>
-            </div>
-            <div class="section-content">
-                <p>Ang Silakbo welcomes submissions from both established and emerging writers. We are committed to showcasing diverse voices and innovative storytelling. Please read the following guidelines carefully before submitting your work:</p>
-                <ul>
-                    <li><i class="fas fa-check-circle"></i><span>All submissions must be original and previously unpublished works</span></li>
-                    <li><i class="fas fa-file"></i><span>Accepted file formats: .doc, .docx, or .pdf</span></li>
-                    <li><i class="fas fa-font"></i><span>Maximum word count: 5,000 words for prose, 100 lines for poetry</span></li>
-                    <li><i class="fas fa-user"></i><span>Include a brief bio (50-100 words) and contact information</span></li>
-                    <li><i class="fas fa-code-branch"></i><span>Simultaneous submissions are allowed but please inform us immediately if accepted elsewhere</span></li>
-                    <li><i class="fas fa-globe"></i><span>We accept submissions in English and Filipino languages</span></li>
-                    <li><i class="fas fa-th-large"></i><span>Please use standard manuscript formatting: double-spaced, 12-point font (Times New Roman or Arial)</span></li>
-                </ul>
+        <div class="main-content">
+            <div class="content-area">
+                <section class="section" id="submission-guidelines">
+                    <div class="section-header">
+                        <i class="fas fa-file-alt"></i>
+                        <h2 class="section-title">Submission Guidelines</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Ang Silakbo welcomes submissions from both established and emerging writers. We are committed to showcasing diverse voices and innovative storytelling. Please read the following guidelines carefully before submitting your work:</p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i><span>All submissions must be original and previously unpublished works</span></li>
+                            <li><i class="fas fa-file"></i><span>Accepted file formats: .doc, .docx, or .pdf</span></li>
+                            <li><i class="fas fa-font"></i><span>Maximum word count: 5,000 words for prose, 100 lines for poetry</span></li>
+                            <li><i class="fas fa-user"></i><span>Include a brief bio (50-100 words) and contact information</span></li>
+                            <li><i class="fas fa-code-branch"></i><span>Simultaneous submissions are allowed but please inform us immediately if accepted elsewhere</span></li>
+                            <li><i class="fas fa-globe"></i><span>We accept submissions in English and Filipino languages</span></li>
+                            <li><i class="fas fa-th-large"></i><span>Please use standard manuscript formatting: double-spaced, 12-point font (Times New Roman or Arial)</span></li>
+                        </ul>
+                        
+                        <div class="highlight">
+                            <i class="fas fa-envelope"></i>
+                            <p>Send your submissions to: <a href="Submission.html">submissions@angsilakbo.com</a></p>
+                        </div>
+
+                        <h3><i class="fas fa-book"></i> Genres We Accept</h3>
+                        <div class="genre-list">
+                            <span class="genre-item"><i class="fas fa-book-open"></i> Short Fiction</span>
+                            <span class="genre-item"><i class="fas fa-feather-alt"></i> Poetry</span>
+                            <span class="genre-item"><i class="fas fa-pen-fancy"></i> Creative Nonfiction</span>
+                            <span class="genre-item"><i class="fas fa-bolt"></i> Flash Fiction</span>
+                            <span class="genre-item"><i class="fas fa-pen-nib"></i> Experimental Writing</span>
+                            <span class="genre-item"><i class="fas fa-book-reader"></i> Literary Criticism</span>
+                        </div>
+
+                        <div class="submission-tips">
+                            <h3><i class="fas fa-lightbulb"></i> Tips for a Successful Submission</h3>
+                            <ul>
+                                <li>Proofread your work carefully before submitting</li>
+                                <li>Ensure your piece aligns with our journal's theme and style</li>
+                                <li>Follow all formatting guidelines precisely</li>
+                                <li>Include a compelling cover letter introducing yourself and your work</li>
+                                <li>Be patient – our review process is thorough and may take some time</li>
+                            </ul>
+                        </div>
+
+                        <a href="https://angsilakbo.netlify.app/chat%20request" class="cta-button"><i class="fas fa-paper-plane"></i> Submit Your Work Now</a>
+                    </div>
+                </section>
                 
-                <div class="highlight animate-pulse">
-                    <i class="fas fa-envelope"></i>
-                    <p>Send your submissions to: <a href="https://angsilakbo.netlify.app/submissionposts">submissions@angsilakbo.com</a></p>
-                </div>
+                <section class="section" id="editorial-process">
+                    <div class="section-header">
+                        <i class="fas fa-edit"></i>
+                        <h2 class="section-title">Editorial Process</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>At Ang Silakbo, we believe in a rigorous and fair editorial process. Here's what you can expect after submitting your work:</p>
+                        <ul>
+                            <li><i class="fas fa-filter"></i><span><strong>Initial screening by editorial team (1-2 days):</strong> Our team reviews all submissions to ensure they meet our basic criteria and guidelines.</span></li>
+                            <li><i class="fas fa-users"></i><span><strong>Detailed review by genre editors (2-3 days):</strong> Submissions that pass the initial screening are then carefully evaluated by our genre-specific editors.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span><strong>Final decision and feedback (5 days):</strong> Our editorial board makes the final selection and provides feedback to authors.</span></li>
+                            <li><i class="fas fa-pencil-alt"></i><span><strong>Revision process:</strong> If accepted, authors will work closely with an assigned editor to refine and polish their work for publication.</span></li>
+                        </ul>
+                        <p>We strive to respond to all submissions within 5 days to 1 week. If there are high volume of submissions, we may not be able to provide detailed feedback for every piece.</p>
+                    </div>
+                </section>
+                
+                <section class="section" id="publication-schedule">
+                    <div class="section-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h2 class="section-title">Publication Schedule</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Ang Silakbo publishes quarterly issues. Please note the following deadlines and publication dates:</p>
+                        <div class="table-container">
+                            <table class="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>Issue</th>
+                                        <th>Submission Dates</th>
+                                        <th>Publication Days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><i class="fas fa-sun"></i> Photostories</td>
+                                        <td>Any day</td>
+                                        <td>Every Wednesday</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-sunset"></i> Salik-Salitaan</td>
+                                        <td>Any day</td>
+                                        <td>Every Thursday</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-wind"></i> Editorial (Opinion)</td>
+                                        <td>Any days</td>
+                                        <td>Weekends</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-snowflake"></i> Literaries</td>
+                                        <td>Any days</td>
+                                        <td>Days may vary</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>We occasionally publish special themed issues. Keep an eye on our website and social media channels for announcements about these opportunities.</p>
+                    </div>
+                </section>
 
-                <h3><i class="fas fa-book"></i> Genres We Accept</h3>
-                <div class="genre-list">
-                    <span class="genre-item"><i class="fas fa-book-open"></i> Short Fiction</span>
-                    <span class="genre-item"><i class="fas fa-feather-alt"></i> Poetry</span>
-                    <span class="genre-item"><i class="fas fa-pen-fancy"></i> Creative Nonfiction</span>
-                    <span class="genre-item"><i class="fas fa-bolt"></i> Flash Fiction</span>
-                    <span class="genre-item"><i class="fas fa-pen-nib"></i> Experimental Writing</span>
-                    <span class="genre-item"><i class="fas fa-book-reader"></i> Literary Criticism</span>
-                </div>
+                <section class="section" id="publication-timeline">
+                    <div class="section-header">
+                        <i class="fas fa-clock"></i>
+                        <h2 class="section-title">Publication Timeline</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-paper-plane"></i> Submission</h3>
+                                    <p>Authors submit their work by the specified deadline</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-filter"></i> Initial Screening</h3>
+                                    <p>Editorial team reviews submissions (1-2 days)</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-search"></i> Detailed Review</h3>
+                                    <p>Genre editors conduct in-depth analysis (2-3 days)</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-check-circle"></i> Final Decision</h3>
+                                    <p>Editorial board makes final selections (5 days)</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-pencil-alt"></i> Revision Process</h3>
+                                    <p>Accepted authors work with editors on revisions (1 week)</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-check"></i> Copy Editing</h3>
+                                    <p>Final polish and formatting (1 to 2 weeks)</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h3><i class="fas fa-book-open"></i> Publication</h3>
+                                    <p>Selected works are published in the upcoming issue</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section" id="copyright-policy">
+                    <div class="section-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h2 class="section-title">Copyright Policy</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>At Ang Silakbo, we respect and protect the intellectual property rights of our contributors. Our copyright policy is designed to benefit both the authors and our publication:</p>
+                        <ul>
+                            <li><i class="fas fa-lock"></i><span>Authors retain full copyright of their work</span></li>
+                            <li><i class="fas fa-flag"></i><span>Ang Silakbo receives first publication rights</span></li>
+                            <li><i class="fas fa-sync-alt"></i><span>After publication, authors may republish their work elsewhere with acknowledgment to Ang Silakbo</span></li>
+                            <li><i class="fas fa-hdd"></i><span>All published works will be archived in our digital repository</span></li>
+                            <li><i class="fas fa-clock"></i><span>We request a 90-day exclusivity period from the date of publication</span></li>
+                        </ul>
+                        
+                        <div class="highlight">
+                            <i class="fas fa-envelope"></i>
+                            <p>For any copyright-related queries, please contact: <a href="mailto:copyright@angsilakbo.com">copyright@angsilakbo.com</a></p>
+                        </div>
+                    </div>
+                </section>
 
-                <div class="submission-tips">
-                    <h3><i class="fas fa-lightbulb"></i> Tips for a Successful Submission</h3>
-                    <ul>
-                        <li>Proofread your work carefully before submitting</li>
-                        <li>Ensure your piece aligns with our journal's theme and style</li>
-                        <li>Follow all formatting guidelines precisely</li>
-                        <li>Include a compelling cover letter introducing yourself and your work</li>
-                        <li>Be patient – our review process is thorough and may take some time</li>
+                <section class="section" id="faq">
+                    <div class="section-header">
+                        <i class="fas fa-question-circle"></i>
+                        <h2 class="section-title">Frequently Asked Questions</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="faq-container">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>Q: Can I submit multiple pieces for consideration?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>A: Yes, you may submit up to three pieces per issue. However, please send each piece in a separate email.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>Q: How long does the review process take?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>A: Typically, the entire review process takes 4-6 weeks from the submission deadline. However, this may vary depending on the volume of submissions we receive.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>Q: Do you offer feedback on rejected submissions?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>A: Due to the high volume of submissions, we are unable to provide detailed feedback on every piece. However, we do offer general comments on submissions that reach the final round of consideration.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>Q: Is there a fee for submitting work to Ang Silakbo?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>A: No, there is no fee for submitting your work to Ang Silakbo. We believe in providing equal opportunities for all writers, regardless of their financial situation.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>Q: Do you accept translations?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>A: Yes, we accept translations. However, you must have the rights to translate and submit the work. Please include information about the original work and author with your submission.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section" id="why-publish">
+                    <div class="section-header">
+                        <i class="fas fa-award"></i>
+                        <h2 class="section-title">Why Publish with Us</h2>
+                    </div>
+                    <div class="section-content">
+                        <ul>
+                            <li><i class="fas fa-users"></i><span>Diverse readership across the University of Cebu Lapu-Lapu and Mandaue Senior High School</span></li>
+                            <li><i class="fas fa-eye"></i><span>Exposure to literary agents and publishers</span></li>
+                            <li><i class="fas fa-edit"></i><span>Professional editing and feedback</span></li>
+                            <li><i class="fas fa-star"></i><span>Opportunity for annual literary awards</span></li>
+                            <li><i class="fas fa-globe"></i><span>Digital and print distribution</span></li>
+                            <li><i class="fas fa-book"></i><span>Inclusion in our annual print anthology</span></li>
+                            <li><i class="fas fa-microphone"></i><span>Invitation to literary events and readings</span></li>
+                            <li><i class="fas fa-chart-line"></i><span>Promotion through our social media channels</span></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="section" id="stay-updated">
+                    <div class="section-header">
+                        <i class="fas fa-envelope"></i>
+                        <h2 class="section-title">Stay Updated</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Subscribe to our newsletter for the latest updates, calls for submissions, and writing tips. Be the first to know about special themed issues, writing contests, and literary events.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Enter your email" required>
+                            <button type="submit"><i class="fas fa-paper-plane"></i> Subscribe</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="sidebar">
+                <div class="table-of-contents">
+                    <h3><i class="fas fa-list"></i> Quick Navigation</h3>
+                    <ul class="toc-links">
+                        <li><a href="#submission-guidelines"><i class="fas fa-file-alt"></i> Submission Guidelines</a></li>
+                        <li><a href="#editorial-process"><i class="fas fa-edit"></i> Editorial Process</a></li>
+                        <li><a href="#publication-schedule"><i class="fas fa-calendar-alt"></i> Publication Schedule</a></li>
+                        <li><a href="#publication-timeline"><i class="fas fa-clock"></i> Publication Timeline</a></li>
+                        <li><a href="#copyright-policy"><i class="fas fa-shield-alt"></i> Copyright Policy</a></li>
+                        <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQs</a></li>
+                        <li><a href="#why-publish"><i class="fas fa-award"></i> Why Publish with Us</a></li>
+                        <li><a href="#stay-updated"><i class="fas fa-envelope"></i> Stay Updated</a></li>
                     </ul>
                 </div>
-
-                <a href="https://angsilakbo.netlify.app/chat%20request" class="cta-button"><i class="fas fa-paper-plane"></i> Submit Your Work Now</a>
-            </div>
-        </section>
-        
-        <div class="section-divider"></div>
-        
-        <section class="section animate-fade-in" id="editorial-process">
-            <div class="section-header">
-                <i class="fas fa-edit"></i>
-                <h2 class="section-title">Editorial Process</h2>
-            </div>
-            <div class="section-content">
-                <p>At Ang Silakbo, we believe in a rigorous and fair editorial process. Here's what you can expect after submitting your work:</p>
-                <ul>
-                    <li><i class="fas fa-filter"></i><span><strong>Initial screening by editorial team (1-2 days):</strong> Our team reviews all submissions to ensure they meet our basic criteria and guidelines.</span></li>
-                    <li><i class="fas fa-users"></i><span><strong>Detailed review by genre editors (2-3 days):</strong> Submissions that pass the initial screening are then carefully evaluated by our genre-specific editors.</span></li>
-                    <li><i class="fas fa-check-circle"></i><span><strong>Final decision and feedback (5 days):</strong> Our editorial board makes the final selection and provides feedback to authors.</span></li>
-                    <li><i class="fas fa-pencil-alt"></i><span><strong>Revision process:</strong> If accepted, authors will work closely with an assigned editor to refine and polish their work for publication.</span></li>
-                </ul>
-                <p>We strive to respond to all submissions within 5 days to 1 week. If there are high volume of submissions, we may not be able to provide detailed feedback for every piece.</p>
-            </div>
-        </section>
-        
-        <section class="section animate-fade-in" id="publication-schedule">
-            <div class="section-header">
-                <i class="fas fa-calendar-alt"></i>
-                <h2 class="section-title">Publication Schedule</h2>
-            </div>
-            <div class="section-content">
-                <p>Ang Silakbo publishes quarterly issues. Please note the following deadlines and publication dates:</p>
-                <div class="table-container">
-                    <table class="schedule-table">
-                        <thead>
-                            <tr>
-                                <th>Issue</th>
-                                <th>Submission Dates</th>
-                                <th>Publication Days</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><i class="fas fa-sun"></i> Photostories</td>
-                                <td>Any day</td>
-                                <td>Every Wednesday</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-sunset"></i> Salik-Salitaan</td>
-                                <td>Any day</td>
-                                <td>Every Thursday</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-wind"></i> Editorial (Opinion)</td>
-                                <td>Any days</td>
-                                <td>Weekends</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-snowflake"></i> Literaries</td>
-                                <td>Any days</td>
-                                <td>Days may vary</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p>We occasionally publish special themed issues. Keep an eye on our website and social media channels for announcements about these opportunities.</p>
-            </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <section class="section animate-fade-in" id="publication-timeline">
-            <div class="section-header">
-                <i class="fas fa-clock"></i>
-                <h2 class="section-title">Publication Timeline</h2>
-            </div>
-            <div class="section-content">
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-paper-plane"></i> Submission</h3>
-                            <p>Authors submit their work by the specified deadline</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-filter"></i> Initial Screening</h3>
-                            <p>Editorial team reviews submissions (1-2 days)</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-search"></i> Detailed Review</h3>
-                            <p>Genre editors conduct in-depth analysis (2-3 days)</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-check-circle"></i> Final Decision</h3>
-                            <p>Editorial board makes final selections (5 days)</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-pencil-alt"></i> Revision Process</h3>
-                            <p>Accepted authors work with editors on revisions (1 week)</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-check"></i> Copy Editing</h3>
-                            <p>Final polish and formatting (1 to 2 weeks)</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h3><i class="fas fa-book-open"></i> Publication</h3>
-                            <p>Selected works are published in the upcoming issue</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="section animate-fade-in" id="copyright-policy">
-            <div class="section-header">
-                <i class="fas fa-shield-alt"></i>
-                <h2 class="section-title">Copyright Policy</h2>
-            </div>
-            <div class="section-content">
-                <p>At Ang Silakbo, we respect and protect the intellectual property rights of our contributors. Our copyright policy is designed to benefit both the authors and our publication:</p>
-                <ul>
-                    <li><i class="fas fa-lock"></i><span>Authors retain full copyright of their work</span></li>
-                    <li><i class="fas fa-flag"></i><span>Ang Silakbo receives first publication rights</span></li>
-                    <li><i class="fas fa-sync-alt"></i><span>After publication, authors may republish their work elsewhere with acknowledgment to Ang Silakbo</span></li>
-                    <li><i class="fas fa-hdd"></i><span>All published works will be archived in our digital repository</span></li>
-                    <li><i class="fas fa-clock"></i><span>We request a 90-day exclusivity period from the date of publication</span></li>
-                </ul>
                 
-                <div class="highlight">
-                    <i class="fas fa-envelope"></i>
-                    <p>For any copyright-related queries, please contact: <a href="mailto:copyright@angsilakbo.com">copyright@angsilakbo.com</a></p>
+                <div class="quick-actions">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <a href="https://angsilakbo.netlify.app/chat%20request" class="action-button">
+                        <i class="fas fa-paper-plane"></i> Submit Your Work
+                    </a>
+                    <a href="#" class="action-button">
+                        <i class="fas fa-book-open"></i> View Current Issue
+                    </a>
+                    <a href="Ang Silakbo Members3.html" class="action-button">
+                        <i class="fas fa-users"></i> Meet Our Team
+                    </a>
+                    <a href="#faq" class="action-button">
+                        <i class="fas fa-question-circle"></i> Read FAQs
+                    </a>
                 </div>
             </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <section class="section animate-fade-in" id="faq">
-            <div class="section-header">
-                <i class="fas fa-question-circle"></i>
-                <h2 class="section-title">Frequently Asked Questions</h2>
-            </div>
-            <div class="section-content">
-                <div class="faq-container">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span>Q: Can I submit multiple pieces for consideration?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>A: Yes, you may submit up to three pieces per issue. However, please send each piece in a separate email.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span>Q: How long does the review process take?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>A: Typically, the entire review process takes 4-6 weeks from the submission deadline. However, this may vary depending on the volume of submissions we receive.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span>Q: Do you offer feedback on rejected submissions?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>A: Due to the high volume of submissions, we are unable to provide detailed feedback on every piece. However, we do offer general comments on submissions that reach the final round of consideration.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span>Q: Is there a fee for submitting work to Ang Silakbo?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>A: No, there is no fee for submitting your work to Ang Silakbo. We believe in providing equal opportunities for all writers, regardless of their financial situation.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span>Q: Do you accept translations?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>A: Yes, we accept translations. However, you must have the rights to translate and submit the work. Please include information about the original work and author with your submission.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section animate-fade-in" id="why-publish">
-            <div class="section-header">
-                <i class="fas fa-award"></i>
-                <h2 class="section-title">Why Publish with Us</h2>
-            </div>
-            <div class="section-content">
-                <ul>
-                    <li><i class="fas fa-users"></i><span>Diverse readership across the University of Cebu Lapu-Lapu and Mandaue Senior High School</span></li>
-                    <li><i class="fas fa-eye"></i><span>Exposure to literary agents and publishers</span></li>
-                    <li><i class="fas fa-edit"></i><span>Professional editing and feedback</span></li>
-                    <li><i class="fas fa-star"></i><span>Opportunity for annual literary awards</span></li>
-                    <li><i class="fas fa-globe"></i><span>Digital and print distribution</span></li>
-                    <li><i class="fas fa-book"></i><span>Inclusion in our annual print anthology</span></li>
-                    <li><i class="fas fa-microphone"></i><span>Invitation to literary events and readings</span></li>
-                    <li><i class="fas fa-chart-line"></i><span>Promotion through our social media channels</span></li>
-                </ul>
-            </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <section class="section animate-fade-in" id="stay-updated">
-            <div class="section-header">
-                <i class="fas fa-envelope"></i>
-                <h2 class="section-title">Stay Updated</h2>
-            </div>
-            <div class="section-content">
-                <p>Subscribe to our newsletter for the latest updates, calls for submissions, and writing tips. Be the first to know about special themed issues, writing contests, and literary events.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Enter your email" required>
-                    <button type="submit"><i class="fas fa-paper-plane"></i> Subscribe</button>
-                </form>
-            </div>
-        </section>
+        </div>
     </div>
 
     <footer>
@@ -1517,6 +1636,8 @@
                 <p>Pagpapahayag ng Makatotohanang Balita Na May Makabuluhang Damdamin</p>
                 <div class="social-links">
                     <a href="https://www.facebook.com/AngSilakboUCLM" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             
@@ -1556,150 +1677,182 @@
     </a>
 
     <script>
-        // Preloader
-        window.addEventListener('load', function() {
-            const preloader = document.querySelector('.preloader');
-            setTimeout(function() {
-                preloader.classList.add('hidden');
+        // Code obfuscation to protect against viewing source
+        (function() {
+            // Preloader
+            window.addEventListener('load', function() {
+                const preloader = document.querySelector('.preloader');
                 setTimeout(function() {
-                    preloader.style.display = 'none';
-                }, 500);
-            }, 500);
-        });
-
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('.nav-header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-            
-            // Back to top button visibility
-            const backToTopButton = document.querySelector('.back-to-top');
-            if (window.scrollY > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
-
-        // Mobile menu toggle
-        const mobileMenuBtn = document.querySelectorAll('.mobile-menu-btn');
-        const navLinks = document.querySelector('.nav-links');
-        const body = document.body;
-        
-        mobileMenuBtn.forEach(btn => {
-            btn.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+                    preloader.classList.add('hidden');
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 500);
+                }, 800);
             });
-        });
 
-        // Close menu when clicking on a link
-        const navLinksItems = document.querySelectorAll('.nav-links a');
-        navLinksItems.forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                body.style.overflow = '';
+            // Progress bar
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById("progressBar").style.width = scrolled + "%";
             });
-        });
 
-        // FAQ Accordion
-        const faqQuestions = document.querySelectorAll('.faq-question');
-        faqQuestions.forEach(question => {
-            question.addEventListener('click', () => {
-                const answer = question.nextElementSibling;
-                const icon = question.querySelector('i');
-                
-                // Close all other FAQs
-                document.querySelectorAll('.faq-question').forEach(item => {
-                    if (item !== question) {
-                        item.classList.remove('active');
-                        item.nextElementSibling.classList.remove('active');
-                        item.querySelector('i').className = 'fas fa-chevron-down';
-                    }
-                });
-                
-                // Toggle current FAQ
-                question.classList.toggle('active');
-                answer.classList.toggle('active');
-                
-                if (question.classList.contains('active')) {
-                    icon.className = 'fas fa-chevron-up';
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('.nav-header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
                 } else {
-                    icon.className = 'fas fa-chevron-down';
+                    header.classList.remove('scrolled');
                 }
-            });
-        });
-
-        // Back to top button
-        const backToTopButton = document.querySelector('.back-to-top');
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                if (this.getAttribute('href') !== '#') {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        window.scrollTo({
-                            top: target.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
+                
+                // Back to top button visibility
+                const backToTopButton = document.querySelector('.back-to-top');
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
                 }
-            });
-        });
-
-        // Form submission
-        const newsletterForm = document.querySelector('.newsletter-form');
-        if (newsletterForm) {
-            newsletterForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const email = newsletterForm.querySelector('input[type="email"]').value;
-                if (email) {
-                    alert('Thank you for subscribing to our newsletter!');
-                    newsletterForm.reset();
-                }
-            });
-        }
-
-        // Animate sections on scroll
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-        
-        // Use Intersection Observer API if supported
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-fade-in');
-                        observer.unobserve(entry.target);
+                
+                // Active section in table of contents
+                const sections = document.querySelectorAll('.section');
+                const tocLinks = document.querySelectorAll('.toc-links a');
+                
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= (sectionTop - 100)) {
+                        current = section.getAttribute('id');
                     }
                 });
-            }, observerOptions);
+                
+                tocLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.querySelectorAll('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            const body = document.body;
             
-            document.querySelectorAll('.section:not(.animate-fade-in)').forEach(section => {
-                observer.observe(section);
+            mobileMenuBtn.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                    body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+                });
             });
-        } else {
-            // Fallback for browsers that don't support Intersection Observer
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.add('animate-fade-in');
+
+            // Close menu when clicking on a link
+            const navLinksItems = document.querySelectorAll('.nav-links a');
+            navLinksItems.forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    body.style.overflow = '';
+                });
             });
-        }
+
+            // FAQ Accordion
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const icon = question.querySelector('i');
+                    
+                    // Close all other FAQs
+                    document.querySelectorAll('.faq-question').forEach(item => {
+                        if (item !== question) {
+                            item.classList.remove('active');
+                            item.nextElementSibling.classList.remove('active');
+                            item.querySelector('i').className = 'fas fa-chevron-down';
+                        }
+                    });
+                    
+                    // Toggle current FAQ
+                    question.classList.toggle('active');
+                    answer.classList.toggle('active');
+                    
+                    if (question.classList.contains('active')) {
+                        icon.className = 'fas fa-chevron-up';
+                    } else {
+                        icon.className = 'fas fa-chevron-down';
+                    }
+                });
+            });
+
+            // Back to top button
+            const backToTopButton = document.querySelector('.back-to-top');
+            backToTopButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            window.scrollTo({
+                                top: target.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Form submission
+            const newsletterForm = document.querySelector('.newsletter-form');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = newsletterForm.querySelector('input[type="email"]').value;
+                    if (email) {
+                        alert('Thank you for subscribing to our newsletter!');
+                        newsletterForm.reset();
+                    }
+                });
+            }
+
+            // Disable right-click and F12 key
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            
+            document.addEventListener('keydown', function(e) {
+                // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+                if (
+                    e.keyCode === 123 || // F12
+                    (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+                    (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+                    (e.ctrlKey && e.keyCode === 85) // Ctrl+U
+                ) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Additional code protection
+            // Hide HTML from dev tools
+            setTimeout(function() {
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.innerHTML = document.body.innerHTML;
+                });
+                
+                // Console warning
+                console.clear();
+                console.log('%cSTOP!', 'color: red; font-size: 30px; font-weight: bold;');
+                console.log('%cThis is a protected website. Viewing source code or using developer tools is prohibited.', 'font-size: 16px;');
+            }, 100);
+        })();
     </script>
 </body>
 </html>
