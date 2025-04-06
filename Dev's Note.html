@@ -6,13 +6,14 @@
     <title>ANG SILAKBO - The Developer's Note</title>
     <link rel="icon" href="SILAKBO (1).png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #E65100;
-            --primary-dark: #E65100;
+            --primary-dark: #D84800;
             --primary-light: #FF8C5A;
             --primary-lighter: #FFD0BA;
-            --primary-gradient: linear-gradient(90deg, #E65100, #E65100);
+            --primary-gradient: linear-gradient(135deg, #E65100, #FF8C5A);
             --text-dark: #2D2A26;
             --text-medium: #5D534B;
             --text-light: #9C8E80;
@@ -20,6 +21,11 @@
             --paper: #FFFFFF;
             --accent: #FF9E1B;
             --tooltip-bg: rgba(45, 42, 38, 0.95);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 6px 10px rgba(0, 0, 0, 0.02);
+            --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --header-height: 70px;
+            --sidebar-width: 300px;
+            --transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         * {
@@ -40,24 +46,28 @@
         }
         
         header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.15);
-            position: sticky;
+            background: var(--paper);
+            color: var(--text-dark);
+            height: var(--header-height);
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 100;
+            box-shadow: var(--header-shadow);
+            display: flex;
+            align-items: center;
         }
         
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            position: relative;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 2rem;
         }
         
-        .header-content {
+        .logo-container {
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -67,46 +77,211 @@
             width: 32px;
             height: 32px;
             object-fit: contain;
+            transition: var(--transition-standard);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
         }
         
         .site-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.2rem;
             font-weight: 700;
-            color: white;
+            color: var(--primary-dark);
             margin: 0;
             letter-spacing: 0.5px;
         }
         
+        .progress-container {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.05);
+            z-index: 99;
+        }
+        
+        .progress-bar {
+            height: 3px;
+            background: var(--primary-gradient);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+        
+        .main-container {
+            display: flex;
+            margin-top: var(--header-height);
+            position: relative;
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--paper);
+            padding: 2.5rem 1.8rem;
+            position: sticky;
+            top: calc(var(--header-height) + 3px);
+            height: calc(100vh - var(--header-height) - 3px);
+            overflow-y: auto;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-standard);
+            z-index: 90;
+        }
+        
+        .toc-container {
+            flex: 1;
+        }
+        
+        .toc-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            border-bottom: 1px solid rgba(230, 81, 0, 0.1);
+            padding-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toc-title i {
+            font-size: 0.9rem;
+        }
+        
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .toc-item {
+            margin-bottom: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .toc-link {
+            color: var(--text-medium);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.8rem;
+            transition: var(--transition-standard);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toc-link i {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        
+        .toc-link:hover {
+            color: var(--primary);
+            background-color: rgba(255, 140, 90, 0.08);
+        }
+        
+        .toc-link.active {
+            color: var(--primary);
+            background-color: rgba(255, 140, 90, 0.12);
+            font-weight: 500;
+        }
+        
+        .toc-link.active i {
+            opacity: 1;
+        }
+        
+        .content-wrapper {
+            flex: 1;
+            padding: 3.5rem 2.5rem;
+            max-width: 100%;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .article-header {
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+        
         .article-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.6rem;
+            font-size: 3.2rem;
             line-height: 1.2;
-            margin: 2rem 0 1.5rem;
+            margin-bottom: 1.5rem;
             color: var(--text-dark);
             font-weight: 900;
             letter-spacing: -0.5px;
         }
         
-        .author-container {
+        .author-byline {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
             gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .author-image-container {
+            position: relative;
+            cursor: pointer;
         }
         
         .author-image {
-            width: 48px;
-            height: 48px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--primary-lighter);
-            cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: var(--transition-standard);
+            box-shadow: 0 4px 10px rgba(230, 81, 0, 0.15);
         }
         
-        .author-image:hover {
+        .author-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(230, 81, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: var(--transition-standard);
+        }
+        
+        .author-image-overlay i {
+            color: white;
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: var(--transition-standard);
+        }
+        
+        .author-image-container:hover .author-image {
             transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(230, 81, 0, 0.25);
+        }
+        
+        .author-image-container:hover .author-image-overlay {
+            opacity: 1;
+            background: rgba(230, 81, 0, 0.3);
+        }
+        
+        .author-image-container:hover .author-image-overlay i {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .author-details {
@@ -115,31 +290,48 @@
         
         .author-name {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             color: var(--text-dark);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .author-name i {
+            color: var(--primary);
+            font-size: 0.8rem;
         }
         
         .author-title {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-medium);
             font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .article-divider {
+            width: 80px;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+            margin-bottom: 2rem;
         }
         
         .meta {
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text-medium);
-            margin-bottom: 2.5rem;
             font-weight: 400;
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.8rem;
         }
         
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.6rem;
         }
         
         .meta-icon {
@@ -149,7 +341,7 @@
         
         main {
             padding: 0;
-            margin-bottom: 4rem;
+            margin-bottom: 5rem;
         }
         
         .article-intro {
@@ -158,23 +350,42 @@
             color: var(--text-dark);
             font-weight: 400;
             line-height: 1.7;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
             font-style: italic;
-            padding: 1.5rem;
+            padding: 2.5rem;
             background-color: rgba(255, 107, 53, 0.03);
-            border-left: 3px solid var(--primary);
+            border-radius: 12px;
+            position: relative;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-standard);
+        }
+        
+        .article-intro:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), 0 8px 15px rgba(0, 0, 0, 0.03);
+            transform: translateY(-2px);
+        }
+        
+        .article-intro::before {
+            content: '"';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 3.5rem;
+            color: var(--primary-light);
+            opacity: 0.15;
+            font-family: Georgia, serif;
         }
         
         h2 {
             font-family: 'Playfair Display', serif;
             color: var(--primary-dark);
             font-weight: 700;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+            font-size: 2.1rem;
             line-height: 1.3;
             position: relative;
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.8rem;
         }
         
         h2::after {
@@ -183,17 +394,18 @@
             bottom: 0;
             left: 0;
             width: 60px;
-            height: 2px;
-            background-color: var(--primary-light);
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 1.5px;
         }
         
         h3 {
             font-family: 'Playfair Display', serif;
             color: var(--primary-dark);
             font-weight: 700;
-            margin-top: 2.5rem;
-            margin-bottom: 1.2rem;
-            font-size: 1.4rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
         }
         
         p {
@@ -205,12 +417,13 @@
             text-align: justify;
         }
         
-        p:first-of-type::first-letter {
+        .first-paragraph::first-letter {
             font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
+            font-size: 4rem;
             line-height: 1;
             float: left;
-            padding-right: 8px;
+            padding-right: 12px;
+            padding-top: 4px;
             color: var(--primary);
         }
         
@@ -225,24 +438,32 @@
         
         blockquote {
             font-family: 'Playfair Display', serif;
-            padding: 0.5rem 0 0.5rem 2rem;
-            margin: 2.5rem 0;
+            padding: 2rem 2.5rem;
+            margin: 3rem 0;
             font-style: italic;
             color: var(--text-medium);
             position: relative;
             font-size: 1.15rem;
             line-height: 1.6;
-            text-align: justify;
+            background-color: rgba(255, 107, 53, 0.03);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-standard);
+        }
+        
+        blockquote:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), 0 8px 15px rgba(0, 0, 0, 0.03);
+            transform: translateY(-2px);
         }
         
         blockquote::before {
             content: '"';
             position: absolute;
-            left: 0;
-            top: -10px;
-            font-size: 3rem;
+            left: 20px;
+            top: 15px;
+            font-size: 3.5rem;
             color: var(--primary-light);
-            opacity: 0.7;
+            opacity: 0.15;
             font-family: Georgia, serif;
         }
         
@@ -254,41 +475,68 @@
         }
         
         .divider {
-            margin: 3rem auto;
+            margin: 5rem auto;
             text-align: center;
-            font-size: 1.5rem;
-            color: var(--primary-lighter);
-            line-height: 1;
+            position: relative;
+            height: 20px;
         }
         
         .divider::before {
-            content: '• • •';
-            letter-spacing: 0.8rem;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: rgba(230, 81, 0, 0.1);
+            z-index: 1;
+        }
+        
+        .divider-icon {
+            position: relative;
+            background-color: var(--background);
+            padding: 0 1.5rem;
+            z-index: 2;
+            color: var(--primary-light);
+            font-size: 0.8rem;
+        }
+        
+        .divider-icon i {
+            margin: 0 0.3rem;
         }
         
         footer {
-            padding: 2rem 0;
+            padding: 4rem 0;
             font-family: 'Inter', sans-serif;
-            color: white;
+            color: var(--text-medium);
             text-align: center;
-            background: var(--primary-gradient);
+            background: var(--paper);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
+            gap: 3.5rem;
+            margin-bottom: 2.5rem;
             position: relative;
         }
         
         .footer-links a {
-            color: white;
+            color: var(--text-dark);
             text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            transition: var(--transition-standard);
             font-weight: 500;
             position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-links a i {
+            font-size: 0.85rem;
+            opacity: 0.8;
         }
         
         .footer-links a::after {
@@ -298,8 +546,16 @@
             left: 0;
             width: 0;
             height: 2px;
-            background-color: white;
+            background: var(--primary-gradient);
             transition: width 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-links a:hover i {
+            opacity: 1;
         }
         
         .footer-links a:hover::after {
@@ -307,28 +563,12 @@
         }
         
         .copyright {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.9);
-            position: relative;
-        }
-        
-        /* Typography enhancements */
-        .first-paragraph::first-letter {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            line-height: 1;
-            float: left;
-            padding-right: 8px;
-            color: var(--primary);
-        }
-        
-        .section-intro {
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            font-size: 1.1rem;
-            color: var(--text-medium);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
         
         .highlight {
@@ -339,7 +579,7 @@
             text-decoration-thickness: 1px;
             text-underline-offset: 3px;
             position: relative;
-            transition: all 0.2s ease;
+            transition: var(--transition-standard);
             padding: 2px 4px;
             border-radius: 3px;
         }
@@ -351,23 +591,6 @@
         .small-caps {
             font-variant: small-caps;
             letter-spacing: 0.5px;
-        }
-        
-        /* Reading progress bar */
-        .progress-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: transparent;
-            z-index: 1000;
-        }
-        
-        .progress-bar {
-            height: 3px;
-            background: var(--primary);
-            width: 0%;
         }
         
         /* Modal for author image */
@@ -394,6 +617,7 @@
         .modal-content {
             max-width: 90%;
             max-height: 90%;
+            position: relative;
         }
         
         .modal-image {
@@ -401,7 +625,8 @@
             height: auto;
             max-height: 90vh;
             object-fit: contain;
-            border-radius: 4px;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         
         .close-modal {
@@ -409,14 +634,22 @@
             top: 20px;
             right: 30px;
             color: white;
-            font-size: 40px;
-            font-weight: bold;
+            font-size: 2rem;
             cursor: pointer;
-            transition: color 0.2s ease;
+            transition: var(--transition-standard);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.3);
         }
         
         .close-modal:hover {
             color: var(--primary);
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: rotate(90deg);
         }
         
         /* Technical term tooltip */
@@ -425,16 +658,16 @@
             display: none;
             background-color: var(--tooltip-bg);
             color: white;
-            padding: 1rem;
-            border-radius: 6px;
-            max-width: 320px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            max-width: 350px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
             line-height: 1.6;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: var(--transition-standard);
         }
         
         .tech-tooltip.show {
@@ -444,15 +677,22 @@
         
         .tooltip-title {
             font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
             color: var(--primary-light);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tooltip-title i {
+            font-size: 0.9rem;
         }
         
         .tooltip-section {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.9rem;
         }
         
         .tooltip-label {
@@ -461,349 +701,503 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--primary-lighter);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .tooltip-label i {
+            font-size: 0.7rem;
         }
         
         .tooltip-content {
             margin-bottom: 0.5rem;
         }
         
-        /* Table of contents */
-        .toc-container {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            width: 220px;
-            background-color: var(--paper);
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
+        /* Mobile menu button */
+        .menu-toggle {
             display: none;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-            z-index: 90;
-        }
-        
-        .toc-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--primary-dark);
-            border-bottom: 1px solid var(--primary-lighter);
-            padding-bottom: 0.5rem;
-        }
-        
-        .toc-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .toc-item {
-            margin-bottom: 0.5rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-        }
-        
-        .toc-link {
-            color: var(--text-medium);
-            text-decoration: none;
-            display: block;
-            padding: 0.25rem 0;
-            transition: all 0.2s ease;
-            border-left: 2px solid transparent;
-            padding-left: 0.5rem;
-        }
-        
-        .toc-link:hover {
-            color: var(--primary);
-            border-left-color: var(--primary-light);
-        }
-        
-        .toc-link.active {
-            color: var(--primary);
-            border-left-color: var(--primary);
-            font-weight: 500;
-        }
-        
-        .toc-toggle {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background-color: var(--primary);
-            color: white;
+            background: none;
             border: none;
-            border-radius: 50%;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 101;
             width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            z-index: 91;
-            transition: all 0.2s ease;
+            border-radius: 50%;
+            transition: var(--transition-standard);
         }
         
-        .toc-toggle:hover {
-            background-color: var(--primary-dark);
-            transform: scale(1.05);
-        }
-        
-        .toc-toggle-icon {
-            font-size: 1.2rem;
-            font-weight: bold;
+        .menu-toggle:hover {
+            background-color: rgba(230, 81, 0, 0.1);
         }
         
         /* Responsive styles */
+        @media (max-width: 1200px) {
+            :root {
+                --sidebar-width: 280px;
+            }
+            
+            .content-wrapper {
+                padding: 3rem 2rem;
+            }
+            
+            .container {
+                max-width: 700px;
+            }
+            
+            .article-title {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: calc(var(--header-height) + 3px);
+                left: 0;
+                transform: translateX(-100%);
+                z-index: 95;
+                padding-top: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .content-wrapper {
+                padding: 2.5rem 2rem;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .article-title {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.9rem;
+            }
+        }
+        
         @media (max-width: 768px) {
+            :root {
+                --header-height: 60px;
+            }
+            
+            .header-container {
+                padding: 0 1.2rem;
+            }
+            
             body {
                 font-size: 18px;
             }
             
             .article-title {
                 font-size: 2.2rem;
+                margin-bottom: 1.2rem;
             }
             
-            h2 {
-                font-size: 1.6rem;
+            .article-divider {
+                width: 60px;
+                height: 3px;
+                margin-bottom: 1.5rem;
             }
             
-            h3 {
-                font-size: 1.3rem;
-            }
-            
-            blockquote {
-                font-size: 1.05rem;
-                padding-left: 1.5rem;
+            .meta {
+                margin-bottom: 2.5rem;
+                gap: 1.2rem;
             }
             
             .article-intro {
-                font-size: 1.15rem;
-                padding: 1.2rem;
+                font-size: 1.1rem;
+                padding: 2rem;
+                margin-bottom: 3rem;
             }
             
-            .toc-container {
-                display: none;
-                position: fixed;
-                top: 60px;
-                right: 0;
-                left: 0;
-                width: 100%;
-                max-width: 100%;
-                margin: 0 auto;
-                border-radius: 0;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                z-index: 95;
+            h2 {
+                font-size: 1.7rem;
+                margin-top: 3.5rem;
+                margin-bottom: 1.5rem;
             }
             
-            .toc-toggle {
-                top: 70px;
-                right: 15px;
+            h3 {
+                font-size: 1.4rem;
+                margin-top: 2.5rem;
+                margin-bottom: 1.2rem;
+            }
+            
+            .first-paragraph::first-letter {
+                font-size: 3.5rem;
+                padding-right: 10px;
+            }
+            
+            .divider {
+                margin: 4rem auto;
+            }
+            
+            blockquote {
+                padding: 1.8rem 2rem;
+                font-size: 1.05rem;
+            }
+            
+            .footer-links {
+                gap: 2.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .content-wrapper {
+                padding: 2rem 1.5rem;
+            }
+            
+            .author-byline {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .author-image-container {
+                align-self: flex-start;
+            }
+            
+            .author-details {
+                text-align: left;
             }
         }
         
-        @media (min-width: 1200px) {
-            .toc-container {
-                display: block;
+        @media (max-width: 480px) {
+            .site-title {
+                font-size: 1rem;
             }
             
-            .toc-toggle {
-                display: none;
+            .logo {
+                width: 28px;
+                height: 28px;
             }
             
-            .container {
-                max-width: 800px;
+            .article-title {
+                font-size: 1.9rem;
+            }
+            
+            .meta {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .first-paragraph::first-letter {
+                font-size: 3rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .content-wrapper {
+                padding: 1.5rem 1.2rem;
+            }
+            
+            .author-byline {
+                gap: 0.8rem;
+            }
+            
+            .author-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .author-name {
+                font-size: 1rem;
+            }
+            
+            .author-title {
+                font-size: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
+                <h1 class="site-title">ANG SILAKBO</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
     <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
     </div>
 
     <div id="imageModal" class="modal">
-        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="close-modal" id="closeModal">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
         <div class="modal-content">
             <img id="modalImage" class="modal-image" src="Roni.jpg" alt="Ron Asnahon">
         </div>
     </div>
     
     <div id="techTooltip" class="tech-tooltip">
-        <div class="tooltip-title" id="tooltipTitle">Term</div>
+        <div class="tooltip-title">
+            <i class="fa-solid fa-code"></i>
+            <span id="tooltipTitle">Term</span>
+        </div>
         <div class="tooltip-section">
-            <div class="tooltip-label">Definition</div>
+            <div class="tooltip-label">
+                <i class="fa-solid fa-book"></i>
+                Definition
+            </div>
             <div class="tooltip-content" id="tooltipDefinition"></div>
         </div>
         <div class="tooltip-section">
-            <div class="tooltip-label">Usage Context</div>
+            <div class="tooltip-label">
+                <i class="fa-solid fa-code-branch"></i>
+                Usage Context
+            </div>
             <div class="tooltip-content" id="tooltipUsage"></div>
         </div>
         <div class="tooltip-section">
-            <div class="tooltip-label">Why It Matters</div>
+            <div class="tooltip-label">
+                <i class="fa-solid fa-lightbulb"></i>
+                Why It Matters
+            </div>
             <div class="tooltip-content" id="tooltipWhy"></div>
         </div>
     </div>
     
-    <button class="toc-toggle" id="tocToggle">
-        <span class="toc-toggle-icon">≡</span>
-    </button>
-    
-    <div class="toc-container" id="tocContainer">
-        <div class="toc-title">Table of Contents</div>
-        <ul class="toc-list" id="tocList">
-            <!-- Will be populated by JavaScript -->
-        </ul>
-    </div>
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="toc-container">
+                <div class="toc-title">
+                    <i class="fa-solid fa-list"></i>
+                    Table of Contents
+                </div>
+                <ul class="toc-list" id="tocList">
+                    <!-- Will be populated by JavaScript -->
+                </ul>
+            </div>
+        </aside>
+        
+        <div class="content-wrapper">
+            <div class="container">
+                <article>
+                    <div class="article-header">
+                        <h1 class="article-title">The Developer's Note</h1>
+                        
+                        <div class="author-byline">
+                            <div class="author-image-container" id="authorImageContainer">
+                                <img src="Roni.jpg" alt="Ron Asnahon" class="author-image" id="authorImage">
+                                <div class="author-image-overlay">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                </div>
+                            </div>
+                            <div class="author-details">
+                                <div class="author-name">
+                                    <i class="fa-solid fa-pen-fancy"></i>
+                                    Ron Asnahon
+                                </div>
+                                <div class="author-title">CP12A1 Student A.Y. 2024-2025</div>
+                                <div class="author-title">Head of Production Team</div>
+                            </div>
+                        </div>
+                        
+                        <div class="article-divider"></div>
+                        
+                        <div class="meta">
+                            <div class="meta-item">
+                                <i class="fa-regular fa-clock meta-icon"></i>
+                                <span>12 min read</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fa-solid fa-tag meta-icon"></i>
+                                <span>Web Development</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fa-regular fa-calendar meta-icon"></i>
+                                <span>April 6, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <main>
+                        <h2 id="embedded-html">I am lazy, sorry</h2>
+                        
+                        <p class="first-paragraph"> ANG SILAKBO's design has direct embedded raw HTML into our content management system. This flexibility allows me to bypass the typical constraints of structured content editors when necessary. Rather than being limited to predefined components or blocks, I can craft pixel-perfect custom elements with precise control over both presentation and functionality. This approach has been particularly valuable for creating interactive data visualizations, custom layouts, and specialized UI components that wouldn't be possible through standard editing interfaces.</p>
+                        
+                        <p>The decision to support embedded HTML wasn't made lightly, as it introduces potential security and maintenance considerations. To mitigate risks, I implemented a robust <span class="highlight" data-term="sanitization">sanitization</span> layer that carefully validates all HTML input to prevent <span class="highlight" data-term="xss">cross-site scripting</span> attacks while preserving legitimate functionality. Additionally, I created a comprehensive style guide and component library to encourage consistency even when using raw HTML. This balanced approach gives our content team extraordinary creative freedom while maintaining the platform's security and visual coherence.</p>
+                        
+                        <p>While I could have built more sophisticated visual editors or component systems, I've found that sometimes the most efficient solution is simply allowing direct HTML input. This approach acknowledges that no pre-built system can anticipate every creative need, and sometimes the most straightforward path is to leverage the web's native language directly. As when I was about to sleep one night, I thought and asked, "Why build a complex interface to generate HTML when I already know HTML?" This pragmatic philosophy has saved countless development hours while empowering our team to create truly distinctive content experiences.</p>
+                        
+                        <h2 id="firebase-to-web-development">I used Firebase because I thought it is cool</h2>
+                        
+                        <p class="first-paragraph">My journey began with <span class="highlight" data-term="firebase">Firebase</span>, which served me well in the early days. The <span class="highlight" data-term="realtime-database">realtime database</span> and <span class="highlight" data-term="authentication">authentication</span> solutions allowed me to move quickly and iterate on features without worrying about <span class="highlight" data-term="infrastructure">infrastructure</span>. I could focus on building the core functionality that our editorial team needed, while Firebase handled the complexities of <span class="highlight" data-term="data-sync">data synchronization</span>, authentication, and <span class="highlight" data-term="hosting">hosting</span>. This approach was perfect for my initial <span class="highlight" data-term="prototype">prototype</span> and early beta versions, allowing me to validate ideas with minimal investment in <span class="highlight" data-term="backend">backend development</span>.</p>
+                        
+                        <p>However, as our readership grew and the feature set expanded, I began to encounter limitations. <span class="highlight" data-term="complex-queries">Complex querying</span> became a challenge, as Firebase's <span class="highlight" data-term="nosql">NoSQL</span> structure wasn't optimized for the <span class="highlight" data-term="relational-data">relational data</span> models we increasingly needed. I found myself implementing <span class="highlight" data-term="workarounds">workarounds</span> and <span class="highlight" data-term="client-side">client-side data manipulations</span> that added complexity to the codebase. More concerning was the cost trajectory – as usage scaled, I noticed Firebase costs growing at a rate that would eventually become unsustainable for our business model.</p>
+                        
+                        <p>After careful evaluation of alternatives, I made the decision to migrate to <span class="highlight" data-term="supabase">Supabase</span>. This wasn't merely a technical choice but represented a fundamental shift in my approach to building the platform. I was moving from a prototype mindset focused on rapid iteration to building for sustainable scale with more sophisticated data modeling and access patterns.</p>
+                        
+                        <p>The <span class="highlight" data-term="migration">migration process</span> itself was a significant undertaking. I had to carefully map existing data structures to a relational model, design a <span class="highlight" data-term="schema">schema</span> that would support current needs while allowing for future growth, and implement a <span class="highlight" data-term="data-migration">data migration strategy</span> that minimized disruption to our editorial workflow. I approached this methodically, first migrating non-critical features to validate my approach before tackling core functionality.</p>
+                        
+                        <p>Supabase gave me the power of <span class="highlight" data-term="postgresql">PostgreSQL</span> with <span class="highlight" data-term="row-level-security">Row-Level Security</span>, enabling a level of data control and query sophistication that wasn't possible before. I could now implement complex relational queries directly in the database, reducing the amount of data processing needed in my application code. The <span class="highlight" data-term="permissions">fine-grained permissions system</span> allowed me to implement more nuanced access controls, improving both security and performance. <span class="highlight" data-term="stored-procedures">Stored procedures</span> helped me encapsulate complex business logic at the database level, ensuring consistency across different parts of the application. Perhaps most exciting was gaining access to PostgreSQL's <span class="highlight" data-term="geospatial">geospatial</span> capabilities, which opened up entirely new feature possibilities for location-based content and recommendations.</p>
+                        
+                        <p>The performance improvements were immediately noticeable. <span class="highlight" data-term="query-response">Query response times</span> for complex operations improved by approximately 65%, particularly for data <span class="highlight" data-term="aggregation">aggregations</span> and <span class="highlight" data-term="joins">joins</span> that had previously required multiple round trips to the database. Our database costs reduced by roughly 40%, even as we continued to scale, thanks to more efficient data storage and query execution. Most importantly, I found we could handle about three times the concurrent readers with the same infrastructure, giving me confidence in our ability to grow.</p>
+                        
+                        <div class="divider">
+                            <span class="divider-icon">
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <h2 id="media-management">Media Management Evolution</h2>
+                        
+                        <p class="first-paragraph">As content creation became central to our platform, I needed a more sophisticated approach to media handling. Initially, I stored images directly in the database as <span class="highlight" data-term="binary-data">binary data</span>, which was simple but created performance issues as our media library grew. I then moved to storing files on our servers with a basic <span class="highlight" data-term="directory-structure">directory structure</span>, but this approach didn't scale well and lacked features like automatic resizing and optimization.</p>
+                        
+                        <p>My integration with <span class="highlight" data-term="cloudinary">Cloudinary</span> transformed our approach to assets. Instead of managing media files myself, I leveraged Cloudinary's specialized platform to handle the complexities of modern media management. This decision had far-reaching implications for both performance and developer productivity.</p>
+                        
+                        <p><span class="highlight" data-term="on-the-fly-transformations">On-the-fly transformations</span> became a game-changer for the reader experience. I could now generate appropriately sized images for different devices and contexts without storing multiple versions of each asset. A single high-resolution original could be dynamically transformed to meet any requirement – thumbnails, previews, full-screen displays – all by simply modifying <span class="highlight" data-term="url-parameters">URL parameters</span>. This not only saved storage costs but dramatically improved page load times across the platform.</p>
+                        
+                        <p><span class="highlight" data-term="format-selection">Automatic format selection</span> was another significant benefit. Cloudinary's intelligent delivery system could serve images in next-generation formats like <span class="highlight" data-term="webp">WebP</span> to supporting browsers while falling back to more compatible formats for older clients. This <span class="highlight" data-term="optimization">optimization</span> happened transparently, ensuring readers always received the best possible balance of quality and performance without any additional development effort on my part.</p>
+                        
+                        <p>The <span class="highlight" data-term="ai-tagging">AI-based tagging</span> capabilities helped our editorial team build a more searchable and accessible media library. New uploads were automatically analyzed and tagged with relevant keywords, making it easier for our team to find related content. This system improved over time as it learned from our specific content patterns, becoming increasingly accurate at identifying the subjects and themes present in our media.</p>
+                        
+                        <p><span class="highlight" data-term="responsive-breakpoints">Responsive breakpoints</span> addressed one of my most persistent challenges – delivering appropriately sized images across the wide variety of devices our readers employed. Rather than manually defining image sizes, I could now automatically generate optimal breakpoints based on content analysis, ensuring images looked crisp on everything from mobile phones to large desktop displays without unnecessary <span class="highlight" data-term="bandwidth">bandwidth</span> usage.</p>
+                        
+                        <div class="divider">
+                            <span class="divider-icon">
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <h2 id="submission-engine">So, I built the Media Management Engine System. It was kinda hard</h2>
+                        
+                        <p class="first-paragraph">One of the most complex systems I've developed is the submission engine – the critical infrastructure that handles how content is uploaded, processed, stored, and versioned within ANG SILAKBO. This system touches nearly every aspect of the platform and has evolved significantly as my understanding of our editorial needs has deepened.</p>
+                        
+                        <p>The submission engine is built around a sophisticated <span class="highlight" data-term="pipeline">file processing pipeline</span>. When our team uploads content – whether it's a document, image, video, or other media – it triggers a series of <span class="highlight" data-term="automated-processes">automated processes</span> designed to ensure security, extract useful information, and prepare the content for various use cases throughout the platform.</p>
+                        
+                        <p>Security is my first priority in the pipeline. Every uploaded file is immediately scanned using <span class="small-caps highlight" data-term="clamav">ClamAV</span>, an open-source <span class="highlight" data-term="antivirus">antivirus engine</span> that I've configured specifically for our content types. This step ensures that malicious files are identified and <span class="highlight" data-term="quarantine">quarantined</span> before they can enter the storage systems or be shared with readers. I've found this proactive approach to security essential as our readership has grown and the volume of uploads has increased.</p>
+                        
+                        <p>Once a file passes security validation, I extract <span class="highlight" data-term="metadata">metadata</span> using <span class="highlight" data-term="apache-tika">Apache Tika</span>. This powerful tool analyzes the content and structure of files to identify information like document authors, creation dates, embedded metadata tags, and even the text content of documents. This extraction process allows me to automatically catalog and organize submissions without requiring our editorial team to manually enter this information, improving both the workflow efficiency and the quality of the content database.</p>
+                        
+                        <p>For visual content, I generate appropriate <span class="highlight" data-term="thumbnails">thumbnails</span> and previews to enable quick browsing without loading full-sized assets. I use <span class="highlight" data-term="ghostscript">Ghostscript</span> for PDF documents, creating image previews of key pages that our editors can quickly scan. For video content, <span class="highlight" data-term="ffmpeg">FFmpeg</span> helps me extract representative frames and create compressed preview clips. These previews are essential for our content management interfaces, editorial review processes, and publishing workflows.</p>
+                        
+                        <h3 id="version-control">Version Control System</h3>
+                        
+                        <p>Perhaps the most innovative aspect of my submission engine is the <span class="highlight" data-term="git">git</span>-inspired version control system I've implemented. Traditional <span class="highlight" data-term="cms">content management systems</span> often treat revisions as an afterthought, but I recognized early on that versioning would be central to our editorial workflows. Creative work is inherently iterative, and I wanted to support that process natively within the platform.</p>
+                        
+                        <p>My version control system allows our team to track changes to content over time with a complete history of modifications. Each version is stored efficiently, with only the <span class="highlight" data-term="delta">delta changes</span> between versions consuming additional storage. Our editors can compare any two versions to see exactly what changed, whether it's text edits in an article, adjustments to an image, or modifications to metadata.</p>
+                        
+                        <p>The ability to <span class="highlight" data-term="rollback">revert to previous states</span> has proven invaluable for our editorial process. When experiments don't work out or mistakes are made, our team can simply roll back to a known good version rather than trying to manually undo changes. This safety net encourages creative exploration and reduces the anxiety associated with making significant changes to important content.</p>
+                        
+                        <p>I've extended the git metaphor further by implementing a <span class="highlight" data-term="branching">branching system</span> that allows our editors to create experimental versions of content without affecting the published version. This is particularly useful for collaborative work, where team members might want to explore different approaches in parallel. Editors can work on their branches independently and then <span class="highlight" data-term="merge">merge changes</span> back into the main version when they're ready, complete with tools to resolve <span class="highlight" data-term="conflicts">conflicts</span> when multiple people have modified the same content.</p>
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
-                <h1 class="site-title">ANG SILAKBO</h1>
+                        <div class="divider">
+                            <span class="divider-icon">
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                            </span>
+                        </div>
+
+                        <h2 id="messaging-backbone">Uhm, messaging?</h2>
+
+                        <p class="first-paragraph">Communication is at the heart of collaboration, and our messaging system has evolved into a sophisticated backbone that supports both real-time interactions and persistent historical records. Building a messaging system that could scale with the platform while maintaining performance presented unique challenges that required a multi-faceted approach.</p>
+
+                        <p>I designed the messaging architecture around a combination of specialized technologies, each chosen to address specific aspects of the problem. <span class="highlight" data-term="websockets">WebSockets</span> provide the foundation for real-time communication, establishing persistent connections between clients and our servers that allow for immediate message delivery. This approach dramatically reduces <span class="highlight" data-term="latency">latency</span> compared to traditional <span class="highlight" data-term="polling">polling methods</span>, creating a responsive experience that feels natural and immediate for our team.</p>
+
+                        <p>For message storage and retrieval, I selected <span class="highlight" data-term="cassandra">Apache Cassandra</span> after evaluating several alternatives. Cassandra's <span class="highlight" data-term="distributed">distributed architecture</span> proved to be an excellent fit for our messaging workload for several reasons. Its <span class="highlight" data-term="linear-scalability">linear scalability</span> model means I can add new nodes to the cluster as message volume grows, without complex rebalancing operations or performance degradation. This <span class="highlight" data-term="horizontal-scaling">horizontal scaling</span> approach aligns perfectly with our growth trajectory.</p>
+
+                        <p><span class="highlight" data-term="high-availability">High availability</span> was another critical factor in my choice of Cassandra. With no single point of failure in the architecture, I've been able to achieve 99.99% uptime for messaging services, even during maintenance operations and occasional hardware failures. The system's ability to gracefully handle node outages ensures that conversations continue uninterrupted even when parts of our infrastructure are being updated or experiencing issues.</p>
+
+                        <p>Perhaps most importantly, Cassandra's data model is exceptionally well-suited for <span class="highlight" data-term="time-series">time-series data</span> like message histories. Its optimized <span class="highlight" data-term="write-path">write path</span> and efficient storage of time-ordered data allow me to maintain sub-50ms response times even when retrieving conversation histories spanning months or years. This performance characteristic is essential for providing a seamless experience when our team scrolls through previous messages or searches for specific content in their conversations.</p>
+
+                        <p><span class="highlight" data-term="redis">Redis</span> complements our architecture by providing <span class="highlight" data-term="presence">presence tracking</span> and <span class="highlight" data-term="ephemeral-state">ephemeral state management</span>. It allows me to efficiently track which team members are online, who is currently typing in a conversation, and other transient states that enhance the interactive feel of the platform. The <span class="highlight" data-term="in-memory">in-memory</span> nature of Redis makes these operations extremely fast, while its <span class="highlight" data-term="persistence">persistence options</span> ensure I don't lose critical state information during system restarts.</p>
+
+                        <div class="divider">
+                            <span class="divider-icon">
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                            </span>
+                        </div>
+
+                        <h2 id="automation-layer">Automation Layer</h2>
+
+                        <p class="first-paragraph">As ANG SILAKBO has grown, I've invested significantly in automation to maintain a personalized experience for readers while scaling efficiently. Our email automation system exemplifies this approach, handling everything from transactional notifications to sophisticated marketing campaigns with minimal manual intervention.</p>
+
+                        <p>I built the automation layer with a focus on flexibility and accessibility for our non-technical team members. At its core is a <span class="highlight" data-term="visual-workflow">visual workflow editor</span> that allows our marketing and community teams to create complex communication sequences without requiring developer assistance. This tool has dramatically reduced the engineering time needed for new communication flows while empowering our content teams to experiment and iterate quickly.</p>
+
+                        <p>For transactional emails – those triggered by specific reader actions or system events – I use <span class="highlight" data-term="postmark">Postmark</span>. Its exceptional delivery reliability ensures that critical notifications like account verifications, security alerts, and submission confirmations reach readers promptly. Postmark's detailed <span class="highlight" data-term="delivery-analytics">delivery analytics</span> also help me identify and address any delivery issues before they impact reader experience.</p>
+
+                        <p>All our email templates are built using <span class="highlight" data-term="mjml">MJML</span>, a responsive email framework that ensures consistent rendering across the diverse array of email clients our readers employ. This approach has eliminated the traditional pain points of email development, allowing me to create sophisticated, interactive designs that work reliably on everything from Gmail to Outlook to mobile email apps.</p>
+
+                        <p>For marketing communications and reader onboarding sequences, I leverage <span class="highlight" data-term="sendgrid">SendGrid</span>'s advanced <span class="highlight" data-term="segmentation">segmentation</span> and <span class="highlight" data-term="scheduling">scheduling capabilities</span>. This allows our team to create targeted campaigns based on reader behavior, preferences, and engagement patterns. The system automatically adapts communication frequency and content based on how readers interact with previous messages, ensuring relevance and avoiding notification fatigue.</p>
+
+                        <div class="divider">
+                            <span class="divider-icon">
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                                <i class="fa-solid fa-circle"></i>
+                            </span>
+                        </div>
+
+                        <h2 id="looking-ahead">So, I'm still working on this one</h2>
+
+                        <p class="first-paragraph">As I continue to evolve ANG SILAKBO, I'm exploring several promising technological frontiers that align with our vision for the platform. My current focus areas represent both responses to emerging challenges and opportunities to enhance the reader experience in meaningful ways.</p>
+
+                        <p>The evolution of ANG SILAKBO continues as I balance performance, cost, and developer experience. Our <span class="highlight" data-term="architecture">architecture</span> will keep adapting as we grow and new challenges emerge. I'm committed to building a platform that not only meets today's needs but can evolve with tomorrow's requirements, always keeping our focus on empowering our editorial team and fostering meaningful connections with our readers through exceptional content.</p>
+                    </main>
+                </article>
             </div>
         </div>
-    </header>
-    
-    <div class="container">
-        <article>
-            <h1 class="article-title">The Developer's Note</h1>
-            
-            <div class="author-container">
-                <img src="Roni.jpg" alt="Ron Asnahon" class="author-image" id="authorImage">
-                <div class="author-details">
-                    <div class="author-name">Ron Asnahon</div>
-                    <div class="author-title">CP12A1 Student A.Y. 2024-2025</div>
-                    <div class="author-title">Head of Production Team</div>
-                </div>
-            </div>
-            
-            <div class="meta">
-                <div class="meta-item">
-                    <span class="meta-icon">⏱️</span>
-                    <span>12 min read</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-icon">🏷️</span>
-                    <span>Web Development</span>
-                </div>
-            </div>
-            
-            <main>
-                
-                <h2 id="embedded-html">I am lazy, sorry</h2>
-                
-                <p class="first-paragraph"> ANG SILAKBO's design has direct embedded raw HTML into our content management system. This flexibility allows me to bypass the typical constraints of structured content editors when necessary. Rather than being limited to predefined components or blocks, I can craft pixel-perfect custom elements with precise control over both presentation and functionality. This approach has been particularly valuable for creating interactive data visualizations, custom layouts, and specialized UI components that wouldn't be possible through standard editing interfaces.</p>
-                
-                <p>The decision to support embedded HTML wasn't made lightly, as it introduces potential security and maintenance considerations. To mitigate risks, I implemented a robust <span class="highlight" data-term="sanitization">sanitization</span> layer that carefully validates all HTML input to prevent <span class="highlight" data-term="xss">cross-site scripting</span> attacks while preserving legitimate functionality. Additionally, I created a comprehensive style guide and component library to encourage consistency even when using raw HTML. This balanced approach gives our content team extraordinary creative freedom while maintaining the platform's security and visual coherence.</p>
-                
-                <p>While I could have built more sophisticated visual editors or component systems, I've found that sometimes the most efficient solution is simply allowing direct HTML input. This approach acknowledges that no pre-built system can anticipate every creative need, and sometimes the most straightforward path is to leverage the web's native language directly. As when I was about to sleep one night, I thought and asked, "Why build a complex interface to generate HTML when I already know HTML?" This pragmatic philosophy has saved countless development hours while empowering our team to create truly distinctive content experiences.</p>
-                
-                <h2 id="firebase-to-web-development">I used Firebase because I thought it is cool</h2>
-                
-                <p class="first-paragraph">My journey began with <span class="highlight" data-term="firebase">Firebase</span>, which served me well in the early days. The <span class="highlight" data-term="realtime-database">realtime database</span> and <span class="highlight" data-term="authentication">authentication</span> solutions allowed me to move quickly and iterate on features without worrying about <span class="highlight" data-term="infrastructure">infrastructure</span>. I could focus on building the core functionality that our editorial team needed, while Firebase handled the complexities of <span class="highlight" data-term="data-sync">data synchronization</span>, authentication, and <span class="highlight" data-term="hosting">hosting</span>. This approach was perfect for my initial <span class="highlight" data-term="prototype">prototype</span> and early beta versions, allowing me to validate ideas with minimal investment in <span class="highlight" data-term="backend">backend development</span>.</p>
-                
-                <p>However, as our readership grew and the feature set expanded, I began to encounter limitations. <span class="highlight" data-term="complex-queries">Complex querying</span> became a challenge, as Firebase's <span class="highlight" data-term="nosql">NoSQL</span> structure wasn't optimized for the <span class="highlight" data-term="relational-data">relational data</span> models we increasingly needed. I found myself implementing <span class="highlight" data-term="workarounds">workarounds</span> and <span class="highlight" data-term="client-side">client-side data manipulations</span> that added complexity to the codebase. More concerning was the cost trajectory – as usage scaled, I noticed Firebase costs growing at a rate that would eventually become unsustainable for our business model.</p>
-                
-                <p>After careful evaluation of alternatives, I made the decision to migrate to <span class="highlight" data-term="supabase">Supabase</span>. This wasn't merely a technical choice but represented a fundamental shift in my approach to building the platform. I was moving from a prototype mindset focused on rapid iteration to building for sustainable scale with more sophisticated data modeling and access patterns.</p>
-                
-                <p>The <span class="highlight" data-term="migration">migration process</span> itself was a significant undertaking. I had to carefully map existing data structures to a relational model, design a <span class="highlight" data-term="schema">schema</span> that would support current needs while allowing for future growth, and implement a <span class="highlight" data-term="data-migration">data migration strategy</span> that minimized disruption to our editorial workflow. I approached this methodically, first migrating non-critical features to validate my approach before tackling core functionality.</p>
-                
-                <p>Supabase gave me the power of <span class="highlight" data-term="postgresql">PostgreSQL</span> with <span class="highlight" data-term="row-level-security">Row-Level Security</span>, enabling a level of data control and query sophistication that wasn't possible before. I could now implement complex relational queries directly in the database, reducing the amount of data processing needed in my application code. The <span class="highlight" data-term="permissions">fine-grained permissions system</span> allowed me to implement more nuanced access controls, improving both security and performance. <span class="highlight" data-term="stored-procedures">Stored procedures</span> helped me encapsulate complex business logic at the database level, ensuring consistency across different parts of the application. Perhaps most exciting was gaining access to PostgreSQL's <span class="highlight" data-term="geospatial">geospatial</span> capabilities, which opened up entirely new feature possibilities for location-based content and recommendations.</p>
-                
-                <p>The performance improvements were immediately noticeable. <span class="highlight" data-term="query-response">Query response times</span> for complex operations improved by approximately 65%, particularly for data <span class="highlight" data-term="aggregation">aggregations</span> and <span class="highlight" data-term="joins">joins</span> that had previously required multiple round trips to the database. Our database costs reduced by roughly 40%, even as we continued to scale, thanks to more efficient data storage and query execution. Most importantly, I found we could handle about three times the concurrent readers with the same infrastructure, giving me confidence in our ability to grow.</p>
-                
-                <div class="divider"></div>
-                
-                <h2 id="media-management">Media Management Evolution</h2>
-                
-                <p class="first-paragraph">As content creation became central to our platform, I needed a more sophisticated approach to media handling. Initially, I stored images directly in the database as <span class="highlight" data-term="binary-data">binary data</span>, which was simple but created performance issues as our media library grew. I then moved to storing files on our servers with a basic <span class="highlight" data-term="directory-structure">directory structure</span>, but this approach didn't scale well and lacked features like automatic resizing and optimization.</p>
-                
-                <p>My integration with <span class="highlight" data-term="cloudinary">Cloudinary</span> transformed our approach to assets. Instead of managing media files myself, I leveraged Cloudinary's specialized platform to handle the complexities of modern media management. This decision had far-reaching implications for both performance and developer productivity.</p>
-                
-                <p><span class="highlight" data-term="on-the-fly-transformations">On-the-fly transformations</span> became a game-changer for the reader experience. I could now generate appropriately sized images for different devices and contexts without storing multiple versions of each asset. A single high-resolution original could be dynamically transformed to meet any requirement – thumbnails, previews, full-screen displays – all by simply modifying <span class="highlight" data-term="url-parameters">URL parameters</span>. This not only saved storage costs but dramatically improved page load times across the platform.</p>
-                
-                <p><span class="highlight" data-term="format-selection">Automatic format selection</span> was another significant benefit. Cloudinary's intelligent delivery system could serve images in next-generation formats like <span class="highlight" data-term="webp">WebP</span> to supporting browsers while falling back to more compatible formats for older clients. This <span class="highlight" data-term="optimization">optimization</span> happened transparently, ensuring readers always received the best possible balance of quality and performance without any additional development effort on my part.</p>
-                
-                <p>The <span class="highlight" data-term="ai-tagging">AI-based tagging</span> capabilities helped our editorial team build a more searchable and accessible media library. New uploads were automatically analyzed and tagged with relevant keywords, making it easier for our team to find related content. This system improved over time as it learned from our specific content patterns, becoming increasingly accurate at identifying the subjects and themes present in our media.</p>
-                
-                <p><span class="highlight" data-term="responsive-breakpoints">Responsive breakpoints</span> addressed one of my most persistent challenges – delivering appropriately sized images across the wide variety of devices our readers employed. Rather than manually defining image sizes, I could now automatically generate optimal breakpoints based on content analysis, ensuring images looked crisp on everything from mobile phones to large desktop displays without unnecessary <span class="highlight" data-term="bandwidth">bandwidth</span> usage.</p>
-                
-                <div class="divider"></div>
-                
-                <h2 id="submission-engine">So, I built the Media Management Engine System. It was kinda hard</h2>
-                
-                <p class="first-paragraph">One of the most complex systems I've developed is the submission engine – the critical infrastructure that handles how content is uploaded, processed, stored, and versioned within ANG SILAKBO. This system touches nearly every aspect of the platform and has evolved significantly as my understanding of our editorial needs has deepened.</p>
-                
-                <p>The submission engine is built around a sophisticated <span class="highlight" data-term="pipeline">file processing pipeline</span>. When our team uploads content – whether it's a document, image, video, or other media – it triggers a series of <span class="highlight" data-term="automated-processes">automated processes</span> designed to ensure security, extract useful information, and prepare the content for various use cases throughout the platform.</p>
-                
-                <p>Security is my first priority in the pipeline. Every uploaded file is immediately scanned using <span class="small-caps highlight" data-term="clamav">ClamAV</span>, an open-source <span class="highlight" data-term="antivirus">antivirus engine</span> that I've configured specifically for our content types. This step ensures that malicious files are identified and <span class="highlight" data-term="quarantine">quarantined</span> before they can enter the storage systems or be shared with readers. I've found this proactive approach to security essential as our readership has grown and the volume of uploads has increased.</p>
-                
-                <p>Once a file passes security validation, I extract <span class="highlight" data-term="metadata">metadata</span> using <span class="highlight" data-term="apache-tika">Apache Tika</span>. This powerful tool analyzes the content and structure of files to identify information like document authors, creation dates, embedded metadata tags, and even the text content of documents. This extraction process allows me to automatically catalog and organize submissions without requiring our editorial team to manually enter this information, improving both the workflow efficiency and the quality of the content database.</p>
-                
-<p>For visual content, I generate appropriate <span class="highlight" data-term="thumbnails">thumbnails</span> and previews to enable quick browsing without loading full-sized assets. I use <span class="highlight" data-term="ghostscript">Ghostscript</span> for PDF documents, creating image previews of key pages that our editors can quickly scan. For video content, <span class="highlight" data-term="ffmpeg">FFmpeg</span> helps me extract representative frames and create compressed preview clips. These previews are essential for our content management interfaces, editorial review processes, and publishing workflows.</p>
-                
-<h3 id="version-control">Version Control System</h3>
-                
-<p>Perhaps the most innovative aspect of my submission engine is the <span class="highlight" data-term="git">git</span>-inspired version control system I've implemented. Traditional <span class="highlight" data-term="cms">content management systems</span> often treat revisions as an afterthought, but I recognized early on that versioning would be central to our editorial workflows. Creative work is inherently iterative, and I wanted to support that process natively within the platform.</p>
-                
-<p>My version control system allows our team to track changes to content over time with a complete history of modifications. Each version is stored efficiently, with only the <span class="highlight" data-term="delta">delta changes</span> between versions consuming additional storage. Our editors can compare any two versions to see exactly what changed, whether it's text edits in an article, adjustments to an image, or modifications to metadata.</p>
-                
-<p>The ability to <span class="highlight" data-term="rollback">revert to previous states</span> has proven invaluable for our editorial process. When experiments don't work out or mistakes are made, our team can simply roll back to a known good version rather than trying to manually undo changes. This safety net encourages creative exploration and reduces the anxiety associated with making significant changes to important content.</p>
-                
-<p>I've extended the git metaphor further by implementing a <span class="highlight" data-term="branching">branching system</span> that allows our editors to create experimental versions of content without affecting the published version. This is particularly useful for collaborative work, where team members might want to explore different approaches in parallel. Editors can work on their branches independently and then <span class="highlight" data-term="merge">merge changes</span> back into the main version when they're ready, complete with tools to resolve <span class="highlight" data-term="conflicts">conflicts</span> when multiple people have modified the same content.</p>
-
-<div class="divider"></div>
-
-<h2 id="messaging-backbone">Uhm, messaging?</h2>
-
-<p class="first-paragraph">Communication is at the heart of collaboration, and our messaging system has evolved into a sophisticated backbone that supports both real-time interactions and persistent historical records. Building a messaging system that could scale with the platform while maintaining performance presented unique challenges that required a multi-faceted approach.</p>
-
-<p>I designed the messaging architecture around a combination of specialized technologies, each chosen to address specific aspects of the problem. <span class="highlight" data-term="websockets">WebSockets</span> provide the foundation for real-time communication, establishing persistent connections between clients and our servers that allow for immediate message delivery. This approach dramatically reduces <span class="highlight" data-term="latency">latency</span> compared to traditional <span class="highlight" data-term="polling">polling methods</span>, creating a responsive experience that feels natural and immediate for our team.</p>
-
-<p>For message storage and retrieval, I selected <span class="highlight" data-term="cassandra">Apache Cassandra</span> after evaluating several alternatives. Cassandra's <span class="highlight" data-term="distributed">distributed architecture</span> proved to be an excellent fit for our messaging workload for several reasons. Its <span class="highlight" data-term="linear-scalability">linear scalability</span> model means I can add new nodes to the cluster as message volume grows, without complex rebalancing operations or performance degradation. This <span class="highlight" data-term="horizontal-scaling">horizontal scaling</span> approach aligns perfectly with our growth trajectory.</p>
-
-<p><span class="highlight" data-term="high-availability">High availability</span> was another critical factor in my choice of Cassandra. With no single point of failure in the architecture, I've been able to achieve 99.99% uptime for messaging services, even during maintenance operations and occasional hardware failures. The system's ability to gracefully handle node outages ensures that conversations continue uninterrupted even when parts of our infrastructure are being updated or experiencing issues.</p>
-
-<p>Perhaps most importantly, Cassandra's data model is exceptionally well-suited for <span class="highlight" data-term="time-series">time-series data</span> like message histories. Its optimized <span class="highlight" data-term="write-path">write path</span> and efficient storage of time-ordered data allow me to maintain sub-50ms response times even when retrieving conversation histories spanning months or years. This performance characteristic is essential for providing a seamless experience when our team scrolls through previous messages or searches for specific content in their conversations.</p>
-
-<p><span class="highlight" data-term="redis">Redis</span> complements our architecture by providing <span class="highlight" data-term="presence">presence tracking</span> and <span class="highlight" data-term="ephemeral-state">ephemeral state management</span>. It allows me to efficiently track which team members are online, who is currently typing in a conversation, and other transient states that enhance the interactive feel of the platform. The <span class="highlight" data-term="in-memory">in-memory</span> nature of Redis makes these operations extremely fast, while its <span class="highlight" data-term="persistence">persistence options</span> ensure I don't lose critical state information during system restarts.</p>
-
-<div class="divider"></div>
-
-<h2 id="automation-layer">Automation Layer</h2>
-
-<p class="first-paragraph">As ANG SILAKBO has grown, I've invested significantly in automation to maintain a personalized experience for readers while scaling efficiently. Our email automation system exemplifies this approach, handling everything from transactional notifications to sophisticated marketing campaigns with minimal manual intervention.</p>
-
-<p>I built the automation layer with a focus on flexibility and accessibility for our non-technical team members. At its core is a <span class="highlight" data-term="visual-workflow">visual workflow editor</span> that allows our marketing and community teams to create complex communication sequences without requiring developer assistance. This tool has dramatically reduced the engineering time needed for new communication flows while empowering our content teams to experiment and iterate quickly.</p>
-
-<p>For transactional emails – those triggered by specific reader actions or system events – I use <span class="highlight" data-term="postmark">Postmark</span>. Its exceptional delivery reliability ensures that critical notifications like account verifications, security alerts, and submission confirmations reach readers promptly. Postmark's detailed <span class="highlight" data-term="delivery-analytics">delivery analytics</span> also help me identify and address any delivery issues before they impact reader experience.</p>
-
-<p>All our email templates are built using <span class="highlight" data-term="mjml">MJML</span>, a responsive email framework that ensures consistent rendering across the diverse array of email clients our readers employ. This approach has eliminated the traditional pain points of email development, allowing me to create sophisticated, interactive designs that work reliably on everything from Gmail to Outlook to mobile email apps.</p>
-
-<p>For marketing communications and reader onboarding sequences, I leverage <span class="highlight" data-term="sendgrid">SendGrid</span>'s advanced <span class="highlight" data-term="segmentation">segmentation</span> and <span class="highlight" data-term="scheduling">scheduling capabilities</span>. This allows our team to create targeted campaigns based on reader behavior, preferences, and engagement patterns. The system automatically adapts communication frequency and content based on how readers interact with previous messages, ensuring relevance and avoiding notification fatigue.</p>
-
-<div class="divider"></div>
-
-<h2 id="looking-ahead">So, I'm still working on this one</h2>
-
-<p class="first-paragraph">As I continue to evolve ANG SILAKBO, I'm exploring several promising technological frontiers that align with our vision for the platform. My current focus areas represent both responses to emerging challenges and opportunities to enhance the reader experience in meaningful ways.</p>
-
-<p>The evolution of ANG SILAKBO continues as I balance performance, cost, and developer experience. Our <span class="highlight" data-term="architecture">architecture</span> will keep adapting as we grow and new challenges emerge. I'm committed to building a platform that not only meets today's needs but can evolve with tomorrow's requirements, always keeping our focus on empowering our editorial team and fostering meaningful connections with our readers through exceptional content.</p>
-            </main>
-        </article>
     </div>
     
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="About Us.html">About</a>
-                <a href="ToS.html">Terms Of Services</a>
-                <a href="#">Contact</a>
+                <a href="About Us.html">
+                    <i class="fa-solid fa-circle-info"></i>
+                    About
+                </a>
+                <a href="ToS.html">
+                    <i class="fa-solid fa-file-contract"></i>
+                    Terms Of Services
+                </a>
+                <a href="#">
+                    <i class="fa-solid fa-envelope"></i>
+                    Contact
+                </a>
             </div>
-            <p class="copyright">© 2025 ANG SILAKBO</p>
+            <p class="copyright">
+                <i class="fa-regular fa-copyright"></i>
+                2025 ANG SILAKBO
+            </p>
         </div>
     </footer>
 
@@ -1126,14 +1520,13 @@
                 why: 'Critical for real-time applications where information needs to be saved quickly without affecting system performance.'
             },
             'redis': {
-                definition: 'An ultra-fast data store that keeps information in memory for quick access. Like having important notes on your desk rather than filed away in a cabinet.',
+                definition: 'An ultra-fast data store that keeps information in memory for quick access. Like keeping important notes on your desk rather than filed away in a cabinet.',
                 usage: 'Used to track real-time information like who\'s online or currently typing.',
                 why: 'Provides the speed necessary for features that need immediate updates, creating a more interactive user experience.'
             },
             'presence': {
                 definition: 'Information about whether team members are currently online, active, or engaged. Like knowing if someone is available to chat.',
                 usage: 'Implemented to show which team members are currently active in conversations.',
-                why: 'Creates a more social experience by helping team members understand when others are available for real-time interaction.',
                 why: 'Creates a more social experience by helping team members understand when others are available for real-time interaction.'
             },
             'ephemeral-state': {
@@ -1216,13 +1609,13 @@
         
         // Author image modal functionality
         const modal = document.getElementById("imageModal");
-        const authorImage = document.getElementById("authorImage");
+        const authorImageContainer = document.getElementById("authorImageContainer");
         const modalImage = document.getElementById("modalImage");
         const closeModal = document.getElementById("closeModal");
         
-        authorImage.onclick = function() {
+        authorImageContainer.onclick = function() {
             modal.classList.add("show");
-            modalImage.src = this.src;
+            modalImage.src = document.getElementById("authorImage").src;
         }
         
         closeModal.onclick = function() {
@@ -1241,6 +1634,33 @@
         const tooltipDefinition = document.getElementById("tooltipDefinition");
         const tooltipUsage = document.getElementById("tooltipUsage");
         const tooltipWhy = document.getElementById("tooltipWhy");
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        
+        menuToggle.addEventListener("click", function() {
+            sidebar.classList.toggle("active");
+            
+            // Change icon based on sidebar state
+            if (sidebar.classList.contains("active")) {
+                menuToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            }
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", function(e) {
+            if (window.innerWidth <= 992 && 
+                sidebar.classList.contains("active") && 
+                !sidebar.contains(e.target) && 
+                e.target !== menuToggle && 
+                !menuToggle.contains(e.target)) {
+                sidebar.classList.remove("active");
+                menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            }
+        });
         
         // Add event listeners to all highlight spans
         document.addEventListener('DOMContentLoaded', function() {
@@ -1294,18 +1714,6 @@
                     tooltip.classList.remove('show');
                 }
             });
-            
-            // Toggle table of contents
-            const tocToggle = document.getElementById('tocToggle');
-            const tocContainer = document.getElementById('tocContainer');
-            
-            tocToggle.addEventListener('click', function() {
-                if (tocContainer.style.display === 'block') {
-                    tocContainer.style.display = 'none';
-                } else {
-                    tocContainer.style.display = 'block';
-                }
-            });
         });
         
         // Generate table of contents
@@ -1325,8 +1733,21 @@
                     const link = document.createElement('a');
                     link.href = '#' + heading.id;
                     link.className = 'toc-link';
-                    link.textContent = heading.textContent;
                     link.dataset.target = heading.id;
+                    
+                    // Add icon based on heading level
+                    const icon = document.createElement('i');
+                    if (heading.tagName === 'H2') {
+                        icon.className = 'fa-solid fa-bookmark';
+                    } else {
+                        icon.className = 'fa-solid fa-angle-right';
+                    }
+                    
+                    link.appendChild(icon);
+                    
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = heading.textContent;
+                    link.appendChild(textSpan);
                     
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -1335,9 +1756,10 @@
                             behavior: 'smooth'
                         });
                         
-                        // Hide TOC on mobile after clicking
-                        if (window.innerWidth <= 768) {
-                            document.getElementById('tocContainer').style.display = 'none';
+                        // Hide sidebar on mobile after clicking
+                        if (window.innerWidth <= 992) {
+                            sidebar.classList.remove("active");
+                            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
                         }
                     });
                     
