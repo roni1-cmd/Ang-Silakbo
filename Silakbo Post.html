@@ -16,9 +16,9 @@
             /* Orange color scheme */
             --primary: #E65100;
             --primary-light: #FF8A65;
-            --primary-dark: #E64A19;
+            --primary-dark: #E65100;
             --accent: #e98f08;
-            --accent-light: #FFB74D;
+            --accent-light: #E65100;
             --accent-dark: #F57C00;
             
             /* Text colors */
@@ -142,14 +142,21 @@
 
         /* ===== LAYOUT ===== */
         .app-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main"
+                "sidebar footer";
             min-height: 100vh;
         }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
+            grid-area: sidebar;
             width: 280px;
-            background-color: var(--bg-white);
+            background: linear-gradient(to bottom, var(--bg-white), var(--gray-50));
             box-shadow: var(--shadow-md);
             display: flex;
             flex-direction: column;
@@ -160,6 +167,7 @@
             z-index: 100;
             transition: var(--transition);
             overflow-y: auto;
+            border-right: 1px solid var(--gray-200);
         }
 
         .sidebar-collapsed {
@@ -172,6 +180,8 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+            color: white;
         }
 
         .logo-container {
@@ -184,6 +194,7 @@
             height: 40px;
             width: auto;
             transition: var(--transition);
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
         .logo:hover {
@@ -193,10 +204,8 @@
         .logo-text {
             font-size: 1.25rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             white-space: nowrap;
             transition: var(--transition);
         }
@@ -212,16 +221,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--gray-100);
-            color: var(--text-medium);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
             cursor: pointer;
             transition: var(--transition);
             border: none;
         }
 
         .sidebar-toggle:hover {
-            background-color: var(--gray-200);
-            color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: rotate(-180deg);
         }
 
         .sidebar-menu {
@@ -274,7 +283,7 @@
         }
 
         .menu-link.active {
-            background-color: var(--gray-100);
+            background: linear-gradient(to right, var(--primary-light) 0%, transparent 100%);
             color: var(--primary);
             border-left-color: var(--primary);
             font-weight: 500;
@@ -329,19 +338,21 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            background-color: var(--gray-50);
         }
 
         .user-avatar {
             width: 40px;
             height: 40px;
             border-radius: var(--radius-full);
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             flex-shrink: 0;
+            box-shadow: var(--shadow);
         }
 
         .user-info {
@@ -371,23 +382,10 @@
             text-overflow: ellipsis;
         }
 
-        /* ===== MAIN CONTENT ===== */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            transition: var(--transition);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-collapsed + .main-content {
-            margin-left: 80px;
-        }
-
         /* ===== HEADER ===== */
         .top-header {
-            background-color: var(--bg-white);
+            grid-area: header;
+            background: linear-gradient(to right, var(--bg-white), var(--gray-50));
             box-shadow: var(--shadow-sm);
             padding: 1rem 2rem;
             display: flex;
@@ -396,12 +394,26 @@
             position: sticky;
             top: 0;
             z-index: 50;
+            margin-left: 280px;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed ~ .top-header {
+            margin-left: 80px;
         }
 
         .page-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: var(--primary);
+            font-size: 1.25rem;
         }
 
         .header-actions {
@@ -417,17 +429,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--gray-100);
+            background-color: var(--bg-white);
             color: var(--text-medium);
             cursor: pointer;
             transition: var(--transition);
-            border: none;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
         }
 
         .header-btn:hover {
-            background-color: var(--gray-200);
+            background-color: var(--gray-100);
             color: var(--primary);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .theme-toggle {
@@ -437,17 +451,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--gray-100);
-            color: var(--text-medium);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+            color: white;
             cursor: pointer;
             transition: var(--transition);
             border: none;
+            box-shadow: var(--shadow);
         }
 
         .theme-toggle:hover {
-            background-color: var(--gray-200);
-            color: var(--primary);
-            transform: rotate(15deg);
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: var(--shadow-md);
         }
 
         .search-container {
@@ -464,6 +478,7 @@
             transition: var(--transition);
             background-color: var(--bg-white);
             color: var(--text-dark);
+            box-shadow: var(--shadow-sm);
         }
 
         .search-input:focus {
@@ -481,29 +496,34 @@
             font-size: 0.875rem;
         }
 
-        /* ===== CONTENT AREA ===== */
-        .content-area {
-            flex: 1;
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            grid-area: main;
             padding: 2rem;
             background-color: var(--bg-light);
+            margin-left: 280px;
+            transition: var(--transition);
+            min-height: calc(100vh - 73px - 41px); /* 100vh - header height - footer height */
+        }
+
+        .sidebar-collapsed ~ .main-content {
+            margin-left: 80px;
         }
 
         /* ===== DASHBOARD LAYOUT ===== */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
+            grid-template-columns: 1fr 320px;
             gap: 1.5rem;
         }
 
         .dashboard-main {
-            grid-column: span 9;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
 
         .dashboard-sidebar {
-            grid-column: span 3;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
@@ -515,6 +535,13 @@
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow);
             overflow: hidden;
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .card-header {
@@ -523,6 +550,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: linear-gradient(to right, var(--gray-50), var(--bg-white));
         }
 
         .card-title {
@@ -548,6 +576,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
+            background-color: var(--gray-50);
         }
 
         /* ===== TABS ===== */
@@ -557,6 +586,9 @@
             margin-bottom: 1.5rem;
             overflow-x: auto;
             scrollbar-width: none;
+            background-color: var(--bg-white);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            padding: 0 1rem;
         }
 
         .tabs::-webkit-scrollbar {
@@ -573,6 +605,13 @@
             white-space: nowrap;
             border: none;
             background: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab i {
+            font-size: 0.875rem;
         }
 
         .tab::after {
@@ -581,10 +620,11 @@
             bottom: -1px;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: var(--primary);
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
             transform: scaleX(0);
             transition: var(--transition);
+            border-radius: var(--radius-full);
         }
 
         .tab:hover {
@@ -684,20 +724,20 @@
             align-items: center;
             gap: 0.625rem;
             padding: 0.75rem 1.25rem;
-            background-color: var(--gray-100);
-            color: var(--text-medium);
+            background: linear-gradient(to right, var(--primary-light), var(--accent-light));
+            color: white;
             border-radius: var(--radius-lg);
             cursor: pointer;
             transition: var(--transition);
             font-weight: 500;
             font-size: 0.875rem;
-            border: 1px solid var(--gray-300);
+            border: none;
+            box-shadow: var(--shadow);
         }
 
         .file-input-label:hover {
-            background-color: var(--gray-200);
-            color: var(--primary);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         input[type="file"] {
@@ -716,6 +756,9 @@
             align-items: center;
             gap: 0.375rem;
             transition: var(--transition);
+            background-color: var(--gray-100);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-lg);
         }
 
         .image-preview-container {
@@ -726,6 +769,7 @@
             border: 1px solid var(--gray-300);
             transition: var(--transition);
             background-color: var(--gray-100);
+            position: relative;
         }
 
         .image-preview-container:hover {
@@ -739,6 +783,55 @@
             object-fit: cover;
             width: 100%;
             transition: var(--transition);
+        }
+
+        /* ===== SILAK-SALITAAN SPECIFIC STYLES ===== */
+        .silak-fields {
+            display: none;
+            background: linear-gradient(to right, var(--gray-50), var(--bg-white));
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            border: 1px solid var(--gray-300);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .silak-fields.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .parts-of-speech {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .part-of-speech-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            background-color: var(--bg-white);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .part-of-speech-option:hover {
+            background-color: var(--gray-100);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .part-of-speech-option input {
+            cursor: pointer;
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
         }
 
         /* ===== BUTTONS ===== */
@@ -757,7 +850,7 @@
             gap: 0.625rem;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(230, 81, 0, 0.2);
+            box-shadow: var(--shadow);
         }
 
         .btn::after {
@@ -774,7 +867,7 @@
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.3);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn:hover::after {
@@ -793,14 +886,14 @@
         }
 
         .btn-secondary {
-            background: var(--gray-100);
+            background: var(--bg-white);
             color: var(--text-medium);
             border: 1px solid var(--gray-300);
             box-shadow: var(--shadow-sm);
         }
 
         .btn-secondary:hover {
-            background: var(--gray-200);
+            background: var(--gray-100);
             color: var(--text-dark);
             box-shadow: var(--shadow);
         }
@@ -812,6 +905,10 @@
 
         .btn-danger:hover {
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success)68,68,0.3);
         }
 
         .btn-success {
@@ -872,47 +969,6 @@
         .fab:hover {
             transform: scale(1.1) rotate(5deg);
             box-shadow: 0 8px 25px rgba(230, 81, 0, 0.4);
-        }
-
-        /* ===== SILAK-SALITAAN SPECIFIC STYLES ===== */
-        .silak-fields {
-            display: none;
-            background-color: var(--gray-100);
-            border-radius: var(--radius-lg);
-            padding: 1.25rem;
-            border: 1px solid var(--gray-300);
-            margin-bottom: 1.5rem;
-        }
-
-        .silak-fields.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .parts-of-speech {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .part-of-speech-option {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: var(--radius);
-            transition: var(--transition);
-        }
-
-        .part-of-speech-option:hover {
-            background-color: var(--gray-200);
-        }
-
-        .part-of-speech-option input {
-            cursor: pointer;
-            accent-color: var(--primary);
         }
 
         /* ===== POSTS GRID ===== */
@@ -1057,7 +1113,7 @@
         }
 
         .table th {
-            background-color: var(--gray-100);
+            background: linear-gradient(to right, var(--gray-100), var(--bg-white));
             color: var(--text-dark);
             font-weight: 600;
             white-space: nowrap;
@@ -1322,6 +1378,7 @@
             z-index: 1;
             border-top-left-radius: var(--radius-2xl);
             border-top-right-radius: var(--radius-2xl);
+            background: linear-gradient(to right, var(--gray-50), var(--bg-white));
         }
 
         .modal-title {
@@ -1374,6 +1431,7 @@
             z-index: 1;
             border-bottom-left-radius: var(--radius-2xl);
             border-bottom-right-radius: var(--radius-2xl);
+            background-color: var(--gray-50);
         }
 
         /* ===== TOOLTIPS ===== */
@@ -1447,6 +1505,125 @@
             background-color: var(--gray-100) !important;
         }
 
+        /* ===== WRITING TIPS CARD ===== */
+        .tips-card {
+            background-color: var(--bg-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .tips-card-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+            color: white;
+        }
+
+        .tips-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tips-card-body {
+            padding: 1.25rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .writing-tip {
+            margin-bottom: 1rem;
+            padding: 1rem 1rem 1rem 2.5rem;
+            position: relative;
+            font-size: 0.875rem;
+            color: var(--text-medium);
+            line-height: 1.6;
+            transition: var(--transition);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            border-left: 3px solid var(--primary-light);
+        }
+
+        .writing-tip::before {
+            content: '\f0eb';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .writing-tip:hover {
+            transform: translateX(5px);
+            color: var(--text-dark);
+            background-color: var(--gray-100);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .writing-tip:last-child {
+            margin-bottom: 0;
+        }
+
+        .writing-tip-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .writing-tip-example {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-left: 3px solid var(--primary);
+            font-style: italic;
+            font-size: 0.8rem;
+        }
+
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            grid-area: footer;
+            background: linear-gradient(to right, var(--bg-white), var(--gray-50));
+            border-top: 1px solid var(--gray-200);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-left: 280px;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed ~ .status-bar {
+            margin-left: 80px;
+        }
+
+        .status-item {
+            margin-right: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-item i {
+            color: var(--primary);
+        }
+
+        .status-right {
+            margin-left: auto;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
         /* ===== HELP CENTER STYLES ===== */
         .help-section {
             margin-bottom: 2rem;
@@ -1504,7 +1681,7 @@
         }
 
         .help-card {
-            background-color: var(--gray-100);
+            background-color: var(--gray-50);
             border-radius: var(--radius-lg);
             padding: 1.25rem;
             margin-top: 1rem;
@@ -1538,124 +1715,15 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* ===== WRITING TIPS CARD ===== */
-        .tips-card {
-            background-color: var(--bg-white);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .tips-card-header {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-            color: white;
-        }
-
-        .tips-card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .tips-card-body {
-            padding: 1.25rem;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .writing-tip {
-            margin-bottom: 1rem;
-            padding: 1rem 1rem 1rem 2.5rem;
-            position: relative;
-            font-size: 0.875rem;
-            color: var(--text-medium);
-            line-height: 1.6;
-            transition: var(--transition);
-            background-color: var(--gray-100);
-            border-radius: var(--radius-lg);
-        }
-
-        .writing-tip::before {
-            content: '\f0eb';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 1rem;
-            top: 1rem;
-            color: var(--primary);
-            font-size: 1rem;
-        }
-
-        .writing-tip:hover {
-            transform: translateX(5px);
-            color: var(--text-dark);
-            background-color: var(--gray-200);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .writing-tip:last-child {
-            margin-bottom: 0;
-        }
-
-        .writing-tip-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
-
-        .writing-tip-example {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background-color: rgba(255, 255, 255, 0.5);
-            border-left: 3px solid var(--primary);
-            font-style: italic;
-            font-size: 0.8rem;
-        }
-
-        /* ===== STATUS BAR ===== */
-        .status-bar {
-            background-color: var(--bg-white);
-            border-top: 1px solid var(--gray-200);
-            padding: 0.75rem 2rem;
-            display: flex;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        .status-item {
-            margin-right: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .status-item i {
-            color: var(--primary);
-        }
-
-        .status-right {
-            margin-left: auto;
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
         /* ===== RESPONSIVE STYLES ===== */
         @media (max-width: 1200px) {
-            .dashboard-main {
-                grid-column: span 8;
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
             
-            .dashboard-sidebar {
-                grid-column: span 4;
+            .dashboard-main, .dashboard-sidebar {
+                width: 100%;
             }
         }
 
@@ -1672,16 +1740,10 @@
                 display: none;
             }
             
-            .main-content {
+            .top-header,
+            .main-content,
+            .status-bar {
                 margin-left: 80px;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard-main, .dashboard-sidebar {
-                grid-column: span 1;
             }
             
             .search-container {
@@ -1690,6 +1752,13 @@
         }
 
         @media (max-width: 768px) {
+            .app-container {
+                grid-template-areas:
+                    "header header"
+                    "main main"
+                    "footer footer";
+            }
+            
             .sidebar {
                 transform: translateX(-100%);
                 z-index: 1000;
@@ -1708,7 +1777,9 @@
                 display: block;
             }
             
-            .main-content {
+            .top-header,
+            .main-content,
+            .status-bar {
                 margin-left: 0;
             }
             
@@ -1716,7 +1787,7 @@
                 padding: 1rem;
             }
             
-            .content-area {
+            .main-content {
                 padding: 1rem;
             }
             
@@ -1727,13 +1798,13 @@
             .mobile-menu-toggle {
                 display: block;
             }
-        }
-
-        @media (max-width: 576px) {
+            
             .page-title {
                 font-size: 1.25rem;
             }
-            
+        }
+
+        @media (max-width: 576px) {
             .modal-footer {
                 flex-direction: column;
             }
@@ -1858,277 +1929,274 @@
             </div>
         </aside>
 
+        <!-- Header -->
+        <header class="top-header">
+            <h1 class="page-title" id="pageTitle"><i class="fas fa-pen-fancy"></i> Create New Post</h1>
+            <div class="header-actions">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search...">
+                </div>
+                <button class="header-btn" id="createNewBtn">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <h1 class="page-title" id="pageTitle">Create New Post</h1>
-                <div class="header-actions">
-                    <div class="search-container">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Search...">
-                    </div>
-                    <button class="header-btn" id="createNewBtn">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Content Area -->
-            <div class="content-area">
-                <!-- Alerts -->
-                <div id="alertSuccess" class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> 
-                    <span>Operation completed successfully!</span>
-                    <button class="alert-close">&times;</button>
-                </div>
-                <div id="alertError" class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> 
-                    <span id="errorMessage">An error occurred.</span>
-                    <button class="alert-close">&times;</button>
-                </div>
-                
-                <!-- Create Tab Content -->
-                <div id="createTab" class="tab-content active">
-                    <div class="dashboard-grid">
-                        <div class="dashboard-main">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h2 class="card-title">
-                                        <i class="fas fa-pen-fancy"></i> Create a New Post
-                                    </h2>
-                                </div>
-                                <div class="card-body">
-                                    <form id="postForm">
-                                        <div class="form-group">
-                                            <label class="form-label" for="category">
-                                                <i class="fas fa-tag"></i> Category:
-                                            </label>
-                                            <select id="category" class="form-control" required>
-                                                <option value="article">Article</option>
-                                                <option value="literary">Literary</option>
-                                                <option value="feature">Feature</option>
-                                                <option value="silak">Silak-salitaan</option>
-                                                <option value="photostory">Photostory</option>
-                                            </select>
-                                            <span class="form-hint">Select the type of content you're creating. Each category has specific formatting and requirements.</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="title">
-                                                <i class="fas fa-heading"></i> Title:
-                                            </label>
-                                            <input type="text" id="title" class="form-control" required placeholder="Enter post title">
-                                            <span class="form-hint">Create a compelling title that captures the essence of your content (50-70 characters recommended).</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="author">
-                                                <i class="fas fa-user-edit"></i> Author:
-                                            </label>
-                                            <input type="text" id="author" class="form-control" required placeholder="Enter author's name">
-                                        </div>
-
-                                        <div class="form-group" id="additionalFields">
-                                            <label class="form-label" id="roleLabel" for="additionalField">
-                                                <i class="fas fa-camera"></i> Photojournalist:
-                                            </label>
-                                            <input type="text" id="additionalField" class="form-control" placeholder="Enter photojournalist's name">
-                                            <span class="form-hint">Credit the visual contributor appropriately based on the content type.</span>
-                                        </div>
-
-                                        <!-- Silak-salitaan specific fields -->
-                                        <div class="silak-fields" id="silakFields">
-                                            <div class="form-group">
-                                                <label class="form-label">
-                                                    <i class="fas fa-language"></i> Part of Speech:
-                                                </label>
-                                                <div class="parts-of-speech">
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="noun" checked> Noun
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="verb"> Verb
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="adjective"> Adjective
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="adverb"> Adverb
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="pronoun"> Pronoun
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="preposition"> Preposition
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="conjunction"> Conjunction
-                                                    </label>
-                                                    <label class="part-of-speech-option">
-                                                        <input type="radio" name="partOfSpeech" value="interjection"> Interjection
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label" for="meaning">
-                                                    <i class="fas fa-book-open"></i> Meaning:
-                                                </label>
-                                                <textarea id="meaning" class="form-control" rows="4" placeholder="Enter the meaning of the word"></textarea>
-                                                <span class="form-hint">Provide a clear, comprehensive definition that captures all nuances of the word.</span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label" for="example">
-                                                    <i class="fas fa-quote-right"></i> Example Usage:
-                                                </label>
-                                                <textarea id="example" class="form-control" rows="3" placeholder="Enter an example sentence using this word"></textarea>
-                                                <span class="form-hint">Include a contextual example that demonstrates proper usage of the word.</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="imageUpload">
-                                                <i class="fas fa-image"></i> Upload Image:
-                                            </label>
-                                            <div class="file-upload">
-                                                <div class="file-input-container">
-                                                    <label class="file-input-label">
-                                                        <i class="fas fa-upload"></i> Choose File
-                                                        <input type="file" id="imageUpload" accept="image/*">
-                                                    </label>
-                                                    <span class="file-name" id="fileName">
-                                                        <i class="fas fa-file-image"></i> No file chosen
-                                                    </span>
-                                                </div>
-                                                <div class="image-preview-container">
-                                                    <img id="imagePreview" alt="Image Preview">
-                                                </div>
-                                                <span class="form-hint">Recommended image size: 1200x630 pixels. Use high-quality images that enhance your content.</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group" id="contentContainer">
-                                            <label class="form-label" for="content">
-                                                <i class="fas fa-paragraph"></i> Content:
-                                            </label>
-                                            <textarea id="content" class="form-control"></textarea>
-                                            <span class="form-hint">Write your content using the rich text editor. Use headings, lists, and formatting to improve readability.</span>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-footer">
-                                    <button type="button" class="btn btn-secondary" id="resetBtn">
-                                        <i class="fas fa-undo"></i> Reset
-                                    </button>
-                                    <button type="button" class="btn" id="saveBtn">
-                                        <span class="spinner" id="submitSpinner"></span>
-                                        <i class="fas fa-save"></i> Save Draft
-                                    </button>
-                                    <button type="button" class="btn btn-success" id="publishBtn">
-                                        <i class="fas fa-paper-plane"></i> Publish Post
-                                    </button>
-                                </div>
+            <!-- Alerts -->
+            <div id="alertSuccess" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> 
+                <span>Operation completed successfully!</span>
+                <button class="alert-close">&times;</button>
+            </div>
+            <div id="alertError" class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i> 
+                <span id="errorMessage">An error occurred.</span>
+                <button class="alert-close">&times;</button>
+            </div>
+            
+            <!-- Create Tab Content -->
+            <div id="createTab" class="tab-content active">
+                <div class="dashboard-grid">
+                    <div class="dashboard-main">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-pen-fancy"></i> Create a New Post
+                                </h2>
                             </div>
-                        </div>
-                        
-                        <div class="dashboard-sidebar">
-                            <div class="tips-card">
-                                <div class="tips-card-header">
-                                    <h3 class="tips-card-title">
-                                        <i class="fas fa-lightbulb"></i> Writing Tips
-                                    </h3>
-                                </div>
-                                <div class="tips-card-body">
-                                    <div id="writingTipsContent">
-                                        <!-- Tips will be loaded dynamically based on category -->
+                            <div class="card-body">
+                                <form id="postForm">
+                                    <div class="form-group">
+                                        <label class="form-label" for="category">
+                                            <i class="fas fa-tag"></i> Category:
+                                        </label>
+                                        <select id="category" class="form-control" required>
+                                            <option value="article">Article</option>
+                                            <option value="literary">Literary</option>
+                                            <option value="feature">Feature</option>
+                                            <option value="silak">Silak-salitaan</option>
+                                            <option value="photostory">Photostory</option>
+                                        </select>
+                                        <span class="form-hint">Select the type of content you're creating. Each category has specific formatting and requirements.</span>
                                     </div>
-                                </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="title">
+                                            <i class="fas fa-heading"></i> Title:
+                                        </label>
+                                        <input type="text" id="title" class="form-control" required placeholder="Enter post title">
+                                        <span class="form-hint">Create a compelling title that captures the essence of your content (50-70 characters recommended).</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="author">
+                                            <i class="fas fa-user-edit"></i> Author:
+                                        </label>
+                                        <input type="text" id="author" class="form-control" required placeholder="Enter author's name">
+                                    </div>
+
+                                    <div class="form-group" id="additionalFields">
+                                        <label class="form-label" id="roleLabel" for="additionalField">
+                                            <i class="fas fa-camera"></i> Photojournalist:
+                                        </label>
+                                        <input type="text" id="additionalField" class="form-control" placeholder="Enter photojournalist's name">
+                                        <span class="form-hint">Credit the visual contributor appropriately based on the content type.</span>
+                                    </div>
+
+                                    <!-- Silak-salitaan specific fields -->
+                                    <div class="silak-fields" id="silakFields">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-language"></i> Part of Speech:
+                                            </label>
+                                            <div class="parts-of-speech">
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="noun" checked> Noun
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="verb"> Verb
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="adjective"> Adjective
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="adverb"> Adverb
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="pronoun"> Pronoun
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="preposition"> Preposition
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="conjunction"> Conjunction
+                                                </label>
+                                                <label class="part-of-speech-option">
+                                                    <input type="radio" name="partOfSpeech" value="interjection"> Interjection
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="meaning">
+                                                <i class="fas fa-book-open"></i> Meaning:
+                                            </label>
+                                            <textarea id="meaning" class="form-control" rows="4" placeholder="Enter the meaning of the word"></textarea>
+                                            <span class="form-hint">Provide a clear, comprehensive definition that captures all nuances of the word.</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="example">
+                                                <i class="fas fa-quote-right"></i> Example Usage:
+                                            </label>
+                                            <textarea id="example" class="form-control" rows="3" placeholder="Enter an example sentence using this word"></textarea>
+                                            <span class="form-hint">Include a contextual example that demonstrates proper usage of the word.</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="imageUpload">
+                                            <i class="fas fa-image"></i> Upload Image:
+                                        </label>
+                                        <div class="file-upload">
+                                            <div class="file-input-container">
+                                                <label class="file-input-label">
+                                                    <i class="fas fa-upload"></i> Choose File
+                                                    <input type="file" id="imageUpload" accept="image/*">
+                                                </label>
+                                                <span class="file-name" id="fileName">
+                                                    <i class="fas fa-file-image"></i> No file chosen
+                                                </span>
+                                            </div>
+                                            <div class="image-preview-container">
+                                                <img id="imagePreview" alt="Image Preview">
+                                            </div>
+                                            <span class="form-hint">Recommended image size: 1200x630 pixels. Use high-quality images that enhance your content.</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="contentContainer">
+                                        <label class="form-label" for="content">
+                                            <i class="fas fa-paragraph"></i> Content:
+                                        </label>
+                                        <textarea id="content" class="form-control"></textarea>
+                                        <span class="form-hint">Write your content using the rich text editor. Use headings, lists, and formatting to improve readability.</span>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn btn-secondary" id="resetBtn">
+                                    <i class="fas fa-undo"></i> Reset
+                                </button>
+                                <button type="button" class="btn" id="saveBtn">
+                                    <span class="spinner" id="submitSpinner"></span>
+                                    <i class="fas fa-save"></i> Save Draft
+                                </button>
+                                <button type="button" class="btn btn-success" id="publishBtn">
+                                    <i class="fas fa-paper-plane"></i> Publish Post
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Manage Tab Content -->
-                <div id="manageTab" class="tab-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-list-alt"></i> Published Works
-                            </h2>
-                            <div>
-                                <button class="btn btn-secondary" id="toggleViewBtn">
-                                    <i class="fas fa-th-large"></i> Toggle View
-                                </button>
-                                <button class="btn" id="refreshPostsBtn">
-                                    <i class="fas fa-sync-alt"></i> Refresh
-                                </button>
+                    
+                    <div class="dashboard-sidebar">
+                        <div class="tips-card">
+                            <div class="tips-card-header">
+                                <h3 class="tips-card-title">
+                                    <i class="fas fa-lightbulb"></i> Writing Tips
+                                </h3>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div id="postsTableContainer">
-                                <div id="loadingPosts" class="loading-container">
-                                    <div class="loading-spinner"></div>
-                                    <p class="loading-text">Loading posts...</p>
-                                </div>
-                                
-                                <!-- Table View -->
-                                <div class="table-container" id="postsTable" style="display: none;">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th><i class="fas fa-tag"></i> Category</th>
-                                                <th><i class="fas fa-heading"></i> Title</th>
-                                                <th><i class="fas fa-user-edit"></i> Author</th>
-                                                <th><i class="fas fa-user-tag"></i> Photo/Art</th>
-                                                <th><i class="fas fa-calendar-alt"></i> Date</th>
-                                                <th><i class="fas fa-cogs"></i> Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="postsTableBody">
-                                            <!-- Posts will be loaded here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                                <!-- Grid View -->
-                                <div class="posts-grid" id="postsGrid" style="display: none;">
-                                    <!-- Posts will be loaded here as cards -->
-                                </div>
-                                
-                                <div id="noPostsMessage" class="empty-state" style="display: none;">
-                                    <i class="fas fa-inbox empty-icon"></i>
-                                    <p class="empty-text">No posts found.</p>
-                                    <button class="btn" id="createFirstPostBtn">
-                                        <i class="fas fa-plus-circle"></i> Create Your First Post
-                                    </button>
+                            <div class="tips-card-body">
+                                <div id="writingTipsContent">
+                                    <!-- Tips will be loaded dynamically based on category -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Status Bar -->
-            <div class="status-bar">
-                <div class="status-item">
-                    <i class="fas fa-check-circle"></i> Ready
-                </div>
-                <div class="status-right">
-                    <div class="status-item" id="wordCount">
-                        <i class="fas fa-font"></i> Words: 0
+            
+            <!-- Manage Tab Content -->
+            <div id="manageTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-list-alt"></i> Published Works
+                        </h2>
+                        <div>
+                            <button class="btn btn-secondary" id="toggleViewBtn">
+                                <i class="fas fa-th-large"></i> Toggle View
+                            </button>
+                            <button class="btn" id="refreshPostsBtn">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
                     </div>
-                    <div class="status-item" id="characterCount">
-                        <i class="fas fa-text-width"></i> Characters: 0
-                    </div>
-                    <div class="status-item">
-                        <i class="far fa-clock"></i> <span id="currentTime">00:00</span>
+                    <div class="card-body">
+                        <div id="postsTableContainer">
+                            <div id="loadingPosts" class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <p class="loading-text">Loading posts...</p>
+                            </div>
+                            
+                            <!-- Table View -->
+                            <div class="table-container" id="postsTable" style="display: none;">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fas fa-tag"></i> Category</th>
+                                            <th><i class="fas fa-heading"></i> Title</th>
+                                            <th><i class="fas fa-user-edit"></i> Author</th>
+                                            <th><i class="fas fa-user-tag"></i> Photo/Art</th>
+                                            <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                            <th><i class="fas fa-cogs"></i> Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="postsTableBody">
+                                        <!-- Posts will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Grid View -->
+                            <div class="posts-grid" id="postsGrid" style="display: none;">
+                                <!-- Posts will be loaded here as cards -->
+                            </div>
+                            
+                            <div id="noPostsMessage" class="empty-state" style="display: none;">
+                                <i class="fas fa-inbox empty-icon"></i>
+                                <p class="empty-text">No posts found.</p>
+                                <button class="btn" id="createFirstPostBtn">
+                                    <i class="fas fa-plus-circle"></i> Create Your First Post
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <i class="fas fa-check-circle"></i> Ready
+            </div>
+            <div class="status-right">
+                <div class="status-item" id="wordCount">
+                    <i class="fas fa-font"></i> Words: 0
+                </div>
+                <div class="status-item" id="characterCount">
+                    <i class="fas fa-text-width"></i> Characters: 0
+                </div>
+                <div class="status-item">
+                    <i class="far fa-clock"></i> <span id="currentTime">00:00</span>
+                </div>
+            </div>
+        </div>
 
         <!-- Floating Action Button -->
         <button class="fab" id="createFab">
@@ -2733,7 +2801,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         showTab('create');
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Create New Post';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-pen-fancy"></i> Create New Post';
     });
     
     document.getElementById('navManage').addEventListener('click', function(e) {
@@ -2742,7 +2810,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = null; // Reset filter
         loadPosts(); // Load all posts
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Published Works';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-list-alt"></i> Published Works';
     });
     
     document.getElementById('navArticles').addEventListener('click', function(e) {
@@ -2751,7 +2819,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'article';
         loadPosts('article'); // Load only articles
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Articles';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-newspaper"></i> Articles';
     });
     
     document.getElementById('navLiterary').addEventListener('click', function(e) {
@@ -2760,7 +2828,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'literary';
         loadPosts('literary'); // Load only literary works
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Literary Works';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-book"></i> Literary Works';
     });
 
     document.getElementById('navFeature').addEventListener('click', function(e) {
@@ -2769,7 +2837,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'feature';
         loadPosts('feature'); // Load only features
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Features';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-star"></i> Features';
     });
 
     document.getElementById('navSilak').addEventListener('click', function(e) {
@@ -2778,7 +2846,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'silak';
         loadPosts('silak'); // Load only silak-salitaan
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Silak-salitaan';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-language"></i> Silak-salitaan';
     });
 
     document.getElementById('navPhotostory').addEventListener('click', function(e) {
@@ -2787,14 +2855,14 @@ document.addEventListener('DOMContentLoaded', function() {
         currentCategoryFilter = 'photostory';
         loadPosts('photostory'); // Load only photostories
         updateActiveNavLink(this);
-        document.getElementById('pageTitle').textContent = 'Photostories';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-camera"></i> Photostories';
     });
     
     // Create new post button
     document.getElementById('createNewBtn').addEventListener('click', function() {
         showTab('create');
         updateActiveNavLink(document.getElementById('navCreate'));
-        document.getElementById('pageTitle').textContent = 'Create New Post';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-pen-fancy"></i> Create New Post';
     });
     
     // Toggle view button (table/grid)
@@ -2833,14 +2901,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('createFirstPostBtn').addEventListener('click', function() {
         showTab('create');
         updateActiveNavLink(document.getElementById('navCreate'));
-        document.getElementById('pageTitle').textContent = 'Create New Post';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-pen-fancy"></i> Create New Post';
     });
 
     // Floating action button
     document.getElementById('createFab').addEventListener('click', function() {
         showTab('create');
         updateActiveNavLink(document.getElementById('navCreate'));
-        document.getElementById('pageTitle').textContent = 'Create New Post';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-pen-fancy"></i> Create New Post';
     });
 
     // Help button
