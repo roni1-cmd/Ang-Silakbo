@@ -51,12 +51,18 @@
     
     /* Layout */
     .app-container {
-      display: flex;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr var(--right-sidebar-width);
+      grid-template-rows: var(--header-height) 1fr;
+      grid-template-areas: 
+        "header header header"
+        "sidebar main right-sidebar";
       min-height: 100vh;
     }
     
     /* Header */
     header {
+      grid-area: header;
       position: fixed;
       top: 0;
       left: 0;
@@ -89,7 +95,6 @@
       width: 40px;
       height: 40px;
       border-radius: var(--radius-sm);
-      background-color: var(--primary-color);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -213,6 +218,7 @@
     
     /* Sidebar */
     .sidebar {
+      grid-area: sidebar;
       position: fixed;
       top: var(--header-height);
       left: 0;
@@ -286,6 +292,7 @@
     
     /* Right Sidebar */
     .right-sidebar {
+      grid-area: right-sidebar;
       position: fixed;
       top: var(--header-height);
       right: 0;
@@ -303,6 +310,10 @@
     
     .right-sidebar-section {
       margin-bottom: 2rem;
+      background-color: var(--background-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
     }
     
     .right-sidebar-title {
@@ -327,7 +338,7 @@
       margin-bottom: 0.8rem;
       transition: var(--transition);
       cursor: pointer;
-      background-color: var(--background-color);
+      background-color: var(--secondary-color);
       border: 1px solid transparent;
     }
     
@@ -403,7 +414,7 @@
     }
     
     .community-stat {
-      background-color: var(--background-color);
+      background-color: var(--secondary-color);
       border-radius: var(--radius-md);
       padding: 1rem;
       text-align: center;
@@ -429,12 +440,10 @@
     
     /* Main Content */
     .main-content {
-      flex: 1;
-      margin-left: var(--sidebar-width);
-      margin-right: var(--right-sidebar-width);
+      grid-area: main;
       margin-top: var(--header-height);
       padding: 2rem;
-      max-width: calc(100% - var(--sidebar-width) - var(--right-sidebar-width));
+      max-width: 100%;
       transition: var(--transition);
     }
     
@@ -1668,29 +1677,22 @@
     
     /* Responsive Styles */
     @media (max-width: 1200px) {
-      :root {
-        --right-sidebar-width: 0px;
+      .app-container {
+        grid-template-columns: var(--sidebar-width) 1fr 0;
       }
       
       .right-sidebar {
         transform: translateX(100%);
       }
-      
-      .main-content {
-        margin-right: 0;
-        max-width: calc(100% - var(--sidebar-width));
-      }
     }
     
     @media (max-width: 992px) {
-      :root {
-        --sidebar-width: 0px;
+      .app-container {
+        grid-template-columns: 0 1fr 0;
       }
       
       .main-content {
-        margin-left: 0;
         padding: 1.5rem;
-        max-width: 100%;
       }
       
       .sidebar {
@@ -1852,38 +1854,39 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <button id="menu-toggle" class="menu-toggle">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="logo-container">
-        <h1 id="site-title"><strong>ANG SILAKBO FORUMS</strong></h1>
-      </div>
-      <div class="user-greeting">
-        <i class="fas fa-hand-wave"></i>
-        <span id="greeting-text">Welcome back, <span id="user-name">User</span>!</span>
-      </div>
-    </div>
-    <div class="search-container">
-      <input type="text" id="search-bar" placeholder="Search users or posts...">
-      <button id="search-btn"><i class="fas fa-search"></i></button>
-    </div>
-    <div class="header-right">
-      <button class="search-toggle" id="search-toggle">
-        <i class="fas fa-search"></i>
-      </button>
-      <button class="header-icon-btn" id="notifications-btn">
-        <i class="fas fa-bell"></i>
-        <span class="notification-badge"></span>
-      </button>
-      <button class="header-icon-btn" id="profile-btn">
-        <i class="fas fa-user"></i>
-      </button>
-    </div>
-  </header>
-
   <div class="app-container">
+    <header>
+      <div class="header-left">
+        <button id="menu-toggle" class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+          <img src="SILAKBO.png" alt="Logo" class="logo">
+          <h1 id="site-title"><strong>ANG SILAKBO FORUMS</strong></h1>
+        </div>
+        <div class="user-greeting">
+          <i class="fas fa-hand-wave"></i>
+          <span id="greeting-text">Welcome back, <span id="user-name">User</span>!</span>
+        </div>
+      </div>
+      <div class="search-container">
+        <input type="text" id="search-bar" placeholder="Search users or posts...">
+        <button id="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+      <div class="header-right">
+        <button class="search-toggle" id="search-toggle">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="header-icon-btn" id="notifications-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge"></span>
+        </button>
+        <button class="header-icon-btn" id="profile-btn">
+          <i class="fas fa-user"></i>
+        </button>
+      </div>
+    </header>
+
     <div id="sidebar" class="sidebar">
       <div class="sidebar-section">
         <h4 class="sidebar-section-title">Main</h4>
@@ -1940,6 +1943,7 @@
         <div id="top-contributors-list">
           <!-- Top contributors will be dynamically inserted here -->
         </div>
+        <p class="online-now">Currently <span id="online-count" class="online-count">0</span> users online</p>
       </div>
       
       <div class="right-sidebar-section">
@@ -1962,7 +1966,6 @@
             <div class="community-stat-label">Likes</div>
           </div>
         </div>
-        <p class="online-now">Currently <span id="online-count" class="online-count">0</span> users online</p>
       </div>
     </div>
 
