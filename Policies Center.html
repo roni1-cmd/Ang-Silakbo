@@ -21,17 +21,26 @@
             --primary: #E65100;
             --primary-light: #FFF0E0;
             --primary-dark: #BF4000;
+            --secondary: #FF8C00;
+            --accent: #FFB74D;
             --text-dark: #333;
             --text-medium: #555;
             --text-light: #888;
+            --background: #FFFFFF;
+            --background-alt: #f9f9f9;
             --transition-fast: 0.2s;
             --transition-medium: 0.3s;
             --transition-slow: 0.5s;
             --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.15);
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+            --border-radius-full: 9999px;
         }
 
+        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -76,7 +85,6 @@
             60% { transform: translateY(-5px); }
         }
 
-        /* New animations for loading screen */
         @keyframes scaleIn {
             0% { transform: scale(0); opacity: 0; }
             70% { transform: scale(1.1); opacity: 1; }
@@ -104,11 +112,16 @@
             50% { border-color: var(--primary); }
         }
 
+        @keyframes cardHover {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-12px) scale(1.02); }
+        }
+
         body {
             font-family: 'Source Sans Pro', sans-serif;
             color: var(--text-dark);
             line-height: 1.6;
-            background-color: #FFFFFF;
+            background-color: var(--background);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -121,6 +134,7 @@
             border-bottom: 1px solid rgba(224, 224, 224, 0.5);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             background-color: rgba(255, 255, 255, 0.98);
             box-shadow: var(--shadow-sm);
             position: sticky;
@@ -128,6 +142,11 @@
             z-index: 100;
             backdrop-filter: blur(10px);
             animation: fadeIn 0.5s ease-out;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
         }
 
         .logo {
@@ -148,7 +167,7 @@
             color: var(--primary);
             position: relative;
             overflow: hidden;
-            background: linear-gradient(90deg, var(--primary) 0%, #FF8C00 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -161,12 +180,56 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--primary) 0%, #E65100 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             transition: width var(--transition-medium) ease;
         }
 
         .brand-name:hover::after {
             width: 100%;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-medium);
+            text-decoration: none;
+            transition: all var(--transition-fast) ease;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: width var(--transition-medium) ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
         }
 
         /* Main content styles */
@@ -180,7 +243,7 @@
 
         .terms-header {
             text-align: left;
-            margin-bottom: 80px;
+            margin-bottom: 60px;
             max-width: 800px;
             animation: slideUp 0.8s ease-out;
         }
@@ -203,7 +266,7 @@
             left: 0;
             width: 40px;
             height: 3px;
-            background: linear-gradient(90deg, var(--primary) 0%, #FF8C00 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
         }
 
         .main-heading {
@@ -217,11 +280,86 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .main-subheading {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 18px;
+            color: var(--text-medium);
+            max-width: 600px;
+        }
+
+        /* Search bar */
+        .search-container {
+            margin: 30px 0 50px;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid rgba(224, 224, 224, 0.7);
+            border-radius: var(--border-radius-full);
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 16px;
+            transition: all var(--transition-medium) ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        /* Category tabs */
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-tab {
+            padding: 12px 24px;
+            background-color: var(--background-alt);
+            border-radius: var(--border-radius-full);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: all var(--transition-medium) ease;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-tab:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .category-tab.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.2);
         }
 
         /* How we work section */
         .how-we-work {
-            margin-top: 80px;
+            margin-top: 40px;
+            display: block !important; /* Ensure this section is always visible */
         }
 
         .section-title {
@@ -243,38 +381,59 @@
             left: 0;
             width: 40px;
             height: 3px;
-            background: linear-gradient(90deg, var(--primary) 0%, #FF8C00 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
         }
 
         .cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 40px;
+            gap: 30px;
         }
 
         .card {
-            margin-bottom: 30px;
-            transition: all var(--transition-medium) cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border-radius: 16px;
+            background-color: #fff;
+            border-radius: var(--border-radius-md);
             overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            transition: all var(--transition-medium) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
             opacity: 0;
             transform: translateY(30px);
             animation: slideUp 0.8s ease-out forwards;
             animation-delay: calc(var(--card-index) * 0.2s);
-            background-color: #fff;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--border-radius-md);
+            padding: 2px;
+            background: linear-gradient(135deg, transparent 0%, transparent 50%, var(--primary-light) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity var(--transition-medium) ease;
         }
 
         .card:hover {
-            transform: translateY(-12px);
+            transform: translateY(-12px) scale(1.02);
             box-shadow: var(--shadow-lg);
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card-image-container {
             position: relative;
-            height: 400px; /* Made photos longer */
+            height: 200px;
             background-color: var(--primary-light);
-            border-radius: 16px 16px 0 0;
+            border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
             overflow: hidden;
             cursor: pointer;
             display: block;
@@ -358,33 +517,10 @@
         }
 
         .card-content {
-            margin-top: 20px;
+            padding: 25px;
             display: flex;
-            align-items: flex-start;
-            padding: 0 20px 25px;
-        }
-
-        .card-icon-container {
-            background-color: var(--primary-light);
-            border-radius: 50%;
-            padding: 12px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform var(--transition-medium) ease, background-color var(--transition-medium) ease;
-        }
-
-        .card:hover .card-icon-container {
-            transform: scale(1.1);
-            background-color: rgba(230, 81, 0, 0.15);
-            animation: float 3s infinite ease-in-out;
-        }
-
-        .card-icon {
-            width: 22px;
-            height: 22px;
-            color: var(--primary);
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         .card-title {
@@ -392,7 +528,7 @@
             font-size: 22px;
             font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             transition: color var(--transition-fast) ease;
         }
 
@@ -405,22 +541,24 @@
             font-size: 16px;
             color: var(--text-medium);
             line-height: 1.6;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            flex-grow: 1;
         }
 
         .read-more {
             display: inline-flex;
             align-items: center;
-            margin-top: 5px;
             font-size: 16px;
             font-weight: 600;
             color: var(--primary);
             text-decoration: none;
             transition: all var(--transition-fast) ease;
             position: relative;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 30px;
             background-color: var(--primary-light);
+            align-self: flex-start;
+            margin-top: auto;
         }
 
         .read-more:hover {
@@ -442,9 +580,95 @@
             color: white;
         }
 
+        /* Featured section */
+        .featured-section {
+            margin-top: 80px;
+            padding: 60px 0;
+            background-color: var(--background-alt);
+            border-radius: var(--border-radius-lg);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .featured-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .featured-container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .featured-item {
+            background-color: white;
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-medium) ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .featured-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .featured-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            background-color: var(--primary-light);
+        }
+
+        .featured-icon svg {
+            width: 50px;
+            height: 50px;
+            color: var(--primary);
+        }
+
+        .featured-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .featured-title {
+            font-family: 'Merriweather', serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .featured-description {
+            font-size: 15px;
+            color: var(--text-medium);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
         /* Footer styles */
         footer {
-            background-color: #f9f9f9;
+            background-color: var(--background-alt);
             border-top: 1px solid rgba(224, 224, 224, 0.5);
             padding: 70px 40px 40px;
             margin-top: auto;
@@ -458,7 +682,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, #FF8C00 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
         }
 
         .footer-content {
@@ -479,7 +703,7 @@
             font-family: 'Poppins', sans-serif;
             font-size: 18px;
             font-weight: 600;
-            color: #FF8C00;
+            color: var(--secondary);
             margin-bottom: 25px;
             position: relative;
             display: inline-block;
@@ -492,7 +716,7 @@
             left: 0;
             width: 30px;
             height: 2px;
-            background-color: #FF8C00;
+            background-color: var(--secondary);
         }
 
         .footer-links {
@@ -523,7 +747,7 @@
         }
 
         .footer-links a:hover {
-            color: #FF8C00;
+            color: var(--secondary);
             transform: translateX(20px);
             padding-left: 5px;
         }
@@ -541,6 +765,30 @@
             font-size: 15px;
             color: var(--text-light);
             width: 100%;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            transition: all var(--transition-medium) ease;
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px);
         }
 
         /* Enhanced Loading screen */
@@ -615,7 +863,7 @@
         .loading-circle:nth-child(2) {
             width: 80%;
             height: 80%;
-            border-right-color: #FF8C00;
+            border-right-color: var(--secondary);
             animation-duration: 1.5s;
             animation-direction: reverse;
         }
@@ -696,7 +944,7 @@
             left: 0;
             height: 100%;
             width: 0;
-            background: linear-gradient(90deg, var(--primary) 0%, #FF8C00 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 10px;
             transition: width 0.3s ease;
             animation: glow 2s infinite;
@@ -736,78 +984,73 @@
             height: 20px;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .main-heading {
-                font-size: 36px;
-            }
-
-            .container {
-                padding: 40px 20px;
-            }
-
-            header {
-                padding: 16px 20px;
-            }
-
-            .cards-container {
-                grid-template-columns: 1fr;
-            }
-
-            .card-image-container {
-                height: 350px;
-            }
-
-            .footer-content {
-                gap: 30px;
-            }
-            
-            .loading-container {
-                max-width: 300px;
-            }
-            
-            .loading-icon-container {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .loading-text {
-                font-size: 20px;
-            }
+        /* Mobile menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 280px;
+            background-color: white;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform var(--transition-medium) ease;
+            box-shadow: var(--shadow-lg);
+            padding: 60px 30px 30px;
+            display: flex;
+            flex-direction: column;
         }
 
-        @media (max-width: 480px) {
-            .main-heading {
-                font-size: 28px;
-            }
-
-            .terms-title, .section-title {
-                font-size: 14px;
-            }
-
-            .card-image-container {
-                height: 300px;
-            }
-            
-            .loading-progress {
-                width: 240px;
-            }
-            
-            .loading-subtext {
-                font-size: 14px;
-            }
+        .mobile-menu.active {
+            transform: translateX(0);
         }
 
-        /* Animations for page elements */
-        .animate-on-scroll {
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-medium);
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .mobile-menu-links li {
+            margin-bottom: 20px;
+        }
+
+        .mobile-menu-links a {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+            transition: color var(--transition-fast) ease;
+        }
+
+        .mobile-menu-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            visibility: hidden;
+            transition: opacity var(--transition-medium) ease, visibility var(--transition-medium) ease;
         }
 
-        .animate-on-scroll.visible {
+        .mobile-overlay.active {
             opacity: 1;
-            transform: translateY(0);
+            visibility: visible;
         }
 
         /* Button styles */
@@ -839,6 +1082,107 @@
         .btn-back-to-top:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 20px rgba(230, 81, 0, 0.4);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .featured-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-heading {
+                font-size: 36px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            header {
+                padding: 16px 20px;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .card-image-container {
+                height: 220px;
+            }
+
+            .footer-content {
+                gap: 30px;
+            }
+            
+            .loading-container {
+                max-width: 300px;
+            }
+            
+            .loading-icon-container {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .loading-text {
+                font-size: 20px;
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-heading {
+                font-size: 28px;
+            }
+
+            .terms-title, .section-title {
+                font-size: 14px;
+            }
+
+            .card-image-container {
+                height: 200px;
+            }
+            
+            .loading-progress {
+                width: 240px;
+            }
+            
+            .loading-subtext {
+                font-size: 14px;
+            }
+
+            .category-tabs {
+                gap: 10px;
+            }
+
+            .category-tab {
+                padding: 8px 15px;
+                font-size: 13px;
+            }
+        }
+
+        /* Animations for page elements */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -877,6 +1221,26 @@
         </div>
     </div>
 
+    <!-- Mobile menu -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" id="mobileMenuClose">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <ul class="mobile-menu-links">
+            <li><a href="index.html" class="trigger-loading">Home</a></li>
+            <li><a href="About Us.html" class="trigger-loading">About Us</a></li>
+            <li><a href="Artikulo.html" class="trigger-loading">Articles</a></li>
+            <li><a href="ToS.html" class="trigger-loading">Terms of Service</a></li>
+            <li><a href="Exec Order.html" class="trigger-loading">Executive Order</a></li>
+            <li><a href="Guidelines.html" class="trigger-loading">Guidelines</a></li>
+            <li><a href="API-Reference.html" class="trigger-loading">API Reference</a></li>
+        </ul>
+    </div>
+
     <!-- Back to top button -->
     <div class="btn-back-to-top" id="backToTop">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -885,17 +1249,49 @@
     </div>
 
     <header>
-        <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
-        <span class="brand-name"><strong>ANG SILAKBO</strong></span>
+        <div class="header-left">
+            <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
+            <span class="brand-name"><strong>ANG SILAKBO</strong></span>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="About Us.html" class="nav-link trigger-loading">About Us</a>
+            <a href="Artikulo.html" class="nav-link trigger-loading">Articles</a>
+            <a href="API-Reference.html" class="nav-link trigger-loading">API Reference</a>
+        </nav>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
     </header>
 
     <main class="container">
         <div class="terms-header">
             <div class="terms-title">TERMS AND POLICIES</div>
             <h1 class="main-heading">Everything you need to know, all in one place.</h1>
+            <p class="main-subheading">Browse our documentation, guidelines, and resources to better understand how ANG SILAKBO works and how to make the most of our platform.</p>
+            
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="search-input" placeholder="Search for terms, policies, or guidelines...">
+            </div>
         </div>
 
-        <section class="how-we-work">
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all">All</button>
+            <button class="category-tab" data-category="terms">Terms</button>
+            <button class="category-tab" data-category="policies">Policies</button>
+            <button class="category-tab" data-category="guidelines">Guidelines</button>
+            <button class="category-tab" data-category="api">API Reference</button>
+        </div>
+
+        <section class="how-we-work" id="howWeWork">
             <h2 class="section-title animate-on-scroll">HOW WE WORK</h2>
             
             <div class="cards-container">
@@ -917,28 +1313,19 @@
                         </div>
                     </a>
                     <div class="card-content">
-                        <div class="card-icon-container">
-                            <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="16"></line>
-                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                        <h3 class="card-title">Terms of Service</h3>
+                        <p class="card-description">Terms you agree to when you use our platform. These guidelines ensure a safe and productive environment for all users.</p>
+                        <a href="ToS.html" class="read-more trigger-loading">
+                            Read more
+                            <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="M12 5l7 7-7 7"></path>
                             </svg>
-                        </div>
-                        <div>
-                            <h3 class="card-title">Terms of Service</h3>
-                            <p class="card-description">Terms you agree to when you use our platform. These guidelines ensure a safe and productive environment for all users.</p>
-                            <a href="ToS.html" class="read-more trigger-loading">
-                                Read more
-                                <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 12h14"></path>
-                                    <path d="M12 5l7 7-7 7"></path>
-                                </svg>
-                            </a>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Privacy Policy Card -->
+                <!-- Executive Order Card -->
                 <div class="card" style="--card-index: 1">
                     <a href="Exec Order.html" class="card-image-container trigger-loading">
                         <img src="Phone.avif" alt="Phone with people illustration" class="card-image">
@@ -951,28 +1338,20 @@
                             </div>
                         </div>
                         <div class="card-image-text">
-                            <div class="card-image-title">Privacy Policy</div>
-                            <div class="card-image-description">Click to view our privacy policy</div>
+                            <div class="card-image-title">Executive Order</div>
+                            <div class="card-image-description">Click to view our executive order</div>
                         </div>
                     </a>
                     <div class="card-content">
-                        <div class="card-icon-container">
-                            <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        <h3 class="card-title">Executive Order</h3>
+                        <p class="card-description">Information and the protocols we follow. Learn about our commitment to the orders from the SSC.</p>
+                        <a href="Exec Order.html" class="read-more trigger-loading">
+                            Read more
+                            <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="M12 5l7 7-7 7"></path>
                             </svg>
-                        </div>
-                        <div>
-                            <h3 class="card-title">Executive Order</h3>
-                            <p class="card-description">Information and the protocols we follow. Learn about our commitment to the orders from the SSC.</p>
-                            <a href="Exec Order.html" class="read-more trigger-loading">
-                                Read more
-                                <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 12h14"></path>
-                                    <path d="M12 5l7 7-7 7"></path>
-                                </svg>
-                            </a>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
@@ -994,19 +1373,80 @@
                         </div>
                     </a>
                     <div class="card-content">
-                        <div class="card-icon-container">
-                            <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        <h3 class="card-title">Community Standards</h3>
+                        <p class="card-description">What's not allowed and how to report abuse. Our guidelines help maintain a respectful community for everyone.</p>
+                        <a href="Guidelines.html" class="read-more trigger-loading">
+                            Read more
+                            <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="M12 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Section -->
+        <section class="featured-section animate-on-scroll">
+            <div class="featured-container">
+                <h2 class="section-title">FEATURED RESOURCES</h2>
+                
+                <div class="featured-grid">
+                    <div class="featured-item">
+                        <div class="featured-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
                             </svg>
                         </div>
-                        <div>
-                            <h3 class="card-title">Community Standards</h3>
-                            <p class="card-description">What's not allowed and how to report abuse. Our guidelines help maintain a respectful community for everyone.</p>
-                            <a href="Guidelines.html" class="read-more trigger-loading">
-                                Read more
+                        <div class="featured-content">
+                            <h3 class="featured-title">Documentation</h3>
+                            <p class="featured-description">Access our comprehensive documentation and guides.</p>
+                            <a href="Documentation.html" class="read-more trigger-loading">
+                                Read Docs
+                                <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="featured-item">
+                        <div class="featured-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                        </div>
+                        <div class="featured-content">
+                            <h3 class="featured-title">Contribute</h3>
+                            <p class="featured-description">Want to contribute to ANG SILAKBO's website, but don't know how? Check out our contribution guidelines.</p>
+                            <a href="Contribute.html" class="read-more trigger-loading">
+                                Get Started
+                                <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="featured-item">
+                        <div class="featured-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                        </div>
+                        <div class="featured-content">
+                            <h3 class="featured-title">API References</h3>
+                            <p class="featured-description">Access how we integrate our API with other platforms.</p>
+                            <a href="API-Reference.html" class="read-more trigger-loading">
+                                Explore
                                 <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M5 12h14"></path>
                                     <path d="M12 5l7 7-7 7"></path>
@@ -1029,20 +1469,40 @@
                     <li><a href="Artikulo.html" class="trigger-loading">News and Articles</a></li>
                 </ul>
             </div>
-            <div class="footer-column" style="--column-index: 2">
-                <h4 class="footer-title">Resource</h4>
+            <div class="footer-column" style="--column-index: 1">
+                <h4 class="footer-title">Resources</h4>
                 <ul class="footer-links">
                     <li><a href="ToS.html" class="trigger-loading">Terms of Service</a></li>
                     <li><a href="Exec Order.html" class="trigger-loading">Executive Order</a></li>
                     <li><a href="Dev's Note.html" class="trigger-loading">Developer's Notes</a></li>
+                    <li><a href="API-Reference.html" class="trigger-loading">API Reference</a></li>
                 </ul>
             </div>
-            <div class="footer-column" style="--column-index: 3">
+            <div class="footer-column" style="--column-index: 2">
                 <h4 class="footer-title">Connect</h4>
                 <ul class="footer-links">
                     <li><a href="#" class="trigger-loading">Contact Us</a></li>
                     <li><a href="https://www.facebook.com/AngSilakboUCLM" class="trigger-loading">Facebook</a></li>
                 </ul>
+                <div class="footer-social">
+                    <a href="#" class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -1103,6 +1563,40 @@
                 }, 150);
             }
             
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuClose = document.getElementById('mobileMenuClose');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('active');
+                mobileOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+            mobileOverlay.addEventListener('click', closeMobileMenu);
+            
+            // Category tabs functionality
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Here you would typically filter content based on the selected category
+                    // For demonstration purposes, we're just changing the active state
+                });
+            });
+            
             // Back to top button functionality
             const backToTopBtn = document.getElementById('backToTop');
             
@@ -1159,6 +1653,27 @@
                     showLoading();
                 });
             });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    // Simulate search loading
+                    showLoading();
+                    
+                    // In a real implementation, you would handle the search here
+                    console.log('Searching for:', this.value);
+                }
+            });
+            
+            // Fix for "How We Work" section disappearing when toggled
+            // This ensures the section is always visible
+            const howWeWorkSection = document.getElementById('howWeWork');
+            if (howWeWorkSection) {
+                // Make sure the section is visible by setting display to block
+                howWeWorkSection.style.display = 'block';
+            }
             
             console.log('Page loaded successfully');
         });
