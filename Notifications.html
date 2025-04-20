@@ -3,2404 +3,2390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Message Inquiries</title>
+    <title>ANG SILAKBO - Inquiries</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
     <style>
         :root {
-            --primary-color: #E65100;
-            --primary-light: #FF8A50;
-            --primary-dark: #B23C00;
-            --secondary-color: #FFF0E6;
-            --accent-color: #FF9933;
-            --text-color: #333333;
-            --text-light: #666666;
-            --text-muted: #888888;
-            --shadow-color: rgba(255, 102, 0, 0.1);
-            --success-color: #4CAF50;
-            --warning-color: #FFC107;
-            --danger-color: #F44336;
-            --info-color: #2196F3;
-            --card-bg: #FFFFFF;
-            --bg-light: #f8f9fa;
-            --border-radius: 16px;
-            --border-radius-sm: 8px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --primary-color: #e65100;
+            --primary-light: #ff833a;
+            --primary-dark: #ac1900;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --text-muted: #757575;
+            --background-light: #ffffff;
+            --background-gray: #f9f9f9;
+            --background-dark: #263238;
+            --border-color: #e0e0e0;
+            --card-bg: #ffffff;
+            --status-received: #fff3e0;
+            --status-inprogress: #e8f5e9;
+            --status-resolved: #e1f5fe;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --radius-sm: 4px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --transition: all 0.2s ease;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-color);
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            color: var(--text-dark);
             line-height: 1.6;
-            overflow-x: hidden;
+            background-color: var(--background-gray);
         }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 10px;
-            transition: var(--transition);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-light);
-        }
-
-        .dashboard {
+        
+        /* Layout */
+        .app-container {
             display: flex;
-            min-height: 100vh;
-            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
         }
-
+        
         /* Sidebar Styles */
         .sidebar {
-            width: 280px;
-            background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            padding: 2rem 1.5rem;
-            transition: var(--transition);
-            position: fixed;
+            width: 250px;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--text-light);
             height: 100vh;
-            overflow-y: auto;
             z-index: 100;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-header img {
-            width: 48px;
-            height: 48px;
-            margin-right: 15px;
-            border-radius: 12px;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            box-shadow: var(--shadow);
             transition: var(--transition);
-        }
-
-        .sidebar-header:hover img {
-            transform: scale(1.05);
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar-menu {
-            list-style-type: none;
-            margin-top: 1.5rem;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 0.8rem;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition);
-        }
-
-        .sidebar-menu a {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 0.9rem 1.2rem;
-            border-radius: 12px;
-            transition: var(--transition);
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sidebar-menu a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background-color: white;
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .sidebar-menu a:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-        }
-
-        .sidebar-menu a.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar-menu a.active::before {
-            transform: scaleY(1);
-        }
-
-        .sidebar-menu i {
-            margin-right: 12px;
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .sidebar-menu a:hover i {
-            transform: scale(1.2);
-        }
-
-        .sidebar-footer {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: center;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            flex-grow: 1;
-            margin-left: 280px;
-            padding: 2rem;
-            background-color: var(--bg-light);
-            transition: var(--transition);
-            min-height: 100vh;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            background-color: var(--card-bg);
-            padding: 1.2rem 1.8rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 8px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
-            border-radius: 4px 0 0 4px;
-        }
-
-        .page-title {
-            display: flex;
-            align-items: center;
-        }
-
-        .page-title h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-left: 15px;
-            position: relative;
-        }
-
-        .page-title i {
-            font-size: 1.5rem;
-            color: white;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            padding: 12px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px var(--shadow-color);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary-light);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.05);
-            border-color: var(--primary-color);
-        }
-
-        .user-details {
             display: flex;
             flex-direction: column;
+            flex-shrink: 0;
         }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .user-role {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        .user-actions {
+        
+        .sidebar-header {
+            padding: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .user-actions button {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
+        
+        .logo {
+            height: 36px;
+            margin-right: 12px;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+        }
+        
+        .site-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             color: var(--text-light);
-            cursor: pointer;
+        }
+        
+        .admin-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.625rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+        
+        .sidebar-menu {
+            padding: 1.25rem 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
             transition: var(--transition);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            margin: 0.25rem 0;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-light);
+            border-left: 3px solid var(--text-light);
+        }
+        
+        .menu-item .icon {
+            margin-right: 0.75rem;
+            transition: var(--transition);
+        }
+        
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
             position: relative;
         }
-
-        .user-actions button:hover {
-            color: var(--primary-color);
-            transform: translateY(-2px);
+        
+        .top-bar {
+            background-color: var(--background-light);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+            border-bottom: 1px solid var(--border-color);
+            height: 64px;
+            flex-shrink: 0;
         }
-
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: var(--danger-color);
-            color: white;
-            font-size: 0.7rem;
-            width: 18px;
-            height: 18px;
+        
+        .page-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+        }
+        
+        .page-title .icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+            background: var(--status-received);
+            padding: 0.375rem;
             border-radius: 50%;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--background-gray);
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+        
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 9999px;
+            background: var(--primary-color);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 0.875rem;
         }
-
-        /* Dashboard Overview */
-        .dashboard-overview {
-            margin-bottom: 2rem;
+        
+        .user-name {
+            font-weight: 500;
+            font-size: 0.875rem;
         }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1.2rem;
-            color: var(--text-color);
+        
+        /* Dashboard Container */
+        .dashboard-container {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            padding-left: 15px;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            padding: 1.5rem;
+            gap: 1.5rem;
         }
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 5px;
-            height: 25px;
-            background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
-            border-radius: 3px;
-        }
-
-        .section-title i {
-            color: var(--primary-color);
-        }
-
+        
         /* Stats Container */
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 2.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
         }
-
-        .stat-item {
+        
+        /* Message List Container */
+        .messages-list-container {
             background-color: var(--card-bg);
-            padding: 1.8rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            z-index: 1;
-        }
-
-        .stat-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-            z-index: 2;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 2.2rem;
-            color: var(--primary-color);
-            opacity: 0.15;
-            transition: var(--transition);
-        }
-
-        .stat-item:hover .stat-icon {
-            transform: scale(1.2) rotate(10deg);
-            opacity: 0.2;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin: 15px 0;
-            transition: var(--transition);
-            position: relative;
-            display: inline-block;
-        }
-
-        .stat-item:hover .stat-value {
-            transform: scale(1.05);
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: var(--text-light);
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .stat-trend {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--success-color);
-            background-color: rgba(76, 175, 80, 0.1);
-            padding: 5px 10px;
-            border-radius: 20px;
-            width: fit-content;
-        }
-
-        .stat-trend.up {
-            color: var(--success-color);
-            background-color: rgba(76, 175, 80, 0.1);
-        }
-
-        .stat-trend.down {
-            color: var(--danger-color);
-            background-color: rgba(244, 67, 54, 0.1);
-        }
-
-        .stat-trend i {
-            margin-right: 5px;
-        }
-
-        /* Activity Chart */
-        .activity-chart {
-            background-color: var(--card-bg);
-            padding: 1.8rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            margin-bottom: 2.5rem;
-            position: relative;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
-
-        .activity-chart::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--info-color), var(--primary-light));
-            z-index: 2;
-        }
-
-        .chart-header {
+        
+        .messages-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+            background-color: var(--background-light);
         }
-
-        .chart-title {
-            font-size: 1.2rem;
+        
+        .messages-header h2 {
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--text-color);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.5rem;
         }
-
-        .chart-title i {
-            color: var(--info-color);
-            font-size: 1.1rem;
+        
+        .message-count {
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
         }
-
-        .chart-period {
+        
+        .messages-toolbar {
+            padding: 0.75rem 1rem;
+            background-color: var(--background-gray);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .search-bar {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            margin-bottom: 0.75rem;
         }
-
-        .period-btn {
-            padding: 6px 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
-            background: none;
-            font-size: 0.85rem;
+        
+        .search-bar:focus-within {
+            box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .search-bar .icon {
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.875rem;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 0.25rem;
+        }
+        
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-item {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-color);
             cursor: pointer;
             transition: var(--transition);
-            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
         }
-
-        .period-btn:hover {
-            background-color: #f5f5f5;
-            border-color: #d0d0d0;
-        }
-
-        .period-btn.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 3px 8px var(--shadow-color);
-        }
-
-        .chart-container {
-            height: 280px;
-            display: flex;
-            align-items: flex-end;
-            gap: 15px;
-            padding-top: 30px;
-            padding-bottom: 30px;
-            position: relative;
-        }
-
-        .chart-container::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 30px;
-            width: 100%;
-            height: 1px;
-            background-color: #eee;
-        }
-
-        .chart-bar {
-            flex: 1;
-            background: linear-gradient(to top, var(--primary-color), var(--primary-light));
-            border-radius: 8px 8px 0 0;
-            position: relative;
-            min-height: 20px;
-            transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-bar:hover {
-            transform: scaleY(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .chart-bar::before {
-            content: attr(data-value);
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.85rem;
-            font-weight: 600;
+        
+        .filter-item:hover {
+            border-color: var(--primary-color);
             color: var(--primary-color);
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 3px 8px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
-
-        .chart-bar:hover::before {
-            opacity: 1;
+        
+        .filter-item.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
-
-        .chart-bar::after {
-            content: attr(data-label);
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.85rem;
-            color: var(--text-light);
-            font-weight: 500;
+        
+        .filter-item .icon {
+            margin-right: 0.375rem;
+            width: 14px;
+            height: 14px;
         }
-
-        /* Quick Stats Cards */
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+        
+        .messages-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
         }
-
-        .quick-stat-card {
-            background-color: var(--card-bg);
-            padding: 1.2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
+        
+        .message-card {
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+        
+        .message-card.unread {
+            border-left: 3px solid var(--primary-color);
+            background-color: var(--status-received);
+        }
+        
+        .message-card.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--text-dark);
+            margin-right: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
-            gap: 15px;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
         }
-
-        .quick-stat-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
+        
+        .message-date i {
+            margin-right: 0.375rem;
+            font-size: 0.75rem;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 4.5rem;
+        }
+        
+        .status-Received {
+            background-color: var(--status-received);
+            color: var(--primary-color);
+        }
+        
+        .status-In\.Progress {
+            background-color: var(--status-inprogress);
+            color: #2e7d32;
+        }
+        
+        .status-Resolved {
+            background-color: var(--status-resolved);
+            color: #0277bd;
+        }
+        
+        .tracking-code {
+            background-color: var(--status-received);
+            color: var(--primary-color);
+            padding: 0.125rem 0.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 0.6875rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .tracking-code i {
+            margin-right: 0.25rem;
+            width: 12px;
+            height: 12px;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .quick-stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .quick-stat-card:hover::after {
-            transform: scaleX(1);
-        }
-
-        .quick-stat-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--secondary-color), #ffece0);
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
-            font-size: 1.6rem;
-            transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            backdrop-filter: blur(4px);
         }
-
-        .quick-stat-card:hover .quick-stat-icon {
-            transform: scale(1.1) rotate(5deg);
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-color));
-            color: white;
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
-
-        .quick-stat-info {
+        
+        .modal-container {
+            background-color: var(--background-light);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
-        }
-
-        .quick-stat-value {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            transition: var(--transition);
-        }
-
-        .quick-stat-card:hover .quick-stat-value {
-            transform: scale(1.05);
-        }
-
-        .quick-stat-label {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-
-        /* Filter Container */
-        .filter-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            background-color: var(--card-bg);
-            padding: 1.5rem 1.8rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
             overflow: hidden;
         }
-
-        .filter-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--warning-color), var(--accent-color));
-            z-index: 2;
+        
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
         }
-
-        .filter-group {
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
+            background-color: var(--background-light);
         }
-
-        .filter-label {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-color);
+        
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
-
-        .filter-dropdown, .search-input {
-            padding: 0.7rem 1.2rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-family: 'Poppins', sans-serif;
+        
+        .modal-title .icon {
+            color: var(--primary-color);
+            background: var(--status-received);
+            padding: 0.375rem;
+            border-radius: 50%;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
             transition: var(--transition);
-            background-color: #f9f9f9;
         }
-
-        .filter-dropdown:focus, .search-input:focus {
+        
+        .modal-close:hover {
+            background-color: var(--background-gray);
+            color: var(--text-dark);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        /* Message Details Styles */
+        .message-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+        }
+        
+        .message-details-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-details-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            background-color: var(--background-gray);
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            background-color: var(--background-light);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+        
+        .meta-item .icon {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+            background: var(--status-received);
+            padding: 0.25rem;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .meta-item span {
+            font-size: 0.8125rem;
+            color: var(--text-dark);
+        }
+        
+        .meta-item strong {
+            font-weight: 500;
+            margin-right: 0.25rem;
+            color: var(--text-muted);
+        }
+        
+        .message-content {
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            font-size: 0.9375rem;
+        }
+        
+        .message-content::before {
+            content: '"';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.2;
+            font-family: serif;
+        }
+        
+        /* Action Panel Styles */
+        .action-panel {
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background-color: var(--background-gray);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .action-panel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .action-panel-header .icon {
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+            background: var(--status-received);
+            padding: 0.375rem;
+            border-radius: 50%;
+        }
+        
+        .action-panel-header h3 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .action-label {
+            font-weight: 500;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+        
+        /* Form Elements */
+        select, textarea {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            transition: var(--transition);
+            width: 100%;
+            box-shadow: var(--shadow-sm);
+            background-color: var(--background-light);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        select {
+            cursor: pointer;
+            max-width: 200px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 2rem;
+        }
+        
+        select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--shadow-color);
-            background-color: white;
+            box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.1);
         }
-
-        .search-container {
-            position: relative;
-            flex-grow: 1;
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
         }
-
-        .search-input {
-            width: 100%;
-            padding-left: 45px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-            font-size: 1.1rem;
-        }
-
-        /* Notifications Container */
-        .notifications-container {
-            background-color: var(--card-bg);
-            padding: 1.8rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .notifications-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-            z-index: 2;
-        }
-
-        .notification-header {
+        
+        /* Button Styles */
+        .btn-group {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
         }
-
-        .notification-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .notification-title i {
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-
-        .notification-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .action-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 10px;
-            background-color: var(--secondary-color);
-            color: var(--primary-color);
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .action-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px var(--shadow-color);
-        }
-
-        .action-btn i {
-            font-size: 0.9rem;
-        }
-
-        .notification-item {
-            border-bottom: 1px solid #eee;
-            padding: 1.5rem 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: var(--transition);
-            position: relative;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-
-        .notification-item:hover {
-            background-color: rgba(255, 153, 51, 0.05);
-            padding-left: 15px;
-            padding-right: 15px;
-            margin: 0 -15px;
-            border-radius: 12px;
-        }
-
-        .notification-item.unread::before {
-            content: '';
-            position: absolute;
-            left: -15px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(230, 81, 0, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(230, 81, 0, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(230, 81, 0, 0);
-            }
-        }
-
-        .notification-info {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .notification-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--secondary-color), #ffece0);
-            display: flex;
+        
+        button {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
-            font-size: 1.3rem;
-            transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .notification-item:hover .notification-icon {
-            transform: scale(1.1) rotate(5deg);
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-color));
-            color: white;
-        }
-
-        .notification-content {
-            flex-grow: 1;
-        }
-
-        .notification-title-text {
-            font-weight: 600;
-            font-size: 1.05rem;
-            margin-bottom: 5px;
-            color: var(--text-color);
-            transition: var(--transition);
-        }
-
-        .notification-item:hover .notification-title-text {
-            color: var(--primary-color);
-        }
-
-        .notification-message {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .notification-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
-        }
-
-        .notification-time {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .notification-time i {
-            font-size: 0.8rem;
-        }
-
-        .notification-status {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background-color: rgba(255, 193, 7, 0.15);
-            color: var(--warning-color);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .notification-status i {
-            font-size: 0.7rem;
-        }
-
-        .notification-status.read {
-            background-color: rgba(76, 175, 80, 0.15);
-            color: var(--success-color);
-        }
-
-        .notification-actions-btns {
-            display: flex;
-            gap: 10px;
-            margin-left: 15px;
-        }
-
-        .view-btn, .delete-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 8px var(--shadow-color);
-        }
-
-        .view-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 15px var(--shadow-color);
-        }
-
-        .delete-btn {
-            background-color: var(--danger-color);
-        }
-
-        .delete-btn:hover {
-            background-color: #d32f2f;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-muted);
-            animation: fadeIn 0.8s ease;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            color: #e0e0e0;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        .empty-state h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--text-light);
-        }
-
-        .empty-state p {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .empty-state-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 4px 10px var(--shadow-color);
+            border: none;
+            box-shadow: var(--shadow-sm);
+            font-family: 'Poppins', sans-serif;
         }
-
-        .empty-state-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px var(--shadow-color);
+        
+        button .icon {
+            margin-right: 0.5rem;
         }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--background-gray);
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+        }
+        
+        /* Comments Section */
+        .comments-section {
             margin-top: 1.5rem;
         }
-
-        .pagination-info {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            font-weight: 500;
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
         }
-
-        .pagination-info span {
+        
+        .section-header .icon {
             color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .pagination-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .pagination-btn {
-            background-color: var(--card-bg);
-            border: 1px solid #e0e0e0;
-            color: var(--text-color);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border-color: transparent;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px var(--shadow-color);
-        }
-
-        .pagination-btn:disabled {
-            background-color: #f5f5f5;
-            color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .pagination-btn.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 3px 8px var(--shadow-color);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: 8% auto;
-            padding: 0;
-            border: none;
-            width: 90%;
-            max-width: 650px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
-            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-70px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-        }
-
-        .modal-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modal-title i {
-            font-size: 1.2rem;
-        }
-
-        .close {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 300;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-right: 0.75rem;
+            background: var(--status-received);
+            padding: 0.375rem;
             border-radius: 50%;
         }
-
-        .close:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
+        
+        .section-header h3 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
         }
-
-        .modal-body {
-            padding: 2rem;
+        
+        .comment {
+            padding: 1rem;
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--primary-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
         }
-
-        .message-detail-item {
-            margin-bottom: 1.5rem;
+        
+        .comment:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
-
-        .message-detail-label {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
+        
+        .comment-text {
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .comment-author {
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
         }
-
-        .message-detail-label i {
+        
+        .comment-author.admin {
             color: var(--primary-color);
         }
-
-        .message-detail-value {
-            font-size: 1rem;
-            color: var(--text-color);
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary-color);
-            transition: var(--transition);
+        
+        .comment-author.admin::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 0.375rem;
         }
-
-        .message-detail-value:hover {
-            background-color: #f0f0f0;
-            transform: translateX(5px);
+        
+        .comment-author.system {
+            color: #0277bd;
         }
-
-        .message-detail-value.message {
-            min-height: 120px;
-            white-space: pre-line;
+        
+        .comment-author.system::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #0277bd;
+            border-radius: 50%;
+            margin-right: 0.375rem;
         }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            padding: 1.5rem 2rem;
-            background-color: #f8f9fa;
-            border-top: 1px solid #eee;
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.25rem;
+            color: var(--text-muted);
         }
-
-        .modal-btn {
-            padding: 0.8rem 1.5rem;
+        
+        .empty-state .icon {
+            font-size: 2.5rem;
+            color: #bdbdbd;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state p {
+            font-size: 0.9375rem;
+        }
+        
+        /* Response Section */
+        .response-section {
+            margin-top: 1.5rem;
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
             border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
+            color: var(--text-dark);
             cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        
+        /* Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--background-gray);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #bdbdbd;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9e9e9e;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        .stat-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .modal-btn.primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            box-shadow: 0 4px 10px var(--shadow-color);
-        }
-
-        .modal-btn.primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px var(--shadow-color);
-        }
-
-        .modal-btn.secondary {
-            background-color: #f0f0f0;
-            color: var(--text-color);
-        }
-
-        .modal-btn.secondary:hover {
-            background-color: #e0e0e0;
-            transform: translateY(-3px);
-        }
-
-        .modal-btn i {
-            font-size: 1rem;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 2rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-icon.orange {
+            background: var(--status-received);
+            color: var(--primary-color);
+        }
+        
+        .stat-icon.blue {
+            background: var(--status-resolved);
+            color: #0277bd;
+        }
+        
+        .stat-icon.green {
+            background: var(--status-inprogress);
+            color: #2e7d32;
+        }
+        
+        .stat-content {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(230, 81, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin: 1rem auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* User History Styles */
+        .user-history-container {
+            display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--secondary-color);
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        
+        .user-history-card {
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        .user-history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
         }
-
-        .loading-text {
-            color: var(--text-light);
-            font-weight: 500;
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
+        
+        .user-history-header {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 350px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
         }
-
-        .toast {
-            background-color: white;
-            color: var(--text-color);
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        
+        .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
-            animation: toastSlideIn 0.3s ease, toastFadeOut 0.3s ease 2.7s forwards;
-            position: relative;
-            overflow: hidden;
+            gap: 0.75rem;
         }
-
-        .toast::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary-color);
-            animation: toastProgress 3s linear forwards;
-        }
-
-        @keyframes toastProgress {
-            from { width: 100%; }
-            to { width: 0%; }
-        }
-
-        @keyframes toastSlideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes toastFadeOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        .toast.success::before {
-            background-color: var(--success-color);
-        }
-
-        .toast.error::before {
-            background-color: var(--danger-color);
-        }
-
-        .toast.warning::before {
-            background-color: var(--warning-color);
-        }
-
-        .toast-icon {
-            width: 30px;
-            height: 30px;
+        
+        .user-avatar-sm {
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-        }
-
-        .toast.success .toast-icon {
-            background-color: var(--success-color);
-        }
-
-        .toast.error .toast-icon {
-            background-color: var(--danger-color);
-        }
-
-        .toast.warning .toast-icon {
-            background-color: var(--warning-color);
-        }
-
-        .toast-content {
-            flex-grow: 1;
-        }
-
-        .toast-title {
             font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 3px;
+            font-size: 0.75rem;
         }
-
-        .toast-message {
-            font-size: 0.85rem;
-            color: var(--text-light);
+        
+        .user-name-email {
+            display: flex;
+            flex-direction: column;
         }
-
-        .toast-close {
-            color: var(--text-light);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: var(--transition);
+        
+        .user-name-sm {
+            font-weight: 600;
+            font-size: 0.875rem;
         }
-
-        .toast-close:hover {
-            color: var(--text-color);
-            transform: rotate(90deg);
+        
+        .user-email-sm {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
-
+        
+        .message-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            background-color: var(--background-gray);
+            font-size: 0.8125rem;
+        }
+        
+        .history-item .icon {
+            color: var(--primary-color);
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+        
+        .history-item-content {
+            flex: 1;
+        }
+        
+        .history-item-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .history-item-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Help Center Modal Styles */
+        .help-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .help-card {
+            background-color: var(--background-light);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .help-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .help-card-header .icon {
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+            background: var(--status-received);
+            padding: 0.375rem;
+            border-radius: 50%;
+        }
+        
+        .help-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .help-card-content {
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .help-card-content p {
+            margin-bottom: 0.75rem;
+        }
+        
+        .help-card-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .help-card-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .help-card-content .highlight {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
         /* Responsive Styles */
-        @media (max-width: 1200px) {
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
             .stats-container {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
             }
         }
-
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-                padding: 1.5rem 0.5rem;
-            }
-
-            .sidebar-header h2, .sidebar-menu span, .sidebar-footer {
-                display: none;
-            }
-
-            .sidebar-header {
-                justify-content: center;
-                margin-bottom: 2rem;
-            }
-
-            .sidebar-header img {
-                margin-right: 0;
-            }
-
-            .sidebar-menu a {
-                justify-content: center;
-                padding: 0.8rem;
-            }
-
-            .sidebar-menu i {
-                margin-right: 0;
-                font-size: 1.3rem;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-        }
-
+        
         @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+            .dashboard-container {
                 padding: 1rem;
-                overflow-x: auto;
-                display: flex;
-                align-items: center;
-            }
-
-            .sidebar-header {
-                margin-bottom: 0;
-                padding-bottom: 0;
-                border-bottom: none;
-                margin-right: 1.5rem;
-            }
-
-            .sidebar-menu {
-                display: flex;
-                margin-top: 0;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-
-            .sidebar-menu li {
-                margin-bottom: 0;
-                margin-right: 0.5rem;
-            }
-
-            .sidebar-footer {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
                 gap: 1rem;
             }
-
-            .user-info {
-                width: 100%;
-                justify-content: space-between;
+            
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
             }
-
-            .filter-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-group {
-                width: 100%;
-            }
-
-            .filter-dropdown, .search-input {
-                width: 100%;
-            }
-
-            .notification-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .notification-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .notification-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .notification-meta {
-                width: 100%;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .notification-actions-btns {
-                width: 100%;
-                justify-content: flex-end;
-            }
-
-            .chart-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .chart-period {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .stats-container, .quick-stats {
+            
+            .message-details-meta {
                 grid-template-columns: 1fr;
             }
-
-            .pagination {
+            
+            .action-row {
                 flex-direction: column;
-                gap: 1rem;
+                align-items: flex-start;
             }
-
-            .pagination-info {
-                text-align: center;
+            
+            select {
+                max-width: 100%;
             }
-
-            .pagination-controls {
-                justify-content: center;
+            
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
             }
+            
+            .btn-group button {
+                width: 100%;
+            }
+            
+            .modal-container {
+                max-height: 95vh;
+                width: 95%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-bar {
+                padding: 0.75rem 1rem;
+            }
+            
+            .user-menu {
+                display: none;
+            }
+            
+            .dashboard-container {
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+        }
+        
+        /* Dark Overlay for Mobile Menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .message-card {
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
 </head>
 <body>
-    <div class="toast-container" id="toastContainer"></div>
+    <div class="overlay" id="overlay"></div>
     
-    <div class="dashboard">
-        <aside class="sidebar">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <img src="SILAKBO (1).png" alt="Ang Silakbo Logo">
-                <h2>ANG SILAKBO</h2>
+                <img src="SILAKBO.png" alt="ANG SILAKBO Logo" class="logo">
+                <div>
+                    <h1 class="site-title">ANG SILAKBO</h1>
+                    <span class="admin-badge">Admin</span>
+                </div>
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="Ang Silakbo Admin Panel.html" class="active"><i class="fas fa-tachometer-alt"></i> <span>Back To Dashboard</span></a></li>
-                <li><a href="Calendar2.html"><i class="fas fa-calendar"></i> <span>Memos</span></a></li>
-            </ul>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-item active">
+                    <i data-feather="message-square" class="icon"></i>
+                    <span>Messages</span>
+                </div>
+                <div class="menu-item" id="users-menu-item">
+                    <i data-feather="users" class="icon"></i>
+                    <span>Users</span>
+                </div>
+                <div class="menu-item" id="help-menu-item">
+                    <i data-feather="help-circle" class="icon"></i>
+                    <span>Help Center</span>
+                </div>
+            </nav>
+            
             <div class="sidebar-footer">
-                <p>© 2025 Ang Silakbo</p>
+                &copy; 2025 ANG SILAKBO. All rights reserved.
             </div>
         </aside>
+        
+        <!-- Main Content -->
         <main class="main-content">
-            <header class="header">
-                <div class="page-title">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <h1>Admin Dashboard</h1>
+            <div class="top-bar">
+                <div class="left-section">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i data-feather="menu"></i>
+                    </button>
+                    
+                    <h1 class="page-title">
+                        <i data-feather="message-square" class="icon"></i>
+                        Message Management
+                    </h1>
                 </div>
-                <div class="user-info">
-                    <img src="SILAKBO.png" alt="Admin Avatar" class="user-avatar">
-                    <div class="user-details">
-                        <span class="user-name" id="adminName">SILAKBO ADMIN</span>
-                        <span class="user-role">Administrator</span>
-                    </div>
-                    <div class="user-actions">
-                        <button>
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-badge" id="notificationBadge">0</span>
-                        </button>
-                        <button><i class="fas fa-sign-out-alt"></i></button>
-                    </div>
-                </div>
-            </header>
-
-            <section class="dashboard-overview">
-                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Dashboard Overview</h2>
                 
+                <div class="user-menu">
+                    <div class="user-avatar">A</div>
+                    <span class="user-name">Admin</span>
+                </div>
+            </div>
+            
+            <div class="dashboard-container">
+                <!-- Stats Overview -->
                 <div class="stats-container">
-                    <div class="stat-item">
-                        <i class="fas fa-envelope stat-icon"></i>
-                        <div class="stat-label">Total Notifications</div>
-                        <div class="stat-value" id="totalNotifications">0</div>
-                        <div class="stat-trend up">
-                            <i class="fas fa-arrow-up"></i> 12% from last week
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i data-feather="inbox"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-messages">0</div>
+                            <div class="stat-label">Total Messages</div>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <i class="fas fa-envelope-open stat-icon"></i>
-                        <div class="stat-label">Unread Notifications</div>
-                        <div class="stat-value" id="unreadNotifications">0</div>
-                        <div class="stat-trend down">
-                            <i class="fas fa-arrow-down"></i> 5% from last week
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i data-feather="clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="in-progress">0</div>
+                            <div class="stat-label">In Progress</div>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <i class="fas fa-calendar-day stat-icon"></i>
-                        <div class="stat-label">Today's Notifications</div>
-                        <div class="stat-value" id="todayNotifications">0</div>
-                        <div class="stat-trend up">
-                            <i class="fas fa-arrow-up"></i> 8% from yesterday
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i data-feather="check-circle"></i>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-clock stat-icon"></i>
-                        <div class="stat-label">Avg. Response Time</div>
-                        <div class="stat-value" id="averageResponseTime">0</div>
-                        <div class="stat-trend down">
-                            <i class="fas fa-arrow-down"></i> 15% improvement
+                        <div class="stat-content">
+                            <div class="stat-value" id="resolved">0</div>
+                            <div class="stat-label">Resolved</div>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <section class="activity-chart">
-                <div class="chart-header">
-                    <div class="chart-title">
-                        <i class="fas fa-chart-line"></i> Notification Activity
+                
+                <!-- Messages List Container -->
+                <div class="messages-list-container">
+                    <div class="messages-header">
+                        <h2>
+                            <i data-feather="inbox" class="icon"></i>
+                            Messages
+                            <span class="message-count" id="message-count">0</span>
+                        </h2>
                     </div>
-                    <div class="chart-period">
-                        <button class="period-btn">Day</button>
-                        <button class="period-btn active">Week</button>
-                        <button class="period-btn">Month</button>
-                        <button class="period-btn">Year</button>
+                    
+                    <div class="messages-toolbar">
+                        <div class="search-bar">
+                            <i data-feather="search" class="icon"></i>
+                            <input type="text" class="search-input" id="search-messages" placeholder="Search messages...">
+                        </div>
+                        
+                        <div class="filter-bar">
+                            <div class="filter-item active" data-filter="all">
+                                <i data-feather="list" class="icon"></i>
+                                All
+                            </div>
+                            <div class="filter-item" data-filter="unread">
+                                <i data-feather="mail" class="icon"></i>
+                                Unread
+                            </div>
+                            <div class="filter-item" data-filter="Received">
+                                <i data-feather="inbox" class="icon"></i>
+                                Received
+                            </div>
+                            <div class="filter-item" data-filter="In Progress">
+                                <i data-feather="clock" class="icon"></i>
+                                In Progress
+                            </div>
+                            <div class="filter-item" data-filter="Resolved">
+                                <i data-feather="check-circle" class="icon"></i>
+                                Resolved
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="chart-container" id="activityChart">
-                    <!-- Chart bars will be dynamically generated -->
-                </div>
-            </section>
-
-          
-            <section class="filter-container">
-                <div class="filter-group">
-                    <span class="filter-label">Status:</span>
-                    <select class="filter-dropdown" id="statusFilter">
-                        <option value="all">All Status</option>
-                        <option value="unread">Unread</option>
-                        <option value="read">Read</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <span class="filter-label">Date:</span>
-                    <select class="filter-dropdown" id="dateFilter">
-                        <option value="all">All Time</option>
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                    </select>
-                </div>
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search notifications...">
-                </div>
-            </section>
-
-            <section class="notifications-container">
-                <div class="notification-header">
-                    <div class="notification-title">
-                        <i class="fas fa-envelope"></i> Recent Notifications
-                    </div>
-                    <div class="notification-actions">
-                        <button class="action-btn" id="markAllReadBtn"><i class="fas fa-check-double"></i> Mark All as Read</button>
-                        <button class="action-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    
+                    <div class="messages-list" id="messages-container">
+                        <div class="empty-state">
+                            <i data-feather="inbox" class="icon"></i>
+                            <p>Loading messages...</p>
+                            <div class="loading-spinner"></div>
+                        </div>
                     </div>
                 </div>
-                <div id="notificationsList">
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
-                        <div class="loading-text">Loading notifications...</div>
-                    </div>
-                </div>
-                <div class="pagination">
-                    <div class="pagination-info">Showing <span id="showingStart">0</span>-<span id="showingEnd">0</span> of <span id="totalItems">0</span> notifications</div>
-                    <div class="pagination-controls">
-                        <button class="pagination-btn" id="prevPage" disabled><i class="fas fa-chevron-left"></i></button>
-                        <button class="pagination-btn active">1</button>
-                        <button class="pagination-btn">2</button>
-                        <button class="pagination-btn">3</button>
-                        <button class="pagination-btn" id="nextPage"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
-
-    <div id="messageModal" class="modal">
-        <div class="modal-content">
+    
+    <!-- Message Details Modal -->
+    <div class="modal-overlay" id="message-modal">
+        <div class="modal-container">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-envelope-open-text"></i> Message Details</h2>
-                <span class="close">&times;</span>
+                <h2 class="modal-title">
+                    <i data-feather="file-text" class="icon"></i>
+                    Message Details
+                </h2>
+                <button class="modal-close" id="close-modal">
+                    <i data-feather="x"></i>
+                </button>
             </div>
-            <div class="modal-body" id="messageDetails">
-                <!-- Message details will be loaded here -->
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn secondary" id="closeModal"><i class="fas fa-times"></i> Close</button>
-                <button class="modal-btn primary" id="replyBtn"><i class="fas fa-reply"></i> Reply</button>
+            <div class="modal-body">
+                <div id="selected-message">
+                    <div class="empty-state">
+                        <i data-feather="file-text" class="icon"></i>
+                        <p>Select a message to view details</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, update, get, query, orderByChild, startAt, endAt, limitToFirst, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-
+    
+    <!-- Users Modal -->
+    <div class="modal-overlay" id="users-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i data-feather="users" class="icon"></i>
+                    User Message History
+                </h2>
+                <button class="modal-close" id="close-users-modal">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="search-bar" style="margin-bottom: 1.5rem;">
+                    <i data-feather="search" class="icon"></i>
+                    <input type="text" class="search-input" id="search-users" placeholder="Search users by name or email...">
+                </div>
+                
+                <div id="users-container" class="user-history-container">
+                    <div class="empty-state">
+                        <i data-feather="users" class="icon"></i>
+                        <p>Loading user data...</p>
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Help Center Modal -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i data-feather="help-circle" class="icon"></i>
+                    Help Center
+                </h2>
+                <button class="modal-close" id="close-help-modal">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <div class="help-card">
+                        <div class="help-card-header">
+                            <i data-feather="info" class="icon"></i>
+                            <h3>Getting Started</h3>
+                        </div>
+                        <div class="help-card-content">
+                            <p>Welcome to the ANG SILAKBO Admin Dashboard! This platform helps you manage and respond to user messages efficiently.</p>
+                            <p>Here's how to get started:</p>
+                            <ul>
+                                <li>The <span class="highlight">Messages</span> section displays all incoming messages from users</li>
+                                <li>The <span class="highlight">Users</span> section shows message history grouped by user</li>
+                                <li>Use filters and search to quickly find specific messages</li>
+                                <li>Click on any message to view details and respond</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="help-card">
+                        <div class="help-card-header">
+                            <i data-feather="message-square" class="icon"></i>
+                            <h3>Managing Messages</h3>
+                        </div>
+                        <div class="help-card-content">
+                            <p>Efficiently handle messages with these steps:</p>
+                            <ol>
+                                <li>Click on a message to open its details in a modal</li>
+                                <li>Review the message content and user information</li>
+                                <li>Update the status to "In Progress" while working on it</li>
+                                <li>Add your response in the comment section</li>
+                                <li>Change status to "Resolved" when complete</li>
+                            </ol>
+                            <p>Message statuses:</p>
+                            <ul>
+                                <li><span class="highlight">Received</span> - New messages that need attention</li>
+                                <li><span class="highlight">In Progress</span> - Messages you're currently working on</li>
+                                <li><span class="highlight">Resolved</span> - Completed messages that require no further action</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="help-card">
+                        <div class="help-card-header">
+                            <i data-feather="users" class="icon"></i>
+                            <h3>User History</h3>
+                        </div>
+                        <div class="help-card-content">
+                            <p>The Users section helps you track communication history with each user:</p>
+                            <ul>
+                                <li>View all messages from a specific user in one place</li>
+                                <li>See patterns in user communication</li>
+                                <li>Provide consistent responses based on previous interactions</li>
+                                <li>Search for users by name or email</li>
+                            </ul>
+                            <p>This feature is especially helpful for maintaining continuity when multiple admins are handling messages from the same user.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="help-card">
+                        <div class="help-card-header">
+                            <i data-feather="search" class="icon"></i>
+                            <h3>Search & Filter</h3>
+                        </div>
+                        <div class="help-card-content">
+                            <p>Quickly find what you need with search and filters:</p>
+                            <ul>
+                                <li>Use the search bar to find messages by subject, content, name, or tracking code</li>
+                                <li>Filter messages by status (Received, In Progress, Resolved)</li>
+                                <li>View only unread messages with the "Unread" filter</li>
+                                <li>Reset to view all messages with the "All" filter</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="help-card">
+                        <div class="help-card-header">
+                            <i data-feather="smartphone" class="icon"></i>
+                            <h3>Mobile Usage</h3>
+                        </div>
+                        <div class="help-card-content">
+                            <p>The dashboard is fully responsive for mobile devices:</p>
+                            <ul>
+                                <li>Access the sidebar menu by tapping the menu icon in the top left</li>
+                                <li>Scroll horizontally to view all filter options</li>
+                                <li>Modals are optimized for smaller screens</li>
+                                <li>All functions work the same as on desktop</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Feather Icons
+        document.addEventListener('DOMContentLoaded', () => {
+            feather.replace();
+            
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (mobileMenuToggle && sidebar && overlay) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
+                
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+            
+            // Message Modal functionality
+            const messageModal = document.getElementById('message-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            if (closeModal && messageModal) {
+                closeModal.addEventListener('click', () => {
+                    messageModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+                
+                // Close modal when clicking outside
+                messageModal.addEventListener('click', (e) => {
+                    if (e.target === messageModal) {
+                        messageModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+            
+            // Users Modal functionality
+            const usersModal = document.getElementById('users-modal');
+            const usersMenuItem = document.getElementById('users-menu-item');
+            const closeUsersModal = document.getElementById('close-users-modal');
+            
+            if (usersMenuItem && closeUsersModal && usersModal) {
+                usersMenuItem.addEventListener('click', () => {
+                    usersModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    loadUserHistory();
+                });
+                
+                closeUsersModal.addEventListener('click', () => {
+                    usersModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+                
+                // Close modal when clicking outside
+                usersModal.addEventListener('click', (e) => {
+                    if (e.target === usersModal) {
+                        usersModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+            
+            // Help Center Modal functionality
+            const helpModal = document.getElementById('help-modal');
+            const helpMenuItem = document.getElementById('help-menu-item');
+            const closeHelpModal = document.getElementById('close-help-modal');
+            
+            if (helpMenuItem && closeHelpModal && helpModal) {
+                helpMenuItem.addEventListener('click', () => {
+                    helpModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                closeHelpModal.addEventListener('click', () => {
+                    helpModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+                
+                // Close modal when clicking outside
+                helpModal.addEventListener('click', (e) => {
+                    if (e.target === helpModal) {
+                        helpModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+            
+            // Close modals with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (messageModal.classList.contains('active')) {
+                        messageModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                    if (usersModal.classList.contains('active')) {
+                        usersModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                    if (helpModal.classList.contains('active')) {
+                        helpModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                }
+            });
+            
+            // Filter functionality
+            const filterItems = document.querySelectorAll('.filter-item');
+            filterItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remove active class from all filters
+                    filterItems.forEach(filter => filter.classList.remove('active'));
+                    // Add active class to clicked filter
+                    item.classList.add('active');
+                    
+                    const filter = item.getAttribute('data-filter');
+                    filterMessages(filter);
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('search-messages');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    searchMessages(searchTerm);
+                });
+            }
+            
+            // User search functionality
+            const searchUsersInput = document.getElementById('search-users');
+            if (searchUsersInput) {
+                searchUsersInput.addEventListener('input', () => {
+                    const searchTerm = searchUsersInput.value.toLowerCase();
+                    searchUsers(searchTerm);
+                });
+            }
+        });
+        
+        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
             authDomain: "ang-silakbo.firebaseapp.com",
             databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
             projectId: "ang-silakbo",
-            storageBucket: "ang-silakbo.appspot.com",
+            storageBucket: "ang-silakbo.firebasestorage.app",
             messagingSenderId: "1006400633782",
             appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
             measurementId: "G-TSDTG2YJ94"
         };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
-
-        let totalNotifications = 0;
-        let unreadNotifications = 0;
-        let todayNotifications = 0;
-        let totalResponseTime = 0;
-        let respondedNotifications = 0;
-
-        const notificationsPerPage = 5;
-        let currentPage = 1;
-        let allNotifications = [];
-        let filteredNotifications = [];
-        let activityData = {
-            'Mon': 0,
-            'Tue': 0,
-            'Wed': 0,
-            'Thu': 0,
-            'Fri': 0,
-            'Sat': 0,
-            'Sun': 0
-        };
-
-        // Toast notification system
-        function showToast(type, title, message) {
-            const toastContainer = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            toast.innerHTML = `
-                <div class="toast-icon">
-                    <i class="fas ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-exclamation-triangle'}"></i>
-                </div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <div class="toast-close"><i class="fas fa-times"></i></div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-            
-            // Close on click
-            toast.querySelector('.toast-close').addEventListener('click', () => {
-                toast.remove();
-            });
-        }
-
-        function updateStats() {
-            document.getElementById('totalNotifications').textContent = totalNotifications;
-            document.getElementById('unreadNotifications').textContent = unreadNotifications;
-            document.getElementById('todayNotifications').textContent = todayNotifications;
-            document.getElementById('notificationBadge').textContent = unreadNotifications;
-            document.getElementById('notificationBadge').style.display = unreadNotifications > 0 ? 'flex' : 'none';
-            const avgResponseTime = respondedNotifications > 0 ? (totalResponseTime / respondedNotifications / 3600000).toFixed(2) : 0;
-            document.getElementById('averageResponseTime').textContent = avgResponseTime;
-            
-            // Update pagination info
-            const totalItems = filteredNotifications.length || allNotifications.length;
-            const showingStart = totalItems === 0 ? 0 : (currentPage - 1) * notificationsPerPage + 1;
-            const showingEnd = Math.min(currentPage * notificationsPerPage, totalItems);
-            
-            document.getElementById('showingStart').textContent = showingStart;
-            document.getElementById('showingEnd').textContent = showingEnd;
-            document.getElementById('totalItems').textContent = totalItems;
-        }
-
-        function updateActivityChart() {
-            const chartContainer = document.getElementById('activityChart');
-            chartContainer.innerHTML = '';
-            
-            // Get the max value for scaling
-            const maxValue = Math.max(...Object.values(activityData), 1);
-            
-            // Create bars for each day
-            Object.entries(activityData).forEach(([day, value]) => {
-                const heightPercentage = (value / maxValue) * 100;
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                bar.style.height = `${heightPercentage}%`;
-                bar.setAttribute('data-value', value);
-                bar.setAttribute('data-label', day);
-                chartContainer.appendChild(bar);
-            });
-        }
-
-        function createNotificationElement(notification, notificationId) {
-            const div = document.createElement('div');
-            div.className = `notification-item ${!notification.read ? 'unread' : ''}`;
-            div.setAttribute('data-id', notificationId);
-            
-            const statusClass = notification.read ? 'read' : '';
-            const statusText = notification.read ? 'Read' : 'Unread';
-            const timeAgo = getTimeAgo(notification.timestamp);
-            
-            div.innerHTML = `
-                <div class="notification-info">
-                    <div class="notification-icon">
-                        <i class="fas fa-envelope${notification.read ? '-open' : ''}"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title-text">New message request received</div>
-                        <div class="notification-message">From: ${notification.name || 'Anonymous'}</div>
-                    </div>
-                </div>
-                <div class="notification-meta">
-                    <div class="notification-time">
-                        <i class="far fa-clock"></i> ${timeAgo}
-                    </div>
-                    <div class="notification-status ${statusClass}">
-                        <i class="fas fa-${notification.read ? 'check-circle' : 'circle'}"></i> ${statusText}
-                    </div>
-                </div>
-                <div class="notification-actions-btns">
-                    <button class="view-btn" data-request-id="${notification.requestId}" data-notification-id="${notificationId}" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="delete-btn" data-notification-id="${notificationId}" title="Delete">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            `;
-            return div;
-        }
-
-        function getTimeAgo(timestamp) {
-            const now = new Date();
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Reference to the database
+        const database = firebase.database();
+        const messagesRef = database.ref('messages');
+        
+        // Global variables
+        let currentMessageId = null;
+        let allMessages = [];
+        let userHistoryData = {};
+        
+        // Format date function
+        function formatDate(timestamp) {
             const date = new Date(timestamp);
-            const seconds = Math.floor((now - date) / 1000);
+            const now = new Date();
+            const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
             
-            if (seconds < 60) return 'Just now';
-            
-            const minutes = Math.floor(seconds / 60);
-            if (minutes < 60) return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-            
-            const hours = Math.floor(minutes / 60);
-            if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-            
-            const days = Math.floor(hours / 24);
-            if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'} ago`;
-            
-            return date.toLocaleDateString();
+            if (diffDays === 0) {
+                return `Today at ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            } else if (diffDays === 1) {
+                return `Yesterday at ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            } else if (diffDays < 7) {
+                return `${diffDays} days ago`;
+            } else {
+                return date.toLocaleDateString([], {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
         }
-
-        function setupNotifications() {
-            const notificationsRef = ref(db, 'notifications');
-            const notificationsList = document.getElementById('notificationsList');
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Clear loading state
-            notificationsList.innerHTML = '';
-
-            // Listen for new notifications
-            onChildAdded(notificationsRef, (snapshot) => {
-                const notification = snapshot.val();
-                const notificationId = snapshot.key;
-
-                if (notification.type === 'newMessageRequest') {
-                    // Add name and email from the request data if available
-                    get(ref(db, `messageRequests/${notification.requestId}`)).then((requestSnapshot) => {
-                        const request = requestSnapshot.val();
-                        if (request) {
-                            notification.name = request.name;
-                            notification.email = request.email;
-                            notification.message = request.message;
-                        }
-                        
-                        // Add to notifications array
-                        allNotifications.push({...notification, id: notificationId});
-                        allNotifications.sort((a, b) => b.timestamp - a.timestamp); // Sort by newest first
-                        
-                        // Update stats
-                        totalNotifications++;
-                        if (!notification.read) {
-                            unreadNotifications++;
-                        }
-                        
-                        // Update today's notifications
-                        if (notification.timestamp >= today.getTime()) {
-                            todayNotifications++;
-                        }
-                        
-                        // Update response time stats
-                        if (notification.responseTime) {
-                            totalResponseTime += notification.responseTime;
-                            respondedNotifications++;
-                        }
-                        
-                        // Update activity chart data
-                        const notificationDate = new Date(notification.timestamp);
-                        const dayOfWeek = notificationDate.toLocaleString('en-US', { weekday: 'short' });
-                        if (activityData[dayOfWeek] !== undefined) {
-                            activityData[dayOfWeek]++;
-                        }
-
-                        // Show toast for new notification
-                        if (notification.timestamp > (Date.now() - 10000)) { // Only for notifications in the last 10 seconds
-                            showToast('success', 'New Notification', `New message from ${notification.name || 'Anonymous'}`);
-                        }
-
-                        updateStats();
-                        updateActivityChart();
-                        applyFilters();
-                    });
-                }
-            });
-
-            // Listen for changes to existing notifications
-            onChildChanged(notificationsRef, (snapshot) => {
-                const updatedNotification = snapshot.val();
-                const notificationId = snapshot.key;
+        
+        // Load all messages
+        function loadMessages() {
+            messagesRef.on('value', (snapshot) => {
+                const messagesContainer = document.getElementById('messages-container');
+                const messageCount = document.getElementById('message-count');
+                messagesContainer.innerHTML = '';
                 
-                // Find and update the notification in our array
-                const index = allNotifications.findIndex(n => n.id === notificationId);
-                if (index !== -1) {
-                    const wasUnread = !allNotifications[index].read;
-                    const isNowRead = updatedNotification.read;
+                const messages = snapshot.val();
+                if (messages) {
+                    // Sort messages by timestamp (newest first)
+                    allMessages = Object.entries(messages).map(([key, value]) => {
+                        return {
+                            id: key,
+                            ...value
+                        };
+                    }).sort((a, b) => b.timestamp - a.timestamp);
                     
-                    // Update the notification in our array
-                    allNotifications[index] = {...allNotifications[index], ...updatedNotification};
+                    // Update message count
+                    messageCount.textContent = allMessages.length;
                     
-                    // Update unread count if read status changed
-                    if (wasUnread && isNowRead) {
-                        unreadNotifications = Math.max(0, unreadNotifications - 1);
-                    } else if (!wasUnread && !isNowRead) {
-                        unreadNotifications++;
-                    }
+                    // Update stats
+                    updateStats(allMessages);
                     
-                    updateStats();
-                    applyFilters();
-                }
-            });
-
-            // Listen for removed notifications
-            onChildRemoved(notificationsRef, (snapshot) => {
-                const notificationId = snapshot.key;
-                const index = allNotifications.findIndex(n => n.id === notificationId);
-                
-                if (index !== -1) {
-                    const wasUnread = !allNotifications[index].read;
+                    // Organize messages by user for history
+                    organizeUserHistory(allMessages);
                     
-                    // Remove from our array
-                    allNotifications.splice(index, 1);
-                    totalNotifications--;
+                    renderMessages(allMessages);
+                } else {
+                    messagesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i data-feather="inbox" class="icon"></i>
+                            <p>No messages found</p>
+                        </div>
+                    `;
+                    messageCount.textContent = '0';
                     
-                    if (wasUnread) {
-                        unreadNotifications = Math.max(0, unreadNotifications - 1);
-                    }
+                    // Reset stats
+                    document.getElementById('total-messages').textContent = '0';
+                    document.getElementById('in-progress').textContent = '0';
+                    document.getElementById('resolved').textContent = '0';
                     
-                    updateStats();
-                    applyFilters();
+                    feather.replace();
                 }
             });
         }
-
-        function displayNotifications() {
-            const notificationsList = document.getElementById('notificationsList');
-            notificationsList.innerHTML = '';
-
-            const notifications = filteredNotifications.length > 0 ? filteredNotifications : allNotifications;
+        
+        // Organize messages by user for history view
+        function organizeUserHistory(messages) {
+            userHistoryData = {};
             
-            const startIndex = (currentPage - 1) * notificationsPerPage;
-            const endIndex = startIndex + notificationsPerPage;
-            const paginatedNotifications = notifications.slice(startIndex, endIndex);
-
-            if (paginatedNotifications.length === 0) {
-                notificationsList.innerHTML = `
+            messages.forEach(message => {
+                const email = message.email.toLowerCase();
+                
+                if (!userHistoryData[email]) {
+                    userHistoryData[email] = {
+                        name: message.name,
+                        email: message.email,
+                        messages: []
+                    };
+                }
+                
+                userHistoryData[email].messages.push({
+                    id: message.id,
+                    subject: message.subject,
+                    message: message.message,
+                    status: message.status,
+                    timestamp: message.timestamp,
+                    trackingCode: message.trackingCode,
+                    read: message.read
+                });
+            });
+        }
+        
+        // Load user history for the Users modal
+        function loadUserHistory() {
+            const usersContainer = document.getElementById('users-container');
+            usersContainer.innerHTML = '';
+            
+            if (Object.keys(userHistoryData).length === 0) {
+                usersContainer.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <h3>No notifications found</h3>
-                        <p>There are no notifications matching your current filters. Try changing your filter settings or check back later.</p>
-                        <button class="empty-state-btn" id="clearFiltersBtn">Clear Filters</button>
+                        <i data-feather="users" class="icon"></i>
+                        <p>No user data available</p>
+                    </div>
+                `;
+                feather.replace();
+                return;
+            }
+            
+            // Sort users by most recent message
+            const sortedUsers = Object.values(userHistoryData).sort((a, b) => {
+                const aLatest = a.messages.reduce((latest, msg) => Math.max(latest, msg.timestamp), 0);
+                const bLatest = b.messages.reduce((latest, msg) => Math.max(latest, msg.timestamp), 0);
+                return bLatest - aLatest;
+            });
+            
+            sortedUsers.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-history-card';
+                
+                // Sort messages by timestamp (newest first)
+                const sortedMessages = [...user.messages].sort((a, b) => b.timestamp - a.timestamp);
+                
+                // Get initials for avatar
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                let messageHistoryHTML = '';
+                sortedMessages.forEach(msg => {
+                    const formattedDate = formatDate(msg.timestamp);
+                    const statusClass = `status-${msg.status.replace(' ', '.')}`;
+                    
+                    messageHistoryHTML += `
+                        <div class="history-item">
+                            <i data-feather="message-square" class="icon"></i>
+                            <div class="history-item-content">
+                                <div class="history-item-title">${msg.subject} <span class="status-badge ${statusClass}">${msg.status}</span></div>
+                                <div class="history-item-date">${formattedDate} - Tracking Code: ${msg.trackingCode}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                userCard.innerHTML = `
+                    <div class="user-history-header">
+                        <div class="user-info">
+                            <div class="user-avatar-sm">${initials}</div>
+                            <div class="user-name-email">
+                                <div class="user-name-sm">${user.name}</div>
+                                <div class="user-email-sm">${user.email}</div>
+                            </div>
+                        </div>
+                        <span class="message-count">${user.messages.length}</span>
+                    </div>
+                    <div class="message-history-list">
+                        ${messageHistoryHTML}
                     </div>
                 `;
                 
-                document.getElementById('clearFiltersBtn').addEventListener('click', () => {
-                    document.getElementById('statusFilter').value = 'all';
-                    document.getElementById('dateFilter').value = 'all';
-                    document.getElementById('searchInput').value = '';
-                    applyFilters();
-                });
-                
+                usersContainer.appendChild(userCard);
+            });
+            
+            feather.replace();
+        }
+        
+        // Search users
+        function searchUsers(searchTerm) {
+            const usersContainer = document.getElementById('users-container');
+            usersContainer.innerHTML = '';
+            
+            if (searchTerm === '') {
+                loadUserHistory();
                 return;
             }
-
-            paginatedNotifications.forEach(notification => {
-                const notificationElement = createNotificationElement(notification, notification.id);
-                notificationsList.appendChild(notificationElement);
-            });
-        }
-
-        function updatePagination() {
-            const prevButton = document.getElementById('prevPage');
-            const nextButton = document.getElementById('nextPage');
-            const notifications = filteredNotifications.length > 0 ? filteredNotifications : allNotifications;
-
-            prevButton.disabled = currentPage === 1;
-            nextButton.disabled = currentPage >= Math.ceil(notifications.length / notificationsPerPage);
             
-            // Update pagination numbers
-            const paginationControls = document.querySelector('.pagination-controls');
-            const pageButtons = paginationControls.querySelectorAll('.pagination-btn:not(#prevPage):not(#nextPage)');
+            const filteredUsers = Object.values(userHistoryData).filter(user => 
+                user.name.toLowerCase().includes(searchTerm) || 
+                user.email.toLowerCase().includes(searchTerm)
+            );
             
-            // Remove existing page buttons except prev/next
-            pageButtons.forEach(btn => btn.remove());
-            
-            // Add new page buttons
-            const totalPages = Math.max(1, Math.ceil(notifications.length / notificationsPerPage));
-            let startPage = Math.max(1, currentPage - 1);
-            let endPage = Math.min(totalPages, startPage + 2);
-            
-            if (endPage - startPage < 2) {
-                startPage = Math.max(1, endPage - 2);
+            if (filteredUsers.length === 0) {
+                usersContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i data-feather="search" class="icon"></i>
+                        <p>No users match your search</p>
+                    </div>
+                `;
+                feather.replace();
+                return;
             }
             
-            for (let i = startPage; i <= endPage; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
-                pageBtn.textContent = i;
-                pageBtn.addEventListener('click', () => {
-                    currentPage = i;
-                    displayNotifications();
-                    updatePagination();
-                    updateStats();
-                });
+            filteredUsers.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-history-card';
                 
-                // Insert before the next button
-                paginationControls.insertBefore(pageBtn, nextButton);
-            }
-        }
-
-        function viewMessageRequest(requestId, notificationId) {
-            const messageRequestRef = ref(db, `messageRequests/${requestId}`);
-            get(messageRequestRef).then((snapshot) => {
-                const request = snapshot.val();
-                if (request) {
-                    const messageDetails = document.getElementById('messageDetails');
-                    messageDetails.innerHTML = `
-                        <div class="message-detail-item">
-                            <div class="message-detail-label"><i class="fas fa-user"></i> From</div>
-                            <div class="message-detail-value">${request.name || 'Anonymous'}</div>
-                        </div>
-                        <div class="message-detail-item">
-                            <div class="message-detail-label"><i class="fas fa-envelope"></i> Email</div>
-                            <div class="message-detail-value">${request.email || 'Not provided'}</div>
-                        </div>
-                        <div class="message-detail-item">
-                            <div class="message-detail-label"><i class="fas fa-calendar"></i> Received on</div>
-                            <div class="message-detail-value">${new Date(request.timestamp).toLocaleString()}</div>
-                        </div>
-                        <div class="message-detail-item">
-                            <div class="message-detail-label"><i class="fas fa-comment-alt"></i> Message</div>
-                            <div class="message-detail-value message">${request.message || 'No message content'}</div>
+                // Sort messages by timestamp (newest first)
+                const sortedMessages = [...user.messages].sort((a, b) => b.timestamp - a.timestamp);
+                
+                // Get initials for avatar
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                let messageHistoryHTML = '';
+                sortedMessages.forEach(msg => {
+                    const formattedDate = formatDate(msg.timestamp);
+                    const statusClass = `status-${msg.status.replace(' ', '.')}`;
+                    
+                    messageHistoryHTML += `
+                        <div class="history-item">
+                            <i data-feather="message-square" class="icon"></i>
+                            <div class="history-item-content">
+                                <div class="history-item-title">${msg.subject} <span class="status-badge ${statusClass}">${msg.status}</span></div>
+                                <div class="history-item-date">${formattedDate} - Tracking: ${msg.trackingCode}</div>
+                            </div>
                         </div>
                     `;
+                });
+                
+                userCard.innerHTML = `
+                    <div class="user-history-header">
+                        <div class="user-info">
+                            <div class="user-avatar-sm">${initials}</div>
+                            <div class="user-name-email">
+                                <div class="user-name-sm">${user.name}</div>
+                                <div class="user-email-sm">${user.email}</div>
+                            </div>
+                        </div>
+                        <span class="message-count">${user.messages.length}</span>
+                    </div>
+                    <div class="message-history-list">
+                        ${messageHistoryHTML}
+                    </div>
+                `;
+                
+                usersContainer.appendChild(userCard);
+            });
+            
+            feather.replace();
+        }
+        
+        // Render messages
+        function renderMessages(messages) {
+            const messagesContainer = document.getElementById('messages-container');
+            messagesContainer.innerHTML = '';
+            
+            if (messages.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i data-feather="inbox" class="icon"></i>
+                        <p>No messages match your criteria</p>
+                    </div>
+                `;
+                feather.replace();
+                return;
+            }
+            
+            messages.forEach((message, index) => {
+                const messageElement = document.createElement('div');
+                messageElement.className = message.read ? 'message-card' : 'message-card unread';
+                messageElement.id = `message-${message.id}`;
+                messageElement.style.animationDelay = `${index * 0.05}s`;
+                
+                // Format date
+                const formattedDate = formatDate(message.timestamp);
+                
+                // Add status badge
+                const statusClass = `status-${message.status.replace(' ', '.')}`;
+                
+                messageElement.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-title">${message.subject}</div>
+                        <span class="status-badge ${statusClass}">${message.status}</span>
+                    </div>
+                    <div class="message-meta">
+                        <span>${message.name}</span>
+                        <span class="tracking-code"><i data-feather="hash" class="icon"></i>${message.trackingCode}</span>
+                    </div>
+                    <div class="message-date">
+                        <i data-feather="clock" class="icon"></i>
+                        ${formattedDate}
+                    </div>
+                `;
+                
+                // Add click event to view message details
+                messageElement.addEventListener('click', () => {
+                    viewMessage(message.id);
                     
-                    const modal = document.getElementById('messageModal');
-                    modal.style.display = "block";
-                    
-                    // Mark the notification as read
-                    update(ref(db, `notifications/${notificationId}`), { read: true }).then(() => {
-                        // Update the notification in our local array
-                        const notificationIndex = allNotifications.findIndex(n => n.id === notificationId);
-                        if (notificationIndex !== -1 && !allNotifications[notificationIndex].read) {
-                            allNotifications[notificationIndex].read = true;
-                            
-                            if (unreadNotifications > 0) {
-                                unreadNotifications--;
-                                updateStats();
+                    // Add active class to selected message
+                    const allMessages = document.querySelectorAll('.message-card');
+                    allMessages.forEach(msg => msg.classList.remove('active'));
+                    messageElement.classList.add('active');
+                });
+                
+                messagesContainer.appendChild(messageElement);
+            });
+            
+            feather.replace();
+        }
+        
+        // Update stats
+        function updateStats(messages) {
+            const totalMessages = messages.length;
+            const inProgress = messages.filter(msg => msg.status === 'In Progress').length;
+            const resolved = messages.filter(msg => msg.status === 'Resolved').length;
+            
+            document.getElementById('total-messages').textContent = totalMessages;
+            document.getElementById('in-progress').textContent = inProgress;
+            document.getElementById('resolved').textContent = resolved;
+        }
+        
+        // Filter messages
+        function filterMessages(filter) {
+            if (filter === 'all') {
+                renderMessages(allMessages);
+                return;
+            }
+            
+            if (filter === 'unread') {
+                const filtered = allMessages.filter(msg => !msg.read);
+                renderMessages(filtered);
+                return;
+            }
+            
+            // Filter by status
+            const filtered = allMessages.filter(msg => msg.status === filter);
+            renderMessages(filtered);
+        }
+        
+        // Search messages
+        function searchMessages(searchTerm) {
+            if (!searchTerm) {
+                renderMessages(allMessages);
+                return;
+            }
+            
+            const filtered = allMessages.filter(msg => 
+                msg.subject.toLowerCase().includes(searchTerm) || 
+                msg.name.toLowerCase().includes(searchTerm) || 
+                msg.message.toLowerCase().includes(searchTerm) ||
+                msg.trackingCode.toLowerCase().includes(searchTerm)
+            );
+            
+            renderMessages(filtered);
+        }
+        
+        // View message details
+        function viewMessage(messageId) {
+            currentMessageId = messageId;
+            
+            // Show loading state
+            const selectedMessage = document.getElementById('selected-message');
+            selectedMessage.innerHTML = `
+                <div class="empty-state">
+                    <i data-feather="file-text" class="icon"></i>
+                    <p>Loading message details...</p>
+                    <div class="loading-spinner"></div>
+                </div>
+            `;
+            feather.replace();
+            
+            // Show modal
+            const messageModal = document.getElementById('message-modal');
+            messageModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            database.ref('messages/' + messageId).once('value')
+                .then((snapshot) => {
+                    const message = snapshot.val();
+                    if (message) {
+                        // Format date
+                        const formattedDate = new Date(message.timestamp).toLocaleString();
+                        
+                        // Build comments HTML
+                        let commentsHtml = '';
+                        if (message.comments && Array.isArray(message.comments)) {
+                            message.comments.forEach(comment => {
+                                const commentDate = new Date(comment.timestamp).toLocaleString();
+                                const author = comment.author === 'system' ? 'System' : 'Admin';
+                                const authorClass = comment.author === 'system' ? 'system' : 'admin';
                                 
-                                // Update the UI for this specific notification
-                                const notificationElement = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
-                                if (notificationElement) {
-                                    notificationElement.classList.remove('unread');
-                                    const statusElement = notificationElement.querySelector('.notification-status');
-                                    if (statusElement) {
-                                        statusElement.classList.add('read');
-                                        statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Read';
-                                    }
-                                    const iconElement = notificationElement.querySelector('.notification-icon i');
-                                    if (iconElement) {
-                                        iconElement.className = 'fas fa-envelope-open';
-                                    }
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    showToast('error', 'Error', 'Message request not found.');
-                }
-            }).catch((error) => {
-                console.error('Error fetching message request:', error);
-                showToast('error', 'Error', 'Failed to fetch message request details.');
-            });
-        }
-
-        function deleteNotification(notificationId) {
-            if (confirm('Are you sure you want to delete this notification?')) {
-                const notificationRef = ref(db, `notifications/${notificationId}`);
-                remove(notificationRef).then(() => {
-                    const notificationIndex = allNotifications.findIndex(n => n.id === notificationId);
-                    if (notificationIndex !== -1) {
-                        const wasUnread = !allNotifications[notificationIndex].read;
-                        
-                        // Remove from our array
-                        allNotifications.splice(notificationIndex, 1);
-                        totalNotifications--;
-                        
-                        if (wasUnread && unreadNotifications > 0) {
-                            unreadNotifications--;
+                                commentsHtml += `
+                                    <div class="comment">
+                                        <p class="comment-text">${comment.text}</p>
+                                        <div class="comment-meta">
+                                            <span class="comment-author ${authorClass}">${author}</span>
+                                            <span class="comment-date">${formatDate(comment.timestamp)}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            });
                         }
                         
-                        showToast('success', 'Success', 'Notification deleted successfully.');
-                        updateStats();
-                        applyFilters();
+                        if (!commentsHtml) {
+                            commentsHtml = `
+                                <div class="empty-state">
+                                    <i data-feather="message-circle" class="icon"></i>
+                                    <p>No comments yet</p>
+                                </div>
+                            `;
+                        }
+                        
+                        selectedMessage.innerHTML = `
+                            <div class="message-details-header">
+                                <h3 class="message-details-title">${message.subject}</h3>
+                                <span class="status-badge status-${message.status.replace(' ', '.')}">${message.status}</span>
+                            </div>
+                            
+                            <div class="message-details-meta">
+                                <div class="meta-item">
+                                    <i data-feather="user" class="icon"></i>
+                                    <span><strong>From:</strong> ${message.name}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i data-feather="mail" class="icon"></i>
+                                    <span><strong>Email:</strong> ${message.email}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i data-feather="hash" class="icon"></i>
+                                    <span><strong>Tracking Code:</strong> <span class="tracking-code">${message.trackingCode}</span></span>
+                                </div>
+                                <div class="meta-item">
+                                    <i data-feather="calendar" class="icon"></i>
+                                    <span><strong>Date:</strong> ${formattedDate}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="message-content">
+                                ${message.message}
+                            </div>
+                            
+                            <div class="action-panel">
+                                <div class="action-panel-header">
+                                    <i data-feather="settings" class="icon"></i>
+                                    <h3>Message Actions</h3>
+                                </div>
+                                
+                                <div class="action-row">
+                                    <span class="action-label">Update status:</span>
+                                    <select id="message-status">
+                                        <option value="Received" ${message.status === 'Received' ? 'selected' : ''}>Received</option>
+                                        <option value="In Progress" ${message.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="Resolved" ${message.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="btn-group">
+                                    <button onclick="updateStatus()" class="btn-primary">
+                                        <i data-feather="check" class="icon"></i>
+                                        Update Status
+                                    </button>
+                                    <button onclick="markAsRead('${messageId}', ${message.read})" class="btn-secondary">
+                                        <i data-feather="${message.read ? 'eye-off' : 'eye'}" class="icon"></i>
+                                        Mark as ${message.read ? 'Unread' : 'Read'}
+                                    </button>
+                                    <button onclick="deleteMessage('${messageId}')" class="btn-danger">
+                                        <i data-feather="trash-2" class="icon"></i>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="response-section">
+                                <div class="section-header">
+                                    <i data-feather="message-square" class="icon"></i>
+                                    <h3>Add Comment/Response</h3>
+                                </div>
+                                <textarea id="response-text" placeholder="Enter your response here..."></textarea>
+                                <div class="btn-group">
+                                    <button onclick="addResponse()" class="btn-primary">
+                                        <i data-feather="send" class="icon"></i>
+                                        Add Response
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="comments-section">
+                                <div class="section-header">
+                                    <i data-feather="message-circle" class="icon"></i>
+                                    <h3>Comments & Responses</h3>
+                                </div>
+                                <div id="comments-container">
+                                    ${commentsHtml}
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Initialize Feather Icons for the new content
+                        feather.replace();
+                        
+                        // Mark message as read if it was unread
+                        if (!message.read) {
+                            markAsRead(messageId, false);
+                        }
                     }
-                }).catch((error) => {
-                    console.error('Error deleting notification:', error);
-                    showToast('error', 'Error', 'Failed to delete notification.');
                 });
+        }
+        
+        // Update message status
+        function updateStatus() {
+            if (!currentMessageId) return;
+            
+            const status = document.getElementById('message-status').value;
+            database.ref('messages/' + currentMessageId).update({
+                status: status
+            });
+            
+            // Add system comment about status change
+            addSystemComment(`Status updated to "${status}"`);
+            
+            // Update the status badge in the message list
+            const messageElement = document.getElementById(`message-${currentMessageId}`);
+            if (messageElement) {
+                const statusBadge = messageElement.querySelector('.status-badge');
+                if (statusBadge) {
+                    statusBadge.className = `status-badge status-${status.replace(' ', '.')}`;
+                    statusBadge.textContent = status;
+                }
             }
         }
-
-        function applyFilters() {
-            const statusFilter = document.getElementById('statusFilter').value;
-            const dateFilter = document.getElementById('dateFilter').value;
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-
-            filteredNotifications = allNotifications.filter(notification => {
-                const matchesStatus = statusFilter === 'all' || 
-                    (statusFilter === 'unread' && !notification.read) ||
-                    (statusFilter === 'read' && notification.read);
-
-                const notificationDate = new Date(notification.timestamp);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-                const matchesDate = dateFilter === 'all' ||
-                    (dateFilter === 'today' && notificationDate >= today) ||
-                    (dateFilter === 'week' && notificationDate >= weekAgo) ||
-                    (dateFilter === 'month' && notificationDate >= monthAgo);
-
-                const matchesSearch = searchQuery === '' ||
-                    (notification.name && notification.name.toLowerCase().includes(searchQuery)) ||
-                    (notification.email && notification.email.toLowerCase().includes(searchQuery)) ||
-                    (notification.message && notification.message.toLowerCase().includes(searchQuery));
-
-                return matchesStatus && matchesDate && matchesSearch;
+        
+        // Mark message as read/unread
+        function markAsRead(messageId, currentState) {
+            database.ref('messages/' + messageId).update({
+                read: !currentState
             });
-
-            currentPage = 1;
-            displayNotifications();
-            updatePagination();
-            updateStats();
+            
+            // Update the message element class
+            const messageElement = document.getElementById(`message-${messageId}`);
+            if (messageElement) {
+                if (currentState) {
+                    messageElement.classList.remove('read');
+                    messageElement.classList.add('unread');
+                } else {
+                    messageElement.classList.remove('unread');
+                    messageElement.classList.add('read');
+                }
+            }
+            
+            // Add system comment
+            if (currentState) {
+                addSystemComment('Message marked as unread');
+            } else {
+                addSystemComment('Message marked as read');
+            }
         }
-
-        function setupEventListeners() {
-            // Close modal when clicking on <span> (x) or close button
-            document.getElementsByClassName("close")[0].onclick = function() {
-                document.getElementById('messageModal').style.display = "none";
+        
+        // Add admin response
+        function addResponse() {
+            if (!currentMessageId) return;
+            
+            const responseText = document.getElementById('response-text').value.trim();
+            if (!responseText) {
+                alert('Please enter a response text');
+                return;
             }
             
-            document.getElementById('closeModal').onclick = function() {
-                document.getElementById('messageModal').style.display = "none";
-            }
-
-            // Close modal when clicking outside of it
-            window.onclick = function(event) {
-                let modal = document.getElementById('messageModal');
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-
-            // Add event listener for view and delete buttons
-            document.getElementById('notificationsList').addEventListener('click', function(event) {
-                const viewBtn = event.target.closest('.view-btn');
-                const deleteBtn = event.target.closest('.delete-btn');
-                
-                if (viewBtn) {
-                    const requestId = viewBtn.dataset.requestId;
-                    const notificationId = viewBtn.dataset.notificationId;
-                    viewMessageRequest(requestId, notificationId);
-                } else if (deleteBtn) {
-                    const notificationId = deleteBtn.dataset.notificationId;
-                    deleteNotification(notificationId);
-                }
-            });
-
-            // Pagination event listeners
-            document.getElementById('prevPage').addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    displayNotifications();
-                    updatePagination();
-                    updateStats();
-                }
-            });
-
-            document.getElementById('nextPage').addEventListener('click', () => {
-                const notifications = filteredNotifications.length > 0 ? filteredNotifications : allNotifications;
-                if (currentPage < Math.ceil(notifications.length / notificationsPerPage)) {
-                    currentPage++;
-                    displayNotifications();
-                    updatePagination();
-                    updateStats();
-                }
-            });
-
-            // Filter event listeners
-            document.getElementById('statusFilter').addEventListener('change', applyFilters);
-            document.getElementById('dateFilter').addEventListener('change', applyFilters);
-            document.getElementById('searchInput').addEventListener('input', applyFilters);
-            
-            // Mark all as read button
-            document.getElementById('markAllReadBtn').addEventListener('click', function() {
-                if (unreadNotifications === 0) {
-                    showToast('warning', 'No Action Needed', 'No unread notifications to mark as read.');
-                    return;
-                }
-                
-                if (confirm('Mark all notifications as read?')) {
-                    const promises = allNotifications.filter(n => !n.read).map(notification => {
-                        return update(ref(db, `notifications/${notification.id}`), { read: true });
+            // Get current comments array or create empty array
+            database.ref('messages/' + currentMessageId + '/comments').once('value')
+                .then((snapshot) => {
+                    let comments = snapshot.val() || [];
+                    if (!Array.isArray(comments)) {
+                        comments = [];
+                    }
+                    
+                    // Add new comment
+                    comments.push({
+                        text: responseText,
+                        timestamp: Date.now(),
+                        author: 'admin'
                     });
                     
-                    Promise.all(promises).then(() => {
-                        allNotifications.forEach(notification => {
-                            notification.read = true;
-                        });
-                        unreadNotifications = 0;
-                        updateStats();
-                        displayNotifications();
-                        showToast('success', 'Success', 'All notifications marked as read.');
-                    }).catch(error => {
-                        console.error('Error marking notifications as read:', error);
-                        showToast('error', 'Error', 'Failed to mark all notifications as read.');
+                    // Update comments in database
+                    database.ref('messages/' + currentMessageId).update({
+                        comments: comments
+                    }).then(() => {
+                        // Clear textarea
+                        document.getElementById('response-text').value = '';
+                        
+                        // Refresh message view
+                        viewMessage(currentMessageId);
                     });
-                }
-            });
-            
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', function() {
-                showToast('info', 'Refreshing', 'Refreshing notification data...');
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
-            });
-            
-            // Reply button in modal
-            document.getElementById('replyBtn').addEventListener('click', function() {
-                showToast('info', 'Coming Soon', 'Reply functionality will be implemented in a future update.');
-            });
-            
-            // Chart period buttons
-            document.querySelectorAll('.period-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    // In a real app, this would update the chart data
-                    showToast('info', 'Chart Period', `Switched to ${this.textContent} view`);
                 });
-            });
         }
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log("Admin signed in:", user.email);
-                document.getElementById('adminName').textContent = user.displayName || user.email;
-                
-                // Initialize the dashboard
-                setupNotifications();
-                setupEventListeners();
-                updateActivityChart();
-                
-                // Show welcome toast
-                setTimeout(() => {
-                    showToast('success', 'Welcome', `Welcome back, ${user.displayName || 'Admin'}!`);
-                }, 1000);
-            } else {
-                console.log("No admin signed in");
-                showToast('error', 'Authentication Required', 'Please sign in as an admin to view notifications');
-                // In a real app, redirect to login page
+        
+        // Add system comment
+        function addSystemComment(text) {
+            if (!currentMessageId) return;
+            
+            // Get current comments array or create empty array
+            database.ref('messages/' + currentMessageId + '/comments').once('value')
+                .then((snapshot) => {
+                    let comments = snapshot.val() || [];
+                    if (!Array.isArray(comments)) {
+                        comments = [];
+                    }
+                    
+                    // Add new system comment
+                    comments.push({
+                        text: text,
+                        timestamp: Date.now(),
+                        author: 'system'
+                    });
+                    
+                    // Update comments in database
+                    database.ref('messages/' + currentMessageId).update({
+                        comments: comments
+                    }).then(() => {
+                        // Refresh message view if needed
+                        viewMessage(currentMessageId);
+                    });
+                });
+        }
+        
+        // Delete message
+        function deleteMessage(messageId) {
+            if (confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
+                database.ref('messages/' + messageId).remove()
+                    .then(() => {
+                        // Close modal
+                        const messageModal = document.getElementById('message-modal');
+                        messageModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                        
+                        // Reset current message ID
+                        currentMessageId = null;
+                    });
             }
+        }
+        
+        // Load messages on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
         });
     </script>
 </body>
