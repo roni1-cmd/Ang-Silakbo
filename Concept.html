@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANG SILAKBO - Concepts</title>   
+     <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=Merriweather:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e65100;
+            --primary-light: #ff833a;
+            --primary-dark: #ac1900;
+            --secondary: #263238;
+            --light: #f5f5f5;
+            --gray: #757575;
+            --light-gray: #e0e0e0;
+            --dark-gray: #424242;
+            --transition: all 0.3s ease;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            --font-sans: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --font-serif: 'Merriweather', Georgia, Cambria, 'Times New Roman', Times, serif;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-ui: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            line-height: 1.8;
+            color: var(--secondary);
+            background-color: #fff;
+            font-weight: 400;
+            font-size: 18px;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .blog-layout {
+            display: grid;
+            grid-template-columns: 1fr minmax(0, 800px) 1fr;
+            gap: 40px;
+        }
+        
+        .blog-main {
+            grid-column: 2;
+        }
+        
+        .blog-sidebar {
+            grid-column: 3;
+            position: sticky;
+            top: 100px;
+            align-self: start;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-right: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--light-gray) transparent;
+        }
+        
+        .blog-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .blog-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .blog-sidebar::-webkit-scrollbar-thumb {
+            background-color: var(--light-gray);
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 1024px) {
+            .blog-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .blog-main {
+                grid-column: 1;
+            }
+            
+            .blog-sidebar {
+                display: none;
+            }
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: #fff;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 12px 0;
+            transition: var(--transition);
+        }
+        
+        .site-header.scrolled {
+            padding: 8px 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            height: 32px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-family: var(--font-ui);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        
+        .site-nav {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-link {
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .site-nav {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: white;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 24px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .menu-close {
+            align-self: flex-end;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--secondary);
+            margin-bottom: 24px;
+        }
+        
+        .mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .mobile-nav-link {
+            font-family: var(--font-ui);
+            font-weight: 500;
+            font-size: 1rem;
+            color: var(--secondary);
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            transition: var(--transition);
+        }
+        
+        .mobile-nav-link:hover {
+            color: var(--primary);
+            padding-left: 8px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Blog Header */
+        .blog-header {
+            margin: 60px 0 40px;
+            text-align: center;
+        }
+        
+        .blog-category {
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .blog-category::before,
+        .blog-category::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 1px;
+            background-color: var(--primary);
+        }
+        
+        .blog-category::before {
+            left: -40px;
+        }
+        
+        .blog-category::after {
+            right: -40px;
+        }
+        
+        .blog-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 3rem;
+            line-height: 1.2;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .blog-subtitle {
+            font-family: var(--font-serif);
+            font-weight: 300;
+            font-size: 1.25rem;
+            line-height: 1.5;
+            color: var(--dark-gray);
+            margin-bottom: 24px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .meta-icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .meta-divider {
+            width: 4px;
+            height: 4px;
+            background-color: var(--gray);
+            border-radius: 50%;
+        }
+        
+        .blog-featured-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Blog Content */
+        .blog-content {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--secondary);
+        }
+        
+        .blog-content p {
+            margin-bottom: 24px;
+            text-align: justify;
+            hyphens: auto;
+        }
+        
+        .blog-content h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--secondary);
+            margin: 60px 0 30px;
+            position: relative;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+        
+        .blog-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .blog-content h3 {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: var(--secondary);
+            margin: 36px 0 20px;
+        }
+        
+        .highlight {
+            background-color: rgba(230, 81, 0, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        /* Publication Cards */
+        .publication-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin: 40px 0;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .publication-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            padding: 30px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .card-title {
+            font-family: var(--font-ui);
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .card-tagline {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .card-text {
+            margin-bottom: 20px;
+            text-align: justify;
+            font-size: 1.05rem;
+        }
+        
+        .definition-box {
+            background-color: var(--light);
+            border-left: 4px solid var(--primary);
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .definition-title {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .definition-content {
+            font-family: var(--font-serif);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        /* Conclusion */
+        .conclusion {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 60px 0;
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .conclusion-text {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--secondary);
+            position: relative;
+            text-align: justify;
+        }
+        
+        .conclusion-text::before {
+            content: '"';
+            font-family: var(--font-display);
+            font-size: 5rem;
+            position: absolute;
+            top: -30px;
+            left: -15px;
+            color: var(--primary);
+            opacity: 0.2;
+        }
+        
+        /* Sidebar */
+        .sidebar-section {
+            margin-bottom: 40px;
+        }
+        
+        .sidebar-title {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .sidebar-newsletter {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 24px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .newsletter-title {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+        
+        .newsletter-text {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .newsletter-input {
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .newsletter-btn {
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            font-family: var(--font-ui);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .newsletter-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background-color: var(--light);
+            color: var(--gray);
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .tag:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--secondary);
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 80px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo-img {
+            height: 32px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+        
+        .footer-logo-text {
+            font-family: var(--font-ui);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+        
+        .footer-about {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .footer-social-link {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .footer-social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .footer-social-icon {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+        
+        .footer-title {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .footer-link:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .footer-contact-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .footer-contact-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--primary-light);
+        }
+        
+        .footer-divider {
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .footer-copyright {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-bottom-link {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        
+        .footer-bottom-link:hover {
+            color: white;
+        }
+        
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 99;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-5px);
+        }
+        
+        /* Enhanced Typography */
+        .first-letter::first-letter {
+            font-family: var(--font-display);
+            font-size: 3.5em;
+            float: left;
+            line-height: 0.8;
+            margin-right: 0.1em;
+            color: var(--primary);
+        }
+        
+        .text-divider {
+            display: flex;
+            align-items: center;
+            margin: 60px 0;
+            color: var(--gray);
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .text-divider::before,
+        .text-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--light-gray);
+        }
+        
+        .text-divider::before {
+            margin-right: 20px;
+        }
+        
+        .text-divider::after {
+            margin-left: 20px;
+        }
+        
+        .pull-quote {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            line-height: 1.4;
+            color: var(--primary);
+            padding: 30px;
+            border-left: 4px solid var(--primary);
+            margin: 40px 0;
+            font-style: italic;
+            background-color: rgba(230, 81, 0, 0.05);
+            border-radius: 0 8px 8px 0;
+            position: relative;
+        }
+        
+        .pull-quote::before {
+            content: '"';
+            font-family: var(--font-display);
+            font-size: 5rem;
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            color: var(--primary);
+            opacity: 0.2;
+        }
+        
+        /* New Article-like Enhancements */
+        .article-meta-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 0;
+            border-top: 1px solid var(--light-gray);
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 40px;
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+        }
+        
+        .article-reading-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+        }
+        
+        .article-section-label {
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            text-align: center;
+            display: block;
+        }
+        
+        .article-dropcap {
+            font-family: var(--font-display);
+            font-size: 6em;
+            float: left;
+            line-height: 0.8;
+            margin-right: 0.1em;
+            margin-top: 0.1em;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .article-highlight-box {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .article-highlight-title {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        .article-highlight-content {
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            line-height: 1.7;
+            text-align: justify;
+        }
+        
+        .article-footnote {
+            font-size: 0.9rem;
+            color: var(--gray);
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 60px;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        /* New UI Enhancements */
+        .concept-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-family: var(--font-ui);
+            font-weight: 600;
+            margin-right: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .concept-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .concept-title h2 {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .concept-title h2::after {
+            display: none;
+        }
+        
+        .article-section {
+            position: relative;
+            padding: 40px 0;
+        }
+        
+        .article-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--light-gray), transparent);
+        }
+        
+        .article-section:first-of-type::before {
+            display: none;
+        }
+        
+        .article-image-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .article-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--light-gray), transparent);
+            margin: 40px 0;
+        }
+        
+        .concept-icon {
+            display: block;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .blog-title {
+                font-size: 2.2rem;
+            }
+            
+            .blog-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .blog-content {
+                font-size: 1rem;
+            }
+            
+            .blog-content h2 {
+                font-size: 1.7rem;
+            }
+            
+            .blog-content h3 {
+                font-size: 1.3rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .pull-quote {
+                font-size: 1.3rem;
+                padding: 20px;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .blog-title {
+                font-size: 1.8rem;
+            }
+            
+            .blog-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .meta-divider {
+                display: none;
+            }
+            
+            .article-meta-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .blog-category::before,
+            .blog-category::after {
+                width: 15px;
+            }
+            
+            .blog-category::before {
+                left: -25px;
+            }
+            
+            .blog-category::after {
+                right: -25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header" id="site-header">
+        <div class="container">
+            <div class="header-container">
+                <a href="#" class="site-logo">
+                    <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo-img">
+                    <span class="logo-text">ANG SILAKBO</span>
+                </a>
+                <nav class="site-nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="Artikulo.html" class="nav-link">Articles</a>
+                    <a href="About Us.html" class="nav-link">About</a>
+                    <a href="Chat Request.html" class="nav-link">Contact</a>
+                </nav>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <button class="menu-close" aria-label="Close menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <nav class="mobile-nav">
+            <a href="index.html" class="mobile-nav-link">Home</a>
+            <a href="Artikulo.html" class="mobile-nav-link">Articles</a>
+            <a href="About Us.html" class="mobile-nav-link">About</a>
+            <a href="Chat Request.html" class="mobile-nav-link">Contact</a>
+        </nav>
+    </div>
+    <div class="overlay"></div>
+    
+    <!-- Main Content -->
+    <main class="container">
+        <div class="blog-layout">
+            <!-- Blog Main Content -->
+            <article class="blog-main">
+                <!-- Blog Header -->
+                <header class="blog-header">
+                    <span class="blog-category">THE OFFICIAL PUBLICATION PAGE OF UNIVERSITY OF CEBU LAPU-LAPU AND MANDAUE shs</span>
+                    <h1 class="blog-title">How Ang Silakbo Became Ang Silakbo</h1>
+                    <p class="blog-subtitle">Exploring the philosophical foundations behind publication names and their significance in Filipino journalism</p>
+                    <div class="blog-meta">
+                        <div class="meta-item">
+                            <svg class="meta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <span>By: The 2021 Ang Silakbo Editorial Board</span>
+                        </div>
+                        <span class="meta-divider"></span>
+                    </div>
+                </header>
+                
+                <!-- Article Meta Bar -->
+                <div class="article-meta-bar">
+                    <div class="article-reading-time">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>8 min read</span>
+                    </div>
+                </div>
+                                
+                <!-- Blog Content -->
+                <div class="blog-content">
+                    <section id="introduction" class="article-section">
+                        <p><span class="article-dropcap">I</span>n the realm of Filipino journalism, a publication's name carries profound significance—it serves as both manifesto and mission statement, encapsulating the spirit of truth-seeking and storytelling that defines our craft. The process of naming is itself an act of journalism, requiring the same careful consideration we apply to our reporting.</p>
+                        
+                        <p>We present four distinct conceptual frameworks for publication names, each offering unique perspectives on the role of journalism in contemporary society and drawing from rich Filipino linguistic and cultural traditions.</p>
+                        
+                        <div class="article-highlight-box">
+                            <h4 class="article-highlight-title">Key Insight</h4>
+                            <div class="article-highlight-content">
+                                The name of a publication is more than a label—it's a philosophical statement about the nature and purpose of journalism itself. In the Filipino context, these names often draw from deep cultural and linguistic traditions that connect modern journalistic practice to our heritage.
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <div class="text-divider">The Concepts</div>
+                    
+                    <section id="silakbo" class="article-section">
+                        <div class="concept-title">
+                            <span class="concept-number">1</span>
+                            <h2>SILAKBO: Emotional Truth-Telling</h2>
+                        </div>
+                        
+                        <div class="concept-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
+                        </div>
+                        
+                        <div class="publication-card">
+                            <div class="card-header">
+                                <h3 class="card-title">SILAKBO PUBLICATION</h3>
+                                <p class="card-tagline">"outburst" in English</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">This visceral term captures the <span class="highlight">uncontainable energy</span> at journalism's core. <em>Silakbo</em> represents the emotional eruption that transforms observation into art, silence into speech, and passive witnessing into active documentation.</p>
+                                
+                                <p class="card-text">More than mere reporting, this concept embraces journalism as <span class="highlight">emotional truth-telling</span>—where facts meet feeling, and where the passion behind the story becomes as vital as the story itself. It's particularly suited for publications focusing on human interest, cultural reporting, or advocacy journalism.</p>
+                                
+                                <div class="definition-box">
+                                    <div class="definition-title">Linguistic Roots</div>
+                                    <div class="definition-content">
+                                        <p>/si.lak.'bo/. Pangngalan silakbo. Isang biglaan, o madalas matinding pagpapahayag ng damdamin o kilos.</p>
+                                        <p>See more: outburst, eruption; spasm; surge. pagsilakbó: outbreak</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p>The concept of <em>Silakbo</em> in journalism challenges the notion that objectivity requires emotional detachment. Instead, it suggests that the most honest reporting acknowledges and harnesses the emotional dimensions of storytelling. This approach recognizes that journalism is not merely about transmitting information but about conveying human experience in all its complexity.</p>
+                    </section>
+                    
+                    <div class="article-divider"></div>
+                    
+                    <section id="hiraya" class="article-section">
+                        <div class="concept-title">
+                            <span class="concept-number">2</span>
+                            <h2>HIRAYA: Collective Aspiration</h2>
+                        </div>
+                        
+                        <div class="concept-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path><path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path><path d="M19 11h2m-1 -1v2"></path></svg>
+                        </div>
+                        
+                        <div class="publication-card">
+                            <div class="card-header">
+                                <h3 class="card-title">HIRAYA</h3>
+                                <p class="card-tagline">From ancient Filipino: "the fruit of one's hopes, dreams, and aspirations"</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">This profound concept positions journalism as the <span class="highlight">realization of collective aspiration</span>. <em>Hiraya</em> speaks to the higher purpose of our craft—not merely to inform, but to cultivate the soil from which a better society might grow.</p>
+                                
+                                <p class="card-text">Ideal for publications with a visionary or reform-oriented mission, this name suggests journalism as both <span class="highlight">prophetic voice</span> and <span class="highlight">catalyst for progress</span>. It carries particular resonance for development communication, future-focused reporting, or publications tied to educational institutions.</p>
+                            </div>
+                        </div>
+                        
+                        <p>The <em>Hiraya</em> concept elevates journalism from mere information delivery to a transformative social force. Publications adopting this philosophy might emphasize solutions journalism, community engagement, and forward-looking analysis that helps readers envision and work toward preferred futures.</p>
+                        
+                        <div class="pull-quote">
+                            Journalism becomes not just a mirror reflecting society, but a compass guiding it toward its highest aspirations.
+                        </div>
+                    </section>
+                    
+                    <div class="article-divider"></div>
+                    
+                    <section id="tanglaw" class="article-section">
+                        <div class="concept-title">
+                            <span class="concept-number">3</span>
+                            <h2>TANGLAW: Illumination and Responsibility</h2>
+                        </div>
+                        
+                        <div class="concept-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m8 6 4-4 4 4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
+                        </div>
+                        
+                        <div class="publication-card">
+                            <div class="card-header">
+                                <h3 class="card-title">TANGLAW PUBLICATION</h3>
+                                <p class="card-tagline">"torch" in English</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">The torch has served as journalism's symbol since antiquity, representing both <span class="highlight">illumination</span> and <span class="highlight">responsibility</span>. <em>Tanglaw</em> makes this metaphor distinctly Filipino, suggesting guidance through darkness and warmth in times of cold indifference.</p>
+                                
+                                <p class="card-text">This classical approach suits publications emphasizing investigative rigor, ethical reporting, and journalistic tradition. The torch imagery also suggests mentorship—appropriate for student publications or training-oriented journalism projects.</p>
+                            </div>
+                        </div>
+                        
+                        <p>The <em>Tanglaw</em> concept draws on journalism's traditional watchdog role while adding distinctly Filipino cultural resonances. It emphasizes journalism's responsibility to shine light on hidden truths and guide society through complex issues with clarity and ethical commitment.</p>
+                    </section>
+                    
+                    <div class="article-divider"></div>
+                    
+                    <section id="ledger" class="article-section">
+                        <div class="concept-title">
+                            <span class="concept-number">4</span>
+                            <h2>LEDGER: Balance Sheet of Social Truth</h2>
+                        </div>
+                        
+                        <div class="concept-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 7h6"></path><path d="M8 11h8"></path><path d="M8 15h6"></path></svg>
+                        </div>
+                        
+                        <div class="publication-card">
+                            <div class="card-header">
+                                <h3 class="card-title">UCLM DAILY LEDGER</h3>
+                                <p class="card-tagline">A record of accounts, a chronicle of truth</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">This conceptual framework reimagines the ledger—traditionally a financial document—as a <span class="highlight">balance sheet of social truth</span>. Just as financial ledgers track debits and credits, this approach suggests journalism as society's bookkeeper, maintaining the records by which we assess our collective health.</p>
+                                
+                                <p class="card-text">The ledger metaphor emphasizes <span class="highlight">precision, accountability, and completeness</span>. It's particularly fitting for publications focusing on data journalism, business reporting, or civic accountability, where the language of assets and liabilities finds literal application.</p>
+                            </div>
+                        </div>
+                        
+                        <p>The <em>Ledger</em> concept frames journalism as a systematic accounting of society's transactions and transformations. This approach values precision, comprehensiveness, and the creation of a reliable public record that can be referenced and analyzed over time.</p>
+                    </section>
+                    
+                    <div class="text-divider">Final Thoughts</div>
+                    
+                    <section id="conclusion" class="article-section">
+                        <h2>Conclusion: Beyond Branding</h2>
+                        
+                        <div class="conclusion">
+                            <p class="conclusion-text">
+                                These naming concepts represent more than mere branding—they articulate distinct philosophies of journalism's purpose. Whether embracing journalism as emotional expression (<em>Silakbo</em>), aspirational vision (<em>Hiraya</em>), guiding light (<em>Tanglaw</em>), or meticulous record (<em>Ledger</em>), each suggests different ways of understanding our role as communicators in Filipino society.
+                            </p>
+                        </div>
+                        
+                        <p>The process of naming a publication is an opportunity for profound reflection on journalistic purpose and identity. Far from being a superficial marketing decision, the name chosen can serve as a constant reminder of core values and mission, helping to guide editorial decisions and organizational culture.</p>
+                        
+                        <p>In the Filipino context, drawing on indigenous language and cultural concepts adds another dimension to this process, connecting contemporary journalistic practice to deeper cultural traditions and ways of knowing. This linguistic rootedness can help publications develop distinctive voices that resonate with their communities while contributing to the preservation and evolution of Filipino cultural heritage.</p>
+                        
+                        <p class="article-footnote">
+                            This article is part of a series on Filipino journalism traditions and innovations. The concepts presented are based on research conducted in collaboration with journalism departments across the Philippines.
+                        </p>
+                    </section>
+                </div>
+            </article>
+            
+            <!-- Blog Sidebar -->
+    
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <img src="SILAKBO.png" alt="SILAKBO Logo" class="footer-logo-img">
+                        <span class="footer-logo-text">ANG SILAKBO</span>
+                    </div>
+                    <p class="footer-about">
+                        A publication dedicated to exploring the philosophical foundations of Filipino journalism and media studies.
+                    </p>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="index.html" class="footer-link">Home</a>
+                        <a href="About Us.html" class="footer-link">About Us</a>
+                        <a href="Artikulo.html" class="footer-link">Articles</a>
+                        <a href="Chat Request.html" class="footer-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <div class="footer-contact-item">
+                        <svg class="footer-contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/></svg>
+                        <span>University of Cebu Lapu-Lapu and Mandaue Senior High School</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg class="footer-contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4h-16c-1.105 0-2 .895-2 2v12c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2v-12c0-1.105-.895-2-2-2zm0 4.236l-8 4.882-8-4.882v-2.236l8 4.882 8-4.882v2.236z"/></svg>
+                        <span>uclm.angsilakbo@uc.edu.ph</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-divider"></div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 ANG SILAKBO | Pagpapahayag Ng Makatotohanang Balita Na May Matinding Damdamin</p>
+                <div class="footer-bottom-links">
+                    <a href="ToS.html" class="footer-bottom-link">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top -->
+    <div class="back-to-top" id="backToTop">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menuClose = document.querySelector('.menu-close');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const overlay = document.querySelector('.overlay');
+        
+        function toggleMenu() {
+            mobileMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        }
+        
+        menuToggle.addEventListener('click', toggleMenu);
+        menuClose.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+        
+        // Header Scroll Effect
+        const header = document.getElementById('site-header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Back to Top Button
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Reading Progress Indicator
+        const progressIndicator = document.createElement('div');
+        progressIndicator.className = 'reading-progress';
+        progressIndicator.style.position = 'fixed';
+        progressIndicator.style.top = '0';
+        progressIndicator.style.left = '0';
+        progressIndicator.style.height = '3px';
+        progressIndicator.style.backgroundColor = 'var(--primary)';
+        progressIndicator.style.zIndex = '1000';
+        progressIndicator.style.width = '0%';
+        progressIndicator.style.transition = 'width 0.1s ease';
+        document.body.appendChild(progressIndicator);
+        
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            progressIndicator.style.width = scrollPercent + '%';
+        });
+        
+        // Highlight sections on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.article-section');
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    section.classList.add('active-section');
+                } else {
+                    section.classList.remove('active-section');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
