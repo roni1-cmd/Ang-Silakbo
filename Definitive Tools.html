@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANG SILAKBO - AI Tools</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Merriweather&family=Playfair+Display:wght@400;600&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Added CDN for professional icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e65100;
+            --primary-light: rgba(230, 81, 0, 0.1);
+            --primary-dark: #c34500;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --gradient-1: linear-gradient(135deg, #ff8a00, #e65100);
+            --gradient-2: linear-gradient(135deg, #ff9800, #ff5722);
+            --modal-backdrop: rgba(0, 0, 0, 0.75);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background-color: var(--white);
+            padding: 1.25rem 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+        
+        .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+        
+        .nav-menu {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .nav-menu {
+                display: flex;
+                gap: 2rem;
+                list-style: none;
+            }
+            
+            .nav-item a {
+                color: var(--dark-gray);
+                text-decoration: none;
+                font-family: 'Poppins', sans-serif;
+                font-weight: 400;
+                position: relative;
+                transition: color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-item a:hover {
+                color: var(--primary);
+            }
+            
+            .nav-item a::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: -4px;
+                left: 0;
+                background-color: var(--primary);
+                transition: width 0.3s ease;
+            }
+            
+            .nav-item a:hover::after {
+                width: 100%;
+            }
+        }
+        
+        .hero {
+            background-color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-light) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #222;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .hero-desc {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: #555;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 2rem;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(230,81,0,0.05) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+                padding: 4rem 2rem;
+            }
+        }
+        
+        .card {
+            flex: 1;
+            background-position: center;
+            background-size: cover;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            min-height: 600px; /* Increased image height */
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .card-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0) 60%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.8; /* Reduced overlay opacity */
+        }
+        
+        .card-tag {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-coral {
+            background-image: url('Coral Hi!.png');
+            background-position: top center; /* Modified to show more of the image */
+        }
+        
+        .card-text {
+            background-image: url('Coral2.png');
+            background-position: top center; /* Modified to show more of the image */
+        }
+        
+        .card-content {
+            backdrop-filter: blur(10px); /* Reduced blur for better visibility */
+            background-color: rgba(255, 255, 255, 0.85); /* Slightly more transparent */
+            padding: 2.5rem 2rem;
+            border-radius: 24px 24px 0 0;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+            max-height: 45%; /* Limit content height to show more image */
+        }
+        
+        .card:hover .card-content {
+            transform: translateY(-10px);
+        }
+        
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .card-desc {
+            font-family: 'Merriweather', serif;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .btn {
+            font-family: 'Poppins', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 5px 20px rgba(230, 81, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            transition: transform 0.3s ease;
+            transform: translateY(-100%);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(230, 81, 0, 0.4);
+        }
+        
+        .btn:hover::after {
+            transform: translateY(0);
+        }
+        
+        .cta {
+            padding: 5rem 2rem;
+            background-color: var(--light-gray);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-light) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #222;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .cta-desc {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: #555;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-backdrop);
+            z-index: 1000;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-container {
+            margin: auto;
+            width: 90%;
+            max-width: 900px; /* Increased max-width */
+            background-color: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        
+        .modal.active .modal-container {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+            transition: color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: var(--primary);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .modal-options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .modal-option {
+            height: 350px; /* Increased height */
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .modal-option:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .option-coral {
+            background-image: url('Coral Hi!.png');
+            background-size: cover;
+            background-position: top center; /* Modified to show more of the image */
+        }
+        
+        .option-text {
+            background-image: url('Coral2.png');
+            background-size: cover;
+            background-position: top center; /* Modified to show more of the image */
+        }
+        
+        .option-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.1) 75%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            transition: background 0.3s ease;
+            opacity: 0.8; /* Reduced overlay opacity */
+        }
+        
+        .modal-option:hover .option-overlay {
+            background: linear-gradient(to top, rgba(230, 81, 0, 0.9), rgba(230, 81, 0, 0.5));
+        }
+        
+        .option-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .option-desc {
+            font-family: 'Source Sans Pro', sans-serif;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .option-btn {
+            align-self: flex-start;
+            background-color: white;
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .option-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            background-color: var(--white);
+            padding: 5rem 2rem 3rem;
+            margin-top: auto;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-container {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+        }
+        
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .footer-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .footer-logo {
+            height: 35px;
+            width: auto;
+        }
+        
+        .footer-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .footer-desc {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.25rem;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        .footer-col h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .footer-link {
+            color: #555;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-link:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        /* Added mobile menu burger button */
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            border: 1px solid #eee;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle:hover {
+            background-color: var(--primary-light);
+        }
+        
+        @media (min-width: 768px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+        
+        /* Mobile menu styles */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 75%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: white;
+            z-index: 1000;
+            padding: 2rem;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #777;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .mobile-menu-close:hover {
+            color: var(--primary);
+        }
+        
+        .mobile-menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .mobile-menu-item a {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .mobile-menu-item a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .mobile-menu-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .mobile-menu-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--white);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 90;
+        }
+        
+        .scroll-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
+                <h1 class="title">ANG SILAKBO</h1>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="mobile-menu-item"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="mobile-menu-item"><a href="About Us.html"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li class="mobile-menu-item"><a href="Dev's Note.html"><i class="fas fa-newspaper"></i> Blog</a></li>
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo-container">
+                <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo">
+                <h3 class="footer-title">ANG SILAKBO</h3>
+            </div>
+            <button class="mobile-menu-close"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-item"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li class="mobile-menu-item"><a href="About Us.html"><i class="fas fa-info-circle"></i> About</a></li>
+            <li class="mobile-menu-item"><a href="Dev's Note.html"><i class="fas fa-newspaper"></i> Blog</a></li>
+        </ul>
+    </div>
+    <div class="mobile-menu-backdrop"></div>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h2 class="hero-title">Our Definitive Tools</h2>
+            <p class="hero-desc">Explore innovative tools and solutions designed to enhance your digital experience. Unleash your creativity and productivity with us.</p>
+        </div>
+    </section>
+    
+    <div class="container">
+        <div class="card card-coral">
+            <span class="card-tag"><i class="fas fa-robot"></i> AI Assistant</span>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title"><i class="fas fa-comments"></i> Try talking to coral!</h2>
+                <p class="card-desc">Engage with our AI assistant Coral for intelligent conversations and personalized help. Get answers, creative content, and problem-solving support.</p>
+                <a href="Bot.html" class="btn"><i class="fas fa-comment-dots"></i> Chat with Coral</a>
+            </div>
+        </div>
+        
+        <div class="card card-text">
+            <span class="card-tag"><i class="fas fa-chart-line"></i> Analysis Tools</span>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title"><i class="fas fa-search"></i> Try our text analysis tools!</h2>
+                <p class="card-desc">Powerful text analysis tools to gain insights from your content with advanced NLP technology. Understand sentiment, extract topics, and more.</p>
+                <a href="Tools.html" class="btn"><i class="fas fa-tools"></i> Explore Tools</a>
+            </div>
+        </div>
+    </div>
+    
+    <section class="cta">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Get Started?</h2>
+            <p class="cta-desc">Join thousands of satisfied users who are already experiencing the benefits of our innovative solutions.</p>
+            <button id="showModalBtn" class="btn"><i class="fas fa-rocket"></i> Go!</button>
+        </div>
+    </section>
+    
+    <!-- Modal -->
+    <div id="optionsModal" class="modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-stars"></i> Choose Your Experience</h3>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-options">
+                    <div class="modal-option option-coral">
+                        <div class="option-overlay">
+                            <h4 class="option-title"><i class="fas fa-robot"></i> Talk to Coral</h4>
+                            <p class="option-desc">Chat with our AI assistant Coral for personalized support, creative help, and intelligent conversations.</p>
+                            <a href="Bot.html" class="option-btn"><i class="fas fa-comments"></i> Start Chatting</a>
+                        </div>
+                    </div>
+                    <div class="modal-option option-text">
+                        <div class="option-overlay">
+                            <h4 class="option-title"><i class="fas fa-chart-bar"></i> Text Analysis</h4>
+                            <p class="option-desc">Use our powerful suite of text analysis tools to extract insights and understand your content better.</p>
+                            <a href="Tools.html" class="option-btn"><i class="fas fa-arrow-right"></i> Use Analysis Tools</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo-container">
+                    <img src="SILAKBO.png" alt="SILAKBO Logo" class="footer-logo">
+                    <h3 class="footer-title">ANG SILAKBO</h3>
+                </div>
+                <p class="footer-desc">Empowering users with advanced AI and text analysis tools to enhance productivity and creativity.</p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/AngSilakboUCLM" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3><i class="fas fa-link"></i> Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="About Us.html" class="footer-link"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="Dev's Note.html" class="footer-link"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                    <li><a href="Chat Request.html" class="footer-link"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                </ul>
+            </div>
+                        
+            <div class="footer-col">
+                <h3><i class="fas fa-address-card"></i> Contact Us</h3>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>University of Cebu Lapu-Lapu and Mandaue Senior High School</div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>uclm.angsilakbo@uc.edu.ph</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 ANG SILAKBO. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('optionsModal');
+        const showModalBtn = document.getElementById('showModalBtn');
+        const closeBtn = document.querySelector('.close-btn');
+        
+        showModalBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
