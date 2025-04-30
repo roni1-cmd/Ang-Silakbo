@@ -1,0 +1,2794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANG SILAKBO - Text Analysis Tool</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e65100;
+            --primary-light: #ff833a;
+            --primary-dark: #ac1900;
+            --white: #ffffff;
+            --off-white: #f9f9f9;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease;
+            --border-radius: 16px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+            --border-radius-round: 50px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+
+        p, li, span {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .header {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 0.8rem 2rem;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--border-radius-round);
+            object-fit: cover;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+        }
+
+        .toolbar {
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+        }
+
+        .toolbar-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            padding: 0.6rem 0;
+        }
+
+        .toolbar-section:not(:last-child) {
+            border-bottom: 1px solid var(--medium-gray);
+            margin-bottom: 0.6rem;
+        }
+
+        .toolbar-label {
+            width: 100%;
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .editor {
+            min-height: 500px;
+            padding: 1.8rem;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            outline: none;
+            transition: var(--transition);
+            line-height: 1.8;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+        }
+
+        .editor:focus {
+            box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.2);
+        }
+
+        .word-count {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            padding: 0.8rem 1.2rem;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius-round);
+        }
+
+        .btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: var(--border-radius-round);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--medium-gray);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            background: var(--light-gray);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-success {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-danger {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: var(--border-radius-round);
+        }
+
+        .tab-container {
+            display: flex;
+            background: var(--light-gray);
+            overflow: hidden;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .tab {
+            padding: 0.9rem 1.25rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+            border-bottom: 2px solid transparent;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .tab:hover {
+            background: var(--off-white);
+        }
+
+        .tab.active {
+            background: var(--white);
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            padding: 2.5rem;
+            text-align: center;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            margin-top: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+        }
+
+        .loading-spinner {
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .context-menu {
+            position: absolute;
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow);
+            padding: 0.5rem 0;
+            z-index: 1000;
+            display: none;
+            min-width: 220px;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .context-menu-item {
+            padding: 0.7rem 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .context-menu-item:hover {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: var(--medium-gray);
+            margin: 0.5rem 0;
+        }
+
+        .history-item, .note-item {
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            margin-bottom: 0.8rem;
+            background: var(--white);
+            transition: var(--transition);
+            border: 1px solid var(--medium-gray);
+        }
+
+        .history-item:hover, .note-item:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .note-date {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            margin-top: 0.4rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .settings-option {
+            margin-bottom: 1.2rem;
+        }
+
+        .settings-option label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .settings-option select, .settings-option input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-round);
+            border: 1px solid var(--medium-gray);
+            background: var(--white);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .theme-option {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius-round);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .theme-option.selected {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .ai-suggestions {
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .suggestion {
+            padding: 1rem;
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--medium-gray);
+        }
+
+        .suggestion:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--border-radius-round);
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .badge-success {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .badge-warning {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .badge-error {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .badge-info {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .footer {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+            position: relative;
+            display: inline-block;
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 40px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .footer-links a i {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2.5rem;
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--medium-gray);
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--medium-gray);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            background: var(--primary);
+            color: var(--text-light);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.3rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius-round);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        /* Grammar Check Modal */
+        .grammar-result, .plagiarism-result, .sentiment-result, .keywords-result {
+            margin-bottom: 1.5rem;
+        }
+
+        .grammar-item, .plagiarism-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .grammar-original, .plagiarism-text {
+            text-decoration: line-through;
+            color: var(--primary);
+        }
+
+        .grammar-suggestion, .plagiarism-source {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Sentiment Analysis Modal */
+        .sentiment-meter {
+            height: 8px;
+            width: 100%;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-round);
+            margin: 1.2rem 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .sentiment-indicator {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: -4px;
+            transform: translateX(-50%);
+            transition: left 0.5s ease;
+            box-shadow: 0 0 10px rgba(230, 81, 0, 0.5);
+        }
+
+        .sentiment-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Keywords Modal */
+        .keywords-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 1rem;
+        }
+
+        .keyword {
+            background: var(--light-gray);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-round);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .keyword:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Quick Access Toolbar */
+        .quick-access {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            z-index: 90;
+        }
+
+        .quick-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius-round);
+            background: var(--primary);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .quick-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-menu {
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow);
+            padding: 0.5rem;
+            display: none;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .quick-menu.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .quick-menu-item {
+            padding: 0.7rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .quick-menu-item:hover {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 300px;
+            border-left: 4px solid var(--primary);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .notification.active {
+            transform: translateX(0);
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid var(--medium-gray);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+        }
+
+        .result-content {
+            padding: 0.8rem;
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            border-left: 3px solid var(--primary);
+            color: var(--text-dark);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .toolbar-section {
+                justify-content: center;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-section h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-links a {
+                justify-content: center;
+            }
+            
+            .footer-links a:hover {
+                transform: translateX(0) scale(1.05);
+            }
+            
+            .quick-access {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img">
+                <h1><strong>ANG SILAKBO</strong></h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="btn-new-document">
+                    <i class="fas fa-plus"></i> New Document
+                </button>
+                <button class="btn" id="btn-settings-toggle">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="editor-container">
+            <div class="toolbar">
+                <div class="toolbar-section">
+                    <div class="toolbar-label">Formatting</div>
+                    <button class="btn btn-icon" id="btn-bold" title="Bold">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-italic" title="Italic">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-underline" title="Underline">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-link" title="Insert Link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-list" title="Bullet List">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-numbering" title="Numbered List">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-quote" title="Blockquote">
+                        <i class="fas fa-quote-right"></i>
+                    </button>
+                    <button class="btn btn-icon" id="btn-code" title="Code Block">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+                
+                <div class="toolbar-section">
+                    <div class="toolbar-label">AI Analysis</div>
+                    <button class="btn" id="btn-summarize">
+                        <i class="fas fa-compress-alt"></i> Summarize
+                    </button>
+                    <button class="btn" id="btn-plagiarism">
+                        <i class="fas fa-search"></i> Check Plagiarism
+                    </button>
+                    <button class="btn" id="btn-grammar">
+                        <i class="fas fa-spell-check"></i> Grammar Check
+                    </button>
+                    <button class="btn" id="btn-translate">
+                        <i class="fas fa-language"></i> Translate
+                    </button>
+                    <button class="btn" id="btn-sentiment">
+                        <i class="fas fa-smile"></i> Sentiment Analysis
+                    </button>
+                    <button class="btn" id="btn-keywords">
+                        <i class="fas fa-key"></i> Extract Keywords
+                    </button>
+                </div>
+                
+                <div class="toolbar-section">
+                    <div class="toolbar-label">Document</div>
+                    <button class="btn btn-success" id="btn-save">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="btn" id="btn-load">
+                        <i class="fas fa-folder-open"></i> Load
+                    </button>
+                    <button class="btn" id="btn-export">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                    <button class="btn btn-danger" id="btn-clear">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="editor" id="editor" contenteditable="true">
+                <p>Welcome to <strong>ANG SILAKBO</strong> - your advanced text analysis tool!</p>
+                <p>Start typing here or paste your text. Use the toolbar above to format your content or analyze your writing.</p>
+                <p>Key features:</p>
+                <ul>
+                    <li>Grammar and spelling check</li>
+                    <li>Plagiarism detection</li>
+                    <li>Sentiment analysis</li>
+                    <li>Text summarization</li>
+                    <li>Keyword extraction</li>
+                    <li>Translation services</li>
+                </ul>
+                <p>Highlight any text and right-click for additional options.</p>
+            </div>
+            
+            <div class="word-count" id="word-count">
+                <span>Words: 0</span>
+                <span>Characters: 0</span>
+                <span id="status" class="badge badge-success">Ready</span>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <div id="loading-text">Processing your request...</div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="tab-container">
+                <div class="tab active" data-tab="instructions">Guide</div>
+                <div class="tab" data-tab="notes">Notes</div>
+                <div class="tab" data-tab="settings">Settings</div>
+            </div>
+            
+            <div class="tab-content active" id="instructions-content">
+                <h3><i class="fas fa-book"></i> How to Use</h3>
+                
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-edit"></i> Basic Editing
+                    </div>
+                    <div class="result-content">
+                        <ul>
+                            <li>Type or paste your text in the editor</li>
+                            <li>Use formatting buttons for styling</li>
+                            <li>Right-click highlighted text for more options</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-robot"></i> AI Features
+                    </div>
+                    <div class="result-content">
+                        <ul>
+                            <li><strong>Rephrase:</strong> Rewrite selected text</li>
+                            <li><strong>Improve:</strong> Enhance text quality</li>
+                            <li><strong>Summarize:</strong> Create concise summary</li>
+                            <li><strong>Grammar Check:</strong> Fix grammatical errors</li>
+                            <li><strong>Sentiment Analysis:</strong> Analyze emotional tone</li>
+                            <li><strong>Keywords:</strong> Extract important terms</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-file-alt"></i> Document Management
+                    </div>
+                    <div class="result-content">
+                        <ul>
+                            <li>Save your work locally</li>
+                            <li>Export to various formats</li>
+                            <li>View version history</li>
+                            <li>Create and manage notes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="notes-content">
+                <h3><i class="fas fa-sticky-note"></i> Saved Notes</h3>
+                <div id="saved-notes-list">
+                    <p>No saved notes yet.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-new-note">
+                    <i class="fas fa-plus"></i> New Note
+                </button>
+            </div>
+            
+            <div class="tab-content" id="settings-content">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                
+                <div class="settings-option">
+                    <label for="font-family">Font Family:</label>
+                    <select id="font-family">
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Merriweather', serif">Merriweather</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Georgia', serif">Georgia</option>
+                    </select>
+                </div>
+                
+                <div class="settings-option">
+                    <label for="font-size">Font Size:</label>
+                    <select id="font-size">
+                        <option value="14px">Small</option>
+                        <option value="16px" selected>Medium</option>
+                        <option value="18px">Large</option>
+                        <option value="20px">Extra Large</option>
+                    </select>
+                </div>
+                
+                <div class="settings-option">
+                    <label>Editor Theme:</label>
+                    <div class="theme-selector">
+                        <div class="theme-option selected" style="background-color: #ffffff;" data-theme="light"></div>
+                        <div class="theme-option" style="background-color: #f5f5f5;" data-theme="light-gray"></div>
+                        <div class="theme-option" style="background-color: #fff3e0;" data-theme="light-orange"></div>
+                        <div class="theme-option" style="background-color: #ffebee;" data-theme="light-pink"></div>
+                        <div class="theme-option" style="background-color: #f9f3e6;" data-theme="sepia"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <label for="auto-save">Auto-save:</label>
+                    <select id="auto-save">
+                        <option value="off">Off</option>
+                        <option value="1">Every 1 minute</option>
+                        <option value="5" selected>Every 5 minutes</option>
+                        <option value="10">Every 10 minutes</option>
+                    </select>
+                </div>
+                
+                <div class="settings-option">
+                    <label for="api-key">Cohere API Key:</label>
+                    <input type="password" id="api-key" placeholder="Enter your API key">
+                </div>
+                
+                <button class="btn btn-primary" id="btn-reset-settings">
+                    <i class="fas fa-undo"></i> Reset to Defaults
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="context-menu">
+        <div class="context-menu-item" id="menu-rephrase">
+            <i class="fas fa-sync-alt"></i> Rephrase
+        </div>
+        <div class="context-menu-item" id="menu-improve">
+            <i class="fas fa-magic"></i> Improve
+        </div>
+        <div class="context-menu-item" id="menu-alternatives">
+            <i class="fas fa-exchange-alt"></i> Find Alternatives
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" id="menu-bold">
+            <i class="fas fa-bold"></i> Bold
+        </div>
+        <div class="context-menu-item" id="menu-italic">
+            <i class="fas fa-italic"></i> Italic
+        </div>
+        <div class="context-menu-item" id="menu-underline">
+            <i class="fas fa-underline"></i> Underline
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" id="menu-cut">
+            <i class="fas fa-cut"></i> Cut
+        </div>
+        <div class="context-menu-item" id="menu-copy">
+            <i class="fas fa-copy"></i> Copy
+        </div>
+        <div class="context-menu-item" id="menu-paste">
+            <i class="fas fa-paste"></i> Paste
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" id="menu-grammar">
+            <i class="fas fa-spell-check"></i> Check Grammar
+        </div>
+        <div class="context-menu-item" id="menu-sentiment">
+            <i class="fas fa-smile"></i> Analyze Sentiment
+        </div>
+    </div>
+
+    <!-- Modal Templates -->
+    <div class="modal-overlay" id="grammar-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-spell-check"></i> Grammar Check Results</h3>
+                <button class="modal-close" id="close-grammar-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="grammar-modal-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="btn-apply-corrections">Apply All Corrections</button>
+                <button class="btn btn-primary" id="btn-close-grammar">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="plagiarism-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-search"></i> Plagiarism Check Results</h3>
+                <button class="modal-close" id="close-plagiarism-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="plagiarism-modal-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-close-plagiarism">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="sentiment-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-smile"></i> Sentiment Analysis</h3>
+                <button class="modal-close" id="close-sentiment-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="sentiment-modal-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-close-sentiment">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="keywords-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Extracted Keywords</h3>
+                <button class="modal-close" id="close-keywords-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="keywords-modal-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="btn-copy-keywords">Copy Keywords</button>
+                <button class="btn btn-primary" id="btn-close-keywords">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Menu -->
+    <div class="quick-access">
+        <button class="quick-btn" id="quick-menu-toggle">
+            <i class="fas fa-bolt"></i>
+        </button>
+        <div class="quick-menu" id="quick-menu">
+            <div class="quick-menu-item" id="quick-grammar">
+                <i class="fas fa-spell-check"></i> Grammar Check
+            </div>
+            <div class="quick-menu-item" id="quick-summarize">
+                <i class="fas fa-compress-alt"></i> Summarize
+            </div>
+            <div class="quick-menu-item" id="quick-keywords">
+                <i class="fas fa-key"></i> Extract Keywords
+            </div>
+            <div class="quick-menu-item" id="quick-save">
+                <i class="fas fa-save"></i> Quick Save
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-title" id="notification-title">Success</div>
+        <div class="notification-message" id="notification-message">Operation completed successfully.</div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ANG SILAKBO</h3>
+                <p>Advanced text analysis and writing assistant powered by AI. Improve your writing with grammar checks, plagiarism detection, sentiment analysis, and more.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Features</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-check"></i> Grammar Check</a></li>
+                    <li><a href="#"><i class="fas fa-search"></i> Plagiarism Detection</a></li>
+                    <li><a href="#"><i class="fas fa-smile"></i> Sentiment Analysis</a></li>
+                    <li><a href="#"><i class="fas fa-compress-alt"></i> Text Summarization</a></li>
+                    <li><a href="#"><i class="fas fa-language"></i> Translation</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="Guidelines.html"><i class="fas fa-book"></i> User Guide</a></li>
+                    <li><a href="FAQ.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="Tutorial.html"><i class="fas fa-video"></i> Tutorials</a></li>
+                    <li><a href="Dev's Note.html"><i class="fas fa-newspaper"></i> Blog</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-envelope"></i> uclm.angsilakbo@uc.edu.ph</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> University of Cebu Lapu-Lapu and Mandaue Senior High School</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 ANG SILAKBO. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // API key for Cohere (in a real app, this should be handled server-side)
+        const cohereApiKey = 'z99HUO9u2vu9E4YTRRfeue6hbdkdOcM8zWQDfbcq';
+        
+        // DOM elements
+        const editor = document.getElementById('editor');
+        const contextMenu = document.getElementById('context-menu');
+        const statusIndicator = document.getElementById('status');
+        const wordCountDisplay = document.getElementById('word-count');
+        const loadingIndicator = document.getElementById('loading');
+        const loadingText = document.getElementById('loading-text');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Modal elements
+        const grammarModal = document.getElementById('grammar-modal');
+        const plagiarismModal = document.getElementById('plagiarism-modal');
+        const sentimentModal = document.getElementById('sentiment-modal');
+        const keywordsModal = document.getElementById('keywords-modal');
+        const grammarModalContent = document.getElementById('grammar-modal-content');
+        const plagiarismModalContent = document.getElementById('plagiarism-modal-content');
+        const sentimentModalContent = document.getElementById('sentiment-modal-content');
+        const keywordsModalContent = document.getElementById('keywords-modal-content');
+        
+        // Toolbar buttons
+        const btnBold = document.getElementById('btn-bold');
+        const btnItalic = document.getElementById('btn-italic');
+        const btnUnderline = document.getElementById('btn-underline');
+        const btnLink = document.getElementById('btn-link');
+        const btnList = document.getElementById('btn-list');
+        const btnNumbering = document.getElementById('btn-numbering');
+        const btnQuote = document.getElementById('btn-quote');
+        const btnCode = document.getElementById('btn-code');
+        const btnSummarize = document.getElementById('btn-summarize');
+        const btnPlagiarism = document.getElementById('btn-plagiarism');
+        const btnGrammar = document.getElementById('btn-grammar');
+        const btnTranslate = document.getElementById('btn-translate');
+        const btnSentiment = document.getElementById('btn-sentiment');
+        const btnKeywords = document.getElementById('btn-keywords');
+        const btnSave = document.getElementById('btn-save');
+        const btnLoad = document.getElementById('btn-load');
+        const btnExport = document.getElementById('btn-export');
+        const btnClear = document.getElementById('btn-clear');
+        const btnNewNote = document.getElementById('btn-new-note');
+        const btnResetSettings = document.getElementById('btn-reset-settings');
+        const btnNewDocument = document.getElementById('btn-new-document');
+        const btnSettingsToggle = document.getElementById('btn-settings-toggle');
+        
+        // Modal buttons
+        const btnCloseGrammar = document.getElementById('btn-close-grammar');
+        const btnClosePlagiarism = document.getElementById('btn-close-plagiarism');
+        const btnCloseSentiment = document.getElementById('btn-close-sentiment');
+        const btnCloseKeywords = document.getElementById('btn-close-keywords');
+        const closeGrammarModal = document.getElementById('close-grammar-modal');
+        const closePlagiarismModal = document.getElementById('close-plagiarism-modal');
+        const closeSentimentModal = document.getElementById('close-sentiment-modal');
+        const closeKeywordsModal = document.getElementById('close-keywords-modal');
+        const btnApplyCorrections = document.getElementById('btn-apply-corrections');
+        const btnCopyKeywords = document.getElementById('btn-copy-keywords');
+        
+        // Quick access elements
+        const quickMenuToggle = document.getElementById('quick-menu-toggle');
+        const quickMenu = document.getElementById('quick-menu');
+        const quickGrammar = document.getElementById('quick-grammar');
+        const quickSummarize = document.getElementById('quick-summarize');
+        const quickKeywords = document.getElementById('quick-keywords');
+        const quickSave = document.getElementById('quick-save');
+        
+        // Notification elements
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notification-title');
+        const notificationMessage = document.getElementById('notification-message');
+        
+        // Context menu items
+        const menuRephrase = document.getElementById('menu-rephrase');
+        const menuImprove = document.getElementById('menu-improve');
+        const menuAlternatives = document.getElementById('menu-alternatives');
+        const menuBold = document.getElementById('menu-bold');
+        const menuItalic = document.getElementById('menu-italic');
+        const menuUnderline = document.getElementById('menu-underline');
+        const menuCut = document.getElementById('menu-cut');
+        const menuCopy = document.getElementById('menu-copy');
+        const menuPaste = document.getElementById('menu-paste');
+        const menuGrammar = document.getElementById('menu-grammar');
+        const menuSentiment = document.getElementById('menu-sentiment');
+        
+        // Tab elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Settings elements
+        const fontFamilySelect = document.getElementById('font-family');
+        const fontSizeSelect = document.getElementById('font-size');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const autoSaveSelect = document.getElementById('auto-save');
+        const apiKeyInput = document.getElementById('api-key');
+        
+        // Current selection tracking
+        let selectedText = '';
+        let selectionRange = null;
+        let documentHistory = [];
+        let savedNotes = [];
+        let autoSaveInterval = null;
+        let grammarCorrections = [];
+        let extractedKeywords = [];
+        
+        // Initialize the editor
+        function initEditor() {
+            updateWordCount();
+            loadSettings();
+            loadNotes();
+            setupAutoSave();
+            
+            // Initialize tabs
+            setupTabs();
+            
+            // Add event listeners
+            addEventListeners();
+            
+            // Show welcome notification
+            showNotification('Welcome to ANG SILAKBO', 'Your advanced text analysis tool is ready to use.');
+        }
+        
+        // Set up tab functionality
+        function setupTabs() {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Find the parent tab container
+                    const tabContainer = tab.closest('.tab-container');
+                    const tabContentContainer = tabContainer.nextElementSibling;
+                    
+                    // Remove active class from all tabs in this container
+                    tabContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    
+                    // Remove active class from all tab contents in this container
+                    if (tabContentContainer && tabContentContainer.classList.contains('results-body')) {
+                        tabContentContainer.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    } else {
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    }
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+        }
+        
+        // Add all event listeners
+        function addEventListeners() {
+            // Editor events
+            editor.addEventListener('input', updateWordCount);
+            editor.addEventListener('keydown', handleKeyDown);
+            editor.addEventListener('contextmenu', handleContextMenu);
+            
+            // Formatting buttons
+            btnBold.addEventListener('click', () => formatText('bold'));
+            btnItalic.addEventListener('click', () => formatText('italic'));
+            btnUnderline.addEventListener('click', () => formatText('underline'));
+            btnLink.addEventListener('click', insertLink);
+            btnList.addEventListener('click', () => formatText('insertUnorderedList'));
+            btnNumbering.addEventListener('click', () => formatText('insertOrderedList'));
+            btnQuote.addEventListener('click', insertQuote);
+            btnCode.addEventListener('click', insertCode);
+            
+            // AI feature buttons
+            btnSummarize.addEventListener('click', summarizeText);
+            btnPlagiarism.addEventListener('click', checkPlagiarism);
+            btnGrammar.addEventListener('click', checkGrammar);
+            btnTranslate.addEventListener('click', translateText);
+            btnSentiment.addEventListener('click', analyzeSentiment);
+            btnKeywords.addEventListener('click', extractKeywords);
+            
+            // Document management buttons
+            btnSave.addEventListener('click', saveDocument);
+            btnLoad.addEventListener('click', loadDocument);
+            btnExport.addEventListener('click', exportDocument);
+            btnClear.addEventListener('click', clearEditor);
+            btnNewNote.addEventListener('click', createNewNote);
+            btnResetSettings.addEventListener('click', resetSettings);
+            btnNewDocument.addEventListener('click', createNewDocument);
+            btnSettingsToggle.addEventListener('click', toggleSettingsTab);
+            
+            // Modal buttons
+            btnCloseGrammar.addEventListener('click', () => closeModal(grammarModal));
+            btnClosePlagiarism.addEventListener('click', () => closeModal(plagiarismModal));
+            btnCloseSentiment.addEventListener('click', () => closeModal(sentimentModal));
+            btnCloseKeywords.addEventListener('click', () => closeModal(keywordsModal));
+            closeGrammarModal.addEventListener('click', () => closeModal(grammarModal));
+            closePlagiarismModal.addEventListener('click', () => closeModal(plagiarismModal));
+            closeSentimentModal.addEventListener('click', () => closeModal(sentimentModal));
+            closeKeywordsModal.addEventListener('click', () => closeModal(keywordsModal));
+            btnApplyCorrections.addEventListener('click', applyAllCorrections);
+            btnCopyKeywords.addEventListener('click', copyKeywordsToClipboard);
+            
+            // Quick access buttons
+            quickMenuToggle.addEventListener('click', toggleQuickMenu);
+            quickGrammar.addEventListener('click', () => {
+                checkGrammar();
+                toggleQuickMenu();
+            });
+            quickSummarize.addEventListener('click', () => {
+                summarizeText();
+                toggleQuickMenu();
+            });
+            quickKeywords.addEventListener('click', () => {
+                extractKeywords();
+                toggleQuickMenu();
+            });
+            quickSave.addEventListener('click', () => {
+                saveDocument();
+                toggleQuickMenu();
+            });
+            
+            // Context menu items
+            menuRephrase.addEventListener('click', () => handleContextMenuAction('rephrase'));
+            menuImprove.addEventListener('click', () => handleContextMenuAction('improve'));
+            menuAlternatives.addEventListener('click', () => handleContextMenuAction('alternatives'));
+            menuBold.addEventListener('click', () => formatText('bold'));
+            menuItalic.addEventListener('click', () => formatText('italic'));
+            menuUnderline.addEventListener('click', () => formatText('underline'));
+            menuCut.addEventListener('click', cutText);
+            menuCopy.addEventListener('click', copyText);
+            menuPaste.addEventListener('click', pasteText);
+            menuGrammar.addEventListener('click', checkGrammar);
+            menuSentiment.addEventListener('click', analyzeSentiment);
+            
+            // Settings changes
+            fontFamilySelect.addEventListener('change', updateEditorStyle);
+            fontSizeSelect.addEventListener('change', updateEditorStyle);
+            themeOptions.forEach(option => {
+                option.addEventListener('click', changeTheme);
+            });
+            autoSaveSelect.addEventListener('change', setupAutoSave);
+            apiKeyInput.addEventListener('change', saveSettings);
+            
+            // Hide context menu when clicking elsewhere
+            document.addEventListener('click', () => {
+                contextMenu.style.display = 'none';
+            });
+            
+            // Close modals when clicking outside
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-overlay')) {
+                    closeModal(e.target);
+                }
+            });
+            
+            // Close quick menu when clicking elsewhere
+            document.addEventListener('click', (e) => {
+                if (e.target !== quickMenuToggle && !quickMenu.contains(e.target)) {
+                    quickMenu.classList.remove('active');
+                }
+            });
+        }
+        
+        // Toggle quick menu
+        function toggleQuickMenu() {
+            quickMenu.classList.toggle('active');
+        }
+        
+        // Show notification
+        function showNotification(title, message, duration = 3000) {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            notification.classList.add('active');
+            
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, duration);
+        }
+        
+        // Open modal
+        function openModal(modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close modal
+        function closeModal(modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Apply all grammar corrections
+        function applyAllCorrections() {
+            if (grammarCorrections.length === 0) return;
+            
+            let content = editor.innerHTML;
+            
+            grammarCorrections.forEach(correction => {
+                content = content.replace(correction.original, correction.correction);
+            });
+            
+            editor.innerHTML = content;
+            closeModal(grammarModal);
+            showNotification('Corrections Applied', `${grammarCorrections.length} corrections have been applied to your text.`);
+        }
+        
+        // Copy keywords to clipboard
+        function copyKeywordsToClipboard() {
+            if (extractedKeywords.length === 0) return;
+            
+            const keywordsText = extractedKeywords.join(', ');
+            navigator.clipboard.writeText(keywordsText).then(() => {
+                showNotification('Keywords Copied', 'Keywords have been copied to clipboard.');
+            });
+        }
+        
+        // Toggle settings tab
+        function toggleSettingsTab() {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            document.querySelector('.tab[data-tab="settings"]').classList.add('active');
+            document.getElementById('settings-content').classList.add('active');
+        }
+        
+        // Create new document
+        function createNewDocument() {
+            if (confirm('Create a new document? Any unsaved changes will be lost.')) {
+                editor.innerHTML = '<p>Start typing here or paste your text.</p>';
+                updateWordCount();
+                setStatus('New document created', 'badge-success');
+                showNotification('New Document', 'A new document has been created.');
+            }
+        }
+        
+        // Handle keydown events in editor
+        function handleKeyDown(e) {
+            // Tab key inserts spaces
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                document.execCommand('insertText', false, '    ');
+            }
+            
+            // Save document on Ctrl+S
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveDocument();
+            }
+        }
+        
+        // Handle context menu
+        function handleContextMenu(e) {
+            const selection = window.getSelection();
+            selectedText = selection.toString().trim();
+            
+            if (selectedText) {
+                e.preventDefault();
+                selectionRange = selection.getRangeAt(0);
+                
+                // Position the context menu
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = `${e.pageX}px`;
+                contextMenu.style.top = `${e.pageY}px`;
+            }
+        }
+        
+        // Handle context menu actions
+        async function handleContextMenuAction(action) {
+            contextMenu.style.display = 'none';
+            if (!selectedText) return;
+            
+            setStatus(`Processing ${action}...`, 'badge-info');
+            showLoading(true, `${action.charAt(0).toUpperCase() + action.slice(1)}ing text...`);
+            updateProgress(20);
+            
+            try {
+                let result;
+                
+                switch(action) {
+                    case 'rephrase':
+                        result = await makeCohereRequest('rephrase', selectedText);
+                        break;
+                    case 'improve':
+                        result = await makeCohereRequest('improve', selectedText);
+                        break;
+                    case 'alternatives':
+                        result = await makeCohereRequest('alternatives', selectedText);
+                        break;
+                }
+                
+                updateProgress(100);
+                
+                if (result) {
+                    replaceSelectedText(result);
+                    setStatus(`Text ${action}d successfully`, 'badge-success');
+                    addToHistory(`Text ${action}d`);
+                    showNotification(`Text ${action.charAt(0).toUpperCase() + action.slice(1)}d`, 'Your text has been processed successfully.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error', error.message || 'Something went wrong. Please try again.', 5000);
+                setStatus(`Error during ${action}`, 'badge-error');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+        
+        // Format text with document.execCommand
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            editor.focus();
+        }
+        
+        // Insert link
+        function insertLink() {
+            const url = prompt('Enter the URL:');
+            if (url) {
+                formatText('createLink', url);
+            }
+        }
+        
+        // Insert quote
+        function insertQuote() {
+            const selection = window.getSelection();
+            if (selection.toString().trim()) {
+                const range = selection.getRangeAt(0);
+                const quote = document.createElement('blockquote');
+                quote.style.borderLeft = '3px solid var(--primary)';
+                quote.style.margin = '10px 0';
+                quote.style.paddingLeft = '15px';
+                quote.style.color = '#555';
+                range.surroundContents(quote);
+            } else {
+                document.execCommand('formatBlock', false, 'blockquote');
+            }
+        }
+        
+        // Insert code block
+        function insertCode() {
+            const selection = window.getSelection();
+            if (selection.toString().trim()) {
+                const range = selection.getRangeAt(0);
+                const code = document.createElement('pre');
+                code.style.backgroundColor = 'var(--light-gray)';
+                code.style.padding = '10px';
+                code.style.borderRadius = 'var(--border-radius-sm)';
+                code.style.fontFamily = 'monospace';
+                code.style.overflowX = 'auto';
+                range.surroundContents(code);
+            } else {
+                const codeBlock = document.createElement('pre');
+                codeBlock.style.backgroundColor = 'var(--light-gray)';
+                codeBlock.style.padding = '10px';
+                codeBlock.style.borderRadius = 'var(--border-radius-sm)';
+                codeBlock.style.fontFamily = 'monospace';
+                codeBlock.innerHTML = '// Your code here';
+                insertAtCursor(codeBlock);
+            }
+        }
+        
+        // Insert HTML at cursor position
+        function insertAtCursor(htmlElement) {
+            const selection = window.getSelection();
+            if (selection.rangeCount) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(htmlElement);
+                
+                // Move cursor after the inserted element
+                const newRange = document.createRange();
+                newRange.setStartAfter(htmlElement);
+                newRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+            }
+            
+            editor.focus();
+        }
+        
+        // Cut text
+        function cutText() {
+            document.execCommand('cut');
+            contextMenu.style.display = 'none';
+        }
+        
+        // Copy text
+        function copyText() {
+            document.execCommand('copy');
+            contextMenu.style.display = 'none';
+            setStatus('Text copied to clipboard', 'badge-success');
+            showNotification('Copied', 'Text copied to clipboard.');
+        }
+        
+        // Paste text
+        function pasteText() {
+            document.execCommand('paste');
+            contextMenu.style.display = 'none';
+        }
+        
+        // Replace selected text with new text
+        function replaceSelectedText(newText) {
+            if (selectionRange) {
+                selectionRange.deleteContents();
+                selectionRange.insertNode(document.createTextNode(newText));
+            }
+        }
+        
+        // Update word and character count
+        function updateWordCount() {
+            const text = editor.innerText || '';
+            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const charCount = text.length;
+            wordCountDisplay.innerHTML = `
+                <span>Words: ${wordCount}</span>
+                <span>Characters: ${charCount}</span>
+                <span id="status" class="${statusIndicator.className}">${statusIndicator.textContent}</span>
+            `;
+        }
+        
+        // Show loading indicator
+        function showLoading(show, message = 'Processing your request...') {
+            loadingIndicator.style.display = show ? 'block' : 'none';
+            loadingText.textContent = message;
+        }
+        
+        // Update progress bar
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+        }
+        
+        // Reset progress bar
+        function resetProgress() {
+            setTimeout(() => {
+                progressBar.style.width = '0';
+            }, 500);
+        }
+        
+        // Update status indicator
+        function setStatus(message, badgeClass = '') {
+            statusIndicator.textContent = message;
+            statusIndicator.className = 'badge';
+            if (badgeClass) {
+                statusIndicator.classList.add(badgeClass);
+            }
+            updateWordCount();
+        }
+        
+        // Add to document history
+        function addToHistory(action) {
+            const timestamp = new Date().toLocaleString();
+            const content = editor.innerHTML;
+            documentHistory.unshift({ action, timestamp, content });
+            updateHistoryDisplay();
+        }
+        
+        // Update history display
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('history-list');
+            if (!historyList) return;
+            
+            historyList.innerHTML = '';
+            
+            if (documentHistory.length === 0) {
+                historyList.innerHTML = '<p>No history yet.</p>';
+                return;
+            }
+            
+            documentHistory.slice(0, 10).forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="result-title">
+                        <i class="fas fa-history"></i> ${item.action}
+                    </div>
+                    <div class="note-date">${item.timestamp}</div>
+                `;
+                historyItem.addEventListener('click', () => {
+                    editor.innerHTML = item.content;
+                    setStatus(`Restored version from ${item.timestamp}`, 'badge-success');
+                    updateWordCount();
+                    showNotification('History Restored', `Document version from ${item.timestamp} has been restored.`);
+                });
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // Load saved notes
+        function loadNotes() {
+            const saved = localStorage.getItem('savedNotes');
+            if (saved) {
+                savedNotes = JSON.parse(saved);
+                updateNotesDisplay();
+            }
+        }
+        
+        // Update notes display
+        function updateNotesDisplay() {
+            const notesList = document.getElementById('saved-notes-list');
+            if (!notesList) return;
+            
+            notesList.innerHTML = '';
+            
+            if (savedNotes.length === 0) {
+                notesList.innerHTML = '<p>No saved notes yet.</p>';
+                return;
+            }
+            
+            savedNotes.forEach((note, index) => {
+                const noteItem = document.createElement('div');
+                noteItem.className = 'note-item';
+                noteItem.innerHTML = `
+                    <div class="result-title">
+                        <i class="fas fa-sticky-note"></i> ${note.title || 'Untitled Note'}
+                    </div>
+                    <div class="note-date">${note.timestamp}</div>
+                `;
+                noteItem.addEventListener('click', () => {
+                    editor.innerHTML = note.content;
+                    setStatus(`Loaded note: ${note.title}`, 'badge-success');
+                    updateWordCount();
+                    showNotification('Note Loaded', `"${note.title}" has been loaded into the editor.`);
+                });
+                notesList.appendChild(noteItem);
+            });
+        }
+        
+        // Create new note
+        function createNewNote() {
+            const title = prompt('Enter a title for your note:');
+            if (title !== null) {
+                const timestamp = new Date().toLocaleString();
+                const content = editor.innerHTML;
+                
+                savedNotes.unshift({ title, timestamp, content });
+                localStorage.setItem('savedNotes', JSON.stringify(savedNotes));
+                
+                updateNotesDisplay();
+                setStatus('Note saved successfully', 'badge-success');
+                showNotification('Note Saved', `"${title}" has been saved successfully.`);
+            }
+        }
+        
+        // Save document
+        function saveDocument() {
+            const content = editor.innerHTML;
+            localStorage.setItem('savedDocument', content);
+            addToHistory('Document saved');
+            setStatus('Document saved successfully', 'badge-success');
+            showNotification('Document Saved', 'Your document has been saved successfully.');
+        }
+        
+        // Load document
+        function loadDocument() {
+            const content = localStorage.getItem('savedDocument');
+            if (content) {
+                editor.innerHTML = content;
+                setStatus('Document loaded successfully', 'badge-success');
+                updateWordCount();
+                showNotification('Document Loaded', 'Your saved document has been loaded successfully.');
+            } else {
+                setStatus('No saved document found', 'badge-error');
+                showNotification('Error', 'No saved document found.', 3000);
+            }
+        }
+        
+        // Summarize text
+        async function summarizeText() {
+            const text = getSelectedTextOrAll();
+            if (!text) return;
+
+            setStatus('Summarizing text...', 'badge-info');
+            showLoading(true, 'Generating summary...');
+            updateProgress(20);
+
+            try {
+                const result = await makeCohereRequest('summarize', text);
+                updateProgress(100);
+                
+                const modalContent = `
+                    <div class="result-card">
+                        <div class="result-title">
+                            <i class="fas fa-compress-alt" style="color: var(--primary)"></i> Summary
+                        </div>
+                        <div class="result-content">
+                            ${result}
+                        </div>
+                    </div>
+                `;
+                
+                // Create a custom modal for summary
+                const summaryModal = document.createElement('div');
+                summaryModal.className = 'modal-overlay';
+                summaryModal.innerHTML = `
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-compress-alt"></i> Text Summary</h3>
+                            <button class="modal-close"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            ${modalContent}
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn" id="btn-copy-summary">Copy Summary</button>
+                            <button class="btn btn-primary" id="btn-close-summary">Close</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(summaryModal);
+                
+                // Add event listeners
+                const closeBtn = summaryModal.querySelector('.modal-close');
+                const closeSummaryBtn = summaryModal.querySelector('#btn-close-summary');
+                const copySummaryBtn = summaryModal.querySelector('#btn-copy-summary');
+                
+                closeBtn.addEventListener('click', () => {
+                    document.body.removeChild(summaryModal);
+                });
+                
+                closeSummaryBtn.addEventListener('click', () => {
+                    document.body.removeChild(summaryModal);
+                });
+                
+                copySummaryBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(result).then(() => {
+                        showNotification('Summary Copied', 'Summary has been copied to clipboard.');
+                    });
+                });
+                
+                // Open the modal
+                summaryModal.classList.add('active');
+                
+                setStatus('Summarization complete', 'badge-success');
+                addToHistory('Text summarized');
+            } catch (error) {
+                handleError(error, 'summarization');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+
+        // Export document
+        function exportDocument() {
+            const content = editor.innerText;
+            const htmlContent = editor.innerHTML;
+            const blobText = new Blob([content], { type: 'text/plain' });
+            const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+            
+            const exportType = prompt('Export as: (1) TXT, (2) HTML, (3) Both', '1');
+            
+            if (exportType === '1' || exportType === '3') {
+                const url = URL.createObjectURL(blobText);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'document.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+            
+            if (exportType === '2' || exportType === '3') {
+                const url = URL.createObjectURL(blobHtml);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'document.html';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+            
+            setStatus('Document exported', 'badge-success');
+            showNotification('Document Exported', 'Your document has been exported successfully.');
+        }
+        
+        // Clear editor
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear the editor?')) {
+                editor.innerHTML = '<p>Start typing here or paste your text.</p>';
+                setStatus('Editor cleared', 'badge-info');
+                updateWordCount();
+                addToHistory('Editor cleared');
+                showNotification('Editor Cleared', 'All content has been cleared from the editor.');
+            }
+        }
+        
+        // Load editor settings
+        function loadSettings() {
+            const settings = localStorage.getItem('editorSettings');
+            if (settings) {
+                const { fontFamily, fontSize, theme, autoSave, apiKey } = JSON.parse(settings);
+                
+                if (fontFamily) fontFamilySelect.value = fontFamily;
+                if (fontSize) fontSizeSelect.value = fontSize;
+                if (apiKey) apiKeyInput.value = apiKey;
+                if (theme) {
+                    themeOptions.forEach(option => {
+                        if (option.getAttribute('data-theme') === theme) {
+                            option.classList.add('selected');
+                        } else {
+                            option.classList.remove('selected');
+                        }
+                    });
+                }
+                if (autoSave) autoSaveSelect.value = autoSave;
+                
+                // Apply settings
+                updateEditorStyle();
+                setupAutoSave();
+            }
+        }
+        
+        // Update editor style based on settings
+        function updateEditorStyle() {
+            editor.style.fontFamily = fontFamilySelect.value;
+            editor.style.fontSize = fontSizeSelect.value;
+            
+            // Save settings
+            saveSettings();
+        }
+
+        // Change editor theme
+        function changeTheme(e) {
+            const theme = e.target.getAttribute('data-theme');
+            
+            // Remove selection from all theme options
+            themeOptions.forEach(option => option.classList.remove('selected'));
+            
+            // Apply selected theme
+            e.target.classList.add('selected');
+            
+            switch(theme) {
+                case 'light':
+                    editor.style.backgroundColor = '#ffffff';
+                    editor.style.color = '#333333';
+                    break;
+                case 'light-gray':
+                    editor.style.backgroundColor = '#f5f5f5';
+                    editor.style.color = '#333333';
+                    break;
+                case 'light-orange':
+                    editor.style.backgroundColor = '#fff3e0';
+                    editor.style.color = '#333333';
+                    break;
+                case 'light-pink':
+                    editor.style.backgroundColor = '#ffebee';
+                    editor.style.color = '#333333';
+                    break;
+                case 'sepia':
+                    editor.style.backgroundColor = '#f9f3e6';
+                    editor.style.color = '#5b4636';
+                    break;
+            }
+            
+            saveSettings();
+        }
+
+        // Set up auto-save functionality
+        function setupAutoSave() {
+            // Clear existing interval
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+            }
+            
+            const interval = parseInt(autoSaveSelect.value) * 60 * 1000;
+            if (interval > 0) {
+                autoSaveInterval = setInterval(() => {
+                    saveDocument();
+                    setStatus(`Auto-saved at ${new Date().toLocaleTimeString()}`, 'badge-success');
+                }, interval);
+            }
+        }
+
+        // Reset settings to defaults
+        function resetSettings() {
+            if (confirm('Reset all settings to default?')) {
+                localStorage.removeItem('editorSettings');
+                fontFamilySelect.value = "'Inter', sans-serif";
+                fontSizeSelect.value = '16px';
+                autoSaveSelect.value = '5';
+                apiKeyInput.value = '';
+                
+                // Reset theme
+                themeOptions.forEach(option => {
+                    option.classList.remove('selected');
+                    if (option.getAttribute('data-theme') === 'light') {
+                        option.classList.add('selected');
+                    }
+                });
+                
+                // Apply default styles
+                editor.style.fontFamily = "'Inter', sans-serif";
+                editor.style.fontSize = '16px';
+                editor.style.backgroundColor = '#ffffff';
+                editor.style.color = '#333333';
+                
+                setupAutoSave();
+                setStatus('Settings reset to defaults', 'badge-success');
+                showNotification('Settings Reset', 'All settings have been reset to their default values.');
+            }
+        }
+
+        // Save current settings
+        function saveSettings() {
+            const settings = {
+                fontFamily: fontFamilySelect.value,
+                fontSize: fontSizeSelect.value,
+                theme: document.querySelector('.theme-option.selected').getAttribute('data-theme'),
+                autoSave: autoSaveSelect.value,
+                apiKey: apiKeyInput.value
+            };
+            localStorage.setItem('editorSettings', JSON.stringify(settings));
+        }
+
+        // Grammar check
+        async function checkGrammar() {
+            const text = getSelectedTextOrAll();
+            if (!text) return;
+
+            setStatus('Checking grammar...', 'badge-info');
+            showLoading(true, 'Analyzing grammar...');
+            updateProgress(20);
+
+            try {
+                const result = await makeCohereRequest('grammar', text);
+                updateProgress(100);
+                
+                // Parse and format grammar results for better display
+                const formattedResult = formatGrammarResults(result, text);
+                
+                grammarModalContent.innerHTML = formattedResult;
+                openModal(grammarModal);
+                
+                setStatus('Grammar check complete', 'badge-success');
+                addToHistory('Grammar check performed');
+            } catch (error) {
+                handleError(error, 'grammar check');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+
+        // Format grammar results for better display
+        function formatGrammarResults(result, originalText) {
+            // Reset corrections array
+            grammarCorrections = [];
+            
+            // If the result is just text without specific corrections
+            if (!result.includes('Original:') && !result.includes('Correction:')) {
+                return `
+                    <div class="result-card">
+                        <div class="result-title">
+                            <i class="fas fa-check-circle" style="color: var(--primary)"></i> Grammar Check
+                        </div>
+                        <div class="result-content">
+                            ${result}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Try to parse structured grammar results
+            try {
+                const corrections = [];
+                const lines = result.split('\n');
+                
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('Original:') && i + 1 < lines.length && lines[i + 1].includes('Correction:')) {
+                        const original = lines[i].replace('Original:', '').trim();
+                        const correction = lines[i + 1].replace('Correction:', '').trim();
+                        
+                        corrections.push({
+                            original,
+                            correction
+                        });
+                        
+                        i++; // Skip the next line since we've already processed it
+                    }
+                }
+                
+                if (corrections.length > 0) {
+                    grammarCorrections = corrections;
+                    
+                    let html = `
+                        <div class="result-card">
+                            <div class="result-title">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--primary)"></i> Grammar Issues Found
+                            </div>
+                            <div class="result-content">
+                                <p>We found ${corrections.length} grammar ${corrections.length === 1 ? 'issue' : 'issues'} in your text. Review the suggestions below:</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    corrections.forEach((item, index) => {
+                        html += `
+                            <div class="grammar-item">
+                                <div><strong>${index + 1}.</strong> <span class="grammar-original">${item.original}</span></div>
+                                <div>→ <span class="grammar-suggestion">${item.correction}</span></div>
+                            </div>
+                        `;
+                    });
+                    
+                    return html;
+                }
+            } catch (e) {
+                console.error('Error parsing grammar results:', e);
+            }
+            
+            // Fallback to raw result if parsing fails
+            return `
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-info-circle" style="color: var(--primary)"></i> Grammar Analysis
+                    </div>
+                    <div class="result-content">
+                        ${result}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Translate text
+        async function translateText() {
+            const text = getSelectedTextOrAll();
+            if (!text) return;
+
+            const targetLanguage = prompt('Enter target language (e.g., French, Spanish):');
+            if (!targetLanguage) return;
+
+            setStatus(`Translating to ${targetLanguage}...`, 'badge-info');
+            showLoading(true, `Translating to ${targetLanguage}...`);
+            updateProgress(20);
+
+            try {
+                const result = await makeCohereRequest('translate', text, { targetLanguage });
+                updateProgress(100);
+                
+                // Create a custom modal for translation
+                const translationModal = document.createElement('div');
+                translationModal.className = 'modal-overlay';
+                translationModal.innerHTML = `
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-language"></i> Translation to ${targetLanguage}</h3>
+                            <button class="modal-close"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="result-card">
+                                <div class="result-title">
+                                    <i class="fas fa-language" style="color: var(--primary)"></i> Translation
+                                </div>
+                                <div class="result-content">
+                                    <p><strong>Original:</strong></p>
+                                    <p>${text}</p>
+                                    <hr style="margin: 10px 0; border-color: var(--medium-gray);">
+                                    <p><strong>Translation:</strong></p>
+                                    <p>${result}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn" id="btn-copy-translation">Copy Translation</button>
+                            <button class="btn btn-primary" id="btn-close-translation">Close</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(translationModal);
+                
+                // Add event listeners
+                const closeBtn = translationModal.querySelector('.modal-close');
+                const closeTranslationBtn = translationModal.querySelector('#btn-close-translation');
+                const copyTranslationBtn = translationModal.querySelector('#btn-copy-translation');
+                
+                closeBtn.addEventListener('click', () => {
+                    document.body.removeChild(translationModal);
+                });
+                
+                closeTranslationBtn.addEventListener('click', () => {
+                    document.body.removeChild(translationModal);
+                });
+                
+                copyTranslationBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(result).then(() => {
+                        showNotification('Translation Copied', 'Translation has been copied to clipboard.');
+                    });
+                });
+                
+                // Open the modal
+                translationModal.classList.add('active');
+                
+                setStatus('Translation completed', 'badge-success');
+                addToHistory(`Text translated to ${targetLanguage}`);
+            } catch (error) {
+                handleError(error, 'translation');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+
+        // Analyze sentiment
+        async function analyzeSentiment() {
+            const text = getSelectedTextOrAll();
+            if (!text) return;
+
+            setStatus('Analyzing sentiment...', 'badge-info');
+            showLoading(true, 'Evaluating emotional tone...');
+            updateProgress(20);
+
+            try {
+                const result = await makeCohereRequest('sentiment', text);
+                updateProgress(100);
+                
+                // Parse sentiment result to extract score if possible
+                let sentimentScore = 0.5;
+                let sentimentLabel = "Neutral";
+                
+                if (result.toLowerCase().includes('positive')) {
+                    sentimentScore = 0.7;
+                    sentimentLabel = "Positive";
+                } else if (result.toLowerCase().includes('negative')) {
+                    sentimentScore = 0.3;
+                    sentimentLabel = "Negative";
+                }
+                
+                // Calculate position for sentiment indicator (0-100%)
+                const indicatorPosition = sentimentScore * 100;
+                
+                sentimentModalContent.innerHTML = `
+                    <div class="result-card">
+                        <div class="result-title">
+                            <i class="fas fa-smile" style="color: var(--primary)"></i> Sentiment Analysis
+                        </div>
+                        <div class="result-content">
+                            <div class="sentiment-result">
+                                <h4>Overall Sentiment: <span style="color: var(--primary)">${sentimentLabel}</span></h4>
+                                
+                                <div class="sentiment-meter">
+                                    <div class="sentiment-indicator" style="left: ${indicatorPosition}%"></div>
+                                </div>
+                                <div class="sentiment-labels">
+                                    <span>Negative</span>
+                                    <span>Neutral</span>
+                                    <span>Positive</span>
+                                </div>
+                                
+                                <h4>Analysis:</h4>
+                                <p>${result}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                openModal(sentimentModal);
+                
+                setStatus('Sentiment analysis complete', 'badge-success');
+                addToHistory('Sentiment analyzed');
+            } catch (error) {
+                handleError(error, 'sentiment analysis');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+
+        // Check plagiarism
+        async function checkPlagiarism() {
+            const text = getSelectedTextOrAll();
+            if (!text) return;
+
+            setStatus('Checking for plagiarism...', 'badge-info');
+            showLoading(true, 'Analyzing content...');
+            updateProgress(20);
+
+            try {
+                const result = await makeCohereRequest('plagiarism', text);
+                updateProgress(100);
+                
+                // Parse plagiarism results for better display
+                const formattedResult = formatPlagiarismResults(result);
+                
+                plagiarismModalContent.innerHTML = formattedResult;
+                openModal(plagiarismModal);
+                
+                setStatus('Plagiarism check complete', 'badge-success');
+                addToHistory('Plagiarism check performed');
+            } catch (error) {
+                handleError(error, 'plagiarism check');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+
+        // Format plagiarism results for better display
+        function formatPlagiarismResults(result) {
+            // Check if the result indicates no plagiarism
+            if (result.toLowerCase().includes('no plagiarism') || 
+                result.toLowerCase().includes('original content') || 
+                result.toLowerCase().includes('no matches found')) {
+                
+                return `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-check-circle" style="color: var(--primary); font-size: 48px;"></i>
+                        <h4 style="margin-top: 15px; color: var(--primary);">No Plagiarism Detected</h4>
+                        <p>${result}</p>
+                    </div>
+                `;
+            }
+            
+            // Try to parse structured plagiarism results
+            try {
+                const matches = [];
+                const lines = result.split('\n');
+                let currentMatch = null;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('Potential plagiarism:') || lines[i].includes('Matched text:')) {
+                        if (currentMatch) {
+                            matches.push(currentMatch);
+                        }
+                        currentMatch = {
+                            text: lines[i].replace('Potential plagiarism:', '').replace('Matched text:', '').trim(),
+                            source: ''
+                        };
+                    } else if (lines[i].includes('Possible source:') && currentMatch) {
+                        currentMatch.source = lines[i].replace('Possible source:', '').trim();
+                    }
+                }
+
+                if (currentMatch) {
+                    matches.push(currentMatch);
+                }
+                
+                if (matches.length > 0) {
+                    let html = `
+                        <div style="text-align: center; padding: 10px; margin-bottom: 20px;">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 36px;"></i>
+                            <h4 style="margin-top: 10px; color: var(--primary);">Potential Plagiarism Detected</h4>
+                            <p>We found ${matches.length} potential ${matches.length === 1 ? 'match' : 'matches'} in your text.</p>
+                        </div>
+                    `;
+                    
+                    matches.forEach((item, index) => {
+                        html += `
+                            <div class="plagiarism-item">
+                                <div><strong>${index + 1}.</strong> <span class="plagiarism-text">${item.text}</span></div>
+                                ${item.source ? `<div><strong>Source:</strong> <span class="plagiarism-source">${item.source}</span></div>` : ''}
+                            </div>
+                        `;
+                    });
+                    
+                    return html;
+                }
+            } catch (e) {
+                console.error('Error parsing plagiarism results:', e);
+            }
+            
+            // Fallback to raw result if parsing fails
+            return `
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-info-circle" style="color: var(--primary)"></i> Plagiarism Analysis
+                    </div>
+                    <div class="result-content">
+                        ${result}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Extract keywords
+        async function extractKeywords() {
+            const text = getSelectedTextOrAll();
+            if (!text) return;
+
+            setStatus('Extracting keywords...', 'badge-info');
+            showLoading(true, 'Identifying key terms...');
+            updateProgress(20);
+
+            try {
+                const result = await makeCohereRequest('keywords', text);
+                updateProgress(100);
+                
+                // Parse keywords for better display
+                let keywords = [];
+                
+                if (result.includes(',')) {
+                    keywords = result.split(',').map(keyword => keyword.trim());
+                } else if (result.includes('\n')) {
+                    keywords = result.split('\n').map(keyword => keyword.trim()).filter(k => k);
+                } else {
+                    keywords = [result];
+                }
+                
+                // Filter out empty keywords and duplicates
+                keywords = [...new Set(keywords.filter(k => k))];
+                extractedKeywords = keywords;
+                
+                let keywordsHtml = '';
+                if (keywords.length > 0) {
+                    keywordsHtml = `
+                        <div class="keywords-container">
+                            ${keywords.map(keyword => `<div class="keyword">${keyword}</div>`).join('')}
+                        </div>
+                    `;
+                } else {
+                    keywordsHtml = '<p>No keywords extracted.</p>';
+                }
+                
+                keywordsModalContent.innerHTML = `
+                    <div class="result-card">
+                        <div class="result-title">
+                            <i class="fas fa-key" style="color: var(--primary)"></i> Extracted Keywords
+                        </div>
+                        <div class="result-content">
+                            <p>We've identified the following keywords from your text:</p>
+                            ${keywordsHtml}
+                        </div>
+                    </div>
+                `;
+                
+                openModal(keywordsModal);
+                
+                setStatus('Keywords extracted', 'badge-success');
+                addToHistory('Keywords extracted');
+            } catch (error) {
+                handleError(error, 'keyword extraction');
+            } finally {
+                showLoading(false);
+                resetProgress();
+            }
+        }
+
+        // Get selected text or all text if nothing selected
+        function getSelectedTextOrAll() {
+            try {
+                const selection = window.getSelection();
+                if (selection && selection.toString().trim()) {
+                    return selection.toString().trim();
+                }
+                return editor.innerText.trim() || '';
+            } catch (error) {
+                console.error('Error getting text:', error);
+                return '';
+            }
+        }
+
+        // Handle API errors
+        function handleError(error, context) {
+            console.error('Error:', error);
+            showNotification('Error', `Error during ${context}: ${error.message || 'Please try again later'}`, 5000);
+            setStatus(`${context} failed`, 'badge-error');
+        }
+
+        // Enhanced Cohere API request handler
+        async function makeCohereRequest(action, text, params = {}) {
+            // Get API key from settings or use default
+            const apiKey = apiKeyInput.value || cohereApiKey;
+            
+            if (!apiKey) {
+                throw new Error('API key is required. Please enter your Cohere API key in Settings.');
+            }
+            
+            let prompt;
+            
+            switch(action) {
+                case 'rephrase':
+                    prompt = `Rephrase this text while preserving meaning and tone. Make it sound natural and professional:
+
+"${text}"`;
+                    break;
+                case 'improve':
+                    prompt = `Improve the clarity, grammar, and quality of this text. Make it more professional and engaging:
+
+"${text}"`;
+                    break;
+                case 'alternatives':
+                    prompt = `Suggest 3 alternative ways to express this text, labeled as Option 1, Option 2, and Option 3:
+
+"${text}"`;
+                    break;
+                case 'summarize':
+                    prompt = `Create a concise, comprehensive summary of this text. Capture the main points and key information:
+
+"${text}"`;
+                    break;
+                case 'plagiarism':
+                    prompt = `Analyze this text for potential plagiarism. If you find suspicious content, identify the specific text and possible sources:
+
+"${text}"`;
+                    break;
+                case 'grammar':
+                    prompt = `Perform a detailed grammar and spelling check on this text. For each error, provide the original text and the correction in this format:
+                    Original: [error text]
+                    Correction: [corrected text]
+                    
+                    Text to check:
+"${text}"`;
+                    break;
+                case 'translate':
+                    prompt = `Translate this text to ${params.targetLanguage} while preserving the meaning and tone:
+
+"${text}"`;
+                    break;
+                case 'sentiment':
+                    prompt = `Analyze the sentiment of this text. Determine if it's positive, negative, or neutral, and explain why. Provide a detailed analysis of the emotional tone:
+
+"${text}"`;
+                    break;
+                case 'keywords':
+                    prompt = `Extract 5-7 key keywords or phrases from this text. Return only the keywords separated by commas:
+
+"${text}"`;
+                    break;
+                default:
+                    throw new Error('Invalid API action');
+            }
+
+            updateProgress(40);
+            
+            const response = await fetch('https://api.cohere.ai/v1/generate', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'command-r-plus',
+                    prompt: prompt,
+                    max_tokens: 800,
+                    temperature: 0.5,
+                    stop_sequences: ['\n\n\n']
+                })
+            });
+
+            updateProgress(80);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'API request failed');
+            }
+
+            try {
+                const data = await response.json();
+                if (!data || !data.generations || !data.generations[0]) {
+                    throw new Error('Invalid response format');
+                }
+                return data.generations[0].text.trim();
+            } catch (error) {
+                throw new Error('Failed to parse API response: ' + error.message);
+            }
+        }
+
+        // Initialize the editor when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initEditor);
+    </script>
+</body>
+</html>
