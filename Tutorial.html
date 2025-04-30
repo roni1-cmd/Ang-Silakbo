@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANG SILAKBO - Text Editor Tutorial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;700&family=Merriweather:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --primary: #e65100;
+            --primary-light: #ff833a;
+            --primary-dark: #ac1900;
+            --secondary: #fbe9e7;
+            --text-dark: #263238;
+            --text-light: #ffffff;
+            --background: #f7f9fc;
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(230, 81, 0, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(230, 81, 0, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(230, 81, 0, 0.02) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-light);
+            padding: 50px 40px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="none" /><path d="M0,10 L100,90" stroke="rgba(255,255,255,0.05)" stroke-width="2"/></svg>');
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+        }
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        header p {
+            font-size: 20px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 25px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 10px;
+        }
+        
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 18px;
+            color: var(--primary-dark);
+        }
+        
+        p {
+            font-family: 'Merriweather', serif;
+            margin-bottom: 18px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        ul, ol {
+            margin-bottom: 25px;
+            padding-left: 25px;
+        }
+        
+        li {
+            font-family: 'Source Sans Pro', sans-serif;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .tutorial-section {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tutorial-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .tutorial-section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background-color: rgba(251, 233, 231, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            border: 1px solid rgba(251, 233, 231, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(180deg, var(--primary), var(--primary-light));
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+        
+        .feature-card::after {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(230,81,0,0.05) 0%, transparent 70%);
+            bottom: -50px;
+            right: -50px;
+            border-radius: 50%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .feature-card i {
+            color: var(--primary);
+            font-size: 24px;
+            background-color: rgba(230, 81, 0, 0.1);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(230, 81, 0, 0.15);
+        }
+        
+        .feature-img {
+            width: 100%;
+            border-radius: var(--border-radius);
+            margin: 25px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            border: 5px solid white;
+        }
+        
+        .feature-img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .context-menu-example {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--glass-border);
+            padding: 8px;
+            box-shadow: var(--glass-shadow);
+            width: 250px;
+            margin: 30px 0;
+        }
+        
+        .menu-item {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            margin: 4px 0;
+            font-weight: 500;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(251, 233, 231, 0.7);
+            transform: translateX(5px);
+        }
+        
+        .menu-item i {
+            color: var(--primary);
+            font-size: 18px;
+            background-color: rgba(230, 81, 0, 0.1);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .text-editor-ui {
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: var(--glass-shadow);
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .toolbar {
+            background-color: rgba(248, 249, 250, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .toolbar-button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(230, 81, 0, 0.2);
+        }
+        
+        .toolbar-button:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(230, 81, 0, 0.3);
+        }
+        
+        .editor-content {
+            padding: 30px;
+            min-height: 200px;
+            background-color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 30px;
+            color: #666;
+            font-size: 16px;
+            border-top: 1px solid rgba(234, 234, 234, 0.5);
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, rgba(230, 81, 0, 0.1), rgba(230, 81, 0, 0.2));
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(230, 81, 0, 0.1);
+        }
+        
+        .tip-box {
+            background-color: rgba(227, 242, 253, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(33, 150, 243, 0.2);
+        }
+        
+        .tip-box::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(180deg, #2196f3, #64b5f6);
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+        
+        .tip-box h3 {
+            color: #0d47a1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .tip-box i {
+            color: #2196f3;
+            background-color: rgba(33, 150, 243, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.15);
+        }
+        
+        .warning-box {
+            background-color: rgba(255, 248, 225, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+        
+        .warning-box::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(180deg, #ffc107, #ffecb3);
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+        
+        .warning-box h3 {
+            color: #ff6f00;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .warning-box i {
+            color: #ffc107;
+            background-color: rgba(255, 193, 7, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.15);
+        }
+        
+        .step {
+            margin-bottom: 50px;
+            padding-left: 25px;
+            border-left: 3px dashed var(--primary-light);
+            padding-bottom: 15px;
+            position: relative;
+        }
+        
+        .step:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step::after {
+            content: "";
+            position: absolute;
+            left: -8px;
+            bottom: -8px;
+            width: 15px;
+            height: 15px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(230, 81, 0, 0.1);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(230, 81, 0, 0.2);
+            font-size: 18px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 30px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+        
+        th {
+            padding: 18px;
+            text-align: left;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            font-size: 17px;
+        }
+        
+        td {
+            padding: 18px;
+            border-bottom: 1px solid rgba(234, 234, 234, 0.5);
+            font-size: 16px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(251, 233, 231, 0.3);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background-color: rgba(230, 81, 0, 0.05);
+        }
+        
+        /* Animated elements */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        .floating-1 {
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-2 {
+            bottom: 20%;
+            left: 5%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 1s;
+        }
+        
+        .floating-3 {
+            top: 40%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 2s;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(245, 245, 245, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary-light), var(--primary));
+            border-radius: 10px;
+            border: 3px solid rgba(245, 245, 245, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--primary), var(--primary-dark));
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            header {
+                padding: 35px 25px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .tutorial-section {
+                padding: 30px 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .toolbar-button {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="floating-element floating-3"></div>
+        
+        <header>
+            <h1>ANG SILAKBO</h1>
+            <p>A Complete Tutorial for Our Definitive AI Tools</p>
+        </header>
+        
+        <section class="tutorial-section">
+            <h2>Introduction</h2>
+            <p>Welcome to the ANG SILAKBO text editor tutorial! This guide will walk you through all the powerful features our text editor offers to help you create, edit, and enhance your content effortlessly. ANG SILAKBO combines traditional text editing capabilities with advanced AI-powered tools to provide a comprehensive writing experience.</p>
+            
+            <div class="text-editor-ui">
+                <div class="toolbar">
+                    <button class="toolbar-button"><i class="fas fa-compress-alt"></i> Summarize</button>
+                    <button class="toolbar-button"><i class="fas fa-search"></i> Check Plagiarism</button>
+                    <button class="toolbar-button"><i class="fas fa-spell-check"></i> Grammar Check</button>
+                    <button class="toolbar-button"><i class="fas fa-language"></i> Translate</button>
+                    <button class="toolbar-button"><i class="fas fa-smile"></i> Sentiment Analysis</button>
+                    <button class="toolbar-button"><i class="fas fa-key"></i> Extract Keywords</button>
+                </div>
+                <div class="editor-content">
+                    <p>Start typing your content here...</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="tutorial-section">
+            <h2>Getting Started</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span> Accessing the Editor</h3>
+                <p>You can access ANG SILAKBO through your web browser. Simply navigate to our website and click on the "Launch Editor" button. No installation is required, and your work is automatically saved to your account.</p>
+                <img src="Text.jpeg" alt="Accessing ANG SILAKBO Editor" class="feature-img">
+            </div>
+            
+            <div class="step">
+                <h3><span class="step-number">2</span> Creating a New Document</h3>
+                <p>To create a new document, click on the "New" button in the top menu. You can also use the keyboard shortcut <span class="highlight">Ctrl+N</span> (Windows/Linux) or <span class="highlight">Cmd+N</span> (Mac).</p>
+                <img src="New doc.jpeg" alt="Creating a New Document" class="feature-img">
+            </div>
+            
+            <div class="step">
+                <h3><span class="step-number">3</span> Basic Text Editing</h3>
+                <p>ANG SILAKBO offers all standard text editing features. You can format text (bold, italic, underline), adjust alignment, create lists, and more using the formatting toolbar at the top of the editor.</p>
+                <img src="Formatting.jpeg" alt="Basic Text Editing" class="feature-img">
+            </div>
+            
+            <div class="tip-box">
+                <h3><i class="fas fa-lightbulb"></i> Pro Tip</h3>
+                <p>You can quickly format text using keyboard shortcuts. For example, <span class="highlight">Ctrl+B</span> for bold, <span class="highlight">Ctrl+I</span> for italic, and <span class="highlight">Ctrl+U</span> for underline.</p>
+            </div>
+        </section>
+        
+        <section class="tutorial-section">
+            <h2>Advanced Features</h2>
+            <p>ANG SILAKBO's power comes from its advanced AI-powered features. Here's how to use each one:</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><i class="fas fa-compress-alt"></i> Summarize</h3>
+                    <p>The Summarize feature analyzes your text and creates a concise summary of the content. This is perfect for long documents or articles.</p>
+                    <p><strong>How to use:</strong> Select the text you want to summarize (or leave unselected to summarize the entire document) and click the "Summarize" button in the toolbar.</p>
+              </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fas fa-search"></i> Check Plagiarism</h3>
+                    <p>Our plagiarism checker compares your content against millions of web pages and academic papers to ensure originality.</p>
+                    <p><strong>How to use:</strong> Click the "Check Plagiarism" button. The system will highlight any passages that match existing content and provide source links.</p>
+              </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fas fa-spell-check"></i> Grammar Check</h3>
+                    <p>The Grammar Check tool identifies spelling errors, grammatical mistakes, punctuation issues, and style problems in your writing.</p>
+                    <p><strong>How to use:</strong> Click the "Grammar Check" button to scan your document. Errors will be underlined, and you can click on them to see suggestions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fas fa-language"></i> Translate</h3>
+                    <p>Translate your content into over 50 different languages while preserving formatting and context.</p>
+                    <p><strong>How to use:</strong> Select the text to translate (or leave unselected for the entire document), click "Translate," and choose your target language from the dropdown menu.</p>
+               </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fas fa-smile"></i> Sentiment Analysis</h3>
+                    <p>This feature analyzes the emotional tone of your text, helping you understand how readers might perceive your content.</p>
+                    <p><strong>How to use:</strong> Click the "Sentiment Analysis" button. The system will provide a breakdown of emotions detected and an overall sentiment score.</p>
+                </div>
+                 
+                <div class="feature-card">
+                    <h3><i class="fas fa-key"></i> Extract Keywords</h3>
+                    <p>The keyword extraction tool identifies the most important terms and phrases in your document, useful for SEO optimization or content indexing.</p>
+                    <p><strong>How to use:</strong> Click "Extract Keywords" to generate a list of key terms and their relevance scores.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="tutorial-section">
+            <h2>Right-Click Context Menu</h2>
+            <p>ANG SILAKBO offers convenient right-click options for quick text enhancements:</p>
+            
+            <div class="context-menu-example">
+                <div class="menu-item"><i class="fas fa-sync"></i> Rephrase</div>
+                <div class="menu-item"><i class="fas fa-arrow-up"></i> Improve</div>
+                <div class="menu-item"><i class="fas fa-random"></i> Find Alternatives</div>
+            </div>
+            
+            <ul>
+                <li><strong>Rephrase:</strong> Select text, right-click, and choose "Rephrase" to reword the selected content while maintaining the original meaning.</li>
+                <li><strong>Improve:</strong> The "Improve" option enhances clarity, fixes awkward phrasing, and improves readability of the selected text.</li>
+                <li><strong>Find Alternatives:</strong> This option suggests alternative words or phrases for the selected text, perfect for avoiding repetition or finding more precise language.</li>
+            </ul>
+            
+            <div class="warning-box">
+                <h3><i class="fas fa-exclamation-circle"></i> Important Note</h3>
+                <p>Always review AI-suggested changes before finalizing your document, as context and personal style considerations may require adjustments.</p>
+            </div>
+        </section>
+        
+        <section class="tutorial-section">
+            <h2>File Operations</h2>
+            <p>ANG SILAKBO provides several options for managing your documents:</p>
+            
+            <h3><i class="fas fa-folder-open"></i> Load</h3>
+            <p>You can reload your document to refresh the page if it has been modified.</p>
+            <ol>
+                <li>Just click the "Load" button in the top menu</li>
+            </ol>
+
+            <h3><i class="fas fa-download"></i> Export</h3>
+            <p>Export your work in various formats:</p>
+            <ol>
+                <li>Click the "Export" button in the top menu</li>
+                <li>Choose your preferred format (TXT or HTML)</li>
+                <li>Select a destination on your device</li>
+            </ol>
+            <img src="Choices.jpeg" alt="Exporting a Document" class="feature-img">
+            
+            
+            <div class="tip-box">
+                <h3><i class="fas fa-lightbulb"></i> Pro Tip</h3>
+                <p>You can also add images by dragging and dropping them directly into the editor.</p>
+            </div>
+        </section>
+        
+        <section class="tutorial-section">
+            <h2>Keyboard Shortcuts</h2>
+            <p>For faster workflow, learn these common keyboard shortcuts:</p>
+            
+            <table>
+                <tr>
+                    <th>Action</th>
+                    <th>Shortcut</th>
+                </tr>
+                <tr>
+                    <td>New Document</td>
+                    <td>Ctrl+N (Win/Linux) / Cmd+N (Mac)</td>
+                </tr>
+                <tr>
+                    <td>Save</td>
+                    <td>Ctrl+S (Win/Linux) / Cmd+S (Mac)</td>
+                </tr>
+                <tr>
+                    <td>Cut</td>
+                    <td>Ctrl+X (Win/Linux) / Cmd+X (Mac)</td>
+                </tr>
+                <tr>
+                    <td>Copy</td>
+                    <td>Ctrl+C (Win/Linux) / Cmd+C (Mac)</td>
+                </tr>
+                <tr>
+                    <td>Paste</td>
+                    <td>Ctrl+V (Win/Linux) / Cmd+V (Mac)</td>
+                </tr>
+                <tr>
+                    <td>Undo</td>
+                    <td>Ctrl+Z (Win/Linux) / Cmd+Z (Mac)</td>
+                </tr>
+                <tr>
+                    <td>Redo</td>
+                    <td>Ctrl+Y (Win/Linux) / Cmd+Shift+Z (Mac)</td>
+                </tr>
+            </table>
+        </section>
+        
+        <section class="tutorial-section">
+            <h2>Conclusion</h2>
+            <p>Congratulations! You now know how to use ANG SILAKBO's features to create, edit, and enhance your documents. Remember that our AI-powered tools are designed to assist your writing process, not replace your unique voice and style.</p>
+            
+            <p>For additional help, check out our FAQ section or contact our support team through the Help menu. We're continuously improving ANG SILAKBO, so stay tuned for new features and enhancements.</p>
+            
+            <p>Happy writing!</p>
+        </section>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; 2025 ANG SILAKBO | Definitive AI Tools | All Rights Reserved</p>
+    </footer>
+    
+    <script>
+        // Add subtle parallax effect to floating elements
+        document.addEventListener('mousemove', (e) => {
+            const floatingElements = document.querySelectorAll('.floating-element');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            floatingElements.forEach(element => {
+                const speed = 20;
+                const xOffset = (x - 0.5) * speed;
+                const yOffset = (y - 0.5) * speed;
+                
+                element.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+        
+        // Add subtle hover effect to sections
+        const sections = document.querySelectorAll('.tutorial-section');
+        sections.forEach(section => {
+            section.addEventListener('mouseenter', () => {
+                section.style.borderColor = 'rgba(230, 81, 0, 0.3)';
+            });
+            
+            section.addEventListener('mouseleave', () => {
+                section.style.borderColor = 'rgba(255, 255, 255, 0.18)';
+            });
+        });
+    </script>
+</body>
+</html>
