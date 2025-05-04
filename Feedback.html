@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANG SILAKBO - Issue Management</title>
+  <link rel="icon" href="SILAKBO (1).png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script type="text/javascript" 
+          src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+  </script>
+  <script type="text/javascript">
+    (function(){
+      emailjs.init({
+        publicKey: "oUSQnUCyoJw1VIevU",
+      });
+    })();
+  </script>
+  
+  <style>
+    :root {
+      --primary: #e65100;
+      --primary-light: #ff833a;
+      --primary-dark: #ac1900;
+      --primary-transparent: rgba(230, 81, 0, 0.1);
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --border-radius-sm: 8px;
+      --border-radius: 16px;
+      --border-radius-lg: 24px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      overflow-x: hidden;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid rgba(255, 255, 255, 0.7);
+      position: fixed;
+      height: 100vh;
+      z-index: 10;
+      box-shadow: var(--shadow-lg);
+      border-radius: 0 24px 24px 0;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .sidebar-header {
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('coral.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.05;
+      z-index: -1;
+    }
+
+    .logo {
+      height: 42px;
+      margin-right: 0.75rem;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      transition: var(--transition);
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+    }
+
+    .sidebar-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-nav {
+      padding: 0.5rem 1rem;
+      flex: 1;
+    }
+
+    .nav-item {
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      color: var(--gray-700);
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+      margin: 0.5rem 0;
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(230, 81, 0, 0.08) 0%, rgba(230, 81, 0, 0.03) 100%);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: -1;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(230, 81, 0, 0.12);
+    }
+
+    .nav-item.active::before {
+      opacity: 1;
+    }
+
+    .nav-item:hover:not(.active) {
+      transform: translateY(-2px);
+      color: var(--primary-dark);
+    }
+
+    .nav-item:hover:not(.active)::before {
+      opacity: 0.5;
+    }
+
+    .nav-icon {
+      margin-right: 0.85rem;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-footer {
+      padding: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.7);
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 2.5rem;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .page-title {
+      font-size: 1.85rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      position: relative;
+      display: inline-block;
+      animation: slideInLeft 0.6s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 3px;
+      animation: expandWidth 0.8s ease-out forwards;
+      transform-origin: left;
+    }
+
+    @keyframes expandWidth {
+      from { width: 0; }
+      to { width: 40%; }
+    }
+
+    .date-display {
+      color: var(--gray-600);
+      font-size: 0.875rem;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 0.65rem 1.25rem;
+      border-radius: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      animation: slideInRight 0.6s ease-out;
+      transition: var(--transition);
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .date-display:hover {
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      opacity: 0.8;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      transform: translateY(-5px);
+    }
+
+    .stat-value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover .stat-value {
+      transform: scale(1.05);
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .stat-icon {
+      margin-right: 0.5rem;
+      opacity: 0.7;
+    }
+
+    .tab-container {
+      margin-bottom: 2.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .tab {
+      padding: 0.85rem 1.5rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 2px solid transparent;
+      margin-right: 1.5rem;
+      position: relative;
+    }
+
+    .tab.active {
+      color: var(--primary);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 2px;
+      animation: expandWidth 0.4s ease-out forwards;
+    }
+
+    .tab:hover:not(.active) {
+      color: var(--gray-900);
+    }
+
+    .tab-content {
+      display: none;
+      padding-top: 1rem;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray-600);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: var(--border-radius);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .ticket-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .ticket {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      transition: var(--transition);
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .ticket:nth-child(3n+1) {
+      animation-delay: 0.1s;
+    }
+
+    .ticket:nth-child(3n+2) {
+      animation-delay: 0.2s;
+    }
+
+    .ticket:nth-child(3n+3) {
+      animation-delay: 0.3s;
+    }
+
+    .ticket:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      transform: translateY(-5px) scale(1.01);
+    }
+
+    .ticket-header {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+      background: rgba(249, 250, 251, 0.5);
+    }
+
+    .ticket-id {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      background-color: rgba(230, 81, 0, 0.1);
+      padding: 0.4rem 0.85rem;
+      border-radius: 30px;
+      box-shadow: 0 2px 6px rgba(230, 81, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .ticket:hover .ticket-id {
+      background-color: rgba(230, 81, 0, 0.15);
+      box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
+    }
+
+    .ticket-priority {
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
+      border-radius: 30px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .priority-high {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .priority-medium {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .priority-low {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    .ticket:hover .priority-high {
+      background-color: rgba(239, 68, 68, 0.15);
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.15);
+    }
+
+    .ticket:hover .priority-medium {
+      background-color: rgba(245, 158, 11, 0.15);
+      box-shadow: 0 4px 8px rgba(245, 158, 11, 0.15);
+    }
+
+    .ticket:hover .priority-low {
+      background-color: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.15);
+    }
+
+    .ticket-body {
+      padding: 1.5rem;
+    }
+
+    .ticket-field {
+      margin-bottom: 1.25rem;
+    }
+
+    .ticket-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .ticket-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticket-label-icon {
+      margin-right: 0.4rem;
+      opacity: 0.7;
+    }
+
+    .ticket-value {
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    .ticket-footer {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.7);
+      background: rgba(249, 250, 251, 0.5);
+    }
+
+    .ticket-date {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+    }
+
+    .ticket-date-icon {
+      margin-right: 0.4rem;
+      opacity: 0.7;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.35rem;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(230, 81, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(20, 20);
+        opacity: 0;
+      }
+    }
+
+    .btn:active::after {
+      animation: ripple 0.6s ease-out;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-dark);
+      box-shadow: 0 6px 15px rgba(230, 81, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(230, 81, 0, 0.2);
+    }
+
+    .btn-icon {
+      margin-right: 0.5rem;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background-color: rgba(230, 81, 0, 0.05);
+      box-shadow: 0 4px 12px rgba(230, 81, 0, 0.1);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray-600);
+      box-shadow: 0 4px 12px rgba(75, 85, 99, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--gray-700);
+      box-shadow: 0 6px 15px rgba(75, 85, 99, 0.3);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .changelog-item {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      transition: var(--transition);
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .changelog-item:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
+
+    .changelog-item:nth-child(even) {
+      animation-delay: 0.2s;
+    }
+
+    .changelog-item:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      transform: translateY(-5px);
+    }
+
+    .changelog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .changelog-title {
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .changelog-title-icon {
+      margin-right: 0.5rem;
+      opacity: 0.8;
+    }
+
+    .changelog-date {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      background: rgba(249, 250, 251, 0.5);
+      padding: 0.4rem 0.85rem;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+    }
+
+    .changelog-date-icon {
+      margin-right: 0.4rem;
+      opacity: 0.7;
+    }
+
+    .changelog-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: var(--border-radius);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      color: var(--gray-500);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.75rem;
+      color: var(--gray-400);
+      opacity: 0.8;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+
+    .empty-title {
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 1rem;
+    }
+
+    .empty-description {
+      font-size: 0.95rem;
+      max-width: 450px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+    }
+
+    .modal-content {
+      position: relative;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      margin: 5% auto;
+      padding: 2rem;
+      width: 85%;
+      max-width: 800px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal.show .modal-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .modal-title-icon {
+      margin-right: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      color: var(--gray-500);
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .close-modal:hover {
+      color: var(--gray-800);
+      background-color: rgba(0, 0, 0, 0.05);
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      margin-bottom: 1.75rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .analysis-result {
+      background: rgba(249, 250, 251, 0.7);
+      padding: 1.25rem;
+      border-radius: 12px;
+      margin-top: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      line-height: 1.6;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .analysis-result.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .analysis-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem;
+      color: var(--gray-600);
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(230, 81, 0, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Help Section Styles */
+    .help-section {
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .help-section:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .help-section:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .help-section:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .help-section:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .help-section:nth-child(5) {
+      animation-delay: 0.5s;
+    }
+
+    .help-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .help-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .help-title-icon {
+      margin-right: 0.5rem;
+      opacity: 0.8;
+    }
+
+    .help-content {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .help-content:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transform: translateY(-3px);
+    }
+
+    .help-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--gray-700);
+      margin-bottom: 1rem;
+    }
+
+    .help-text:last-child {
+      margin-bottom: 0;
+    }
+
+    .help-list {
+      list-style-type: none;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .help-list-item {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      transition: var(--transition);
+    }
+
+    .help-list-item:hover {
+      transform: translateX(3px);
+    }
+
+    .help-list-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 8px;
+      height: 8px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+
+    .help-list-item:hover::before {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+
+    .help-image {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 8px;
+      margin: 1rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .help-image:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .help-note {
+      background-color: rgba(230, 81, 0, 0.08);
+      border-left: 3px solid var(--primary);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      transition: var(--transition);
+    }
+
+    .help-note:hover {
+      background-color: rgba(230, 81, 0, 0.12);
+      transform: translateX(3px);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-radius: 0 0 20px 20px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        overflow-x: auto;
+        padding: 0.75rem;
+      }
+
+      .nav-item {
+        padding: 0.65rem 1rem;
+        white-space: nowrap;
+        margin: 0 0.5rem;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ticket-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 1.5rem;
+      }
+
+      .btn-group {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .ticket-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .ticket-footer .btn-group {
+        width: 100%;
+      }
+
+      .ticket-footer .btn {
+        width: 100%;
+      }
+    }
+
+    /* Icons */
+    .icon {
+      display: inline-block;
+      width: 1.5em;
+      height: 1.5em;
+      stroke-width: 0;
+      stroke: currentColor;
+      fill: currentColor;
+      vertical-align: middle;
+    }
+
+    .icon-sm {
+      width: 1.25em;
+      height: 1.25em;
+    }
+
+    /* Coral background elements */
+    .coral-bg {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.03;
+      pointer-events: none;
+    }
+
+    .coral-element {
+      position: absolute;
+      background: url('coral.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+
+    .coral-element:nth-child(1) {
+      top: 10%;
+      right: 5%;
+      width: 300px;
+      height: 300px;
+      opacity: 0.1;
+      animation: float 15s ease-in-out infinite;
+    }
+
+    .coral-element:nth-child(2) {
+      bottom: 15%;
+      left: 10%;
+      width: 200px;
+      height: 200px;
+      opacity: 0.08;
+      animation: float 12s ease-in-out infinite reverse;
+    }
+
+    .coral-element:nth-child(3) {
+      top: 40%;
+      right: 20%;
+      width: 150px;
+      height: 150px;
+      opacity: 0.05;
+      animation: float 18s ease-in-out infinite 2s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Coral background elements -->
+  <div class="coral-bg">
+    <div class="coral-element"></div>
+    <div class="coral-element"></div>
+    <div class="coral-element"></div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22><rect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22%23e65100%22 /><text x=%2220%22 y=%2225%22 font-family=%22Arial%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22white%22>S</text></svg>'">
+        <div class="sidebar-title"><strong>ANG SILAKBO</strong></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active">
+          <span class="nav-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"></path>
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="openHelpModal()">
+          <span class="nav-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path>
+            </svg>
+          </span>
+          <span>Help</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        &copy; 2025 ANG SILAKBO. All rights reserved.
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <h1 class="page-title">Issue Management Dashboard</h1>
+        <div class="date-display" id="currentDate">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 6px;">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"></path>
+          </svg>
+          <span id="currentDateText"></span>
+        </div>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalIssues">0</div>
+          <div class="stat-label">
+            <svg class="icon icon-sm stat-icon" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z"></path>
+            </svg>
+            Active Issues
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="resolvedIssues">0</div>
+          <div class="stat-label">
+            <svg class="icon icon-sm stat-icon" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+            </svg>
+            Resolved Issues
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="priorityIssues">0</div>
+          <div class="stat-label">
+            <svg class="icon icon-sm stat-icon" viewBox="0 0 24 24">
+              <path d="M12 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+            </svg>
+            High Priority
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-container">
+        <div class="tabs">
+          <div class="tab active" data-tab="active-issues">Active Issues</div>
+          <div class="tab" data-tab="changelog">Changelog</div>
+        </div>
+
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <div>Loading issues...</div>
+        </div>
+
+        <div class="tab-content active" id="active-issues">
+          <div id="ticketContainer" class="ticket-grid"></div>
+        </div>
+
+        <div class="tab-content" id="changelog">
+          <div id="changelogContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- AI Analysis Modal -->
+  <div id="analysisModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <svg class="icon modal-title-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+          </svg>
+          Coral Issue Analysis
+        </h2>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="ticket-field">
+          <div class="ticket-label">
+            <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+              <path d="M7 14h10v2H7zm0-4h10v2H7zm0-4h10v2H7zM3 20h18v-2H3zM3 2v2h18V2z"></path>
+            </svg>
+            Issue ID
+          </div>
+          <div class="ticket-value" id="modal-issue-id"></div>
+        </div>
+        <div class="ticket-field">
+          <div class="ticket-label">
+            <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z"></path>
+            </svg>
+            Description
+          </div>
+          <div class="ticket-value" id="modal-issue-description"></div>
+        </div>
+        <div id="analysis-loading" class="analysis-loading" style="display: none;">
+          <div class="spinner"></div>
+          <div>Analyzing issue with Coral...</div>
+        </div>
+        <div id="analysis-result" class="analysis-result" style="display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal()">
+          <svg class="icon icon-sm btn-icon" viewBox="0 0 24 24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+          </svg>
+          Close
+        </button>
+        <button class="btn" id="analyze-btn" onclick="analyzeIssue()">
+          <svg class="icon icon-sm btn-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+          </svg>
+          Analyze with Coral
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <svg class="icon modal-title-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path>
+          </svg>
+          Help Center
+        </h2>
+        <button class="close-modal" onclick="closeHelpModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-section">
+          <h3 class="help-title">
+            <svg class="icon help-title-icon" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path>
+            </svg>
+            Getting Started
+          </h3>
+          <div class="help-content">
+            <p class="help-text">
+              Welcome to ANG SILAKBO Issue Management Dashboard! This platform helps you track, analyze, and resolve issues efficiently. Here's how to get started:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">The <strong>Dashboard</strong> provides an overview of all active and resolved issues.</li>
+              <li class="help-list-item">Use the <strong>Active Issues</strong> tab to view and manage current issues.</li>
+              <li class="help-list-item">The <strong>Changelog</strong> tab shows a history of all resolved issues.</li>
+              <li class="help-list-item">Each issue card contains details about the reporter, description, and priority level.</li>
+            </ul>
+            <div class="help-note">
+              <strong>Note:</strong> The dashboard automatically updates in real-time as new issues are reported or resolved.
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <h3 class="help-title">
+            <svg class="icon help-title-icon" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+            </svg>
+            Using Coral AI Analysis
+          </h3>
+          <div class="help-content">
+            <p class="help-text">
+              ANG SILAKBO features powerful AI analysis capabilities to help you understand and resolve issues more effectively:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">Click the <strong>Analyze</strong> button on any issue card to open the AI analysis modal.</li>
+              <li class="help-list-item">In the modal, click <strong>Analyze with AI</strong> to generate an in-depth analysis of the issue.</li>
+              <li class="help-list-item">The AI will provide a summary, potential root causes, recommended solutions, and a suggested priority level.</li>
+              <li class="help-list-item">Analysis results are saved with the issue and will be included in the changelog when resolved.</li>
+            </ul>
+            <p class="help-text">
+              The AI analysis uses advanced natural language processing to understand complex issues and provide actionable insights. This helps you:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">Identify patterns and recurring problems</li>
+              <li class="help-list-item">Prioritize issues based on impact and urgency</li>
+              <li class="help-list-item">Develop effective resolution strategies</li>
+              <li class="help-list-item">Reduce resolution time and improve customer satisfaction</li>
+            </ul>
+            <div class="help-note">
+              <strong>Pro Tip:</strong> For best results, ensure issue descriptions are detailed and specific. The more information provided, the more accurate the AI analysis will be.
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <h3 class="help-title">
+            <svg class="icon help-title-icon" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+            </svg>
+            Resolving Issues
+          </h3>
+          <div class="help-content">
+            <p class="help-text">
+              Efficiently resolving issues is a key feature of ANG SILAKBO. Here's how to manage the resolution process:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">Review the issue details and AI analysis (if available).</li>
+              <li class="help-list-item">Click the <strong>Resolve</strong> button on the issue card when the problem has been addressed.</li>
+              <li class="help-list-item">An email notification will be automatically sent to the reporter if an email address was provided.</li>
+              <li class="help-list-item">The issue will be moved from Active Issues to the Changelog, preserving all details including any AI analysis.</li>
+            </ul>
+            <p class="help-text">
+              The email notification includes:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">A confirmation that the issue has been resolved</li>
+              <li class="help-list-item">The original issue description</li>
+              <li class="help-list-item">AI analysis results (if available)</li>
+              <li class="help-list-item">Date and time of resolution</li>
+            </ul>
+            <div class="help-note">
+              <strong>Important:</strong> Once an issue is resolved, it cannot be reopened. If the same problem occurs again, a new issue must be created.
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <h3 class="help-title">
+            <svg class="icon help-title-icon" viewBox="0 0 24 24">
+              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path>
+            </svg>
+            Managing the Changelog
+          </h3>
+          <div class="help-content">
+            <p class="help-text">
+              The Changelog provides a historical record of all resolved issues. Here's how to use it effectively:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">Click the <strong>Changelog</strong> tab to view all resolved issues.</li>
+              <li class="help-list-item">Entries are sorted by resolution date, with the most recent at the top.</li>
+              <li class="help-list-item">Each entry includes the original issue details, AI analysis (if available), and resolution timeline.</li>
+              <li class="help-list-item">To remove an entry from the Changelog, click the <strong>Delete from Changelog</strong> button.</li>
+            </ul>
+            <p class="help-text">
+              The Changelog is valuable for:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item">Tracking resolution patterns over time</li>
+              <li class="help-list-item">Identifying recurring issues that may need deeper investigation</li>
+              <li class="help-list-item">Documenting successful resolution strategies</li>
+              <li class="help-list-item">Reporting on team performance and issue management metrics</li>
+            </ul>
+            <div class="help-note">
+              <strong>Best Practice:</strong> Regularly review the Changelog to identify trends and improve your issue resolution process.
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <h3 class="help-title">
+            <svg class="icon help-title-icon" viewBox="0 0 24 24">
+              <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"></path>
+            </svg>
+            Troubleshooting
+          </h3>
+          <div class="help-content">
+            <p class="help-text">
+              If you encounter any issues with the ANG SILAKBO dashboard, try these troubleshooting steps:
+            </p>
+            <ul class="help-list">
+              <li class="help-list-item"><strong>Loading Issues:</strong> If issues don't load, check your internet connection and refresh the page.</li>
+              <li class="help-list-item"><strong>Email Notifications:</strong> If email notifications aren't being sent, ensure the reporter's email address is valid.</li>
+              <li class="help-list-item"><strong>AI Analysis:</strong> If AI analysis fails, try again or check if the Cohere API service is available.</li>
+              <li class="help-list-item"><strong>Data Updates:</strong> If changes aren't reflected immediately, refresh the page to sync with the latest data.</li>
+            </ul>
+            <p class="help-text">
+              For persistent issues or additional support, please contact our technical team at uclm.angsilakbo@uc.edu.ph.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeHelpModal()">
+          <svg class="icon icon-sm btn-icon" viewBox="0 0 24 24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+          </svg>
+          Close Help
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coral.png image -->
+  <img src="coral.png" style="display: none;" alt="Coral background" id="coralImage" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22><rect width=%22200%22 height=%22200%22 fill=%22%23e65100%22 opacity=%220.2%22 /><path d=%22M100,40 C120,40 140,60 140,80 C140,100 120,120 100,120 C80,120 60,100 60,80 C60,60 80,40 100,40 Z%22 fill=%22%23e65100%22 opacity=%220.5%22 /><path d=%22M100,60 C110,60 120,70 120,80 C120,90 110,100 100,100 C90,100 80,90 80,80 C80,70 90,60 100,60 Z%22 fill=%22%23ffffff%22 opacity=%220.6%22 /></svg>'">
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+    import { getDatabase, ref, onValue, remove, set, get } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js';
+
+    // Initialize app when page is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set current date
+      const now = new Date();
+      document.getElementById('currentDateText').textContent = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+
+      // Set up tab switching
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          const tabContents = document.querySelectorAll('.tab-content');
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          const targetTab = tab.getAttribute('data-tab');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+
+      // Add animation to stat cards
+      const statCards = document.querySelectorAll('.stat-card');
+      statCards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+
+      // Ensure EmailJS is loaded
+      if (typeof emailjs === 'undefined') {
+        console.error("EmailJS not loaded properly");
+        document.getElementById('loading').innerHTML = "Error: EmailJS not loaded properly. Please check console.";
+        return;
+      }
+      
+      // Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+        authDomain: "ang-silakbo.firebaseapp.com",
+        databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+        projectId: "ang-silakbo",
+        storageBucket: "ang-silakbo.firebaseapp.com",
+        messagingSenderId: "1006400633782",
+        appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+        measurementId: "G-TSDTG2YJ94"
+      };
+
+      try {
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // Load reports and changelogs
+        loadReports(db);
+        loadChangelog(db);
+        
+        // Set up globals for resolveIssue function
+        window.appDb = db;
+        window.firebaseRef = ref;
+        window.firebaseRemove = remove;
+        window.firebaseSet = set;
+        window.firebaseGet = get;
+        
+        // Hide loading message
+        document.getElementById('loading').style.display = 'none';
+      } catch (error) {
+        console.error("Firebase initialization error:", error);
+        document.getElementById('loading').innerHTML = "Error initializing Firebase. Please check console.";
+      }
+    });
+
+    function loadReports(db) {
+      const ticketContainer = document.getElementById('ticketContainer');
+      
+      // Fetch reports from Firebase
+      onValue(ref(db, "reports"), (snapshot) => {
+        ticketContainer.innerHTML = "";
+        
+        if (!snapshot.exists()) {
+          ticketContainer.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📋</div>
+              <h3 class="empty-title">No active issues</h3>
+              <p class="empty-description">There are currently no active issues to display. When new issues are reported, they will appear here.</p>
+            </div>
+          `;
+          document.getElementById('totalIssues').textContent = "0";
+          document.getElementById('priorityIssues').textContent = "0";
+          return;
+        }
+        
+        let totalIssues = 0;
+        let highPriorityIssues = 0;
+        const reports = [];
+        
+        // Convert to array for animation delay
+        snapshot.forEach((childSnapshot) => {
+          const key = childSnapshot.key;
+          const data = childSnapshot.val();
+          reports.push({ key, data });
+          totalIssues++;
+        });
+        
+        reports.forEach((report, index) => {
+          const key = report.key;
+          const data = report.data;
+          
+          // Safely get data values with fallbacks
+          const name = data.name ? data.name.replace(/'/g, "\\'") : 'Not provided';
+          const email = data.email ? data.email.replace(/'/g, "\\'") : '';
+          const issue = data.issue ? data.issue.replace(/'/g, "\\'") : 'No description';
+          const timestamp = data.timestamp || Date.now();
+          
+          // Determine priority (random for demo)
+          const priorityRandom = Math.random();
+          let priority, priorityClass;
+          
+          if (priorityRandom > 0.7) {
+            priority = 'High';
+            priorityClass = 'priority-high';
+            highPriorityIssues++;
+          } else if (priorityRandom > 0.4) {
+            priority = 'Medium';
+            priorityClass = 'priority-medium';
+          } else {
+            priority = 'Low';
+            priorityClass = 'priority-low';
+          }
+          
+          const ticketDiv = document.createElement("div");
+          ticketDiv.className = "ticket";
+          ticketDiv.style.animationDelay = `${0.1 * index}s`;
+          
+          const date = new Date(timestamp);
+          const formattedDate = date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+          });
+          
+          const cleanEmail = data.email ? data.email.replace(/['"\\]/g, '') : '';
+          const cleanName = data.name ? data.name.replace(/['"\\]/g, '') : '';
+          const cleanIssue = data.issue ? data.issue.replace(/['"\\]/g, '') : '';
+          
+          ticketDiv.innerHTML = `
+            <div class="ticket-header">
+              <div class="ticket-id">SILAKBO-${key.substring(0, 6)}</div>
+              <div class="ticket-priority ${priorityClass}">${priority}</div>
+            </div>
+            <div class="ticket-body">
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                  </svg>
+                  Reported by
+                </div>
+                <div class="ticket-value">${cleanName || 'Anonymous'}</div>
+              </div>
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path>
+                  </svg>
+                  Contact
+                </div>
+                <div class="ticket-value">${cleanEmail || 'Not provided'}</div>
+              </div>
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path>
+                  </svg>
+                  Description
+                </div>
+                <div class="ticket-value">${cleanIssue || 'No description'}</div>
+              </div>
+            </div>
+            <div class="ticket-footer">
+              <div class="ticket-date">
+                <svg class="icon icon-sm ticket-date-icon" viewBox="0 0 24 24">
+                  <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
+                </svg>
+                Reported on ${formattedDate}
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-secondary" onclick="openAnalysisModal('${key}', '${cleanIssue}')">
+                  <svg class="icon icon-sm btn-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+                  </svg>
+                  Analyze
+                </button>
+                <button class="btn" onclick="resolveIssue('${key}', '${cleanEmail}', '${cleanName}', '${cleanIssue}')">
+                  <svg class="icon icon-sm btn-icon" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+                  </svg>
+                  Resolve
+                </button>
+              </div>
+            </div>
+          `;
+          
+          ticketContainer.appendChild(ticketDiv);
+        });
+        
+        // Update stats with animation
+        animateCounter('totalIssues', totalIssues);
+        animateCounter('priorityIssues', highPriorityIssues);
+      });
+    }
+    
+    function loadChangelog(db) {
+      const changelogContainer = document.getElementById('changelogContainer');
+      
+      // Fetch changelog from Firebase
+      onValue(ref(db, "changelog"), (snapshot) => {
+        changelogContainer.innerHTML = "";
+        
+        if (!snapshot.exists()) {
+          changelogContainer.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📝</div>
+              <h3 class="empty-title">No changelog entries</h3>
+              <p class="empty-description">There are no resolved issues in the changelog yet. When issues are resolved, they will appear here as a historical record.</p>
+            </div>
+          `;
+          document.getElementById('resolvedIssues').textContent = "0";
+          return;
+        }
+        
+        let resolvedCount = 0;
+        const entries = [];
+        
+        // Convert to array for sorting
+        snapshot.forEach((childSnapshot) => {
+          const key = childSnapshot.key;
+          const data = childSnapshot.val();
+          entries.push({ key, ...data });
+          resolvedCount++;
+        });
+        
+        // Sort by timestamp (newest first)
+        entries.sort((a, b) => b.resolvedAt - a.resolvedAt);
+        
+        entries.forEach((entry, index) => {
+          const changelogDiv = document.createElement("div");
+          changelogDiv.className = "changelog-item";
+          changelogDiv.style.animationDelay = `${0.1 * index}s`;
+          
+          const reportedDate = new Date(entry.reportedAt || Date.now());
+          const resolvedDate = new Date(entry.resolvedAt || Date.now());
+          
+          const formattedReportedDate = reportedDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+          });
+          
+          const formattedResolvedDate = resolvedDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          const cleanName = entry.name ? entry.name.replace(/['"\\]/g, '') : '';
+          const cleanIssue = entry.issue ? entry.issue.replace(/['"\\]/g, '') : '';
+          const aiAnalysis = entry.aiAnalysis ? entry.aiAnalysis.replace(/['"\\]/g, '') : '';
+          
+          changelogDiv.innerHTML = `
+            <div class="changelog-header">
+              <div class="changelog-title">
+                <svg class="icon icon-sm changelog-title-icon" viewBox="0 0 24 24">
+                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
+                </svg>
+                SILAKBO-${entry.key.substring(0, 6)}
+              </div>
+              <div class="changelog-date">
+                <svg class="icon icon-sm changelog-date-icon" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+                </svg>
+                Resolved on ${formattedResolvedDate}
+              </div>
+            </div>
+            <div class="ticket-body">
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                  </svg>
+                  Reported by
+                </div>
+                <div class="ticket-value">${cleanName || 'Anonymous'}</div>
+              </div>
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path>
+                  </svg>
+                  Description
+                </div>
+                <div class="ticket-value">${cleanIssue || 'No description'}</div>
+              </div>
+              ${aiAnalysis ? `
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+                  </svg>
+                  AI Analysis
+                </div>
+                <div class="ticket-value analysis-result show">${aiAnalysis}</div>
+              </div>
+              ` : ''}
+              <div class="ticket-field">
+                <div class="ticket-label">
+                  <svg class="icon icon-sm ticket-label-icon" viewBox="0 0 24 24">
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
+                  </svg>
+                  Timeline
+                </div>
+                <div class="ticket-value">Reported on ${formattedReportedDate}, resolved on ${formattedResolvedDate}</div>
+              </div>
+            </div>
+            <div class="changelog-footer">
+              <button class="btn btn-outline" onclick="deleteChangelog('${entry.key}')">
+                <svg class="icon icon-sm btn-icon" viewBox="0 0 24 24">
+                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+                </svg>
+                Delete from Changelog
+              </button>
+            </div>
+          `;
+          
+          changelogContainer.appendChild(changelogDiv);
+        });
+        
+        // Update stats with animation
+        animateCounter('resolvedIssues', resolvedCount);
+      });
+    }
+
+    // Helper function to animate counter
+    window.animateCounter = function(elementId, targetValue) {
+      const element = document.getElementById(elementId);
+      const startValue = parseInt(element.textContent) || 0;
+      const duration = 1000; // ms
+      const stepTime = 50; // ms
+      const steps = duration / stepTime;
+      const increment = (targetValue - startValue) / steps;
+      let currentValue = startValue;
+      let currentStep = 0;
+
+      const counterInterval = setInterval(() => {
+        currentStep++;
+        currentValue += increment;
+        
+        if (currentStep >= steps) {
+          clearInterval(counterInterval);
+          element.textContent = targetValue;
+        } else {
+          element.textContent = Math.round(currentValue);
+        }
+      }, stepTime);
+    };
+  </script>
+
+  <!-- Keep this script separate and non-module -->
+  <script>
+    // Global function to resolve issues
+    function resolveIssue(reportId, email, name, issue) {
+      // Make sure emailjs is defined
+      if (typeof emailjs === 'undefined') {
+        alert("EmailJS not loaded properly. Please refresh the page.");
+        return;
+      }
+
+      // Get the report data before removing it
+      window.firebaseGet(window.firebaseRef(window.appDb, "reports/" + reportId))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const reportData = snapshot.val();
+            const timestamp = reportData.timestamp || Date.now();
+            
+            // Get AI analysis if it exists
+            const aiAnalysis = reportData.aiAnalysis || "";
+            
+            // Add to changelog
+            window.firebaseSet(window.firebaseRef(window.appDb, "changelog/" + reportId), {
+              name: name || "Anonymous",
+              email: email || "",
+              issue: issue || "No description",
+              aiAnalysis: aiAnalysis,
+              reportedAt: timestamp,
+              resolvedAt: Date.now(),
+              key: reportId
+            });
+            
+            // Validate email address
+            if (!email || email === 'Not provided') {
+              alert("Cannot send email: No valid email address provided");
+              // Still remove the report
+              window.firebaseRemove(window.firebaseRef(window.appDb, "reports/" + reportId));
+              return;
+            }
+            
+            const templateParams = {
+              to_name: name || "User",
+              to_email: email,
+              issue_description: issue || "No description provided",
+              ai_analysis: aiAnalysis || "No AI analysis was performed."
+            };
+
+            // Show loading animation
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.id = 'email-loading';
+            loadingDiv.innerHTML = '<div class="spinner"></div><div>Sending email notification...</div>';
+            document.body.appendChild(loadingDiv);
+
+            // Send email via EmailJS v4
+            emailjs.send("service_163vdgl", "template_wnvrdlg", templateParams)
+              .then(function(response) {
+                console.log("SUCCESS!", response.status, response.text);
+                document.body.removeChild(loadingDiv);
+                
+                // Show success message with animation
+                const successDiv = document.createElement('div');
+                successDiv.style.position = 'fixed';
+                successDiv.style.top = '20px';
+                successDiv.style.left = '50%';
+                successDiv.style.transform = 'translateX(-50%)';
+                successDiv.style.background = 'rgba(16, 185, 129, 0.9)';
+                successDiv.style.color = 'white';
+                successDiv.style.padding = '1rem 2rem';
+                successDiv.style.borderRadius = '30px';
+                successDiv.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                successDiv.style.zIndex = '1000';
+                successDiv.style.display = 'flex';
+                successDiv.style.alignItems = 'center';
+                successDiv.style.gap = '0.5rem';
+                successDiv.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg> Email sent successfully. Issue marked as resolved.';
+                document.body.appendChild(successDiv);
+                
+                // Remove success message after 3 seconds
+                setTimeout(() => {
+                  successDiv.style.opacity = '0';
+                  successDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+                  successDiv.style.transition = 'all 0.5s ease';
+                  setTimeout(() => {
+                    document.body.removeChild(successDiv);
+                  }, 500);
+                }, 3000);
+                
+                // Remove report from database
+                window.firebaseRemove(window.firebaseRef(window.appDb, "reports/" + reportId));
+              })
+              .catch(function(error) {
+                console.error("EmailJS Error:", error);
+                document.body.removeChild(loadingDiv);
+                alert("Failed to send email: " + (error.message || JSON.stringify(error)));
+              });
+          } else {
+            alert("Report not found. It may have been already resolved.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting report:", error);
+          alert("Error resolving issue: " + error.message);
+        });
+    }
+    
+    // Global function to delete changelog entry
+    function deleteChangelog(changelogId) {
+      if (confirm("Are you sure you want to permanently delete this changelog entry?")) {
+        window.firebaseRemove(window.firebaseRef(window.appDb, "changelog/" + changelogId))
+          .then(() => {
+            // Show success message with animation
+            const successDiv = document.createElement('div');
+            successDiv.style.position = 'fixed';
+            successDiv.style.top = '20px';
+            successDiv.style.left = '50%';
+            successDiv.style.transform = 'translateX(-50%)';
+            successDiv.style.background = 'rgba(16, 185, 129, 0.9)';
+            successDiv.style.color = 'white';
+            successDiv.style.padding = '1rem 2rem';
+            successDiv.style.borderRadius = '30px';
+            successDiv.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+            successDiv.style.zIndex = '1000';
+            successDiv.style.display = 'flex';
+            successDiv.style.alignItems = 'center';
+            successDiv.style.gap = '0.5rem';
+            successDiv.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg> Changelog entry deleted successfully.';
+            document.body.appendChild(successDiv);
+            
+            // Remove success message after 3 seconds
+            setTimeout(() => {
+              successDiv.style.opacity = '0';
+              successDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+              successDiv.style.transition = 'all 0.5s ease';
+              setTimeout(() => {
+                document.body.removeChild(successDiv);
+              }, 500);
+            }, 3000);
+          })
+          .catch((error) => {
+            console.error("Error deleting changelog:", error);
+            alert("Error deleting changelog: " + error.message);
+          });
+      }
+    }
+    
+    // AI Analysis Modal Functions
+    function openAnalysisModal(issueId, issueDescription) {
+      const modal = document.getElementById('analysisModal');
+      document.getElementById('modal-issue-id').textContent = 'SILAKBO-' + issueId.substring(0, 6);
+      document.getElementById('modal-issue-description').textContent = issueDescription;
+      document.getElementById('analysis-result').style.display = 'none';
+      document.getElementById('analysis-result').classList.remove('show');
+      
+      // Show modal with animation
+      modal.style.display = 'block';
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+      
+      // Store the current issue ID for the analyze function
+      window.currentIssueId = issueId;
+      window.currentIssueDescription = issueDescription;
+      
+      // Check if analysis already exists
+      window.firebaseGet(window.firebaseRef(window.appDb, "reports/" + issueId))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const reportData = snapshot.val();
+            if (reportData.aiAnalysis) {
+              document.getElementById('analysis-result').innerHTML = reportData.aiAnalysis;
+              setTimeout(() => {
+                document.getElementById('analysis-result').style.display = 'block';
+                setTimeout(() => {
+                  document.getElementById('analysis-result').classList.add('show');
+                }, 10);
+              }, 300);
+              document.getElementById('analyze-btn').innerHTML = '<svg class="icon icon-sm btn-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg> Re-analyze with Coral';
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error checking for existing analysis:", error);
+        });
+    }
+    
+    // Help Modal Functions
+    function openHelpModal() {
+      const modal = document.getElementById('helpModal');
+      modal.style.display = 'block';
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+    }
+    
+    function closeHelpModal() {
+      const modal = document.getElementById('helpModal');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('analysisModal');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+    
+    function analyzeIssue() {
+      const issueId = window.currentIssueId;
+      const issueDescription = window.currentIssueDescription;
+      
+      if (!issueId || !issueDescription) {
+        alert("Issue information is missing. Please try again.");
+        return;
+      }
+      
+      // Show loading indicator
+      document.getElementById('analysis-loading').style.display = 'flex';
+      document.getElementById('analysis-result').style.display = 'none';
+      document.getElementById('analysis-result').classList.remove('show');
+      document.getElementById('analyze-btn').disabled = true;
+      
+      // Call Cohere API for analysis
+      fetch('https://api.cohere.ai/v1/generate', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer z99HUO9u2vu9E4YTRRfeue6hbdkdOcM8zWQDfbcq',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'command',
+          prompt: `Analyze the following issue report and provide a detailed analysis with potential solutions:
+          
+Issue: ${issueDescription}
+
+Please provide:
+1. A brief summary of the issue
+2. Potential root causes
+3. Recommended solutions
+4. Priority level (High/Medium/Low) with justification`,
+          max_tokens: 500,
+          temperature: 0.7
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Hide loading indicator
+        document.getElementById('analysis-loading').style.display = 'none';
+        document.getElementById('analyze-btn').disabled = false;
+        
+        // Format and display the analysis
+        const analysisText = data.generations[0].text.trim();
+        const formattedAnalysis = analysisText.replace(/\n/g, '<br>');
+        document.getElementById('analysis-result').innerHTML = formattedAnalysis;
+        
+        // Show with animation
+        setTimeout(() => {
+          document.getElementById('analysis-result').style.display = 'block';
+          setTimeout(() => {
+            document.getElementById('analysis-result').classList.add('show');
+          }, 10);
+        }, 300);
+        
+        // Save the analysis to Firebase
+        window.firebaseGet(window.firebaseRef(window.appDb, "reports/" + issueId))
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const reportData = snapshot.val();
+              reportData.aiAnalysis = formattedAnalysis;
+              window.firebaseSet(window.firebaseRef(window.appDb, "reports/" + issueId), reportData);
+            }
+          })
+          .catch((error) => {
+            console.error("Error saving analysis to Firebase:", error);
+          });
+      })
+      .catch(error => {
+        console.error('Error analyzing issue:', error);
+        document.getElementById('analysis-loading').style.display = 'none';
+        document.getElementById('analyze-btn').disabled = false;
+        document.getElementById('analysis-result').innerHTML = 'Error analyzing issue: ' + error.message;
+        document.getElementById('analysis-result').style.display = 'block';
+        document.getElementById('analysis-result').classList.add('show');
+      });
+    }
+    
+    // Close modals when clicking outside of them
+    window.onclick = function(event) {
+      const analysisModal = document.getElementById('analysisModal');
+      const helpModal = document.getElementById('helpModal');
+      
+      if (event.target === analysisModal) {
+        closeModal();
+      }
+      
+      if (event.target === helpModal) {
+        closeHelpModal();
+      }
+    }
+
+    // Add floating animation to coral elements
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create random floating coral elements in the background
+      const coralBg = document.querySelector('.coral-bg');
+      
+      // Add subtle parallax effect on mouse move
+      document.addEventListener('mousemove', function(e) {
+        const moveX = (e.clientX - window.innerWidth / 2) / 50;
+        const moveY = (e.clientY - window.innerHeight / 2) / 50;
+        
+        const elements = document.querySelectorAll('.coral-element');
+        elements.forEach((el, index) => {
+          const factor = (index + 1) * 0.2;
+          el.style.transform = `translate(${moveX * factor}px, ${moveY * factor}px) rotate(${moveX * factor}deg)`;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
