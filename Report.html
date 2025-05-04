@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANG SILAKBO - Report Portal</title>
+  <link rel="icon" href="SILAKBO (1).png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+      authDomain: "ang-silakbo.firebaseapp.com",
+      databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+      projectId: "ang-silakbo",
+      storageBucket: "ang-silakbo.firebasestorage.app",
+      messagingSenderId: "1006400633782",
+      appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+      measurementId: "G-TSDTG2YJ94"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.submitReport = () => {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const issue = document.getElementById("issue").value;
+
+      if (name && email && issue) {
+        push(ref(db, 'reports/'), {
+          name,
+          email,
+          issue,
+          timestamp: new Date().toISOString()
+        }).then(() => {
+          showNotification("Issue reported successfully!", "success");
+          document.getElementById("reportForm").reset();
+        }).catch(error => showNotification("Error: " + error, "error"));
+      } else {
+        showNotification("Please fill out all fields.", "warning");
+      }
+    };
+
+    window.showNotification = (message, type) => {
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.classList.add("show"), 10);
+      setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+    };
+
+    window.toggleAboutModal = () => {
+      document.getElementById("aboutModal").classList.toggle("active");
+      document.body.classList.toggle("no-scroll");
+    };
+  </script>
+  <style>
+    :root {
+      --orange-primary: #e65100;
+      --orange-dark: #bf360c;
+      --orange-light: #ffccbc;
+      --orange-ultra-light: rgba(230, 81, 0, 0.05);
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9f9f9;
+      --glass-bg: rgba(255, 255, 255, 0.8);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px 0 rgba(230, 81, 0, 0.1);
+      --card-shadow: 0 10px 30px rgba(230, 81, 0, 0.15);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--text-primary);
+      position: relative;
+      overflow-x: hidden;
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 500px;
+      background: linear-gradient(135deg, var(--orange-primary), var(--orange-dark));
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5%;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .hero-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: white;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .hero-btn {
+      background: white;
+      color: var(--orange-primary);
+      border: none;
+      border-radius: 50px;
+      padding: 15px 30px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Wave Divider */
+    .wave-divider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .wave-divider svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 70px;
+    }
+
+    .wave-divider .shape-fill {
+      fill: #FFFFFF;
+    }
+
+    /* Header Styles */
+    header {
+      padding: 20px 5%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      height: 60px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-btn {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .about-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .about-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: -100px;
+      padding: 0 5% 80px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    /* Report Card */
+    .report-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow), 0 30px 60px rgba(0, 0, 0, 0.1);
+      padding: 50px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .report-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--orange-primary), var(--orange-dark));
+    }
+
+    .report-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 150px;
+      height: 150px;
+      background: var(--orange-ultra-light);
+      border-radius: 50%;
+      transform: translate(50%, 50%);
+      z-index: -1;
+    }
+
+    .report-card h2 {
+      color: var(--orange-primary);
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .report-card h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--orange-primary);
+      border-radius: 3px;
+    }
+
+    #reportForm {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 20px;
+      top: 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: var(--transition);
+      opacity: 0.7;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group textarea:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label,
+    .input-group textarea:not(:placeholder-shown) ~ label {
+      top: -12px;
+      left: 15px;
+      font-size: 12px;
+      padding: 0 5px;
+      background: white;
+      border-radius: 10px;
+      color: var(--orange-primary);
+      opacity: 1;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 15px;
+      padding: 18px 24px;
+      font-size: 16px;
+      font-family: 'Source Sans Pro', sans-serif;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      color: var(--text-primary);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: transparent;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--orange-primary);
+      box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    textarea {
+      min-height: 180px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--orange-primary), var(--orange-dark));
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 18px;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(230, 81, 0, 0.2);
+      border: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--orange-dark);
+      z-index: -1;
+      transition: var(--transition);
+      opacity: 0;
+    }
+
+    .submit-btn:hover::before {
+      opacity: 1;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(230, 81, 0, 0.3);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn i {
+      font-size: 18px;
+    }
+
+    /* Info Card */
+    .info-card {
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-image-container {
+      height: 250px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .info-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .info-card:hover .info-image {
+      transform: scale(1.05);
+    }
+
+    .info-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 30px;
+    }
+
+    .info-overlay-title {
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .info-content {
+      padding: 30px;
+    }
+
+    .info-description {
+      font-family: 'Merriweather', serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+
+    .info-features {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 15px;
+      border-radius: 15px;
+      background: var(--bg-secondary);
+      transition: var(--transition);
+    }
+
+    .feature-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .feature-icon {
+      background: var(--orange-primary);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+      box-shadow: 0 5px 15px rgba(230, 81, 0, 0.2);
+    }
+
+    .feature-text {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .feature-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .feature-desc {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      background: var(--bg-secondary);
+      padding: 80px 5%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .stats-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .stats-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--orange-primary);
+      border-radius: 3px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--orange-primary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      color: var(--orange-primary);
+      margin-bottom: 20px;
+    }
+
+    .stat-number {
+      font-family: 'Poppins', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-family: 'Source Sans Pro', sans-serif;
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      padding: 80px 5%;
+      background: white;
+      position: relative;
+    }
+
+    .testimonials-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonials-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .testimonials-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--orange-primary);
+      border-radius: 3px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .testimonial-card {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .testimonial-quote {
+      font-family: 'Merriweather', serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      position: relative;
+      padding-left: 25px;
+    }
+
+    .testimonial-quote::before {
+      content: '"';
+      position: absolute;
+      left: 0;
+      top: -10px;
+      font-size: 50px;
+      color: var(--orange-primary);
+      opacity: 0.3;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .author-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .author-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .author-role {
+      font-family: 'Source Sans Pro', sans-serif;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Footer Styles */
+    footer {
+      background: linear-gradient(135deg, var(--orange-dark), var(--orange-primary));
+      color: white;
+      padding: 80px 5% 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.3;
+    }
+
+    .footer-wave {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      transform: rotate(180deg);
+    }
+
+    .footer-wave svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 70px;
+    }
+
+    .footer-wave .shape-fill {
+      fill: #FFFFFF;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .footer-logo img {
+      height: 50px;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-logo-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-description {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.7;
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      transition: var(--transition);
+    }
+
+    .social-icon:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .footer-links h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 25px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .footer-links h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .footer-links ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      font-family: 'Source Sans Pro', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .copyright {
+      color: rgba(255, 255, 255, 0.7);
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 14px;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-bottom-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: var(--transition);
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 14px;
+    }
+
+    .footer-bottom-links a:hover {
+      color: white;
+    }
+
+    /* Modal Styles */
+    #aboutModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #aboutModal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 30px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    #aboutModal.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding-bottom: 15px;
+    }
+
+    .modal-title {
+      color: var(--orange-primary);
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .close-btn {
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .close-btn:hover {
+      background: var(--orange-primary);
+      color: white;
+    }
+
+    .modal-body {
+      line-height: 1.8;
+      color: var(--text-secondary);
+      font-family: 'Merriweather', serif;
+      font-size: 15px;
+    }
+
+    .modal-body h3 {
+      color: var(--orange-primary);
+      margin: 25px 0 15px;
+      font-size: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+    }
+
+    .modal-body p {
+      margin-bottom: 15px;
+    }
+
+    .modal-body ul, .modal-body ol {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    .modal-body li {
+      margin-bottom: 10px;
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: white;
+      padding: 18px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 1000;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .notification.success {
+      border-left: 5px solid #4caf50;
+    }
+
+    .notification.error {
+      border-left: 5px solid #f44336;
+    }
+
+    .notification.warning {
+      border-left: 5px solid #ff9800;
+    }
+
+    .notification i {
+      font-size: 22px;
+    }
+
+    .notification.success i {
+      color: #4caf50;
+    }
+
+    .notification.error i {
+      color: #f44336;
+    }
+
+    .notification.warning i {
+      color: #ff9800;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1100px) {
+      .content-container {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        height: 400px;
+      }
+
+      .hero-title {
+        font-size: 36px;
+      }
+
+      .hero-subtitle {
+        font-size: 18px;
+      }
+
+      header {
+        padding: 15px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .title {
+        font-size: 28px;
+      }
+
+      .report-card, .info-card {
+        padding: 30px 20px;
+      }
+
+      .report-card h2, .info-overlay-title {
+        font-size: 28px;
+      }
+
+      .stats-grid, .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        padding: 30px 20px;
+      }
+
+      .modal-title {
+        font-size: 24px;
+      }
+    }
+
+    /* Animation for form elements */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .input-group {
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .input-group:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .input-group:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .input-group:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .submit-btn {
+      animation: fadeInUp 0.5s 0.4s ease forwards;
+      opacity: 0;
+    }
+
+    /* Floating Elements Animation */
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    .float-element {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .float-element-1 {
+      animation-delay: 0s;
+    }
+
+    .float-element-2 {
+      animation-delay: 2s;
+    }
+
+    .float-element-3 {
+      animation-delay: 4s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <header>
+    <div class="logo-container">
+      <img src="SILAKBO.png" alt="ANG SILAKBO Logo" class="logo">
+      <h1 class="title">ANG SILAKBO</h1>
+    </div>
+    <button class="about-btn" onclick="toggleAboutModal()">
+      <i class="fas fa-info-circle"></i>
+      About This Form
+    </button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Report Portal</h1>
+      <p class="hero-subtitle">Help us improve by reporting issues and sharing your feedback</p>
+      <button class="hero-btn" onclick="document.getElementById('reportForm').scrollIntoView({behavior: 'smooth'})">
+        <i class="fas fa-arrow-down"></i>
+        Submit a Report
+      </button>
+    </div>
+    <div class="wave-divider">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+      </svg>
+    </div>
+  </section>
+
+  <section class="main-content">
+    <div class="content-container">
+      <div class="report-card">
+        <h2>Report an Issue</h2>
+        <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
+          <div class="input-group">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <label for="name">Your Full Name</label>
+          </div>
+          <div class="input-group">
+            <input type="email" id="email" placeholder="Your Email" required>
+            <label for="email">Your Email Address</label>
+          </div>
+          <div class="input-group">
+            <textarea id="issue" placeholder="Your Issue" required></textarea>
+            <label for="issue">Please describe your issue in detail...</label>
+          </div>
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-paper-plane"></i>
+            Submit Report
+          </button>
+        </form>
+      </div>
+
+      <div class="info-card">
+        <div class="info-image-container">
+          <img src="Report.PNG" alt="Community Support" class="info-image">
+          <div class="info-overlay">
+            <h2 class="info-overlay-title">We Value Your Feedback</h2>
+          </div>
+        </div>
+        <div class="info-content">
+          <p class="info-description">ANG SILAKBO is committed to providing a safe and supportive environment for all community members. Your reports help us maintain the quality and integrity of our platform.</p>
+          
+          <div class="info-features">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div class="feature-text">
+                <h3 class="feature-title">Secure Reporting</h3>
+                <p class="feature-desc">All reports are encrypted and handled with strict confidentiality.</p>
+              </div>
+            </div>
+            
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <div class="feature-text">
+                <h3 class="feature-title">Quick Response</h3>
+                <p class="feature-desc">Our team reviews all submissions within 24-48 hours.</p>
+              </div>
+            </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="footer-wave">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+      </svg>
+    </div>
+    <div class="footer-content">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="SILAKBO.png" alt="ANG SILAKBO Logo">
+            <div class="footer-logo-text">ANG SILAKBO</div>
+          </div>
+          <p class="footer-description">
+            ANG SILAKBO is dedicated to creating a safe, supportive, and engaging environment for all community members. Your feedback helps us improve and grow.
+          </p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/AngSilakboUCLM" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="About Us.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="Chat Request.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+            <li><a href="FAQ.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Resources</h3>
+          <ul>
+            <li><a href="Guidelines.html"><i class="fas fa-chevron-right"></i> Community Guidelines</a></li>
+            <li><a href="Dev's Note.html"><i class="fas fa-chevron-right"></i> Blog</a></li>
+            <li><a href="Artikulo.html"><i class="fas fa-chevron-right"></i> News</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Contact Us</h3>
+          <ul>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> University of Cebu Lapu-Lapu and Mandaue Senior High School</a></li>
+            <li><a href="#"><i class="fas fa-envelope"></i> uclm.angsilakbo@uc.edu.ph</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="copyright">© 2025 ANG SILAKBO. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="ToS.html">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- About Modal -->
+  <div id="aboutModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">About This Report Form</h2>
+        <button class="close-btn" onclick="toggleAboutModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <h3>Purpose of This Form</h3>
+        <p>This report form is the official channel for submitting issues, complaints, or concerns related to ANG SILAKBO platform and services. Your reports help us maintain a safe, functional, and user-friendly environment for all community members.</p>
+        
+        <h3>What Should Be Reported</h3>
+        <ul>
+          <li><strong>Technical Issues:</strong> Bugs, errors, or malfunctions on the platform</li>
+          <li><strong>Content Concerns:</strong> Inappropriate, offensive, or harmful content</li>
+          <li><strong>User Behavior:</strong> Harassment, abuse, or violations of community guidelines</li>
+          <li><strong>Feature Requests:</strong> Suggestions for improvements or new features</li>
+          <li><strong>Other Concerns:</strong> Any issues affecting your experience with ANG SILAKBO</li>
+        </ul>
+
+        <h3>How We Handle Reports</h3>
+        <p>Our moderation team reviews every submission within 24-48 hours. For urgent matters, we prioritize immediate action. When you submit a report:</p>
+        <ol>
+          <li>You'll receive an automated confirmation</li>
+          <li>Our team assesses the validity and severity</li>
+          <li>We take appropriate action (content removal, user warnings, etc.)</li>
+          <li>For complex issues, we may follow up for more information</li>
+        </ol>
+
+        <h3>Confidentiality</h3>
+        <p>All reports are treated with strict confidentiality. Your personal information will only be used for follow-up communication and will never be shared publicly. Anonymous reports are accepted but may limit our ability to investigate or follow up.</p>
+
+        <h3>Response Time</h3>
+        <p>While we aim to address all reports promptly, response times may vary based on report volume and complexity. Critical issues are typically resolved within 24 hours, while others may take 3-5 business days.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
