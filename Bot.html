@@ -79,11 +79,16 @@
       z-index: 100;
       box-shadow: var(--glass-shadow);
       height: 100vh;
-      position: relative;
+      position: fixed;
+      left: -280px; /* Hidden by default */
       overflow: hidden;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-right: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar.active {
+      left: 0;
     }
 
     .sidebar::before {
@@ -366,10 +371,18 @@
       background-color: var(--white);
       backdrop-filter: blur(20px);
       background: rgba(255, 255, 255, 0.85);
+      margin-left: 0; /* No margin since sidebar is hidden by default */
+      width: 100%;
+      transition: margin-left 0.3s ease;
+    }
+
+    .main-content.sidebar-active {
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
     }
 
     .mobile-header {
-      display: none;
+      display: flex;
       background-color: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(10px);
       padding: 14px 18px;
@@ -482,59 +495,6 @@
       color: var(--dark-gray);
       margin-bottom: 40px;
       max-width: 600px;
-      line-height: 1.6;
-    }
-
-    .examples-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .example-card {
-      background-color: rgba(255, 255, 255, 0.7);
-      padding: 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: var(--transition);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(224, 224, 224, 0.5);
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-    }
-
-    .example-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(to bottom, var(--primary-color), var(--primary-dark));
-      border-radius: 4px 0 0 4px;
-    }
-
-    .example-card:hover {
-      background-color: rgba(255, 255, 255, 0.9);
-      transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    }
-
-    .example-title {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 10px;
-      color: var(--primary-color);
-    }
-
-    .example-text {
-      font-family: 'Merriweather', serif;
-      color: var(--dark-gray);
-      font-size: 14px;
       line-height: 1.6;
     }
 
@@ -731,24 +691,45 @@
       font-size: 16px;
     }
 
-    /* Input Area */
+    /* Input Area - Updated to be centered initially and fixed positioning issue */
     .input-container {
+      position: absolute;
+      bottom: 60px; /* Increased from 0 to lift it above the footer */
+      left: 0;
+      right: 0;
       padding: 20px;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10; /* Added z-index to ensure it stays above other elements */
+    }
+
+    .input-container.with-messages {
+      position: relative;
       background-color: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
       border-top: 1px solid rgba(224, 224, 224, 0.5);
-      position: relative;
+      bottom: 0; /* Reset bottom position when in message view */
+      margin-bottom: 60px; /* Add margin to prevent footer overlap */
     }
 
     .input-wrapper {
       position: relative;
-      border-radius: 20px;
+      border-radius: 30px; /* Circular input field */
       border: 1px solid rgba(224, 224, 224, 0.7);
       background-color: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
       overflow: hidden;
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
       transition: var(--transition);
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .welcome-screen .input-wrapper {
+      width: 70%;
+      max-width: 700px;
     }
 
     .input-wrapper:focus-within {
@@ -759,8 +740,7 @@
 
     #userInput {
       width: 100%;
-      padding: 16px;
-      padding-right: 60px;
+      padding: 16px 60px 16px 20px; /* Increased left padding for circular look */
       border: none;
       outline: none;
       resize: none;
@@ -769,18 +749,19 @@
       max-height: 150px;
       min-height: 56px;
       background: transparent;
+      border-radius: 30px; /* Match parent's border-radius */
     }
 
     .send-btn {
       position: absolute;
-      right: 12px;
-      bottom: 10px;
+      right: 8px; /* Adjusted for circular input */
+      bottom: 8px; /* Adjusted for circular input */
       background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
       color: var(--white);
       border: none;
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -804,14 +785,14 @@
     /* Stop button (replaces send button during AI response) */
     .stop-btn {
       position: absolute;
-      right: 12px;
-      bottom: 10px;
+      right: 8px;
+      bottom: 8px;
       background: linear-gradient(135deg, #f44336, #d32f2f);
       color: var(--white);
       border: none;
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       display: none;
       align-items: center;
       justify-content: center;
@@ -867,6 +848,11 @@
       background-color: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
       border-top: 1px solid rgba(224, 224, 224, 0.5);
+      position: absolute; /* Changed to absolute positioning */
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 5; /* Lower z-index than input container */
     }
 
     .footer p {
@@ -1480,26 +1466,22 @@
       .sidebar {
         position: fixed;
         top: 0;
-        left: 0;
+        left: -280px; /* Hidden by default */
         height: 100%;
-        transform: translateX(-100%);
         z-index: 1000;
       }
 
       .sidebar.active {
-        transform: translateX(0);
+        left: 0;
+      }
+
+      .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
       }
 
       .mobile-header {
         display: flex;
-      }
-
-      .main-content {
-        padding-top: 0;
-      }
-
-      .examples-container {
-        grid-template-columns: 1fr;
       }
 
       .message-content {
@@ -1533,21 +1515,34 @@
       }
       
       .about-btn {
-          padding: 8px;
-          right: 10px;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          }
+        padding: 8px;
+        right: 10px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
 
-          .about-btn i {
-          margin-right: 0;
-          }
+      .about-btn i {
+        margin-right: 0;
+      }
 
-          .about-btn span {
-          display: none;
-          }
-        }
+      .about-btn span {
+        display: none;
+      }
+      
+      .welcome-screen .input-wrapper {
+        width: 90%;
+      }
+      
+      /* Adjust input container for mobile */
+      .input-container {
+        bottom: 50px; /* Slightly reduced for mobile */
+      }
+      
+      .input-container.with-messages {
+        margin-bottom: 50px; /* Reduced for mobile */
+      }
+    }
 
     @media (max-width: 480px) {
       .auth-content, .about-content {
@@ -1556,10 +1551,6 @@
 
       .welcome-title {
         font-size: 24px;
-      }
-
-      .example-card {
-        padding: 16px;
       }
 
       .user-message, .bot-message {
@@ -1706,7 +1697,7 @@
   </div>
 
   <!-- Main Content -->
-  <div class="main-content">
+  <div class="main-content" id="mainContent">
     <div class="mobile-header">
       <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
@@ -1722,7 +1713,7 @@
 
     <!-- About button moved to header area -->
     <button class="about-btn" id="aboutBtn">
-      <i class="fas fa-info-circle"></i> About
+      <i class="fas fa-info-circle"></i> <span>About</span>
     </button>
     <div class="version-badge">v1.2.0</div>
 
@@ -1788,1029 +1779,1028 @@
             <span class="typing-text" id="greetingText"></span>
           </h1>
           <p class="welcome-subtitle">The Official Publication Page of University of Cebu Lapu-Lapu and Mandaue</p>
-  
-          <div class="examples-container">
-            <div class="example-card animate-slide-in-left" data-prompt="Write a poem about the University of Cebu Lapu-Lapu and Mandaue.">
-              <div class="example-title">Write a poem</div>
-              <div class="example-text">about the University of Cebu Lapu-Lapu and Mandaue</div>
-            </div>
-            <div class="example-card animate-fade-in-up" data-prompt="Explain the importance of student publications like SILAKBO.">
-              <div class="example-title">Explain</div>
-              <div class="example-text">the importance of student publications like ANG SILAKBO</div>
-            </div>
-            <div class="example-card animate-slide-in-right" data-prompt="Generate a short story about campus life.">
-              <div class="example-title">Generate a short story</div>
-              <div class="example-text">about campus life</div>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Messages will be displayed here -->
-        <div class="message-container" id="messageContainer" style="display: none;"></div>
-        
-        <!-- Empty state for when no conversation is selected -->
-        <div class="empty-state" id="emptyState" style="display: none;">
-          <i class="fas fa-comments empty-state-icon"></i>
-          <h3 class="empty-state-title">No Conversation Selected</h3>
-          <p class="empty-state-text">Select a conversation from the sidebar or start a new chat to begin.</p>
-          <button class="empty-state-btn" id="emptyStateNewChatBtn">
-            <i class="fas fa-plus"></i> Start New Chat
-          </button>
-        </div>
-        
-        <!-- Chat actions -->
-        <div class="chat-actions" id="chatActions" style="display: none;">
-          <button class="chat-action-btn" id="scrollToBottomBtn" title="Scroll to Bottom">
-            <i class="fas fa-arrow-down"></i>
-          </button>
-          <button class="reset-btn" id="refreshChatBtn" title="Reset Chat">
-            <i class="fas fa-sync-alt"></i>
-          </button>
-        </div>
       </div>
-  
-      <div class="input-container">
-        <div class="input-wrapper">
-          <textarea id="userInput" placeholder="Message Coral..." rows="1"></textarea>
-          <button class="send-btn" id="sendBtn" disabled>
-            <i class="fas fa-paper-plane"></i>
-          </button>
-          <button class="stop-btn" id="stopBtn">
-            <i class="fas fa-stop"></i>
-          </button>
-        </div>
-      </div>
-  
-      <div class="footer">
-        <p>Coral can make lapses. Check other resources for accurate informations.</p>
-      </div>
-    </div>
-  
-    <!-- Auth Modal -->
-    <div class="auth-modal" id="authModal">
-      <div class="auth-content">
-        <div class="auth-header">
-          <h2 class="auth-title">Sign in to SILAKBO</h2>
-          <p class="auth-subtitle">Choose a sign-in method to continue</p>
-        </div>
-        <div class="auth-buttons">
-          <button class="auth-btn" id="googleSignIn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-            <span>Continue with Google</span>
-          </button>
-          <button class="auth-btn" id="githubSignIn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/github.svg" alt="GitHub">
-            <span>Continue with GitHub</span>
-          </button>
-          <button class="auth-btn" id="facebookSignIn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" alt="Facebook">
-            <span>Continue with Facebook</span>
-          </button>
-        </div>
-        <div class="auth-close" id="authClose">Cancel</div>
-      </div>
-    </div>
-  
-    <!-- About Modal -->
-    <div class="about-modal" id="aboutModal">
-      <div class="about-content">
-        <button class="about-close" id="aboutClose">
-          <i class="fas fa-times"></i>
-        </button>
-        <div class="about-header">
-          <h2 class="about-title">About ANG SILAKBO's Coral</h2>
-          <p class="about-subtitle">Empowering student voices through AI</p>
-        </div>
-        <div class="about-body">
-          <div class="about-section">
-            <h3 class="about-section-title"><i class="fas fa-bullseye"></i>Our Mission</h3>
-            <p class="about-text">
-              ANG SILAKBO's Coral is designed to assist students and faculty of the University of Cebu Lapu-Lapu and Mandaue with their academic and creative needs. Our mission is to enhance the educational experience through cutting-edge AI technology while preserving the authentic voice of student publications.
-            </p>
-            <p class="about-text">
-              We aim to <span class="about-text-highlight">democratize access to AI tools</span> for all students, regardless of their technical background, and to foster a community of innovation and creativity within the university.
-            </p>
-          </div>
-          
-          <div class="about-section">
-            <h3 class="about-section-title"><i class="fas fa-robot"></i>Powered By Leading AI Technologies</h3>
-            <p class="about-text">
-              ANG SILAKBO's Coral leverages multiple state-of-the-art language models to provide diverse, accurate, and helpful responses. Our system combines the strengths of three leading AI providers:
-            </p>
-            <div class="ai-providers">
-              <div class="ai-provider">
-                <img src="OpenAI.png" alt="OpenAI Logo" class="provider-logo">
-                <div class="provider-name">OpenAI</div>
-                <p class="provider-desc">Powering creative writing and detailed explanations with advanced language understanding.</p>
-              </div>
-              <div class="ai-provider">
-                <img src="Mistral.png" alt="Mistral AI Logo" class="provider-logo">
-                <div class="provider-name">Mistral AI</div>
-                <p class="provider-desc">Providing efficient and accurate responses with European AI innovation.</p>
-              </div>
-              <div class="ai-provider">
-                <img src="Cohere.png" alt="Cohere Logo" class="provider-logo">
-                <div class="provider-name">Cohere</div>
-                <p class="provider-desc">Enhancing content generation with specialized knowledge and multilingual capabilities.</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="about-section">
-            <h3 class="about-section-title"><i class="fas fa-lightbulb"></i>Key Features</h3>
-            <p class="about-text">
-              ANG SILAKBO's Coral offers a range of features designed to support academic and creative endeavors:
-            </p>
-            <ul class="about-list">
-              <li><strong>Multilingual Support:</strong> Communicate in 12 different languages to serve our diverse student body</li>
-              <li><strong>Creative Writing Assistance:</strong> Get help with poems, stories, essays, and other creative works</li>
-              <li><strong>Research Support:</strong> Find information, generate summaries, and explore concepts</li>
-              <li><strong>Learning Aid:</strong> Explain complex topics in simple terms and provide educational content</li>
-              <li><strong>Publication Support:</strong> Assist with editing, proofreading, and content generation for student publications</li>
-            </ul>
-            <div class="features-container">
-              <div class="feature-badge"><i class="fas fa-globe"></i> Multilingual</div>
-              <div class="feature-badge"><i class="fas fa-pen-fancy"></i> Creative</div>
-              <div class="feature-badge"><i class="fas fa-brain"></i> Intelligent</div>
-              <div class="feature-badge"><i class="fas fa-bolt"></i> Fast</div>
-              <div class="feature-badge"><i class="fas fa-shield-alt"></i> Secure</div>
-            </div>
-          </div>
-          
-          <div class="about-section">
-            <h3 class="about-section-title"><i class="fas fa-users"></i>Our Team</h3>
-            <p class="about-text">
-              ANG SILAKBO's Coral is maintained for leveraging technology for education.
-            </p>
-              <div class="team-grid" style="display: flex; justify-content: center;">
-              <div class="team-member">
-                <img src="Roni.jpg" alt="Maria Santos" class="team-member-photo">
-                <div class="team-member-name">Ron Asnahon</div>
-                <div class="team-member-role">Project Lead</div>
-              </div>
-              </div>
-            </div>
-          <div class="about-section">
-            <h3 class="about-section-title"><i class="fas fa-shield-alt"></i>Responsible AI Use</h3>
-            <p class="about-text">
-              While ANG SILAKBO's Coral provides valuable assistance, we encourage critical thinking and responsible use. All AI-generated content should be reviewed, fact-checked, and properly attributed when used in academic or publication contexts.
-            </p>
-            <p class="about-text">
-              We are committed to ethical AI practices, including:
-            </p>
-            <ul class="about-list">
-              <li>Transparency about AI-generated content</li>
-              <li>Privacy protection for all users</li>
-              <li>Continuous monitoring for bias and inaccuracies</li>
-              <li>Regular updates to improve performance and safety</li>
-            </ul>
-          </div>
+
+      <!-- Messages will be displayed here -->
+      <div class="message-container" id="messageContainer" style="display: none;"></div>
       
-          
-          <div class="about-section">
-            <h3 class="about-section-title"><i class="fas fa-hands-helping"></i>Get Involved</h3>
-            <p class="about-text">
-              We welcome contributions from students and faculty who are interested in improving ANG SILAKBO's Coral. Whether you have feedback, feature suggestions, or want to join our development team, we'd love to hear from you.
-            </p>
-            <p class="about-text">
-              Contact us at <span class="about-text-highlight">uclm.angsilakbo@uc.edu.ph</span> to learn more about how you can get involved.
-            </p>
+      <!-- Empty state for when no conversation is selected -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-comments empty-state-icon"></i>
+        <h3 class="empty-state-title">No Conversation Selected</h3>
+        <p class="empty-state-text">Select a conversation from the sidebar or start a new chat to begin.</p>
+        <button class="empty-state-btn" id="emptyStateNewChatBtn">
+          <i class="fas fa-plus"></i> Start New Chat
+        </button>
+      </div>
+      
+      <!-- Chat actions -->
+      <div class="chat-actions" id="chatActions" style="display: none;">
+        <button class="chat-action-btn" id="scrollToBottomBtn" title="Scroll to Bottom">
+          <i class="fas fa-arrow-down"></i>
+        </button>
+        <button class="reset-btn" id="refreshChatBtn" title="Reset Chat">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="input-container" id="inputContainer">
+      <div class="input-wrapper">
+        <textarea id="userInput" placeholder="Message Coral..." rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" disabled>
+          <i class="fas fa-paper-plane"></i>
+        </button>
+        <button class="stop-btn" id="stopBtn">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Coral can make lapses. Check other resources for accurate informations.</p>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-content">
+      <div class="auth-header">
+        <h2 class="auth-title">Sign in to SILAKBO</h2>
+        <p class="auth-subtitle">Choose a sign-in method to continue</p>
+      </div>
+      <div class="auth-buttons">
+        <button class="auth-btn" id="googleSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+          <span>Continue with Google</span>
+        </button>
+        <button class="auth-btn" id="githubSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/github.svg" alt="GitHub">
+          <span>Continue with GitHub</span>
+        </button>
+        <button class="auth-btn" id="facebookSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" alt="Facebook">
+          <span>Continue with Facebook</span>
+        </button>
+      </div>
+      <div class="auth-close" id="authClose">Cancel</div>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div class="about-modal" id="aboutModal">
+    <div class="about-content">
+      <button class="about-close" id="aboutClose">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="about-header">
+        <h2 class="about-title">About ANG SILAKBO's Coral</h2>
+        <p class="about-subtitle">Empowering student voices through AI</p>
+      </div>
+      <div class="about-body">
+        <div class="about-section">
+          <h3 class="about-section-title"><i class="fas fa-bullseye"></i>Our Mission</h3>
+          <p class="about-text">
+            ANG SILAKBO's Coral is designed to assist students and faculty of the University of Cebu Lapu-Lapu and Mandaue with their academic and creative needs. Our mission is to enhance the educational experience through cutting-edge AI technology while preserving the authentic voice of student publications.
+          </p>
+          <p class="about-text">
+            We aim to <span class="about-text-highlight">democratize access to AI tools</span> for all students, regardless of their technical background, and to foster a community of innovation and creativity within the university.
+          </p>
+        </div>
+        
+        <div class="about-section">
+          <h3 class="about-section-title"><i class="fas fa-robot"></i>Powered By Leading AI Technologies</h3>
+          <p class="about-text">
+            ANG SILAKBO's Coral leverages multiple state-of-the-art language models to provide diverse, accurate, and helpful responses. Our system combines the strengths of three leading AI providers:
+          </p>
+          <div class="ai-providers">
+            <div class="ai-provider">
+              <img src="OpenAI.png" alt="OpenAI Logo" class="provider-logo">
+              <div class="provider-name">OpenAI</div>
+              <p class="provider-desc">Powering creative writing and detailed explanations with advanced language understanding.</p>
+            </div>
+            <div class="ai-provider">
+              <img src="Mistral.png" alt="Mistral AI Logo" class="provider-logo">
+              <div class="provider-name">Mistral AI</div>
+              <p class="provider-desc">Providing efficient and accurate responses with European AI innovation.</p>
+            </div>
+            <div class="ai-provider">
+              <img src="Cohere.png" alt="Cohere Logo" class="provider-logo">
+              <div class="provider-name">Cohere</div>
+              <p class="provider-desc">Enhancing content generation with specialized knowledge and multilingual capabilities.</p>
+            </div>
           </div>
+        </div>
+        
+        <div class="about-section">
+          <h3 class="about-section-title"><i class="fas fa-lightbulb"></i>Key Features</h3>
+          <p class="about-text">
+            ANG SILAKBO's Coral offers a range of features designed to support academic and creative endeavors:
+          </p>
+          <ul class="about-list">
+            <li><strong>Multilingual Support:</strong> Communicate in 12 different languages to serve our diverse student body</li>
+            <li><strong>Creative Writing Assistance:</strong> Get help with poems, stories, essays, and other creative works</li>
+            <li><strong>Research Support:</strong> Find information, generate summaries, and explore concepts</li>
+            <li><strong>Learning Aid:</strong> Explain complex topics in simple terms and provide educational content</li>
+            <li><strong>Publication Support:</strong> Assist with editing, proofreading, and content generation for student publications</li>
+          </ul>
+          <div class="features-container">
+            <div class="feature-badge"><i class="fas fa-globe"></i> Multilingual</div>
+            <div class="feature-badge"><i class="fas fa-pen-fancy"></i> Creative</div>
+            <div class="feature-badge"><i class="fas fa-brain"></i> Intelligent</div>
+            <div class="feature-badge"><i class="fas fa-bolt"></i> Fast</div>
+            <div class="feature-badge"><i class="fas fa-shield-alt"></i> Secure</div>
+          </div>
+        </div>
+        
+        <div class="about-section">
+          <h3 class="about-section-title"><i class="fas fa-users"></i>Our Team</h3>
+          <p class="about-text">
+            ANG SILAKBO's Coral is maintained for leveraging technology for education.
+          </p>
+            <div class="team-grid" style="display: flex; justify-content: center;">
+            <div class="team-member">
+              <img src="Roni.jpg" alt="Maria Santos" class="team-member-photo">
+              <div class="team-member-name">Ron Asnahon</div>
+              <div class="team-member-role">Project Lead</div>
+            </div>
+            </div>
+          </div>
+        <div class="about-section">
+          <h3 class="about-section-title"><i class="fas fa-shield-alt"></i>Responsible AI Use</h3>
+          <p class="about-text">
+            While ANG SILAKBO's Coral provides valuable assistance, we encourage critical thinking and responsible use. All AI-generated content should be reviewed, fact-checked, and properly attributed when used in academic or publication contexts.
+          </p>
+          <p class="about-text">
+            We are committed to ethical AI practices, including:
+          </p>
+          <ul class="about-list">
+            <li>Transparency about AI-generated content</li>
+            <li>Privacy protection for all users</li>
+            <li>Continuous monitoring for bias and inaccuracies</li>
+            <li>Regular updates to improve performance and safety</li>
+          </ul>
+        </div>
+    
+        
+        <div class="about-section">
+          <h3 class="about-section-title"><i class="fas fa-hands-helping"></i>Get Involved</h3>
+          <p class="about-text">
+            We welcome contributions from students and faculty who are interested in improving ANG SILAKBO's Coral. Whether you have feedback, feature suggestions, or want to join our development team, we'd love to hear from you.
+          </p>
+          <p class="about-text">
+            Contact us at <span class="about-text-highlight">uclm.angsilakbo@uc.edu.ph</span> to learn more about how you can get involved.
+          </p>
         </div>
       </div>
     </div>
-  
-    <script>
-      // Firebase Configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
-        authDomain: "ang-silakbo.firebaseapp.com",
-        databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
-        projectId: "ang-silakbo",
-        storageBucket: "ang-silakbo.firebasestorage.app",
-        messagingSenderId: "1006400633782",
-        appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
-        measurementId: "G-TSDTG2YJ94"
-      };
-  
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
-  
-      // DOM Elements
-      const sidebar = document.getElementById('sidebar');
-      const menuToggle = document.getElementById('menuToggle');
-      const userInput = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
-      const stopBtn = document.getElementById('stopBtn');
-      const chatContainer = document.getElementById('chatContainer');
-      const messageContainer = document.getElementById('messageContainer');
-      const welcomeScreen = document.getElementById('welcomeScreen');
-      const emptyState = document.getElementById('emptyState');
-      const newChatBtn = document.getElementById('newChatBtn');
-      const emptyStateNewChatBtn = document.getElementById('emptyStateNewChatBtn');
-      const backHomeBtn = document.getElementById('backHomeBtn');
-      const chatHistory = document.getElementById('chatHistory');
-      const userProfile = document.getElementById('userProfile');
-      const userAvatar = document.getElementById('userAvatar');
-      const userName = document.getElementById('userName');
-      const authModal = document.getElementById('authModal');
-      const authClose = document.getElementById('authClose');
-      const googleSignIn = document.getElementById('googleSignIn');
-      const githubSignIn = document.getElementById('githubSignIn');
-      const facebookSignIn = document.getElementById('facebookSignIn');
-      const exampleCards = document.querySelectorAll('.example-card');
-      const welcomeTitle = document.getElementById('welcomeTitle');
-      const greetingText = document.getElementById('greetingText');
-      const aboutBtn = document.getElementById('aboutBtn');
-      const aboutModal = document.getElementById('aboutModal');
-      const aboutClose = document.getElementById('aboutClose');
-      const languageSelector = document.getElementById('languageSelector');
-      const languageDropdown = document.getElementById('languageDropdown');
-      const languageOptions = document.querySelectorAll('.language-option');
-      const chatActions = document.getElementById('chatActions');
-      const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
-      const refreshChatBtn = document.getElementById('refreshChatBtn');
-      const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-  
-      // Variables for controlling response generation
-      let isGeneratingResponse = false;
-      let shouldStopResponse = false;
-      let currentTypingInterval = null;
-  
-      // Multilingual greetings
-      const greetings = [
-        { lang: 'he', text: 'יום טוב, {name}!' }, // Hebrew
-        { lang: 'en', text: 'Good day, {name}!' }, // English
-        { lang: 'es', text: '¡Buen día, {name}!' }, // Spanish
-        { lang: 'fr', text: 'Bonjour, {name}!' }, // French
-        { lang: 'de', text: 'Guten Tag, {name}!' }, // German
-        { lang: 'it', text: 'Buongiorno, {name}!' }, // Italian
-        { lang: 'ru', text: 'Добрый день, {name}!' }, // Russian
-        { lang: 'zh', text: '{name}，你好！' }, // Chinese
-        { lang: 'ja', text: 'こんにちは、{name}！' }, // Japanese
-        { lang: 'ar', text: 'يوم جيد، {name}!' }, // Arabic
-        { lang: 'hi', text: 'नमस्ते, {name}!' }, // Hindi
-        { lang: 'ko', text: '안녕하세요, {name}!' }  // Korean
-      ];
-  
-      // Current chat state
-      let currentUser = null;
-      let currentChatId = null;
-      let chatMessages = [];
-      let currentGreetingIndex = Math.floor(Math.random() * greetings.length);
-      let conversations = {};
-  
-      // Display greeting with typing animation
-      function displayGreeting() {
-        const greeting = greetings[currentGreetingIndex];
-        welcomeTitle.setAttribute('lang', greeting.lang);
-        
-        // Get name to use in greeting
-        let name = currentUser ? getUserFirstName(currentUser) : "citizen";
-        
-        // Clear previous text
-        greetingText.textContent = '';
-        greetingText.style.animation = 'none';
-        
-        // Trigger reflow
-        void greetingText.offsetWidth;
-        
-        // Set new text with name and restart animation
-        const personalizedGreeting = greeting.text.replace('{name}', name);
-        greetingText.textContent = personalizedGreeting;
-        greetingText.style.animation = 'typing 3.5s steps(40, end)';
-      }
-  
-      // Change greeting on page load and when returning to welcome screen
-      displayGreeting();
-  
-      // Language selector click
-      languageSelector.addEventListener('click', (e) => {
+  </div>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+      authDomain: "ang-silakbo.firebaseapp.com",
+      databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
+      projectId: "ang-silakbo",
+      storageBucket: "ang-silakbo.firebasestorage.app",
+      messagingSenderId: "1006400633782",
+      appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+      measurementId: "G-TSDTG2YJ94"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    // DOM Elements
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const chatContainer = document.getElementById('chatContainer');
+    const messageContainer = document.getElementById('messageContainer');
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const emptyState = document.getElementById('emptyState');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const emptyStateNewChatBtn = document.getElementById('emptyStateNewChatBtn');
+    const backHomeBtn = document.getElementById('backHomeBtn');
+    const chatHistory = document.getElementById('chatHistory');
+    const userProfile = document.getElementById('userProfile');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const authModal = document.getElementById('authModal');
+    const authClose = document.getElementById('authClose');
+    const googleSignIn = document.getElementById('googleSignIn');
+    const githubSignIn = document.getElementById('githubSignIn');
+    const facebookSignIn = document.getElementById('facebookSignIn');
+    const welcomeTitle = document.getElementById('welcomeTitle');
+    const greetingText = document.getElementById('greetingText');
+    const aboutBtn = document.getElementById('aboutBtn');
+    const aboutModal = document.getElementById('aboutModal');
+    const aboutClose = document.getElementById('aboutClose');
+    const languageSelector = document.getElementById('languageSelector');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const languageOptions = document.querySelectorAll('.language-option');
+    const chatActions = document.getElementById('chatActions');
+    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+    const refreshChatBtn = document.getElementById('refreshChatBtn');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    const inputContainer = document.getElementById('inputContainer');
+
+    // Variables for controlling response generation
+    let isGeneratingResponse = false;
+    let shouldStopResponse = false;
+    let currentTypingInterval = null;
+    let sidebarVisible = false;
+
+    // Multilingual greetings
+    const greetings = [
+      { lang: 'he', text: 'יום טוב, {name}!' }, // Hebrew
+      { lang: 'en', text: 'Good day, {name}!' }, // English
+      { lang: 'es', text: '¡Buen día, {name}!' }, // Spanish
+      { lang: 'fr', text: 'Bonjour, {name}!' }, // French
+      { lang: 'de', text: 'Guten Tag, {name}!' }, // German
+      { lang: 'it', text: 'Buongiorno, {name}!' }, // Italian
+      { lang: 'ru', text: 'Добрый день, {name}!' }, // Russian
+      { lang: 'zh', text: '{name}，你好！' }, // Chinese
+      { lang: 'ja', text: 'こんにちは、{name}！' }, // Japanese
+      { lang: 'ar', text: 'يوم جيد، {name}!' }, // Arabic
+      { lang: 'hi', text: 'नमस्ते, {name}!' }, // Hindi
+      { lang: 'ko', text: '안녕하세요, {name}!' }  // Korean
+    ];
+
+    // Current chat state
+    let currentUser = null;
+    let currentChatId = null;
+    let chatMessages = [];
+    let currentGreetingIndex = Math.floor(Math.random() * greetings.length);
+    let conversations = {};
+
+    // Display greeting with typing animation
+    function displayGreeting() {
+      const greeting = greetings[currentGreetingIndex];
+      welcomeTitle.setAttribute('lang', greeting.lang);
+      
+      // Get name to use in greeting
+      let name = currentUser ? getUserFirstName(currentUser) : "citizen";
+      
+      // Clear previous text
+      greetingText.textContent = '';
+      greetingText.style.animation = 'none';
+      
+      // Trigger reflow
+      void greetingText.offsetWidth;
+      
+      // Set new text with name and restart animation
+      const personalizedGreeting = greeting.text.replace('{name}', name);
+      greetingText.textContent = personalizedGreeting;
+      greetingText.style.animation = 'typing 3.5s steps(40, end)';
+    }
+
+    // Change greeting on page load and when returning to welcome screen
+    displayGreeting();
+
+    // Toggle sidebar function
+    function toggleSidebar() {
+      sidebar.classList.toggle('active');
+      sidebarVisible = sidebar.classList.contains('active');
+      mainContent.classList.toggle('sidebar-active', sidebarVisible);
+    }
+
+    // Mobile menu toggle
+    menuToggle.addEventListener('click', toggleSidebar);
+
+    // Language selector click
+    languageSelector.addEventListener('click', (e) => {
+      e.stopPropagation();
+      languageDropdown.style.display = languageDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Language option click
+    languageOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
         e.stopPropagation();
-        languageDropdown.style.display = languageDropdown.style.display === 'block' ? 'none' : 'block';
-      });
-  
-      // Language option click
-      languageOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const lang = option.getAttribute('data-lang');
-          
-          // Update active class
-          document.querySelector('.language-option.active').classList.remove('active');
-          option.classList.add('active');
-          
-          // Find greeting for selected language
-          const selectedGreeting = greetings.findIndex(g => g.lang === lang);
-          if (selectedGreeting !== -1) {
-            currentGreetingIndex = selectedGreeting;
-            displayGreeting();
-          }
-          
-          languageDropdown.style.display = 'none';
-        });
-      });
-  
-      // Close language dropdown when clicking outside
-      document.addEventListener('click', () => {
+        const lang = option.getAttribute('data-lang');
+        
+        // Update active class
+        document.querySelector('.language-option.active').classList.remove('active');
+        option.classList.add('active');
+        
+        // Find greeting for selected language
+        const selectedGreeting = greetings.findIndex(g => g.lang === lang);
+        if (selectedGreeting !== -1) {
+          currentGreetingIndex = selectedGreeting;
+          displayGreeting();
+        }
+        
         languageDropdown.style.display = 'none';
       });
-  
-      // Mobile menu toggle
-      menuToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-      });
-  
-      // Close sidebar when clicking outside on mobile
-      document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768 && 
-            sidebar.classList.contains('active') && 
-            !sidebar.contains(e.target) && 
-            e.target !== menuToggle) {
-          sidebar.classList.remove('active');
-        }
-      });
-  
-      // Back to Home button
-      backHomeBtn.addEventListener('click', () => {
-        window.location.href = 'index.html';
-      });
-  
-      // Show auth modal when clicking on input if not signed in
-      userInput.addEventListener('click', () => {
-        if (!currentUser) {
-          authModal.style.display = 'flex';
-        }
-      });
-  
-      // Auto-resize textarea
-      userInput.addEventListener('input', () => {
-        userInput.style.height = 'auto';
-        userInput.style.height = (userInput.scrollHeight < 150) ? `${userInput.scrollHeight}px` : '150px';
-        sendBtn.disabled = userInput.value.trim() === '';
-      });
-  
-      // Send message on Enter (but allow Shift+Enter for new line)
-      userInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          if (!sendBtn.disabled && currentUser) {
-            sendMessage();
-          } else if (!currentUser) {
-            authModal.style.display = 'flex';
-          }
-        }
-      });
-  
-      // Send button click
-      sendBtn.addEventListener('click', () => {
-        if (currentUser) {
-          sendMessage();
-        } else {
-          authModal.style.display = 'flex';
-        }
-      });
-  
-      // Stop button click
-      stopBtn.addEventListener('click', () => {
-        shouldStopResponse = true;
-        stopBtn.style.display = 'none';
-        sendBtn.style.display = 'flex';
-        
-        if (currentTypingInterval) {
-          clearInterval(currentTypingInterval);
-          currentTypingInterval = null;
-        }
-        
-        isGeneratingResponse = false;
-      });
-  
-      // New chat button
-      newChatBtn.addEventListener('click', () => {
-        if (currentUser) {
-          showWelcomeScreen();
-          // Change greeting when starting a new chat
-          currentGreetingIndex = (currentGreetingIndex + 1) % greetings.length;
-          displayGreeting();
-        } else {
-          authModal.style.display = 'flex';
-        }
-      });
-  
-      // Empty state new chat button
-      emptyStateNewChatBtn.addEventListener('click', () => {
-        showWelcomeScreen();
-      });
-  
-      // Example card click
-      exampleCards.forEach(card => {
-        card.addEventListener('click', () => {
-          if (currentUser) {
-            const prompt = card.getAttribute('data-prompt');
-            userInput.value = prompt;
-            userInput.dispatchEvent(new Event('input'));
-            sendMessage();
-          } else {
-            authModal.style.display = 'flex';
-          }
-        });
-      });
-  
-      // About button
-      aboutBtn.addEventListener('click', () => {
-        aboutModal.style.display = 'flex';
-      });
-  
-      // Close about modal
-      aboutClose.addEventListener('click', () => {
-        aboutModal.style.display = 'none';
-      });
-  
-      // Close about modal when clicking outside
-      aboutModal.addEventListener('click', (e) => {
-        if (e.target === aboutModal) {
-          aboutModal.style.display = 'none';
-        }
-      });
-  
-      // Authentication
-      userProfile.addEventListener('click', () => {
-        if (!currentUser) {
-          authModal.style.display = 'flex';
-        }
-      });
-  
-      authClose.addEventListener('click', () => {
-        authModal.style.display = 'none';
-      });
-  
-      // Close modal when clicking outside
-      authModal.addEventListener('click', (e) => {
-        if (e.target === authModal) {
-          authModal.style.display = 'none';
-        }
-      });
-  
-      // Sign in with Google
-      googleSignIn.addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        signInWithProvider(provider);
-      });
-  
-      // Sign in with GitHub
-      githubSignIn.addEventListener('click', () => {
-        const provider = new firebase.auth.GithubAuthProvider();
-        signInWithProvider(provider);
-      });
-  
-      // Sign in with Facebook
-      facebookSignIn.addEventListener('click', () => {
-        const provider = new firebase.auth.FacebookAuthProvider();
-        signInWithProvider(provider);
-      });
-  
-      // Sign in function
-      function signInWithProvider(provider) {
-        firebase.auth().signInWithPopup(provider)
-          .then((result) => {
-            authModal.style.display = 'none';
-            updateUserProfile(result.user);
-            loadUserChats();
-            
-            // Focus on input after successful sign-in
-            userInput.focus();
-            
-            // Update greeting with user's name
-            displayGreeting();
-          })
-          .catch((error) => {
-            console.error("Authentication error:", error);
-            alert("Authentication failed. Please try again.");
-          });
+    });
+
+    // Close language dropdown when clicking outside
+    document.addEventListener('click', () => {
+      languageDropdown.style.display = 'none';
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 && 
+          sidebar.classList.contains('active') && 
+          !sidebar.contains(e.target) && 
+          e.target !== menuToggle) {
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('sidebar-active');
+        sidebarVisible = false;
       }
-  
-      // Get user's first name from different providers
-      function getUserFirstName(user) {
-        if (!user) return "Guest";
-        
-        // Check provider data
-        const providerId = user.providerData && user.providerData[0] ? 
-                           user.providerData[0].providerId : null;
-        
-        // For GitHub, use username if available
-        if (providerId === 'github.com') {
-          // GitHub usernames are often in the email (before @) or displayName
-          if (user.email && user.email.includes('@github')) {
-            return user.email.split('@')[0];
-          }
-          // GitHub often puts the username in displayName
-          return user.displayName || "GitHub User";
+    });
+
+    // Back to Home button
+    backHomeBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    // Show auth modal when clicking on input if not signed in
+    userInput.addEventListener('click', () => {
+      if (!currentUser) {
+        authModal.style.display = 'flex';
+      }
+    });
+
+    // Auto-resize textarea
+    userInput.addEventListener('input', () => {
+      userInput.style.height = 'auto';
+      userInput.style.height = (userInput.scrollHeight < 150) ? `${userInput.scrollHeight}px` : '150px';
+      sendBtn.disabled = userInput.value.trim() === '';
+    });
+
+    // Send message on Enter (but allow Shift+Enter for new line)
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!sendBtn.disabled && currentUser) {
+          sendMessage();
+        } else if (!currentUser) {
+          authModal.style.display = 'flex';
         }
-        
-        // For Google, try to get first name from displayName
-        if (providerId === 'google.com') {
-          if (user.displayName && user.displayName.includes(' ')) {
-            return user.displayName.split(' ')[0];
-          }
-        }
-        
-        // For other providers or fallback
-        if (user.displayName) {
-          // Try to get first name from full name
-          return user.displayName.split(' ')[0];
-        }
-        
-        // Try to get name from email (before @)
-        if (user.email) {
+      }
+    });
+
+    // Send button click
+    sendBtn.addEventListener('click', () => {
+      if (currentUser) {
+        sendMessage();
+      } else {
+        authModal.style.display = 'flex';
+      }
+    });
+
+    // Stop button click
+    stopBtn.addEventListener('click', () => {
+      shouldStopResponse = true;
+      stopBtn.style.display = 'none';
+      sendBtn.style.display = 'flex';
+      
+      if (currentTypingInterval) {
+        clearInterval(currentTypingInterval);
+        currentTypingInterval = null;
+      }
+      
+      isGeneratingResponse = false;
+    });
+
+    // New chat button
+    newChatBtn.addEventListener('click', () => {
+      if (currentUser) {
+        showWelcomeScreen();
+        // Change greeting when starting a new chat
+        currentGreetingIndex = (currentGreetingIndex + 1) % greetings.length;
+        displayGreeting();
+      } else {
+        authModal.style.display = 'flex';
+      }
+    });
+
+    // Empty state new chat button
+    emptyStateNewChatBtn.addEventListener('click', () => {
+      showWelcomeScreen();
+    });
+
+    // About button
+    aboutBtn.addEventListener('click', () => {
+      aboutModal.style.display = 'flex';
+    });
+
+    // Close about modal
+    aboutClose.addEventListener('click', () => {
+      aboutModal.style.display = 'none';
+    });
+
+    // Close about modal when clicking outside
+    aboutModal.addEventListener('click', (e) => {
+      if (e.target === aboutModal) {
+        aboutModal.style.display = 'none';
+      }
+    });
+
+    // Authentication
+    userProfile.addEventListener('click', () => {
+      if (!currentUser) {
+        authModal.style.display = 'flex';
+      }
+    });
+
+    authClose.addEventListener('click', () => {
+      authModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) {
+        authModal.style.display = 'none';
+      }
+    });
+
+    // Sign in with Google
+    googleSignIn.addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      signInWithProvider(provider);
+    });
+
+    // Sign in with GitHub
+    githubSignIn.addEventListener('click', () => {
+      const provider = new firebase.auth.GithubAuthProvider();
+      signInWithProvider(provider);
+    });
+
+    // Sign in with Facebook
+    facebookSignIn.addEventListener('click', () => {
+      const provider = new firebase.auth.FacebookAuthProvider();
+      signInWithProvider(provider);
+    });
+
+    // Sign in function
+    function signInWithProvider(provider) {
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          authModal.style.display = 'none';
+          updateUserProfile(result.user);
+          loadUserChats();
+          
+          // Focus on input after successful sign-in
+          userInput.focus();
+          
+          // Update greeting with user's name
+          displayGreeting();
+        })
+        .catch((error) => {
+          console.error("Authentication error:", error);
+          alert("Authentication failed. Please try again.");
+        });
+    }
+
+    // Get user's first name from different providers
+    function getUserFirstName(user) {
+      if (!user) return "Guest";
+      
+      // Check provider data
+      const providerId = user.providerData && user.providerData[0] ? 
+                         user.providerData[0].providerId : null;
+      
+      // For GitHub, use username if available
+      if (providerId === 'github.com') {
+        // GitHub usernames are often in the email (before @) or displayName
+        if (user.email && user.email.includes('@github')) {
           return user.email.split('@')[0];
         }
-        
-        // Final fallback
-        return "User";
+        // GitHub often puts the username in displayName
+        return user.displayName || "GitHub User";
       }
-  
-      // Update user profile UI
-      function updateUserProfile(user) {
-        currentUser = user;
-        const firstName = getUserFirstName(user);
-        userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&background=e65100&color=fff`;
-        userName.textContent = firstName;
-        
-        // Update greeting with user's name
-        displayGreeting();
+      
+      // For Google, try to get first name from displayName
+      if (providerId === 'google.com') {
+        if (user.displayName && user.displayName.includes(' ')) {
+          return user.displayName.split(' ')[0];
+        }
       }
-  
-      // Auth state change listener
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          updateUserProfile(user);
-          loadUserChats();
+      
+      // For other providers or fallback
+      if (user.displayName) {
+        // Try to get first name from full name
+        return user.displayName.split(' ')[0];
+      }
+      
+      // Try to get name from email (before @)
+      if (user.email) {
+        return user.email.split('@')[0];
+      }
+      
+      // Final fallback
+      return "User";
+    }
+
+    // Update user profile UI
+    function updateUserProfile(user) {
+      currentUser = user;
+      const firstName = getUserFirstName(user);
+      userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&background=e65100&color=fff`;
+      userName.textContent = firstName;
+      
+      // Update greeting with user's name
+      displayGreeting();
+    }
+
+    // Auth state change listener
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        updateUserProfile(user);
+        loadUserChats();
+      } else {
+        currentUser = null;
+        userAvatar.src = "https://ui-avatars.com/api/?name=Guest&background=e65100&color=fff";
+        userName.textContent = "Sign in";
+        chatHistory.innerHTML = '';
+        displayGreeting(); // Update greeting for guest
+      }
+    });
+
+    // Load user's chat history
+    function loadUserChats() {
+      if (!currentUser) return;
+      
+      chatHistory.innerHTML = '';
+      
+      // For demo purposes, we'll create some sample conversations
+      // In a real app, this would fetch from Firebase
+      conversations = {
+        'chat1': {
+          id: 'chat1',
+          title: 'Poem about UCLM',
+          timestamp: Date.now() - 86400000, // 1 day ago
+          messages: [
+            { role: 'user', content: 'Write a poem about the University of Cebu Lapu-Lapu and Mandaue.' },
+            { role: 'assistant', content: 'In halls of wisdom, by the sea,\nUCLM stands proud and free.\nWhere minds are shaped and dreams take flight,\nA beacon of knowledge, shining bright.\n\nFrom Lapu-Lapu to Mandaue,\nYoung scholars gather to pursue\nThe path of learning, the quest for truth,\nGuided by mentors who nurture youth.\n\nWith blue and gold as banners high,\nAmbitions reach toward the sky.\nA community of hearts and minds,\nWhere future leaders are defined.\n\nUCLM, our cherished home,\nWhere seeds of greatness are daily sown.\nYour legacy in each graduate lives,\nIn all the knowledge that you give.' }
+          ]
+        },
+        'chat2': {
+          id: 'chat2',
+          title: 'Student publications',
+          timestamp: Date.now() - 43200000, // 12 hours ago
+          messages: [
+            { role: 'user', content: 'Explain the importance of student publications like SILAKBO.' },
+            { role: 'assistant', content: 'Student publications like ANG SILAKBO play a crucial role in campus life and student development. They serve as the voice of the student body, providing a platform for expression, creativity, and discourse.\n\nThese publications document campus events, showcase student achievements, and preserve the institutional memory of the university. They create a historical record that captures the evolving culture and concerns of each generation of students.\n\nBeyond documentation, student publications develop essential skills in writing, editing, design, and teamwork. Students involved in publications gain practical experience in journalism, creative writing, and media production—valuable skills that enhance their academic learning and career prospects.\n\nPublications like ANG SILAKBO also foster community by connecting students across different programs and years. They create a shared experience and identity, helping students feel more connected to their institution and peers.\n\nPerhaps most importantly, student publications uphold principles of free speech and critical thinking. They encourage students to engage with important issues, form opinions, and participate in meaningful dialogue about matters affecting their education and society at large.\n\nIn the digital age, student publications like ANG SILAKBO continue to evolve, embracing new media formats while maintaining their core mission of amplifying student voices and enriching campus culture.' }
+          ]
+        },
+        'chat3': {
+          id: 'chat3',
+          title: 'Campus life story',
+          timestamp: Date.now() - 3600000, // 1 hour ago
+          messages: [
+            { role: 'user', content: 'Generate a short story about campus life.' },
+            { role: 'assistant', content: '"The Library at Midnight"\n\nMia hadn\'t planned to spend her Friday night in the university library, but here she was at 11:30 PM, surrounded by textbooks and the soft glow of her laptop screen. The midterm for Professor Santos\'s Advanced Economics class was on Monday, and she was determined to master the material.\n\nThe library was nearly empty. Only a few dedicated—or desperate—students remained, scattered across the vast space like islands in a sea of knowledge. The usual chatter and footsteps had faded hours ago, replaced by the gentle hum of air conditioning and occasional turning of pages.\n\nAs Mia highlighted another passage in her textbook, she heard a soft thud from somewhere in the stacks. Curious, she peered around her study carrel.\n\n"Hello?" she called softly.\n\nA figure emerged from between the bookshelves—a tall young man with glasses and a UCLM Engineering hoodie.\n\n"Sorry," he whispered, holding up a thick calculus textbook. "Dropped this while trying to reach for another one."\n\nMia recognized him from her Statistics class. "You\'re Carlo, right?"\n\nHe looked surprised. "Yeah. You\'re... Mia? From Professor Lee\'s class?"\n\nShe nodded, and after a moment\'s hesitation, gestured to the empty chair across from her. "Want to join? Misery loves company."\n\nCarlo smiled gratefully and set his books down. "Thanks. I\'ve been here since dinner, and I was starting to talk to myself."\n\nAs the clock ticked toward midnight, they worked in comfortable silence, occasionally helping each other with difficult concepts or sharing snacks from the vending machine. When the library announced it would close in fifteen minutes, they packed up reluctantly.\n\n"Same time tomorrow?" Carlo asked as they walked out into the cool night air.\n\nMia smiled. "It\'s a date. I mean—" she stammered, "a study date."\n\nUnder the campus streetlights, they exchanged numbers and parted ways, both secretly looking forward to another late night at the library. Sometimes, Mia thought as she walked back to her dorm, the most unexpected connections happen in the quietest moments of campus life.' }
+          ]
+        }
+      };
+      
+      // Add conversations to sidebar
+      Object.values(conversations).sort((a, b) => b.timestamp - a.timestamp).forEach(chat => {
+        addChatToHistory(chat.title, chat.timestamp, chat.id);
+      });
+    }
+
+    // Add chat to history sidebar
+    function addChatToHistory(title, timestamp, id = null) {
+      const chatId = id || timestamp.toString();
+      const chatItem = document.createElement('div');
+      chatItem.className = 'chat-item';
+      chatItem.dataset.id = chatId;
+      
+      chatItem.innerHTML = `
+        <i class="fas fa-comment chat-item-icon"></i>
+        <div class="chat-item-text">${title}</div>
+        <div class="chat-item-actions">
+          <button class="chat-item-action delete-chat" title="Delete Chat">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `;
+      
+      chatItem.addEventListener('click', (e) => {
+        if (e.target.closest('.delete-chat')) {
+          e.stopPropagation();
+          deleteChat(chatId);
         } else {
-          currentUser = null;
-          userAvatar.src = "https://ui-avatars.com/api/?name=Guest&background=e65100&color=fff";
-          userName.textContent = "Sign in";
-          chatHistory.innerHTML = '';
-          displayGreeting(); // Update greeting for guest
+          loadChat(chatId);
         }
       });
-  
-      // Load user's chat history
-      function loadUserChats() {
-        if (!currentUser) return;
-        
-        chatHistory.innerHTML = '';
-        
-        // For demo purposes, we'll create some sample conversations
-        // In a real app, this would fetch from Firebase
-        conversations = {
-          'chat1': {
-            id: 'chat1',
-            title: 'Poem about UCLM',
-            timestamp: Date.now() - 86400000, // 1 day ago
-            messages: [
-              { role: 'user', content: 'Write a poem about the University of Cebu Lapu-Lapu and Mandaue.' },
-              { role: 'assistant', content: 'In halls of wisdom, by the sea,\nUCLM stands proud and free.\nWhere minds are shaped and dreams take flight,\nA beacon of knowledge, shining bright.\n\nFrom Lapu-Lapu to Mandaue,\nYoung scholars gather to pursue\nThe path of learning, the quest for truth,\nGuided by mentors who nurture youth.\n\nWith blue and gold as banners high,\nAmbitions reach toward the sky.\nA community of hearts and minds,\nWhere future leaders are defined.\n\nUCLM, our cherished home,\nWhere seeds of greatness are daily sown.\nYour legacy in each graduate lives,\nIn all the knowledge that you give.' }
-            ]
-          },
-          'chat2': {
-            id: 'chat2',
-            title: 'Student publications',
-            timestamp: Date.now() - 43200000, // 12 hours ago
-            messages: [
-              { role: 'user', content: 'Explain the importance of student publications like SILAKBO.' },
-              { role: 'assistant', content: 'Student publications like ANG SILAKBO play a crucial role in campus life and student development. They serve as the voice of the student body, providing a platform for expression, creativity, and discourse.\n\nThese publications document campus events, showcase student achievements, and preserve the institutional memory of the university. They create a historical record that captures the evolving culture and concerns of each generation of students.\n\nBeyond documentation, student publications develop essential skills in writing, editing, design, and teamwork. Students involved in publications gain practical experience in journalism, creative writing, and media production—valuable skills that enhance their academic learning and career prospects.\n\nPublications like ANG SILAKBO also foster community by connecting students across different programs and years. They create a shared experience and identity, helping students feel more connected to their institution and peers.\n\nPerhaps most importantly, student publications uphold principles of free speech and critical thinking. They encourage students to engage with important issues, form opinions, and participate in meaningful dialogue about matters affecting their education and society at large.\n\nIn the digital age, student publications like ANG SILAKBO continue to evolve, embracing new media formats while maintaining their core mission of amplifying student voices and enriching campus culture.' }
-            ]
-          },
-          'chat3': {
-            id: 'chat3',
-            title: 'Campus life story',
-            timestamp: Date.now() - 3600000, // 1 hour ago
-            messages: [
-              { role: 'user', content: 'Generate a short story about campus life.' },
-              { role: 'assistant', content: '"The Library at Midnight"\n\nMia hadn\'t planned to spend her Friday night in the university library, but here she was at 11:30 PM, surrounded by textbooks and the soft glow of her laptop screen. The midterm for Professor Santos\'s Advanced Economics class was on Monday, and she was determined to master the material.\n\nThe library was nearly empty. Only a few dedicated—or desperate—students remained, scattered across the vast space like islands in a sea of knowledge. The usual chatter and footsteps had faded hours ago, replaced by the gentle hum of air conditioning and occasional turning of pages.\n\nAs Mia highlighted another passage in her textbook, she heard a soft thud from somewhere in the stacks. Curious, she peered around her study carrel.\n\n"Hello?" she called softly.\n\nA figure emerged from between the bookshelves—a tall young man with glasses and a UCLM Engineering hoodie.\n\n"Sorry," he whispered, holding up a thick calculus textbook. "Dropped this while trying to reach for another one."\n\nMia recognized him from her Statistics class. "You\'re Carlo, right?"\n\nHe looked surprised. "Yeah. You\'re... Mia? From Professor Lee\'s class?"\n\nShe nodded, and after a moment\'s hesitation, gestured to the empty chair across from her. "Want to join? Misery loves company."\n\nCarlo smiled gratefully and set his books down. "Thanks. I\'ve been here since dinner, and I was starting to talk to myself."\n\nAs the clock ticked toward midnight, they worked in comfortable silence, occasionally helping each other with difficult concepts or sharing snacks from the vending machine. When the library announced it would close in fifteen minutes, they packed up reluctantly.\n\n"Same time tomorrow?" Carlo asked as they walked out into the cool night air.\n\nMia smiled. "It\'s a date. I mean—" she stammered, "a study date."\n\nUnder the campus streetlights, they exchanged numbers and parted ways, both secretly looking forward to another late night at the library. Sometimes, Mia thought as she walked back to her dorm, the most unexpected connections happen in the quietest moments of campus life.' }
-            ]
-          }
-        };
-        
-        // Add conversations to sidebar
-        Object.values(conversations).sort((a, b) => b.timestamp - a.timestamp).forEach(chat => {
-          addChatToHistory(chat.title, chat.timestamp, chat.id);
-        });
+      
+      chatHistory.prepend(chatItem);
+      return chatId;
+    }
+
+    // Load a specific chat
+    function loadChat(chatId) {
+      if (!conversations[chatId]) {
+        console.error("Chat not found:", chatId);
+        return;
       }
-  
-      // Add chat to history sidebar
-      function addChatToHistory(title, timestamp, id = null) {
-        const chatId = id || timestamp.toString();
-        const chatItem = document.createElement('div');
-        chatItem.className = 'chat-item';
-        chatItem.dataset.id = chatId;
-        
-        chatItem.innerHTML = `
-          <i class="fas fa-comment chat-item-icon"></i>
-          <div class="chat-item-text">${title}</div>
-          <div class="chat-item-actions">
-            <button class="chat-item-action delete-chat" title="Delete Chat">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        `;
-        
-        chatItem.addEventListener('click', (e) => {
-          if (e.target.closest('.delete-chat')) {
-            e.stopPropagation();
-            deleteChat(chatId);
-          } else {
-            loadChat(chatId);
-          }
-        });
-        
-        chatHistory.prepend(chatItem);
-        return chatId;
+      
+      // Update UI
+        {
+        console.error("Chat not found:", chatId);
+        return;
       }
-  
-      // Load a specific chat
-      function loadChat(chatId) {
-        if (!conversations[chatId]) {
-          console.error("Chat not found:", chatId);
-          return;
+      
+      // Update UI
+      currentChatId = chatId;
+      chatMessages = [...conversations[chatId].messages];
+      
+      // Mark the active chat in sidebar
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.id === chatId) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Show message container and hide welcome screen
+      welcomeScreen.style.display = 'none';
+      emptyState.style.display = 'none';
+      messageContainer.style.display = 'flex';
+      chatActions.style.display = 'flex';
+      
+      // Update input container class for positioning
+      inputContainer.classList.add('with-messages');
+      
+      // Clear and populate message container
+      messageContainer.innerHTML = '';
+      chatMessages.forEach(msg => {
+        const sender = msg.role === 'user' ? 'user' : 'bot';
+        const messageElement = addMessageToUI(msg.content, sender);
+      });
+      
+      // Scroll to bottom
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('sidebar-active');
+        sidebarVisible = false;
+      }
+    }
+
+    // Delete a chat
+    function deleteChat(chatId) {
+      if (confirm("Are you sure you want to delete this conversation?")) {
+        // Remove from conversations object
+        delete conversations[chatId];
+        
+        // Remove from UI
+        const chatElement = document.querySelector(`.chat-item[data-id="${chatId}"]`);
+        if (chatElement) {
+          chatElement.remove();
         }
         
-        // Update UI
-        currentChatId = chatId;
-        chatMessages = [...conversations[chatId].messages];
-        
-        // Mark the active chat in sidebar
-        document.querySelectorAll('.chat-item').forEach(item => {
-          item.classList.remove('active');
-          if (item.dataset.id === chatId) {
-            item.classList.add('active');
-          }
-        });
-        
-        // Show message container and hide welcome screen
-        welcomeScreen.style.display = 'none';
-        emptyState.style.display = 'none';
-        messageContainer.style.display = 'flex';
-        chatActions.style.display = 'flex';
-        
-        // Clear and populate message container
-        messageContainer.innerHTML = '';
-        chatMessages.forEach(msg => {
-          const sender = msg.role === 'user' ? 'user' : 'bot';
-          const messageElement = addMessageToUI(msg.content, sender);
-        });
-        
-        // Scroll to bottom
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove('active');
-        }
-      }
-  
-      // Delete a chat
-      function deleteChat(chatId) {
-        if (confirm("Are you sure you want to delete this conversation?")) {
-          // Remove from conversations object
-          delete conversations[chatId];
-          
-          // Remove from UI
-          const chatElement = document.querySelector(`.chat-item[data-id="${chatId}"]`);
-          if (chatElement) {
-            chatElement.remove();
-          }
-          
-          // If this was the current chat, show empty state
-          if (currentChatId === chatId) {
-            currentChatId = null;
-            chatMessages = [];
-            messageContainer.style.display = 'none';
-            welcomeScreen.style.display = 'none';
-            emptyState.style.display = 'flex';
-            chatActions.style.display = 'none';
-          }
-        }
-      }
-  
-      // Clear all chat history
-      clearHistoryBtn.addEventListener('click', () => {
-        if (confirm("Are you sure you want to clear all conversation history?")) {
-          conversations = {};
-          chatHistory.innerHTML = '';
+        // If this was the current chat, show empty state
+        if (currentChatId === chatId) {
           currentChatId = null;
           chatMessages = [];
           messageContainer.style.display = 'none';
-          welcomeScreen.style.display = 'flex';
-          emptyState.style.display = 'none';
+          welcomeScreen.style.display = 'none';
+          emptyState.style.display = 'flex';
           chatActions.style.display = 'none';
+          inputContainer.classList.remove('with-messages');
         }
-      });
-  
-      // Show welcome screen
-      function showWelcomeScreen() {
-        // Unmark any active chat
-        document.querySelectorAll('.chat-item').forEach(item => {
-          item.classList.remove('active');
-        });
-        
+      }
+    }
+
+    // Clear all chat history
+    clearHistoryBtn.addEventListener('click', () => {
+      if (confirm("Are you sure you want to clear all conversation history?")) {
+        conversations = {};
+        chatHistory.innerHTML = '';
         currentChatId = null;
         chatMessages = [];
         messageContainer.style.display = 'none';
-        emptyState.style.display = 'none';
         welcomeScreen.style.display = 'flex';
+        emptyState.style.display = 'none';
         chatActions.style.display = 'none';
+        inputContainer.classList.remove('with-messages');
       }
-  
-      // Chat action buttons
-      scrollToBottomBtn.addEventListener('click', () => {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+
+    // Show welcome screen
+    function showWelcomeScreen() {
+      // Unmark any active chat
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
       });
-  
-      refreshChatBtn.addEventListener('click', () => {
-        if (currentChatId) {
-          loadChat(currentChatId);
-        }
-      });
-  
-      // Send message function
-      async function sendMessage() {
-        const userText = userInput.value.trim();
-        if (!userText || isGeneratingResponse) return;
-        
-        // If we're on the welcome screen, start a new chat
-        if (welcomeScreen.style.display !== 'none') {
-          startNewChat();
-        }
-        
-        // Add user message to UI
-        addMessageToUI(userText, 'user');
-        userInput.value = '';
-        userInput.style.height = 'auto';
-        sendBtn.disabled = true;
-        
-        // Show stop button, hide send button
-        sendBtn.style.display = 'none';
-        stopBtn.style.display = 'flex';
-        
-        // Add bot "typing" message
-        const botMessageElement = addMessageToUI('', 'bot');
-        const typingIndicator = document.createElement('div');
-        typingIndicator.className = 'typing-indicator';
-        typingIndicator.innerHTML = `
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        `;
-        botMessageElement.appendChild(typingIndicator);
-        
-        isGeneratingResponse = true;
-        shouldStopResponse = false;
-        
-        try {
-          // Use the Cohere API as in the original code
-          const res = await fetch("https://api.cohere.ai/v1/chat", {
-            method: "POST",
-            headers: {
-              "Authorization": "Bearer z99HUO9u2vu9E4YTRRfeue6hbdkdOcM8zWQDfbcq",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              message: userText,
-              model: "command-r",
-              temperature: 0.7,
-              stream: false
-            })
-          });
-  
-          const data = await res.json();
-          
-          // Remove typing indicator
-          botMessageElement.removeChild(typingIndicator);
-          
-          // Only proceed if response wasn't stopped
-          if (!shouldStopResponse) {
-            // Implement typing animation for AI response
-            const responseText = data.text || "Sorry, I couldn't generate a response.";
-            typeText(botMessageElement, responseText);
-            
-            // Save message to chat history
-            chatMessages.push(
-              { role: 'user', content: userText },
-              { role: 'assistant', content: responseText }
-            );
-            
-            // Create or update conversation
-            if (!currentChatId) {
-              currentChatId = Date.now().toString();
-              const chatTitle = userText.split(' ').slice(0, 4).join(' ') + '...';
-              
-              conversations[currentChatId] = {
-                id: currentChatId,
-                title: chatTitle,
-                timestamp: Date.now(),
-                messages: [...chatMessages]
-              };
-              
-              // Add to sidebar and mark as active
-              addChatToHistory(chatTitle, Date.now(), currentChatId);
-              document.querySelectorAll('.chat-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.id === currentChatId) {
-                  item.classList.add('active');
-                }
-              });
-            } else {
-              // Update existing conversation
-              conversations[currentChatId].messages = [...chatMessages];
-            }
-          } else {
-            // If response was stopped, add a note
-            botMessageElement.textContent = "Response stopped.";
-          }
-          
-          // Show chat actions
-          chatActions.style.display = 'flex';
-        } catch (err) {
-          console.error("API Error:", err);
-          botMessageElement.removeChild(typingIndicator);
-          botMessageElement.textContent = "Sorry, something went wrong. Please try again.";
-        } finally {
-          // Reset UI state
-          isGeneratingResponse = false;
-          shouldStopResponse = false;
-          stopBtn.style.display = 'none';
-          sendBtn.style.display = 'flex';
-          sendBtn.disabled = userInput.value.trim() === '';
-        }
-        
-        // Scroll to bottom
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+      
+      currentChatId = null;
+      chatMessages = [];
+      messageContainer.style.display = 'none';
+      emptyState.style.display = 'none';
+      welcomeScreen.style.display = 'flex';
+      chatActions.style.display = 'none';
+      inputContainer.classList.remove('with-messages');
+    }
+
+    // Chat action buttons
+    scrollToBottomBtn.addEventListener('click', () => {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+
+    refreshChatBtn.addEventListener('click', () => {
+      if (currentChatId) {
+        loadChat(currentChatId);
+      }
+    });
+
+    // Send message function
+    async function sendMessage() {
+      const userText = userInput.value.trim();
+      if (!userText || isGeneratingResponse) return;
+      
+      // If we're on the welcome screen, start a new chat
+      if (welcomeScreen.style.display !== 'none') {
+        startNewChat();
       }
       
-      // Function to animate text typing for AI responses
-      function typeText(element, text) {
-        let i = 0;
-        const typingSpeed = 10; // milliseconds per character
+      // Add user message to UI
+      addMessageToUI(userText, 'user');
+      userInput.value = '';
+      userInput.style.height = 'auto';
+      sendBtn.disabled = true;
+      
+      // Show stop button, hide send button
+      sendBtn.style.display = 'none';
+      stopBtn.style.display = 'flex';
+      
+      // Add bot "typing" message
+      const botMessageElement = addMessageToUI('', 'bot');
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      botMessageElement.appendChild(typingIndicator);
+      
+      isGeneratingResponse = true;
+      shouldStopResponse = false;
+      
+      try {
+        // Use the Cohere API as in the original code
+        const res = await fetch("https://api.cohere.ai/v1/chat", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer z99HUO9u2vu9E4YTRRfeue6hbdkdOcM8zWQDfbcq",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: userText,
+            model: "command-r",
+            temperature: 0.7,
+            stream: false
+          })
+        });
+
+        const data = await res.json();
         
-        // Create a span for the typing animation
-        const typingSpan = document.createElement('span');
-        element.appendChild(typingSpan);
+        // Remove typing indicator
+        botMessageElement.removeChild(typingIndicator);
         
-        function typeNextChar() {
-          if (i < text.length && !shouldStopResponse) {
-            typingSpan.textContent += text.charAt(i);
-            i++;
-            currentTypingInterval = setTimeout(typeNextChar, typingSpeed);
+        // Only proceed if response wasn't stopped
+        if (!shouldStopResponse) {
+          // Implement typing animation for AI response
+          const responseText = data.text || "Sorry, I couldn't generate a response.";
+          typeText(botMessageElement, responseText);
+          
+          // Save message to chat history
+          chatMessages.push(
+            { role: 'user', content: userText },
+            { role: 'assistant', content: responseText }
+          );
+          
+          // Create or update conversation
+          if (!currentChatId) {
+            currentChatId = Date.now().toString();
+            const chatTitle = userText.split(' ').slice(0, 4).join(' ') + '...';
             
-            // Scroll to bottom as text is being typed
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            conversations[currentChatId] = {
+              id: currentChatId,
+              title: chatTitle,
+              timestamp: Date.now(),
+              messages: [...chatMessages]
+            };
+            
+            // Add to sidebar and mark as active
+            addChatToHistory(chatTitle, Date.now(), currentChatId);
+            document.querySelectorAll('.chat-item').forEach(item => {
+              item.classList.remove('active');
+              if (item.dataset.id === currentChatId) {
+                item.classList.add('active');
+              }
+            });
           } else {
-            // Add copy button after typing is complete
-            if (!shouldStopResponse) {
-              addCopyButton(element.closest('.message'));
-            }
-            currentTypingInterval = null;
-          }
-        }
-        
-        typeNextChar();
-      }
-  
-      // Add copy button to message
-      function addCopyButton(messageElement) {
-        if (!messageElement) return;
-        
-        const messageActions = document.createElement('div');
-        messageActions.className = 'message-actions';
-        
-        const copyButton = document.createElement('button');
-        copyButton.className = 'message-action-btn';
-        copyButton.innerHTML = '<i class="fas fa-copy"></i>';
-        copyButton.title = 'Copy to clipboard';
-        
-        const tooltip = document.createElement('span');
-        tooltip.className = 'copy-tooltip';
-        tooltip.textContent = 'Copied!';
-        
-        messageActions.appendChild(copyButton);
-        messageActions.appendChild(tooltip);
-        messageElement.appendChild(messageActions);
-        
-        copyButton.addEventListener('click', () => {
-          const textContent = messageElement.querySelector('.message-text').textContent;
-          navigator.clipboard.writeText(textContent).then(() => {
-            tooltip.classList.add('show');
-            setTimeout(() => {
-              tooltip.classList.remove('show');
-            }, 2000);
-          });
-        });
-      }
-  
-      // Start a new chat
-      function startNewChat() {
-        currentChatId = null;
-        chatMessages = [];
-        
-        // Unmark any active chat
-        document.querySelectorAll('.chat-item').forEach(item => {
-          item.classList.remove('active');
-        });
-        
-        // Show message container and hide welcome screen
-        welcomeScreen.style.display = 'none';
-        emptyState.style.display = 'none';
-        messageContainer.style.display = 'flex';
-        
-        messageContainer.innerHTML = '';
-        chatActions.style.display = 'none';
-        
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove('active');
-        }
-      }
-  
-      // Add message to UI
-      function addMessageToUI(text, sender) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}-message`;
-        
-        if (sender === 'user') {
-          const avatarSrc = currentUser ? 
-            currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(getUserFirstName(currentUser))}&background=e65100&color=fff` : 
-            "https://ui-avatars.com/api/?name=Guest&background=e65100&color=fff";
-          
-          messageDiv.innerHTML = `
-            <div class="message-content">
-              <div class="message-sender">You</div>
-              <div class="message-text">${text}</div>
-            </div>
-            <img src="${avatarSrc}" alt="User" class="message-avatar">
-          `;
-          messageDiv.classList.add('animate-slide-in-right');
-          
-          // Add copy button to user messages too
-          addCopyButton(messageDiv);
-        } else {
-          messageDiv.innerHTML = `
-            <img src="Coral.png" alt="Coral" class="message-avatar">
-            <div class="message-content">
-              <div class="message-sender">Coral</div>
-              <div class="message-text"></div>
-            </div>
-          `;
-          messageDiv.classList.add('animate-slide-in-left');
-        }
-        
-        messageContainer.appendChild(messageDiv);
-        return messageDiv.querySelector('.message-text');
-      }
-  
-      // Sign out function
-      function signOut() {
-        firebase.auth().signOut().then(() => {
-          currentUser = null;
-          userAvatar.src = "https://ui-avatars.com/api/?name=Guest&background=e65100&color=fff";
-          userName.textContent = "Sign in";
-          chatHistory.innerHTML = '';
-          showWelcomeScreen();
-        }).catch((error) => {
-          console.error("Sign out error:", error);
-        });
-      }
-  
-      // Add click event for user profile when signed in
-      userProfile.addEventListener('click', () => {
-        if (currentUser) {
-          if(confirm('Do you want to sign out?')) {
-            signOut();
+            // Update existing conversation
+            conversations[currentChatId].messages = [...chatMessages];
           }
         } else {
-          authModal.style.display = 'flex';
+          // If response was stopped, add a note
+          botMessageElement.textContent = "Response stopped.";
+        }
+        
+        // Show chat actions
+        chatActions.style.display = 'flex';
+      } catch (err) {
+        console.error("API Error:", err);
+        botMessageElement.removeChild(typingIndicator);
+        botMessageElement.textContent = "Sorry, something went wrong. Please try again.";
+      } finally {
+        // Reset UI state
+        isGeneratingResponse = false;
+        shouldStopResponse = false;
+        stopBtn.style.display = 'none';
+        sendBtn.style.display = 'flex';
+        sendBtn.disabled = userInput.value.trim() === '';
+      }
+      
+      // Scroll to bottom
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Function to animate text typing for AI responses
+    function typeText(element, text) {
+      let i = 0;
+      const typingSpeed = 10; // milliseconds per character
+      
+      // Create a span for the typing animation
+      const typingSpan = document.createElement('span');
+      element.appendChild(typingSpan);
+      
+      function typeNextChar() {
+        if (i < text.length && !shouldStopResponse) {
+          typingSpan.textContent += text.charAt(i);
+          i++;
+          currentTypingInterval = setTimeout(typeNextChar, typingSpeed);
+          
+          // Scroll to bottom as text is being typed
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        } else {
+          // Add copy button after typing is complete
+          if (!shouldStopResponse) {
+            addCopyButton(element.closest('.message'));
+          }
+          currentTypingInterval = null;
+        }
+      }
+      
+      typeNextChar();
+    }
+
+    // Add copy button to message
+    function addCopyButton(messageElement) {
+      if (!messageElement) return;
+      
+      const messageActions = document.createElement('div');
+      messageActions.className = 'message-actions';
+      
+      const copyButton = document.createElement('button');
+      copyButton.className = 'message-action-btn';
+      copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+      copyButton.title = 'Copy to clipboard';
+      
+      const tooltip = document.createElement('span');
+      tooltip.className = 'copy-tooltip';
+      tooltip.textContent = 'Copied!';
+      
+      messageActions.appendChild(copyButton);
+      messageActions.appendChild(tooltip);
+      messageElement.appendChild(messageActions);
+      
+      copyButton.addEventListener('click', () => {
+        const textContent = messageElement.querySelector('.message-text').textContent;
+        navigator.clipboard.writeText(textContent).then(() => {
+          tooltip.classList.add('show');
+          setTimeout(() => {
+            tooltip.classList.remove('show');
+          }, 2000);
+        });
+      });
+    }
+
+    // Start a new chat
+    function startNewChat() {
+      currentChatId = null;
+      chatMessages = [];
+      
+      // Unmark any active chat
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Show message container and hide welcome screen
+      welcomeScreen.style.display = 'none';
+      emptyState.style.display = 'none';
+      messageContainer.style.display = 'flex';
+      
+      // Update input container class for positioning
+      inputContainer.classList.add('with-messages');
+      
+      messageContainer.innerHTML = '';
+      chatActions.style.display = 'none';
+      
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('sidebar-active');
+        sidebarVisible = false;
+      }
+    }
+
+    // Add message to UI
+    function addMessageToUI(text, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      if (sender === 'user') {
+        const avatarSrc = currentUser ? 
+          currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(getUserFirstName(currentUser))}&background=e65100&color=fff` : 
+          "https://ui-avatars.com/api/?name=Guest&background=e65100&color=fff";
+        
+        messageDiv.innerHTML = `
+          <div class="message-content">
+            <div class="message-sender">You</div>
+            <div class="message-text">${text}</div>
+          </div>
+          <img src="${avatarSrc}" alt="User" class="message-avatar">
+        `;
+        messageDiv.classList.add('animate-slide-in-right');
+        
+        // Add copy button to user messages too
+        addCopyButton(messageDiv);
+      } else {
+        messageDiv.innerHTML = `
+          <img src="Coral.png" alt="Coral" class="message-avatar">
+          <div class="message-content">
+            <div class="message-sender">Coral</div>
+            <div class="message-text"></div>
+          </div>
+        `;
+        messageDiv.classList.add('animate-slide-in-left');
+      }
+      
+      messageContainer.appendChild(messageDiv);
+      return messageDiv.querySelector('.message-text');
+    }
+
+    // Sign out function
+    function signOut() {
+      firebase.auth().signOut().then(() => {
+        currentUser = null;
+        userAvatar.src = "https://ui-avatars.com/api/?name=Guest&background=e65100&color=fff";
+        userName.textContent = "Sign in";
+        chatHistory.innerHTML = '';
+        showWelcomeScreen();
+      }).catch((error) => {
+        console.error("Sign out error:", error);
+      });
+    }
+
+    // Add click event for user profile when signed in
+    userProfile.addEventListener('click', () => {
+      if (currentUser) {
+        if(confirm('Do you want to sign out?')) {
+          signOut();
+        }
+      } else {
+        authModal.style.display = 'flex';
+      }
+    });
+
+    // Initialize the app
+    function init() {
+      // Check if user is already signed in
+      const user = firebase.auth().currentUser;
+      if (user) {
+        updateUserProfile(user);
+        loadUserChats();
+      }
+      
+      // Change greeting on page refresh
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && welcomeScreen.style.display !== 'none') {
+          currentGreetingIndex = (currentGreetingIndex + 1) % greetings.length;
+          displayGreeting();
         }
       });
-  
-      // Initialize the app
-      function init() {
-        // Check if user is already signed in
-        const user = firebase.auth().currentUser;
-        if (user) {
-          updateUserProfile(user);
-          loadUserChats();
-        }
-        
-        // Change greeting on page refresh
-        document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible' && welcomeScreen.style.display !== 'none') {
-            currentGreetingIndex = (currentGreetingIndex + 1) % greetings.length;
-            displayGreeting();
-          }
-        });
-      }
-  
-      // Run initialization
-      init();
-    </script>
-  </body>
-  </html>
+    }
+
+    // Run initialization
+    init();
+  </script>
+</body>
+</html>
