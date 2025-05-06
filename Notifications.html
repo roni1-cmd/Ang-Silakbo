@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Inquiries</title>
+    <title>ANG SILAKBO - Message Admin</title>
     <link rel="icon" href="SILAKBO (1).png">
     <!-- Google Fonts - Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -2128,6 +2128,9 @@
             userHistoryData = {};
             
             messages.forEach(message => {
+                // Skip if email is undefined
+                if (!message || !message.email) return;
+                
                 const email = message.email.toLowerCase();
                 
                 if (!userHistoryData[email]) {
@@ -2318,25 +2321,26 @@
                 messageElement.style.animationDelay = `${index * 0.05}s`;
                 
                 // Format date
-                const formattedDate = formatDate(message.timestamp);
+                const statusClass = `status-${message.status ? message.status.replace(' ', '.') : 'Received'}`;
                 
-                // Add status badge
-                const statusClass = `status-${message.status.replace(' ', '.')}`;
-                
+                const status = message.status || 'Received';
+                const formattedMessageDate = formatDate(message.timestamp);
                 messageElement.innerHTML = `
-                    <div class="message-header">
-                        <div class="message-title">${message.subject}</div>
-                        <span class="status-badge ${statusClass}">${message.status}</span>
-                    </div>
-                    <div class="message-meta">
-                        <span>${message.name}</span>
-                        <span class="tracking-code"><i data-feather="hash" class="icon"></i>${message.trackingCode}</span>
-                    </div>
-                    <div class="message-date">
-                        <i data-feather="clock" class="icon"></i>
-                        ${formattedDate}
-                    </div>
-                `;
+    <div class="message-header">
+        <div>
+            <div class="message-title">${message.subject}</div>
+            <span class="status-badge status-${status.replace(' ', '-')}">${status}</span>
+        </div>
+    </div>
+    <div class="message-meta">
+        <span>${message.name}</span>
+        <span class="tracking-code"><i data-feather="hash" class="icon"></i>${message.trackingCode}</span>
+    </div>
+    <div class="message-date">
+        <i data-feather="clock" class="icon"></i>
+        ${formattedMessageDate}
+    </div>
+`;
                 
                 // Add click event to view message details
                 messageElement.addEventListener('click', () => {
