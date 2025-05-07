@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Message Admin</title>
+    <title>ANG SILAKBO - Messages</title>
     <link rel="icon" href="SILAKBO (1).png">
-    <!-- Google Fonts - Poppins -->
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -17,618 +21,617 @@
     
     <style>
         :root {
-            --primary-color: #e65100;
+            --primary: #e65100; /* Changed to requested orange */
             --primary-light: #ff833a;
-            --primary-dark: #ac1900;
-            --text-dark: #333333;
-            --text-light: #ffffff;
-            --text-muted: #757575;
-            --background-light: rgba(255, 255, 255, 0.9);
-            --background-gray: rgba(249, 249, 249, 0.8);
-            --background-dark: #263238;
-            --border-color: rgba(224, 224, 224, 0.5);
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --status-received: rgba(255, 243, 224, 0.8);
-            --status-inprogress: rgba(232, 245, 233, 0.8);
-            --status-resolved: rgba(225, 245, 254, 0.8);
-            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
-            --shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 15px 25px rgba(0, 0, 0, 0.1);
-            --radius-sm: 8px;
-            --radius: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
+            --primary-dark: #ac3c00;
+            --accent: #f59e0b;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --background: rgba(248, 250, 252, 0.8);
+            --background-alt: rgba(241, 245, 249, 0.7);
+            --surface: rgba(255, 255, 255, 0.8);
+            --surface-hover: rgba(248, 250, 252, 0.9);
+            --border: rgba(226, 232, 240, 0.5);
+            --status-received: rgba(254, 243, 199, 0.8);
+            --status-inprogress: rgba(220, 252, 231, 0.8);
+            --status-resolved: rgba(219, 234, 254, 0.8);
+            --shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.1), 0 2px 10px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 15px -4px rgba(0, 0, 0, 0.05);
+            --radius: 1rem; /* Increased for more circular edges */
+            --radius-lg: 1.5rem; /* Increased for more circular edges */
+            --radius-full: 9999px;
             --transition: all 0.3s ease;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.18);
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            --glass-blur: blur(10px);
+            --header-height: 64px;
+            --glass-blur: 10px;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
         
         html, body {
             height: 100%;
-            overflow: hidden;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text);
+            line-height: 1.5;
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        body {
-            color: var(--text-dark);
-            line-height: 1.6;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            background-attachment: fixed;
-        }
-        
-        /* Glass Morphism Utility Classes */
+        /* Glass UI Effect */
         .glass {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            box-shadow: var(--glass-shadow);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius);
-            box-shadow: var(--glass-shadow);
-            transition: var(--transition);
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(31, 38, 135, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
         
         /* Layout */
-        .app-container {
-            display: flex;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
             height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        /* Sidebar Styles */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(135deg, rgba(230, 81, 0, 0.85) 0%, rgba(172, 25, 0, 0.9) 100%);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            color: var(--text-light);
-            height: 100vh;
-            z-index: 100;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
-            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-            border-right: var(--glass-border);
-            position: relative;
-            overflow: hidden;
         }
         
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            z-index: -1;
-        }
-        
-        .sidebar-header {
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-        
-        .logo {
-            height: 42px;
-            margin-right: 15px;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-            animation: pulse 3s infinite alternate;
-        }
-        
-        @keyframes pulse {
-            from { filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2)); }
-            to { filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4)); }
-        }
-        
-        .site-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--text-light);
-        }
-        
-        .admin-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            margin-left: 0.5rem;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .sidebar-menu {
-            padding: 1.5rem 0;
-            flex: 1;
-            overflow-y: auto;
-        }
-        
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 0.9rem 2rem;
-            color: rgba(255, 255, 255, 0.8);
-            transition: var(--transition);
-            cursor: pointer;
-            border-left: 3px solid transparent;
-            margin: 0.5rem 0;
-            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 100%;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
-            z-index: -1;
-            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-        }
-        
-        .menu-item:hover {
-            color: var(--text-light);
-        }
-        
-        .menu-item:hover::before {
-            right: 0;
-        }
-        
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: var(--text-light);
-            border-left: 3px solid var(--text-light);
-            font-weight: 500;
-        }
-        
-        .menu-item .icon {
-            margin-right: 1rem;
-            transition: var(--transition);
-        }
-        
-        .menu-item:hover .icon {
-            transform: translateX(3px);
-        }
-        
-        .sidebar-footer {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.75rem;
-            opacity: 0.7;
-            text-align: center;
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.01);
-        }
-        
-        .top-bar {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            padding: 1rem 1.5rem;
+        /* Header */
+        .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow-sm);
-            z-index: 10;
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            height: 70px;
-            flex-shrink: 0;
             margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
         
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 600;
+        .logo-section {
             display: flex;
             align-items: center;
-            color: var(--text-dark);
+            gap: 1rem;
         }
         
-        .page-title .icon {
-            margin-right: 0.75rem;
-            color: var(--primary-color);
-            background: var(--status-received);
-            padding: 0.5rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
+        .logo {
+            height: 40px;
+            border-radius: var(--radius);
         }
         
-        .user-menu {
+        .site-title {
+            font-family: 'Poppins', sans-serif; /* As requested */
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            margin-left: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .user-section {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            box-shadow: var(--shadow-sm);
-            border: var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: var(--transition);
         }
         
-        .user-menu:hover {
-            background: rgba(255, 255, 255, 0.7);
-            transform: translateY(-2px);
-        }
-        
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        .avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             font-size: 1rem;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .user-name {
-            font-weight: 500;
-            font-size: 0.9375rem;
-        }
-        
-        /* Dashboard Container */
-        .dashboard-container {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            overflow: hidden;
-            gap: 1.5rem;
-        }
-        
-        /* Stats Container */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Message List Container */
-        .messages-list-container {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--glass-shadow);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: var(--glass-border);
-            position: relative;
-        }
-        
-        .messages-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .messages-header h2 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .message-count {
-            background: var(--primary-color);
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.2);
-        }
-        
-        .messages-toolbar {
-            padding: 1rem 1.5rem;
-            background: rgba(249, 249, 249, 0.3);
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: var(--radius-lg);
-            padding: 0.75rem 1rem;
-            border: var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            margin-bottom: 1rem;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        .search-bar:focus-within {
-            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2);
-            border-color: var(--primary-color);
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .search-bar .icon {
-            color: var(--text-muted);
-            margin-right: 0.75rem;
-        }
-        
-        .search-input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 0.9375rem;
-            background: transparent;
             font-family: 'Poppins', sans-serif;
         }
         
-        .filter-bar {
+        .username {
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Main Content */
+        .main-content {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding-bottom: 0.25rem;
-        }
-        
-        .filter-bar::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .filter-item {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: var(--radius-lg);
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            border: var(--glass-border);
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--shadow-sm);
-            flex-shrink: 0;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        .filter-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-        }
-        
-        .filter-item.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 6px 12px rgba(230, 81, 0, 0.2);
-        }
-        
-        .filter-item .icon {
-            margin-right: 0.5rem;
-            width: 16px;
-            height: 16px;
-        }
-        
-        .messages-list {
+            flex-direction: column;
             flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .message-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: var(--radius-lg);
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border: var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            position: relative;
             overflow: hidden;
         }
         
-        .message-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, rgba(230, 81, 0, 0.3), transparent);
-            opacity: 0;
+        /* Navigation */
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+        }
+        
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .tab:hover {
+            color: var(--primary);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        /* Stats and Controls */
+        .controls-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             transition: var(--transition);
         }
         
+        .stat:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+        
+        .stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--radius);
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .stat-icon.blue {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+        
+        .stat-icon.green {
+            background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+        }
+        
+        .stat-icon.amber {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        }
+        
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        .search-bar {
+            position: relative;
+            min-width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+        }
+        
+        .filter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .filter:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .filter.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Messages */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            background: rgba(241, 245, 249, 0.3);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid transparent;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
         .message-card:hover {
-            transform: translateY(-5px) scale(1.01);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.8);
-            border-color: rgba(230, 81, 0, 0.3);
-        }
-        
-        .message-card:hover::before {
-            opacity: 1;
-        }
-        
-        .message-card.unread {
-            border-left: 4px solid var(--primary-color);
-            background: var(--status-received);
+            box-shadow: var(--shadow);
+            transform: translateY(-3px);
         }
         
         .message-card.active {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.2);
-            background: rgba(255, 255, 255, 0.9);
+            border-color: var(--primary);
+            background: rgba(255, 236, 224, 0.7);
+        }
+        
+        .message-card.unread {
+            border-left-color: var(--primary);
+            background: rgba(255, 236, 224, 0.7);
         }
         
         .message-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
             margin-bottom: 0.75rem;
         }
         
         .message-title {
+            font-size: 1.125rem;
             font-weight: 600;
-            font-size: 1rem;
-            color: var(--text-dark);
-            margin-right: 0.75rem;
-            line-height: 1.4;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
         }
         
         .message-meta {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
             font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
         }
         
-        .message-date {
-            font-size: 0.8125rem;
-            color: var(--text-muted);
+        .meta-item {
             display: flex;
             align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        .message-date i {
-            margin-right: 0.5rem;
-            font-size: 0.875rem;
+        .message-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: var(--text);
+            font-size: 0.9375rem;
+            font-family: 'Merriweather', serif;
+        }
+        
+        .message-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tracking-code {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            color: var(--text-light);
+            background: rgba(241, 245, 249, 0.5);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
         .status-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
             font-size: 0.75rem;
             font-weight: 500;
-            text-align: center;
-            min-width: 5rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Poppins', sans-serif;
         }
         
         .status-Received {
-            background: rgba(255, 243, 224, 0.8);
-            color: var(--primary-color);
-            border: 1px solid rgba(230, 81, 0, 0.2);
+            background-color: var(--status-received);
+            color: #d97706;
         }
         
         .status-In\.Progress {
-            background: rgba(232, 245, 233, 0.8);
-            color: #2e7d32;
-            border: 1px solid rgba(46, 125, 50, 0.2);
+            background-color: var(--status-inprogress);
+            color: #16a34a;
         }
         
         .status-Resolved {
-            background: rgba(225, 245, 254, 0.8);
-            color: #0277bd;
-            border: 1px solid rgba(2, 119, 189, 0.2);
+            background-color: var(--status-resolved);
+            color: #2563eb;
         }
         
-        .tracking-code {
-            background: rgba(255, 243, 224, 0.8);
-            color: var(--primary-color);
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-lg);
-            font-weight: 500;
-            font-size: 0.75rem;
+        .message-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .message-card:hover .message-actions {
+            opacity: 1;
+        }
+        
+        /* Button Styles */
+        .btn {
             display: inline-flex;
             align-items: center;
-            border: 1px solid rgba(230, 81, 0, 0.2);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            white-space: nowrap;
+            font-family: 'Poppins', sans-serif;
         }
         
-        .tracking-code i {
-            margin-right: 0.375rem;
-            width: 14px;
-            height: 14px;
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
         }
         
-        /* Modal Styles */
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+        
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+        }
+        
+        .action-button:hover {
+            color: var(--primary);
+            border-color: var(--primary-light);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(230, 81, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            opacity: 0.3;
+        }
+        
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .empty-message {
+            font-size: 0.9375rem;
+            max-width: 500px;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 1rem;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(4px);
         }
         
         .modal-overlay.active {
@@ -638,20 +641,19 @@
         
         .modal-container {
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius-lg);
             width: 100%;
-            max-width: 850px;
+            max-width: 700px;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
-            transform: translateY(30px) scale(0.95);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(20px) scale(0.98);
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: var(--glass-border);
             overflow: hidden;
-            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
         .modal-overlay.active .modal-container {
@@ -659,621 +661,272 @@
         }
         
         .modal-header {
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(255, 255, 255, 0.5);
         }
         
         .modal-title {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            color: var(--text-dark);
             display: flex;
             align-items: center;
             gap: 0.75rem;
-        }
-        
-        .modal-title .icon {
-            color: var(--primary-color);
-            background: var(--status-received);
-            padding: 0.5rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
         }
         
         .modal-close {
-            background: rgba(255, 255, 255, 0.5);
-            border: var(--glass-border);
-            color: var(--text-muted);
+            background-color: transparent;
+            border: none;
+            color: var(--text-light);
             cursor: pointer;
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2rem;
+            height: 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            border-radius: var(--radius);
             transition: var(--transition);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
         }
         
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.8);
-            color: var(--text-dark);
-            transform: rotate(90deg);
+            background-color: var(--surface-hover);
+            color: var(--text);
         }
         
         .modal-body {
-            padding: 2rem;
+            padding: 1.5rem;
             overflow-y: auto;
             flex: 1;
         }
         
-        /* Message Details Styles */
-        .message-details-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-        
-        .message-details-title {
+        /* Message Detail */
+        .detail-title {
             font-size: 1.375rem;
             font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
         }
         
-        .message-details-meta {
+        .detail-meta {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1rem;
-            margin-bottom: 2rem;
-            background: rgba(249, 249, 249, 0.5);
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: var(--glass-border);
+            margin-bottom: 1.5rem;
+            background: rgba(241, 245, 249, 0.3);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
-        .meta-item {
+        .detail-item {
             display: flex;
             align-items: center;
+            gap: 0.75rem;
             padding: 0.75rem;
-            border-radius: var(--radius-lg);
-            background: rgba(255, 255, 255, 0.7);
-            box-shadow: var(--shadow-sm);
-            border: var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
-        .meta-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
-            background: rgba(255, 255, 255, 0.9);
+        .detail-icon {
+            color: var(--primary);
+            background-color: var(--background-alt);
+            padding: 0.5rem;
+            border-radius: var(--radius);
         }
         
-        .meta-item .icon {
-            color: var(--primary-color);
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-            background: var(--status-received);
-            padding: 0.375rem;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
-        }
-        
-        .meta-item span {
+        .detail-content {
+            display: flex;
+            flex-direction: column;
             font-size: 0.875rem;
-            color: var(--text-dark);
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        .meta-item strong {
+        .detail-label {
+            color: var(--text-light);
             font-weight: 500;
-            margin-right: 0.375rem;
-            color: var(--text-muted);
         }
         
-        .message-content {
-            margin-bottom: 2rem;
-            padding: 1.75rem;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: var(--radius-lg);
-            border: var(--glass-border);
-            line-height: 1.8;
-            box-shadow: var(--shadow-sm);
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .message-body {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            line-height: 1.7;
             position: relative;
-            font-size: 1rem;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            font-size: 0.9375rem;
+            font-family: 'Merriweather', serif;
         }
         
-        .message-content::before {
-            content: '"';
-            position: absolute;
-            top: -20px;
-            left: 25px;
-            font-size: 4rem;
-            color: var(--primary-color);
-            opacity: 0.15;
-            font-family: serif;
-        }
-        
-        /* Action Panel Styles */
         .action-panel {
-            margin-bottom: 2rem;
-            padding: 1.75rem;
-            background: rgba(249, 249, 249, 0.5);
-            border-radius: var(--radius-lg);
-            border: var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: rgba(241, 245, 249, 0.3);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
-        .action-panel-header {
+        .panel-header {
             display: flex;
             align-items: center;
+            gap: 0.75rem;
             margin-bottom: 1.25rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
         }
         
-        .action-panel-header .icon {
-            color: var(--primary-color);
-            margin-right: 0.75rem;
-            background: var(--status-received);
-            padding: 0.5rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
-        }
-        
-        .action-panel-header h3 {
-            font-size: 1.125rem;
+        .panel-title {
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--text-dark);
-            margin: 0;
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
         }
         
         .action-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
         }
         
         .action-label {
+            font-size: 0.875rem;
             font-weight: 500;
-            font-size: 0.9375rem;
-            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
         }
         
-        /* Form Elements */
-        select, textarea {
-            padding: 0.875rem 1rem;
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            font-size: 0.9375rem;
-            transition: var(--transition);
+        .select-status {
             width: 100%;
-            box-shadow: var(--shadow-sm);
-            background: rgba(255, 255, 255, 0.7);
-            font-family: 'Poppins', sans-serif;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        select {
-            cursor: pointer;
-            max-width: 220px;
+            max-width: 200px;
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            margin-bottom: 1rem;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
             padding-right: 2.5rem;
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        select:focus, textarea:focus {
+        .select-status:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: var(--primary-light);
             box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
-            background: rgba(255, 255, 255, 0.9);
         }
         
-        textarea {
-            resize: vertical;
+        .response-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            margin-bottom: 1rem;
             min-height: 120px;
-            line-height: 1.6;
+            resize: vertical;
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        /* Button Styles */
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-lg);
-            font-size: 0.9375rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            box-shadow: var(--shadow-sm);
-            font-family: 'Poppins', sans-serif;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-        
-        button:hover::before {
-            width: 300%;
-            height: 300%;
-        }
-        
-        button .icon {
-            margin-right: 0.75rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(230, 81, 0, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.7);
-            color: var(--text-dark);
-            border: var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(244, 67, 54, 0.3);
-        }
-        
-        /* Comments Section */
-        .comments-section {
-            margin-top: 2rem;
-        }
-        
-        .section-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.25rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .section-header .icon {
-            color: var(--primary-color);
-            margin-right: 0.75rem;
-            background: var(--status-received);
-            padding: 0.5rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
-        }
-        
-        .section-header h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin: 0;
+        .response-textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
         }
         
         .comment {
-            padding: 1.25rem;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: var(--radius-lg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
             margin-bottom: 1rem;
-            border-left: 4px solid var(--primary-color);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            border: var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            border-left: 3px solid var(--primary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
-        .comment:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
-            background: rgba(255, 255, 255, 0.9);
+        .comment:last-child {
+            margin-bottom: 0;
         }
         
         .comment-text {
-            font-size: 0.9375rem;
-            line-height: 1.7;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            font-family: 'Merriweather', serif;
         }
         
         .comment-meta {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8125rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            color: var(--text-light);
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
         .comment-author {
             font-weight: 500;
-            display: flex;
-            align-items: center;
         }
         
         .comment-author.admin {
-            color: var(--primary-color);
-        }
-        
-        .comment-author.admin::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.2);
+            color: var(--primary);
         }
         
         .comment-author.system {
-            color: #0277bd;
+            color: #2563eb;
         }
         
-        .comment-author.system::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #0277bd;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            box-shadow: 0 0 0 2px rgba(2, 119, 189, 0.2);
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 3.5rem 1.5rem;
-            color: var(--text-muted);
-        }
-        
-        .empty-state .icon {
-            font-size: 3rem;
-            color: #bdbdbd;
-            margin-bottom: 1.5rem;
-            opacity: 0.5;
-        }
-        
-        .empty-state p {
-            font-size: 1rem;
-        }
-        
-        /* Response Section */
-        .response-section {
-            margin-top: 2rem;
-        }
-        
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            background: rgba(255, 255, 255, 0.7);
-            border: var(--glass-border);
-            color: var(--text-dark);
-            cursor: pointer;
-            padding: 0.625rem;
-            margin-right: 0.75rem;
-            border-radius: var(--radius);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: var(--transition);
-        }
-        
-        .mobile-menu-toggle:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: scale(1.05);
-        }
-        
-        /* Scrollbar Styles */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(249, 249, 249, 0.5);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(189, 189, 189, 0.7);
-            border-radius: 4px;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(158, 158, 158, 0.8);
-        }
-        
-        /* Stats Cards */
-        .stat-card {
+        /* User History */
+        .user-card {
             background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--glass-shadow);
-            border: var(--glass-border);
-            display: flex;
-            align-items: center;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
-            z-index: 0;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.7);
-        }
-        
-        .stat-icon {
-            width: 3rem;
-            height: 3rem;
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
             border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1.25rem;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
-        .stat-icon.orange {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
-            color: white;
-        }
-        
-        .stat-icon.blue {
-            background: linear-gradient(135deg, #4fc3f7 0%, #0277bd 100%);
-            color: white;
-        }
-        
-        .stat-icon.green {
-            background: linear-gradient(135deg, #81c784 0%, #2e7d32 100%);
-            color: white;
-        }
-        
-        .stat-content {
-            flex: 1;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            line-height: 1.2;
-            margin-bottom: 0.375rem;
-        }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        
-        /* Loading Spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(230, 81, 0, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-            margin: 1.5rem auto;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* User History Styles */
-        .user-history-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-        
-        .user-history-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            border: var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-        }
-        
-        .user-history-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.8);
-            border-color: rgba(230, 81, 0, 0.2);
-        }
-        
-        .user-history-header {
+        .user-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            background: rgba(241, 245, 249, 0.3);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid var(--border);
         }
         
         .user-info {
@@ -1282,282 +935,255 @@
             gap: 1rem;
         }
         
-        .user-avatar-sm {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        .user-avatar-lg {
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 0.875rem;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.125rem;
+            font-family: 'Poppins', sans-serif;
         }
         
-        .user-name-email {
+        .user-details {
             display: flex;
             flex-direction: column;
         }
         
-        .user-name-sm {
+        .user-name {
             font-weight: 600;
             font-size: 1rem;
+            font-family: 'Playfair Display', serif;
         }
         
-        .user-email-sm {
-            font-size: 0.8125rem;
-            color: var(--text-muted);
-        }
-        
-        .message-history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        
-        .history-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: var(--radius-lg);
-            background: rgba(255, 255, 255, 0.5);
+        .user-email {
             font-size: 0.875rem;
-            border: var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: var(--transition);
+            color: var(--text-light);
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-        }
-        
-        .history-item .icon {
-            color: var(--primary-color);
-            flex-shrink: 0;
-            margin-top: 0.125rem;
-            background: var(--status-received);
-            padding: 0.375rem;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-        }
-        
-        .history-item-content {
-            flex: 1;
-        }
-        
-        .history-item-title {
-            font-weight: 500;
-            margin-bottom: 0.375rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .history-item-date {
+        .message-count {
+            background-color: var(--primary);
+            color: white;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-family: 'Poppins', sans-serif;
         }
         
-        /* Help Center Modal Styles */
-        .help-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        
-        .help-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: var(--radius-lg);
+        .user-messages {
             padding: 1.5rem;
-            border: var(--glass-border);
-            box-shadow: var(--shadow-sm);
+        }
+        
+        .user-message {
+            padding: 1rem;
+            background: rgba(241, 245, 249, 0.3);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            cursor: pointer;
             transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
-        .help-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.8);
+        .user-message:last-child {
+            margin-bottom: 0;
         }
         
-        .help-card-header {
+        .user-message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-message-subject {
+            font-weight: 500;
+            font-size: 0.9375rem;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .user-message-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        /* Help Section */
+        .help-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .help-header {
+            padding: 1rem 1.5rem;
+            background: rgba(241, 245, 249, 0.3);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 1rem;
             display: flex;
             align-items: center;
-            margin-bottom: 1.25rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            gap: 0.75rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
         }
         
-        .help-card-header .icon {
-            color: var(--primary-color);
-            margin-right: 0.75rem;
-            background: var(--status-received);
-            padding: 0.5rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.15);
+        .help-content {
+            padding: 1.5rem;
         }
         
-        .help-card-header h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin: 0;
-        }
-        
-        .help-card-content {
+        .help-content p {
+            margin-bottom: 1rem;
             font-size: 0.9375rem;
-            line-height: 1.7;
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        .help-card-content p {
+        .help-content ul, .help-content ol {
             margin-bottom: 1rem;
+            padding-left: 1.5rem;
         }
         
-        .help-card-content ul, .help-card-content ol {
-            padding-left: 1.75rem;
-            margin-bottom: 1rem;
+        .help-content li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
-        .help-card-content li {
-            margin-bottom: 0.625rem;
-        }
-        
-        .help-card-content .highlight {
-            color: var(--primary-color);
+        .help-content .highlight {
+            color: var(--primary);
             font-weight: 500;
         }
         
-        /* Responsive Styles */
-        @media (max-width: 1024px) {
-            .sidebar {
-                position: fixed;
-                left: -280px;
-                z-index: 1000;
-                border-radius: 0;
-            }
-            
-            .sidebar.active {
-                left: 0;
-            }
-            
-            .mobile-menu-toggle {
-                display: block;
-            }
-            
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .main-content {
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .container {
                 padding: 1rem;
             }
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard-container {
-                gap: 1.25rem;
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1rem;
             }
             
-            .stats-container {
-                grid-template-columns: 1fr 1fr;
+            .user-section {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .controls-section {
+                flex-direction: column;
+                align-items: flex-start;
                 gap: 1rem;
             }
             
-            .message-details-meta {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            select {
-                max-width: 100%;
-            }
-            
-            .btn-group {
-                flex-direction: column;
+            .stats {
+                flex-wrap: wrap;
+                gap: 1rem;
                 width: 100%;
             }
             
-            .btn-group button {
+            .stat {
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            .search-bar {
                 width: 100%;
+                min-width: auto;
             }
             
             .modal-container {
-                max-height: 95vh;
                 width: 95%;
+                max-height: 85vh;
             }
             
-            .modal-body {
-                padding: 1.5rem;
+            .detail-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .message-meta {
+                flex-direction: column;
+                gap: 0.5rem;
             }
         }
         
         @media (max-width: 480px) {
-            .stats-container {
-                grid-template-columns: 1fr;
+            .tab-navigation {
+                flex-wrap: wrap;
             }
             
-            .top-bar {
-                padding: 0.75rem 1rem;
-                height: auto;
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
             }
             
-            .user-menu {
-                display: none;
-            }
-            
-            .dashboard-container {
-                padding: 0;
-                gap: 1rem;
-            }
-            
-            .messages-toolbar {
-                padding: 1rem;
-            }
-            
-            .filter-bar {
-                gap: 0.5rem;
-            }
-            
-            .filter-item {
-                padding: 0.375rem 0.75rem;
-                font-size: 0.75rem;
+            .message-actions {
+                flex-wrap: wrap;
+                opacity: 1;
             }
             
             .message-card {
                 padding: 1rem;
             }
+            
+            .message-title {
+                font-size: 1rem;
+            }
+            
+            .message-content {
+                font-size: 0.875rem;
+            }
+            
+            .action-button {
+                width: 2rem;
+                height: 2rem;
+            }
+            
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
         }
         
-        /* Dark Overlay for Mobile Menu */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+        /* Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
         
-        .overlay.active {
-            display: block;
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: var(--radius-full);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
         
         /* Animations */
@@ -1566,89 +1192,54 @@
             to { opacity: 1; }
         }
         
-        @keyframes slideInUp {
-            from { transform: translateY(30px); opacity: 0; }
+        @keyframes slideUp {
+            from { transform: translateY(10px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
         .message-card {
-            animation: fadeIn 0.4s ease-out, slideInUp 0.5s ease-out;
+            animation: fadeIn 0.3s ease-out, slideUp 0.4s ease-out;
         }
-        
-        .stat-card {
-            animation: fadeIn 0.5s ease-out, slideInUp 0.6s ease-out;
-        }
-        
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
-    <div class="overlay" id="overlay"></div>
-    
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-section">
                 <img src="SILAKBO.png" alt="ANG SILAKBO Logo" class="logo">
-                <div>
-                    <h1 class="site-title">ANG SILAKBO</h1>
-                    <span class="admin-badge">Admin</span>
-                </div>
+                <h1 class="site-title"><strong>ANG SILAKBO</strong></h1>
             </div>
             
-            <nav class="sidebar-menu">
-                <div class="menu-item active">
-                    <i data-feather="message-square" class="icon"></i>
-                    <span>Messages</span>
-                </div>
-                <div class="menu-item" id="users-menu-item">
-                    <i data-feather="users" class="icon"></i>
-                    <span>Users</span>
-                </div>
-                <div class="menu-item" id="help-menu-item">
-                    <i data-feather="help-circle" class="icon"></i>
-                    <span>Help Center</span>
-                </div>
-            </nav>
-            
-            <div class="sidebar-footer">
-                &copy; 2025 ANG SILAKBO. All rights reserved.
+            <div class="user-section">
+                <div class="avatar">A</div>
+                <span class="username">Admin</span>
             </div>
-        </aside>
+        </header>
         
         <!-- Main Content -->
-        <main class="main-content">
-            <div class="top-bar glass">
-                <div class="left-section">
-                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                        <i data-feather="menu"></i>
-                    </button>
-                    
-                    <h1 class="page-title">
-                        <i data-feather="message-square" class="icon"></i>
-                        Message Management
-                    </h1>
+        <div class="main-content">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <div class="tab active">
+                    <i data-feather="message-square"></i>
+                    Messages
                 </div>
-                
-                <div class="user-menu">
-                    <div class="user-avatar">A</div>
-                    <span class="user-name">Admin</span>
+                <div class="tab" id="users-tab">
+                    <i data-feather="users"></i>
+                    User History
+                </div>
+                <div class="tab" id="help-tab">
+                    <i data-feather="help-circle"></i>
+                    Help
                 </div>
             </div>
             
-            <div class="dashboard-container">
-                <!-- Stats Overview -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-icon orange">
+            <!-- Stats and Search -->
+            <div class="controls-section">
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-icon blue">
                             <i data-feather="inbox"></i>
                         </div>
                         <div class="stat-content">
@@ -1657,7 +1248,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat">
                         <div class="stat-icon green">
                             <i data-feather="clock"></i>
                         </div>
@@ -1667,8 +1258,8 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card">
-                        <div class="stat-icon blue">
+                    <div class="stat">
+                        <div class="stat-icon amber">
                             <i data-feather="check-circle"></i>
                         </div>
                         <div class="stat-content">
@@ -1678,76 +1269,66 @@
                     </div>
                 </div>
                 
-                <!-- Messages List Container -->
-                <div class="messages-list-container glass">
-                    <div class="messages-header">
-                        <h2>
-                            <i data-feather="inbox" class="icon"></i>
-                            Messages
-                            <span class="message-count" id="message-count">0</span>
-                        </h2>
-                    </div>
-                    
-                    <div class="messages-toolbar">
-                        <div class="search-bar">
-                            <i data-feather="search" class="icon"></i>
-                            <input type="text" class="search-input" id="search-messages" placeholder="Search messages...">
-                        </div>
-                        
-                        <div class="filter-bar">
-                            <div class="filter-item active" data-filter="all">
-                                <i data-feather="list" class="icon"></i>
-                                All
-                            </div>
-                            <div class="filter-item" data-filter="unread">
-                                <i data-feather="mail" class="icon"></i>
-                                Unread
-                            </div>
-                            <div class="filter-item" data-filter="Received">
-                                <i data-feather="inbox" class="icon"></i>
-                                Received
-                            </div>
-                            <div class="filter-item" data-filter="In Progress">
-                                <i data-feather="clock" class="icon"></i>
-                                In Progress
-                            </div>
-                            <div class="filter-item" data-filter="Resolved">
-                                <i data-feather="check-circle" class="icon"></i>
-                                Resolved
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="messages-list" id="messages-container">
-                        <div class="empty-state">
-                            <i data-feather="inbox" class="icon"></i>
-                            <p>Loading messages...</p>
-                            <div class="loading-spinner"></div>
-                        </div>
+                <div class="search-bar">
+                    <i data-feather="search" class="search-icon"></i>
+                    <input type="text" class="search-input" id="search-messages" placeholder="Search messages...">
+                </div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter active" data-filter="all">
+                    <i data-feather="list"></i>
+                    All Messages
+                </div>
+                <div class="filter" data-filter="unread">
+                    <i data-feather="mail"></i>
+                    Unread
+                </div>
+                <div class="filter" data-filter="Received">
+                    <i data-feather="inbox"></i>
+                    Received
+                </div>
+                <div class="filter" data-filter="In Progress">
+                    <i data-feather="clock"></i>
+                    In Progress
+                </div>
+                <div class="filter" data-filter="Resolved">
+                    <i data-feather="check-circle"></i>
+                    Resolved
+                </div>
+            </div>
+            
+            <!-- Messages Container -->
+            <div class="messages-container">
+                <div class="message-list" id="message-list">
+                    <div class="empty-state">
+                        <i data-feather="inbox" class="empty-icon"></i>
+                        <h3 class="empty-title">Loading messages...</h3>
+                        <div class="loading-spinner"></div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
     
-    <!-- Message Details Modal -->
-    <div class="modal-overlay" id="message-modal">
+    <!-- Message Detail Modal -->
+    <div class="modal-overlay" id="detail-modal">
         <div class="modal-container">
             <div class="modal-header">
                 <h2 class="modal-title">
-                    <i data-feather="file-text" class="icon"></i>
-                    Message Details
+                    <i data-feather="message-square"></i>
+                    Message Detail
                 </h2>
-                <button class="modal-close" id="close-modal">
+                <button class="modal-close" id="close-detail-modal">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <div id="selected-message">
-                    <div class="empty-state">
-                        <i data-feather="file-text" class="icon"></i>
-                        <p>Select a message to view details</p>
-                    </div>
+            <div class="modal-body" id="detail-content">
+                <div class="empty-state">
+                    <i data-feather="inbox" class="empty-icon"></i>
+                    <h3 class="empty-title">Loading message details...</h3>
+                    <div class="loading-spinner"></div>
                 </div>
             </div>
         </div>
@@ -1758,7 +1339,7 @@
         <div class="modal-container">
             <div class="modal-header">
                 <h2 class="modal-title">
-                    <i data-feather="users" class="icon"></i>
+                    <i data-feather="users"></i>
                     User Message History
                 </h2>
                 <button class="modal-close" id="close-users-modal">
@@ -1767,14 +1348,14 @@
             </div>
             <div class="modal-body">
                 <div class="search-bar" style="margin-bottom: 1.5rem;">
-                    <i data-feather="search" class="icon"></i>
+                    <i data-feather="search" class="search-icon"></i>
                     <input type="text" class="search-input" id="search-users" placeholder="Search users by name or email...">
                 </div>
                 
-                <div id="users-container" class="user-history-container">
+                <div id="users-container">
                     <div class="empty-state">
-                        <i data-feather="users" class="icon"></i>
-                        <p>Loading user data...</p>
+                        <i data-feather="users" class="empty-icon"></i>
+                        <h3 class="empty-title">Loading user data...</h3>
                         <div class="loading-spinner"></div>
                     </div>
                 </div>
@@ -1782,12 +1363,12 @@
         </div>
     </div>
     
-    <!-- Help Center Modal -->
+    <!-- Help Modal -->
     <div class="modal-overlay" id="help-modal">
         <div class="modal-container">
             <div class="modal-header">
                 <h2 class="modal-title">
-                    <i data-feather="help-circle" class="icon"></i>
+                    <i data-feather="help-circle"></i>
                     Help Center
                 </h2>
                 <button class="modal-close" id="close-help-modal">
@@ -1795,94 +1376,60 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="help-section">
-                    <div class="help-card">
-                        <div class="help-card-header">
-                            <i data-feather="info" class="icon"></i>
-                            <h3>Getting Started</h3>
-                        </div>
-                        <div class="help-card-content">
-                            <p>Welcome to the ANG SILAKBO Admin Dashboard! This platform helps you manage and respond to user messages efficiently.</p>
-                            <p>Here's how to get started:</p>
-                            <ul>
-                                <li>The <span class="highlight">Messages</span> section displays all incoming messages from users</li>
-                                <li>The <span class="highlight">Users</span> section shows message history grouped by user</li>
-                                <li>Use filters and search to quickly find specific messages</li>
-                                <li>Click on any message to view details and respond</li>
-                            </ul>
-                        </div>
+                <div class="help-card">
+                    <div class="help-header">
+                        <i data-feather="info"></i>
+                        Getting Started
                     </div>
-                    
-                    <div class="help-card">
-                        <div class="help-card-header">
-                            <i data-feather="message-square" class="icon"></i>
-                            <h3>Managing Messages</h3>
-                        </div>
-                        <div class="help-card-content">
-                            <p>Efficiently handle messages with these steps:</p>
-                            <ol>
-                                <li>Click on a message to open its details in a modal</li>
-                                <li>Review the message content and user information</li>
-                                <li>Update the status to "In Progress" while working on it</li>
-                                <li>Add your response in the comment section</li>
-                                <li>Change status to "Resolved" when complete</li>
-                            </ol>
-                            <p>Message statuses:</p>
-                            <ul>
-                                <li><span class="highlight">Received</span> - New messages that need attention</li>
-                                <li><span class="highlight">In Progress</span> - Messages you're currently working on</li>
-                                <li><span class="highlight">Resolved</span> - Completed messages that require no further action</li>
-                            </ul>
-                        </div>
+                    <div class="help-content">
+                        <p>Welcome to the ANG SILAKBO Admin Interface! This platform helps you manage and respond to user messages efficiently.</p>
+                        <p>Here's how to get started:</p>
+                        <ul>
+                            <li>The <span class="highlight">Messages</span> tab displays all incoming messages from users</li>
+                            <li>The <span class="highlight">User History</span> tab shows message history grouped by user</li>
+                            <li>Use filters and search to quickly find specific messages</li>
+                            <li>Click on any message to view details and respond</li>
+                        </ul>
                     </div>
-                    
-                    <div class="help-card">
-                        <div class="help-card-header">
-                            <i data-feather="users" class="icon"></i>
-                            <h3>User History</h3>
-                        </div>
-                        <div class="help-card-content">
-                            <p>The Users section helps you track communication history with each user:</p>
-                            <ul>
-                                <li>View all messages from a specific user in one place</li>
-                                <li>See patterns in user communication</li>
-                                <li>Provide consistent responses based on previous interactions</li>
-                                <li>Search for users by name or email</li>
-                            </ul>
-                            <p>This feature is especially helpful for maintaining continuity when multiple admins are handling messages from the same user.</p>
-                        </div>
+                </div>
+                
+                <div class="help-card">
+                    <div class="help-header">
+                        <i data-feather="message-square"></i>
+                        Managing Messages
                     </div>
-                    
-                    <div class="help-card">
-                        <div class="help-card-header">
-                            <i data-feather="search" class="icon"></i>
-                            <h3>Search & Filter</h3>
-                        </div>
-                        <div class="help-card-content">
-                            <p>Quickly find what you need with search and filters:</p>
-                            <ul>
-                                <li>Use the search bar to find messages by subject, content, name, or tracking code</li>
-                                <li>Filter messages by status (Received, In Progress, Resolved)</li>
-                                <li>View only unread messages with the "Unread" filter</li>
-                                <li>Reset to view all messages with the "All" filter</li>
-                            </ul>
-                        </div>
+                    <div class="help-content">
+                        <p>Efficiently handle messages with these steps:</p>
+                        <ol>
+                            <li>Click on a message to view its details</li>
+                            <li>Review the message content and user information</li>
+                            <li>Update the status to "In Progress" while working on it</li>
+                            <li>Add your response in the comment section</li>
+                            <li>Change status to "Resolved" when complete</li>
+                        </ol>
+                        <p>Message statuses:</p>
+                        <ul>
+                            <li><span class="highlight">Received</span> - New messages that need attention</li>
+                            <li><span class="highlight">In Progress</span> - Messages you're currently working on</li>
+                            <li><span class="highlight">Resolved</span> - Completed messages that require no further action</li>
+                        </ul>
                     </div>
-                    
-                    <div class="help-card">
-                        <div class="help-card-header">
-                            <i data-feather="smartphone" class="icon"></i>
-                            <h3>Mobile Usage</h3>
-                        </div>
-                        <div class="help-card-content">
-                            <p>The dashboard is fully responsive for mobile devices:</p>
-                            <ul>
-                                <li>Access the sidebar menu by tapping the menu icon in the top left</li>
-                                <li>Scroll horizontally to view all filter options</li>
-                                <li>Modals are optimized for smaller screens</li>
-                                <li>All functions work the same as on desktop</li>
-                            </ul>
-                        </div>
+                </div>
+                
+                <div class="help-card">
+                    <div class="help-header">
+                        <i data-feather="users"></i>
+                        User History
+                    </div>
+                    <div class="help-content">
+                        <p>The User History section helps you track communication history with each user:</p>
+                        <ul>
+                            <li>View all messages from a specific user in one place</li>
+                            <li>See patterns in user communication</li>
+                            <li>Provide consistent responses based on previous interactions</li>
+                            <li>Search for users by name or email</li>
+                        </ul>
+                        <p>This feature is especially helpful for maintaining continuity when multiple admins are handling messages from the same user.</p>
                     </div>
                 </div>
             </div>
@@ -1894,126 +1441,76 @@
         document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
             
-            // Mobile menu toggle
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            
-            if (mobileMenuToggle && sidebar && overlay) {
-                mobileMenuToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('active');
-                    overlay.classList.toggle('active');
-                });
-                
-                overlay.addEventListener('click', () => {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
-            }
-            
-            // Message Modal functionality
-            const messageModal = document.getElementById('message-modal');
-            const closeModal = document.getElementById('close-modal');
-            
-            if (closeModal && messageModal) {
-                closeModal.addEventListener('click', () => {
-                    messageModal.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-                
-                // Close modal when clicking outside
-                messageModal.addEventListener('click', (e) => {
-                    if (e.target === messageModal) {
-                        messageModal.classList.remove('active');
-                        document.body.style.overflow = '';
+            // Tab Navigation
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    if (tab.id === 'users-tab') {
+                        document.getElementById('users-modal').classList.add('active');
+                        loadUserHistory();
+                    } else if (tab.id === 'help-tab') {
+                        document.getElementById('help-modal').classList.add('active');
                     }
                 });
-            }
+            });
             
-            // Users Modal functionality
-            const usersModal = document.getElementById('users-modal');
-            const usersMenuItem = document.getElementById('users-menu-item');
+            // Modal Close Buttons
+            const closeDetailModal = document.getElementById('close-detail-modal');
             const closeUsersModal = document.getElementById('close-users-modal');
-            
-            if (usersMenuItem && closeUsersModal && usersModal) {
-                usersMenuItem.addEventListener('click', () => {
-                    usersModal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                    loadUserHistory();
-                });
-                
-                closeUsersModal.addEventListener('click', () => {
-                    usersModal.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-                
-                // Close modal when clicking outside
-                usersModal.addEventListener('click', (e) => {
-                    if (e.target === usersModal) {
-                        usersModal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-            }
-            
-            // Help Center Modal functionality
-            const helpModal = document.getElementById('help-modal');
-            const helpMenuItem = document.getElementById('help-menu-item');
             const closeHelpModal = document.getElementById('close-help-modal');
             
-            if (helpMenuItem && closeHelpModal && helpModal) {
-                helpMenuItem.addEventListener('click', () => {
-                    helpModal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-                
-                closeHelpModal.addEventListener('click', () => {
-                    helpModal.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-                
-                // Close modal when clicking outside
-                helpModal.addEventListener('click', (e) => {
-                    if (e.target === helpModal) {
-                        helpModal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
+            if (closeDetailModal) {
+                closeDetailModal.addEventListener('click', () => {
+                    document.getElementById('detail-modal').classList.remove('active');
                 });
             }
             
-            // Close modals with Escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (messageModal.classList.contains('active')) {
-                        messageModal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                    if (usersModal.classList.contains('active')) {
-                        usersModal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                    if (helpModal.classList.contains('active')) {
-                        helpModal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                }
-            });
+            if (closeUsersModal) {
+                closeUsersModal.addEventListener('click', () => {
+                    document.getElementById('users-modal').classList.remove('active');
+                    document.querySelector('.tab.active').classList.remove('active');
+                    document.querySelector('.tab:first-child').classList.add('active');
+                });
+            }
             
-            // Filter functionality
-            const filterItems = document.querySelectorAll('.filter-item');
-            filterItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // Remove active class from all filters
-                    filterItems.forEach(filter => filter.classList.remove('active'));
-                    // Add active class to clicked filter
-                    item.classList.add('active');
-                    
-                    const filter = item.getAttribute('data-filter');
-                    filterMessages(filter);
+            if (closeHelpModal) {
+                closeHelpModal.addEventListener('click', () => {
+                    document.getElementById('help-modal').classList.remove('active');
+                    document.querySelector('.tab.active').classList.remove('active');
+                    document.querySelector('.tab:first-child').classList.add('active');
+                });
+            }
+            
+            // Modal Outside Click
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                        
+                        if (modal.id === 'users-modal' || modal.id === 'help-modal') {
+                            document.querySelector('.tab.active').classList.remove('active');
+                            document.querySelector('.tab:first-child').classList.add('active');
+                        }
+                    }
                 });
             });
             
-            // Search functionality
+            // Filter Functionality
+            const filters = document.querySelectorAll('.filter');
+            filters.forEach(filter => {
+                filter.addEventListener('click', () => {
+                    filters.forEach(f => f.classList.remove('active'));
+                    filter.classList.add('active');
+                    
+                    const filterValue = filter.getAttribute('data-filter');
+                    filterMessages(filterValue);
+                });
+            });
+            
+            // Search Functionality
             const searchInput = document.getElementById('search-messages');
             if (searchInput) {
                 searchInput.addEventListener('input', () => {
@@ -2022,7 +1519,7 @@
                 });
             }
             
-            // User search functionality
+            // User Search Functionality
             const searchUsersInput = document.getElementById('search-users');
             if (searchUsersInput) {
                 searchUsersInput.addEventListener('input', () => {
@@ -2030,6 +1527,22 @@
                     searchUsers(searchTerm);
                 });
             }
+            
+            // Close modals with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay').forEach(modal => {
+                        if (modal.classList.contains('active')) {
+                            modal.classList.remove('active');
+                            
+                            if (modal.id === 'users-modal' || modal.id === 'help-modal') {
+                                document.querySelector('.tab.active').classList.remove('active');
+                                document.querySelector('.tab:first-child').classList.add('active');
+                            }
+                        }
+                    });
+                }
+            });
         });
         
         // Initialize Firebase
@@ -2080,9 +1593,8 @@
         // Load all messages
         function loadMessages() {
             messagesRef.on('value', (snapshot) => {
-                const messagesContainer = document.getElementById('messages-container');
-                const messageCount = document.getElementById('message-count');
-                messagesContainer.innerHTML = '';
+                const messageList = document.getElementById('message-list');
+                messageList.innerHTML = '';
                 
                 const messages = snapshot.val();
                 if (messages) {
@@ -2094,9 +1606,6 @@
                         };
                     }).sort((a, b) => b.timestamp - a.timestamp);
                     
-                    // Update message count
-                    messageCount.textContent = allMessages.length;
-                    
                     // Update stats
                     updateStats(allMessages);
                     
@@ -2105,13 +1614,13 @@
                     
                     renderMessages(allMessages);
                 } else {
-                    messagesContainer.innerHTML = `
+                    messageList.innerHTML = `
                         <div class="empty-state">
-                            <i data-feather="inbox" class="icon"></i>
-                            <p>No messages found</p>
+                            <i data-feather="inbox" class="empty-icon"></i>
+                            <h3 class="empty-title">No messages found</h3>
+                            <p class="empty-message">When messages are received, they will appear here</p>
                         </div>
                     `;
-                    messageCount.textContent = '0';
                     
                     // Reset stats
                     document.getElementById('total-messages').textContent = '0';
@@ -2145,7 +1654,7 @@
                     id: message.id,
                     subject: message.subject,
                     message: message.message,
-                    status: message.status,
+                    status: message.status || 'Received',
                     timestamp: message.timestamp,
                     trackingCode: message.trackingCode,
                     read: message.read
@@ -2153,7 +1662,7 @@
             });
         }
         
-        // Load user history for the Users modal
+        // Load user history
         function loadUserHistory() {
             const usersContainer = document.getElementById('users-container');
             usersContainer.innerHTML = '';
@@ -2161,8 +1670,9 @@
             if (Object.keys(userHistoryData).length === 0) {
                 usersContainer.innerHTML = `
                     <div class="empty-state">
-                        <i data-feather="users" class="icon"></i>
-                        <p>No user data available</p>
+                        <i data-feather="users" class="empty-icon"></i>
+                        <h3 class="empty-title">No user data available</h3>
+                        <p class="empty-message">No message history found for any users</p>
                     </div>
                 `;
                 feather.replace();
@@ -2178,7 +1688,7 @@
             
             sortedUsers.forEach(user => {
                 const userCard = document.createElement('div');
-                userCard.className = 'user-history-card';
+                userCard.className = 'user-card';
                 
                 // Sort messages by timestamp (newest first)
                 const sortedMessages = [...user.messages].sort((a, b) => b.timestamp - a.timestamp);
@@ -2192,33 +1702,47 @@
                     const statusClass = `status-${msg.status.replace(' ', '.')}`;
                     
                     messageHistoryHTML += `
-                        <div class="history-item">
-                            <i data-feather="message-square" class="icon"></i>
-                            <div class="history-item-content">
-                                <div class="history-item-title">${msg.subject} <span class="status-badge ${statusClass}">${msg.status}</span></div>
-                                <div class="history-item-date">${formattedDate} - Tracking Code: ${msg.trackingCode}</div>
+                        <div class="user-message" data-id="${msg.id}">
+                            <div class="user-message-header">
+                                <div class="user-message-subject">${msg.subject}</div>
+                                <span class="status-badge ${statusClass}">${msg.status}</span>
+                            </div>
+                            <div class="user-message-footer">
+                                <span>${formattedDate}</span>
+                                <span>Tracking: ${msg.trackingCode}</span>
                             </div>
                         </div>
                     `;
                 });
                 
                 userCard.innerHTML = `
-                    <div class="user-history-header">
+                    <div class="user-header">
                         <div class="user-info">
-                            <div class="user-avatar-sm">${initials}</div>
-                            <div class="user-name-email">
-                                <div class="user-name-sm">${user.name}</div>
-                                <div class="user-email-sm">${user.email}</div>
+                            <div class="user-avatar-lg">${initials}</div>
+                            <div class="user-details">
+                                <div class="user-name">${user.name}</div>
+                                <div class="user-email">${user.email}</div>
                             </div>
                         </div>
                         <span class="message-count">${user.messages.length}</span>
                     </div>
-                    <div class="message-history-list">
+                    <div class="user-messages">
                         ${messageHistoryHTML}
                     </div>
                 `;
                 
                 usersContainer.appendChild(userCard);
+            });
+            
+            // Add click event to user messages
+            document.querySelectorAll('.user-message').forEach(item => {
+                item.addEventListener('click', () => {
+                    const messageId = item.getAttribute('data-id');
+                    viewMessageDetail(messageId);
+                    document.getElementById('users-modal').classList.remove('active');
+                    document.querySelector('.tab.active').classList.remove('active');
+                    document.querySelector('.tab:first-child').classList.add('active');
+                });
             });
             
             feather.replace();
@@ -2227,7 +1751,6 @@
         // Search users
         function searchUsers(searchTerm) {
             const usersContainer = document.getElementById('users-container');
-            usersContainer.innerHTML = '';
             
             if (searchTerm === '') {
                 loadUserHistory();
@@ -2239,11 +1762,14 @@
                 user.email.toLowerCase().includes(searchTerm)
             );
             
+            usersContainer.innerHTML = '';
+            
             if (filteredUsers.length === 0) {
                 usersContainer.innerHTML = `
                     <div class="empty-state">
-                        <i data-feather="search" class="icon"></i>
-                        <p>No users match your search</p>
+                        <i data-feather="search" class="empty-icon"></i>
+                        <h3 class="empty-title">No users match your search</h3>
+                        <p class="empty-message">Try a different search term</p>
                     </div>
                 `;
                 feather.replace();
@@ -2252,7 +1778,7 @@
             
             filteredUsers.forEach(user => {
                 const userCard = document.createElement('div');
-                userCard.className = 'user-history-card';
+                userCard.className = 'user-card';
                 
                 // Sort messages by timestamp (newest first)
                 const sortedMessages = [...user.messages].sort((a, b) => b.timestamp - a.timestamp);
@@ -2266,28 +1792,31 @@
                     const statusClass = `status-${msg.status.replace(' ', '.')}`;
                     
                     messageHistoryHTML += `
-                        <div class="history-item">
-                            <i data-feather="message-square" class="icon"></i>
-                            <div class="history-item-content">
-                                <div class="history-item-title">${msg.subject} <span class="status-badge ${statusClass}">${msg.status}</span></div>
-                                <div class="history-item-date">${formattedDate} - Tracking: ${msg.trackingCode}</div>
+                        <div class="user-message" data-id="${msg.id}">
+                            <div class="user-message-header">
+                                <div class="user-message-subject">${msg.subject}</div>
+                                <span class="status-badge ${statusClass}">${msg.status}</span>
+                            </div>
+                            <div class="user-message-footer">
+                                <span>${formattedDate}</span>
+                                <span>Tracking: ${msg.trackingCode}</span>
                             </div>
                         </div>
                     `;
                 });
                 
                 userCard.innerHTML = `
-                    <div class="user-history-header">
+                    <div class="user-header">
                         <div class="user-info">
-                            <div class="user-avatar-sm">${initials}</div>
-                            <div class="user-name-email">
-                                <div class="user-name-sm">${user.name}</div>
-                                <div class="user-email-sm">${user.email}</div>
+                            <div class="user-avatar-lg">${initials}</div>
+                            <div class="user-details">
+                                <div class="user-name">${user.name}</div>
+                                <div class="user-email">${user.email}</div>
                             </div>
                         </div>
                         <span class="message-count">${user.messages.length}</span>
                     </div>
-                    <div class="message-history-list">
+                    <div class="user-messages">
                         ${messageHistoryHTML}
                     </div>
                 `;
@@ -2295,19 +1824,31 @@
                 usersContainer.appendChild(userCard);
             });
             
+            // Add click event to user messages
+            document.querySelectorAll('.user-message').forEach(item => {
+                item.addEventListener('click', () => {
+                    const messageId = item.getAttribute('data-id');
+                    viewMessageDetail(messageId);
+                    document.getElementById('users-modal').classList.remove('active');
+                    document.querySelector('.tab.active').classList.remove('active');
+                    document.querySelector('.tab:first-child').classList.add('active');
+                });
+            });
+            
             feather.replace();
         }
         
         // Render messages
         function renderMessages(messages) {
-            const messagesContainer = document.getElementById('messages-container');
-            messagesContainer.innerHTML = '';
+            const messageList = document.getElementById('message-list');
+            messageList.innerHTML = '';
             
             if (messages.length === 0) {
-                messagesContainer.innerHTML = `
+                messageList.innerHTML = `
                     <div class="empty-state">
-                        <i data-feather="inbox" class="icon"></i>
-                        <p>No messages match your criteria</p>
+                        <i data-feather="search" class="empty-icon"></i>
+                        <h3 class="empty-title">No messages match your criteria</h3>
+                        <p class="empty-message">Try changing your filters or search term</p>
                     </div>
                 `;
                 feather.replace();
@@ -2318,41 +1859,70 @@
                 const messageElement = document.createElement('div');
                 messageElement.className = message.read ? 'message-card' : 'message-card unread';
                 messageElement.id = `message-${message.id}`;
+                messageElement.setAttribute('data-id', message.id);
                 messageElement.style.animationDelay = `${index * 0.05}s`;
                 
-                // Format date
-                const statusClass = `status-${message.status ? message.status.replace(' ', '.') : 'Received'}`;
-                
                 const status = message.status || 'Received';
-                const formattedMessageDate = formatDate(message.timestamp);
+                const statusClass = `status-${status.replace(' ', '.')}`;
+                const formattedDate = formatDate(message.timestamp);
+                
+                // Fix for the substr error - check if message.message exists before using substr
+                const messagePreview = message.message ? 
+                    (message.message.length > 200 ? message.message.substring(0, 200) + '...' : message.message) : 
+                    'No message content';
+                
                 messageElement.innerHTML = `
-    <div class="message-header">
-        <div>
-            <div class="message-title">${message.subject}</div>
-            <span class="status-badge status-${status.replace(' ', '-')}">${status}</span>
-        </div>
-    </div>
-    <div class="message-meta">
-        <span>${message.name}</span>
-        <span class="tracking-code"><i data-feather="hash" class="icon"></i>${message.trackingCode}</span>
-    </div>
-    <div class="message-date">
-        <i data-feather="clock" class="icon"></i>
-        ${formattedMessageDate}
-    </div>
-`;
+                    <div class="message-header">
+                        <h3 class="message-title">${message.subject || 'No Subject'}</h3>
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </div>
+                    
+                    <div class="message-meta">
+                        <div class="meta-item">
+                            <i data-feather="user"></i>
+                            ${message.name || 'Unknown'}
+                        </div>
+                        <div class="meta-item">
+                            <i data-feather="mail"></i>
+                            ${message.email || 'No Email'}
+                        </div>
+                        <div class="meta-item">
+                            <i data-feather="clock"></i>
+                            ${formattedDate}
+                        </div>
+                    </div>
+                    
+                    <div class="message-content">
+                        ${messagePreview}
+                    </div>
+                    
+                    <div class="message-footer">
+                        <div class="tracking-code">
+                            <i data-feather="hash"></i>
+                            ${message.trackingCode || 'No Tracking Code'}
+                        </div>
+                        
+                        <div class="message-actions">
+                            <button class="action-button" title="Mark as ${message.read ? 'Unread' : 'Read'}" onclick="markAsRead('${message.id}', ${message.read}); event.stopPropagation();">
+                                <i data-feather="${message.read ? 'eye-off' : 'eye'}"></i>
+                            </button>
+                            <button class="action-button" title="Delete Message" onclick="deleteMessage('${message.id}'); event.stopPropagation();">
+                                <i data-feather="trash-2"></i>
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="viewMessageDetail('${message.id}'); event.stopPropagation();">
+                                <i data-feather="file-text"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `;
                 
                 // Add click event to view message details
                 messageElement.addEventListener('click', () => {
-                    viewMessage(message.id);
-                    
-                    // Add active class to selected message
-                    const allMessages = document.querySelectorAll('.message-card');
-                    allMessages.forEach(msg => msg.classList.remove('active'));
-                    messageElement.classList.add('active');
+                    viewMessageDetail(message.id);
                 });
                 
-                messagesContainer.appendChild(messageElement);
+                messageList.appendChild(messageElement);
             });
             
             feather.replace();
@@ -2395,35 +1965,45 @@
             }
             
             const filtered = allMessages.filter(msg => 
-                msg.subject.toLowerCase().includes(searchTerm) || 
-                msg.name.toLowerCase().includes(searchTerm) || 
-                msg.message.toLowerCase().includes(searchTerm) ||
-                msg.trackingCode.toLowerCase().includes(searchTerm)
+                (msg.subject && msg.subject.toLowerCase().includes(searchTerm)) || 
+                (msg.name && msg.name.toLowerCase().includes(searchTerm)) || 
+                (msg.message && msg.message.toLowerCase().includes(searchTerm)) ||
+                (msg.trackingCode && msg.trackingCode.toLowerCase().includes(searchTerm)) ||
+                (msg.email && msg.email.toLowerCase().includes(searchTerm))
             );
             
             renderMessages(filtered);
         }
         
-        // View message details
-        function viewMessage(messageId) {
+        // View message detail
+        function viewMessageDetail(messageId) {
             currentMessageId = messageId;
             
             // Show loading state
-            const selectedMessage = document.getElementById('selected-message');
-            selectedMessage.innerHTML = `
+            const detailModal = document.getElementById('detail-modal');
+            const detailContent = document.getElementById('detail-content');
+            
+            detailContent.innerHTML = `
                 <div class="empty-state">
-                    <i data-feather="file-text" class="icon"></i>
-                    <p>Loading message details...</p>
+                    <i data-feather="inbox" class="empty-icon"></i>
+                    <h3 class="empty-title">Loading message details...</h3>
                     <div class="loading-spinner"></div>
                 </div>
             `;
             feather.replace();
             
             // Show modal
-            const messageModal = document.getElementById('message-modal');
-            messageModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            detailModal.classList.add('active');
             
+            // Mark message as active
+            const messageElements = document.querySelectorAll('.message-card');
+            messageElements.forEach(element => element.classList.remove('active'));
+            const currentElement = document.getElementById(`message-${messageId}`);
+            if (currentElement) {
+                currentElement.classList.add('active');
+            }
+            
+            // Fetch message details
             database.ref('messages/' + messageId).once('value')
                 .then((snapshot) => {
                     const message = snapshot.val();
@@ -2435,7 +2015,7 @@
                         let commentsHtml = '';
                         if (message.comments && Array.isArray(message.comments)) {
                             message.comments.forEach(comment => {
-                                const commentDate = new Date(comment.timestamp).toLocaleString();
+                                const commentDate = formatDate(comment.timestamp);
                                 const author = comment.author === 'system' ? 'System' : 'Admin';
                                 const authorClass = comment.author === 'system' ? 'system' : 'admin';
                                 
@@ -2444,7 +2024,7 @@
                                         <p class="comment-text">${comment.text}</p>
                                         <div class="comment-meta">
                                             <span class="comment-author ${authorClass}">${author}</span>
-                                            <span class="comment-date">${formatDate(comment.timestamp)}</span>
+                                            <span class="comment-date">${commentDate}</span>
                                         </div>
                                     </div>
                                 `;
@@ -2454,94 +2034,117 @@
                         if (!commentsHtml) {
                             commentsHtml = `
                                 <div class="empty-state">
-                                    <i data-feather="message-circle" class="icon"></i>
-                                    <p>No comments yet</p>
+                                    <i data-feather="message-circle" class="empty-icon"></i>
+                                    <h3 class="empty-title">No comments yet</h3>
+                                    <p class="empty-message">Add a response to start the conversation</p>
                                 </div>
                             `;
                         }
                         
-                        selectedMessage.innerHTML = `
-                            <div class="message-details-header">
-                                <h3 class="message-details-title">${message.subject}</h3>
-                                <span class="status-badge status-${message.status.replace(' ', '.')}">${message.status}</span>
+                        detailContent.innerHTML = `
+                            <h2 class="detail-title">${message.subject || 'No Subject'}</h2>
+                            
+                            <div class="detail-meta">
+                                <div class="detail-item">
+                                    <i data-feather="user" class="detail-icon"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">From</span>
+                                        <span class="detail-value">${message.name || 'Unknown'}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <i data-feather="mail" class="detail-icon"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Email</span>
+                                        <span class="detail-value">${message.email || 'No Email'}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <i data-feather="calendar" class="detail-icon"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Date</span>
+                                        <span class="detail-value">${formattedDate}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <i data-feather="hash" class="detail-icon"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Tracking Code</span>
+                                        <span class="detail-value">${message.trackingCode || 'No Tracking Code'}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <i data-feather="tag" class="detail-icon"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Status</span>
+                                        <span class="status-badge status-${(message.status || 'Received').replace(' ', '.')}">${message.status || 'Received'}</span>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="message-details-meta">
-                                <div class="meta-item">
-                                    <i data-feather="user" class="icon"></i>
-                                    <span><strong>From:</strong> ${message.name}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i data-feather="mail" class="icon"></i>
-                                    <span><strong>Email:</strong> ${message.email}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i data-feather="hash" class="icon"></i>
-                                    <span><strong>Tracking Code:</strong> <span class="tracking-code">${message.trackingCode}</span></span>
-                                </div>
-                                <div class="meta-item">
-                                    <i data-feather="calendar" class="icon"></i>
-                                    <span><strong>Date:</strong> ${formattedDate}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="message-content">
-                                ${message.message}
+                            <div class="message-body">
+                                ${message.message || 'No message content'}
                             </div>
                             
                             <div class="action-panel">
-                                <div class="action-panel-header">
-                                    <i data-feather="settings" class="icon"></i>
-                                    <h3>Message Actions</h3>
+                                <div class="panel-header">
+                                    <i data-feather="settings"></i>
+                                    <h3 class="panel-title">Update Status</h3>
                                 </div>
                                 
                                 <div class="action-row">
-                                    <span class="action-label">Update status:</span>
-                                    <select id="message-status">
-                                        <option value="Received" ${message.status === 'Received' ? 'selected' : ''}>Received</option>
-                                        <option value="In Progress" ${message.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                        <option value="Resolved" ${message.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                                    <div class="action-label">Current Status</div>
+                                    <select id="message-status" class="select-status">
+                                        <option value="Received" ${(message.status || 'Received') === 'Received' ? 'selected' : ''}>Received</option>
+                                        <option value="In Progress" ${(message.status || 'Received') === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="Resolved" ${(message.status || 'Received') === 'Resolved' ? 'selected' : ''}>Resolved</option>
                                     </select>
                                 </div>
                                 
-                                <div class="btn-group">
-                                    <button onclick="updateStatus()" class="btn-primary">
-                                        <i data-feather="check" class="icon"></i>
-                                        Update Status
-                                    </button>
-                                    <button onclick="markAsRead('${messageId}', ${message.read})" class="btn-secondary">
-                                        <i data-feather="${message.read ? 'eye-off' : 'eye'}" class="icon"></i>
-                                        Mark as ${message.read ? 'Unread' : 'Read'}
-                                    </button>
-                                    <button onclick="deleteMessage('${messageId}')" class="btn-danger">
-                                        <i data-feather="trash-2" class="icon"></i>
-                                        Delete
-                                    </button>
-                                </div>
+                                <button onclick="updateStatus()" class="btn btn-primary">
+                                    <i data-feather="check"></i>
+                                    Update Status
+                                </button>
                             </div>
                             
-                            <div class="response-section">
-                                <div class="section-header">
-                                    <i data-feather="message-square" class="icon"></i>
-                                    <h3>Add Comment/Response</h3>
+                            <div class="action-panel">
+                                <div class="panel-header">
+                                    <i data-feather="message-square"></i>
+                                    <h3 class="panel-title">Add Response</h3>
                                 </div>
-                                <textarea id="response-text" placeholder="Enter your response here..."></textarea>
-                                <div class="btn-group">
-                                    <button onclick="addResponse()" class="btn-primary">
-                                        <i data-feather="send" class="icon"></i>
-                                        Add Response
-                                    </button>
-                                </div>
+                                
+                                <textarea id="response-text" class="response-textarea" placeholder="Enter your response here..."></textarea>
+                                
+                                <button onclick="addResponse()" class="btn btn-primary">
+                                    <i data-feather="send"></i>
+                                    Add Response
+                                </button>
                             </div>
                             
-                            <div class="comments-section">
-                                <div class="section-header">
-                                    <i data-feather="message-circle" class="icon"></i>
-                                    <h3>Comments & Responses</h3>
+                            <div class="action-panel">
+                                <div class="panel-header">
+                                    <i data-feather="message-circle"></i>
+                                    <h3 class="panel-title">Comments & Responses</h3>
                                 </div>
+                                
                                 <div id="comments-container">
                                     ${commentsHtml}
                                 </div>
+                            </div>
+                            
+                            <div style="text-align: right; margin-top: 1.5rem;">
+                                <button onclick="markAsRead('${messageId}', ${message.read})" class="btn btn-secondary">
+                                    <i data-feather="${message.read ? 'eye-off' : 'eye'}"></i>
+                                    Mark as ${message.read ? 'Unread' : 'Read'}
+                                </button>
+                                <button onclick="deleteMessage('${messageId}')" class="btn btn-danger">
+                                    <i data-feather="trash-2"></i>
+                                    Delete Message
+                                </button>
                             </div>
                         `;
                         
@@ -2638,7 +2241,7 @@
                         document.getElementById('response-text').value = '';
                         
                         // Refresh message view
-                        viewMessage(currentMessageId);
+                        viewMessageDetail(currentMessageId);
                     });
                 });
         }
@@ -2667,7 +2270,7 @@
                         comments: comments
                     }).then(() => {
                         // Refresh message view if needed
-                        viewMessage(currentMessageId);
+                        viewMessageDetail(currentMessageId);
                     });
                 });
         }
@@ -2677,10 +2280,8 @@
             if (confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
                 database.ref('messages/' + messageId).remove()
                     .then(() => {
-                        // Close modal
-                        const messageModal = document.getElementById('message-modal');
-                        messageModal.classList.remove('active');
-                        document.body.style.overflow = '';
+                        // Close modal if open
+                        document.getElementById('detail-modal').classList.remove('active');
                         
                         // Reset current message ID
                         currentMessageId = null;
