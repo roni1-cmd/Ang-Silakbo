@@ -26,6 +26,14 @@
     const db = getDatabase(app);
 
     window.submitReport = () => {
+      const submitBtn = document.getElementById("submitBtn");
+      const loadingSpinner = document.getElementById("loadingSpinner");
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      loadingSpinner.style.display = "inline-block";
+      submitBtn.querySelector("span").style.opacity = "0";
+      
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
       const issue = document.getElementById("issue").value;
@@ -39,9 +47,26 @@
         }).then(() => {
           showNotification("Issue reported successfully!", "success");
           document.getElementById("reportForm").reset();
-        }).catch(error => showNotification("Error: " + error, "error"));
+          
+          // Reset button state
+          submitBtn.disabled = false;
+          loadingSpinner.style.display = "none";
+          submitBtn.querySelector("span").style.opacity = "1";
+        }).catch(error => {
+          showNotification("Error: " + error, "error");
+          
+          // Reset button state
+          submitBtn.disabled = false;
+          loadingSpinner.style.display = "none";
+          submitBtn.querySelector("span").style.opacity = "1";
+        });
       } else {
         showNotification("Please fill out all fields.", "warning");
+        
+        // Reset button state
+        submitBtn.disabled = false;
+        loadingSpinner.style.display = "none";
+        submitBtn.querySelector("span").style.opacity = "1";
       }
     };
 
@@ -62,6 +87,7 @@
 
     window.toggleAboutModal = () => {
       document.getElementById("aboutModal").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("active");
       document.body.classList.toggle("no-scroll");
     };
   </script>
@@ -89,7 +115,7 @@
     }
 
     body {
-      background-color: #ffffff;
+      background-color: var(--bg-primary);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -103,110 +129,25 @@
       overflow: hidden;
     }
 
-    /* Hero Section */
-    .hero {
-      position: relative;
-      height: 500px;
-      background: linear-gradient(135deg, var(--orange-primary), var(--orange-dark));
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 5%;
-    }
-
-    .hero-overlay {
-      position: absolute;
+    /* Header */
+    .header {
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.5;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      max-width: 800px;
-    }
-
-    .hero-title {
-      font-family: 'Poppins', sans-serif;
-      font-size: 48px;
-      font-weight: 700;
-      color: white;
-      margin-bottom: 20px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .hero-subtitle {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      color: white;
-      margin-bottom: 30px;
-      opacity: 0.9;
-    }
-
-    .hero-btn {
-      background: white;
-      color: var(--orange-primary);
-      border: none;
-      border-radius: 50px;
-      padding: 15px 30px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .hero-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .hero-btn:active {
-      transform: translateY(0);
-    }
-
-    /* Wave Divider */
-    .wave-divider {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      line-height: 0;
-    }
-
-    .wave-divider svg {
-      position: relative;
-      display: block;
-      width: calc(100% + 1.3px);
-      height: 70px;
-    }
-
-    .wave-divider .shape-fill {
-      fill: #FFFFFF;
-    }
-
-    /* Header Styles */
-    header {
-      padding: 20px 5%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
+      z-index: 100;
+      padding: 20px 40px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .header.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      padding: 15px 40px;
     }
 
     .logo-container {
@@ -216,31 +157,76 @@
     }
 
     .logo {
-      height: 60px;
+      height: 50px;
       width: auto;
+      transition: var(--transition);
+    }
+
+    .header.scrolled .logo {
+      filter: none;
+    }
+
+    .header:not(.scrolled) .logo {
       filter: brightness(0) invert(1);
-      transition: transform 0.3s ease;
     }
 
-    .logo:hover {
-      transform: scale(1.05);
-    }
-
-    .title {
+    .brand-name {
       font-family: 'Poppins', sans-serif;
-      font-size: 32px;
       font-weight: 700;
+      font-size: 24px;
+      transition: var(--transition);
+    }
+
+    .header.scrolled .brand-name {
+      color: var(--text-primary);
+    }
+
+    .header:not(.scrolled) .brand-name {
       color: white;
-      letter-spacing: -0.5px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 16px;
+      text-decoration: none;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .header.scrolled .nav-link {
+      color: var(--text-primary);
+    }
+
+    .header:not(.scrolled) .nav-link {
+      color: white;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--orange-primary);
+      transition: var(--transition);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
     }
 
     .about-btn {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: var(--orange-primary);
       color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: none;
       border-radius: 50px;
       padding: 12px 24px;
       font-family: 'Poppins', sans-serif;
@@ -251,48 +237,167 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 15px rgba(230, 81, 0, 0.2);
     }
 
     .about-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
+      background: var(--orange-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(230, 81, 0, 0.3);
     }
 
     .about-btn:active {
       transform: translateY(0);
     }
 
-    /* Main Content */
-    .main-content {
-      margin-top: -100px;
-      padding: 0 5% 80px;
-      position: relative;
-      z-index: 5;
-    }
-
-    .content-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-    }
-
-    /* Report Card */
-    .report-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 30px;
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow), 0 30px 60px rgba(0, 0, 0, 0.1);
-      padding: 50px;
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
       transition: var(--transition);
+    }
+
+    .header.scrolled .mobile-menu-btn {
+      color: var(--text-primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--orange-primary), var(--orange-dark));
+      z-index: -2;
+    }
+
+    .hero-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      z-index: -1;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+    }
+
+    .hero-text {
+      flex: 1;
+      color: white;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 60px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-subtitle {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 20px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .primary-btn {
+      background: white;
+      color: var(--orange-primary);
+      border: none;
+      border-radius: 50px;
+      padding: 16px 32px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0);
+    }
+
+    .secondary-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      padding: 16px 32px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-3px);
+    }
+
+    .secondary-btn:active {
+      transform: translateY(0);
+    }
+
+    .hero-form {
+      flex: 1;
+      max-width: 500px;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
       position: relative;
       overflow: hidden;
     }
 
-    .report-card::before {
+    .hero-form::before {
       content: '';
       position: absolute;
       top: 0;
@@ -302,30 +407,17 @@
       background: linear-gradient(90deg, var(--orange-primary), var(--orange-dark));
     }
 
-    .report-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 150px;
-      height: 150px;
-      background: var(--orange-ultra-light);
-      border-radius: 50%;
-      transform: translate(50%, 50%);
-      z-index: -1;
-    }
-
-    .report-card h2 {
-      color: var(--orange-primary);
+    .form-title {
       font-family: 'Playfair Display', serif;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 700;
+      color: var(--orange-primary);
       margin-bottom: 30px;
       position: relative;
       display: inline-block;
     }
 
-    .report-card h2::after {
+    .form-title::after {
       content: '';
       position: absolute;
       bottom: -10px;
@@ -397,7 +489,7 @@
     }
 
     textarea {
-      min-height: 180px;
+      min-height: 150px;
       resize: vertical;
     }
 
@@ -451,335 +543,152 @@
     .submit-btn i {
       font-size: 18px;
     }
-
-    /* Info Card */
-    .info-card {
-      background: white;
-      border-radius: 30px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .info-image-container {
-      height: 250px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .info-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .info-card:hover .info-image {
-      transform: scale(1.05);
-    }
-
-    .info-overlay {
+    
+    .submit-btn .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
       position: absolute;
-      top: 0;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Wave Divider */
+    .wave-divider {
+      position: absolute;
+      bottom: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
-      display: flex;
-      align-items: flex-end;
-      padding: 30px;
+      overflow: hidden;
+      line-height: 0;
+      z-index: 1;
     }
 
-    .info-overlay-title {
-      color: white;
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    .wave-divider svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 70px;
     }
 
-    .info-content {
-      padding: 30px;
+    .wave-divider .shape-fill {
+      fill: #FFFFFF;
     }
 
-    .info-description {
-      font-family: 'Merriweather', serif;
-      font-size: 16px;
-      line-height: 1.8;
-      color: var(--text-secondary);
-      margin-bottom: 30px;
-    }
-
-    .info-features {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      padding: 15px;
-      border-radius: 15px;
+    /* Process Section */
+    .process-section {
+      padding: 100px 40px;
       background: var(--bg-secondary);
-      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
     }
 
-    .feature-item:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    .process-container {
+      max-width: 1200px;
+      margin: 0 auto;
     }
-
-    .feature-icon {
-      background: var(--orange-primary);
-      color: white;
-      width: 50px;
-      height: 50px;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 20px;
-      box-shadow: 0 5px 15px rgba(230, 81, 0, 0.2);
-    }
-
-    .feature-text {
-      font-family: 'Source Sans Pro', sans-serif;
-    }
-
-    .feature-title {
-      font-family: 'Poppins', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
+    
+    .section-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 5px;
+      margin-bottom: 20px;
     }
 
-    .feature-desc {
+    .section-subtitle {
+      text-align: center;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 18px;
       color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 60px;
       line-height: 1.6;
     }
 
-    /* Stats Section */
-    .stats-section {
-      background: var(--bg-secondary);
-      padding: 80px 5%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stats-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .stats-title {
-      text-align: center;
-      font-family: 'Playfair Display', serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 50px;
-      position: relative;
-    }
-
-    .stats-title::after {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 3px;
-      background: var(--orange-primary);
-      border-radius: 3px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 30px;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: var(--orange-primary);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-card:hover::before {
-      transform: scaleX(1);
-    }
-
-    .stat-icon {
-      font-size: 36px;
-      color: var(--orange-primary);
-      margin-bottom: 20px;
-    }
-
-    .stat-number {
-      font-family: 'Poppins', sans-serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 10px;
-    }
-
-    .stat-label {
-      font-family: 'Source Sans Pro', sans-serif;
-      color: var(--text-secondary);
-      font-size: 16px;
-    }
-
-    /* Testimonials Section */
-    .testimonials-section {
-      padding: 80px 5%;
-      background: white;
-      position: relative;
-    }
-
-    .testimonials-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .testimonials-title {
-      text-align: center;
-      font-family: 'Playfair Display', serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 50px;
-      position: relative;
-    }
-
-    .testimonials-title::after {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 3px;
-      background: var(--orange-primary);
-      border-radius: 3px;
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-    }
-
-    .testimonial-card {
-      background: var(--bg-secondary);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      transition: var(--transition);
-      position: relative;
-    }
-
-    .testimonial-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-    }
-
-    .testimonial-quote {
-      font-family: 'Merriweather', serif;
-      font-size: 16px;
-      line-height: 1.8;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-      position: relative;
-      padding-left: 25px;
-    }
-
-    .testimonial-quote::before {
-      content: '"';
-      position: absolute;
-      left: 0;
-      top: -10px;
-      font-size: 50px;
-      color: var(--orange-primary);
-      opacity: 0.3;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .testimonial-author {
+    .process-steps {
       display: flex;
-      align-items: center;
-      gap: 15px;
+      justify-content: space-between;
+      position: relative;
+      margin-top: 80px;
     }
 
-    .author-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 50px;
+      right: 50px;
+      height: 3px;
+      background: var(--orange-light);
+      z-index: 1;
     }
 
-    .author-info {
+    .process-step {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      width: 25%;
     }
 
-    .author-name {
+    .step-number {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--orange-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--orange-primary);
+      margin-bottom: 25px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .process-step:hover .step-number {
+      background: var(--orange-primary);
+      color: white;
+      transform: scale(1.1);
+      box-shadow: 0 10px 20px rgba(230, 81, 0, 0.2);
+    }
+
+    .step-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 20px;
       font-weight: 600;
       color: var(--text-primary);
+      margin-bottom: 15px;
     }
 
-    .author-role {
+    .step-description {
       font-family: 'Source Sans Pro', sans-serif;
       color: var(--text-secondary);
-      font-size: 14px;
+      line-height: 1.7;
+      max-width: 250px;
     }
 
-    /* Footer Styles */
-    footer {
-      background: linear-gradient(135deg, var(--orange-dark), var(--orange-primary));
+    /* Footer */
+    .footer {
+      background: var(--text-primary);
       color: white;
-      padding: 80px 5% 40px;
+      padding: 80px 40px 40px;
       position: relative;
-      overflow: hidden;
-    }
-
-    footer::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-      opacity: 0.3;
     }
 
     .footer-wave {
@@ -800,21 +709,15 @@
     }
 
     .footer-wave .shape-fill {
-      fill: #FFFFFF;
+      fill: var(--bg-secondary);
     }
 
-    .footer-content {
+    .footer-container {
       max-width: 1200px;
       margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    .footer-grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 60px;
+      gap: 60px;
     }
 
     .footer-brand {
@@ -843,7 +746,7 @@
     }
 
     .footer-description {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.7);
       line-height: 1.7;
       font-family: 'Source Sans Pro', sans-serif;
     }
@@ -851,6 +754,7 @@
     .footer-social {
       display: flex;
       gap: 15px;
+      margin-top: 20px;
     }
 
     .social-icon {
@@ -867,7 +771,7 @@
     }
 
     .social-icon:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--orange-primary);
       transform: translateY(-3px);
     }
 
@@ -888,7 +792,7 @@
       left: 0;
       width: 40px;
       height: 2px;
-      background: rgba(255, 255, 255, 0.3);
+      background: var(--orange-primary);
     }
 
     .footer-links ul {
@@ -899,7 +803,7 @@
     }
 
     .footer-links a {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.7);
       text-decoration: none;
       transition: var(--transition);
       font-family: 'Source Sans Pro', sans-serif;
@@ -914,13 +818,13 @@
     }
 
     .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 1200px;
+      margin: 60px auto 0;
       padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
     }
 
     .copyright {
@@ -931,7 +835,7 @@
 
     .footer-bottom-links {
       display: flex;
-      gap: 20px;
+      gap: 30px;
     }
 
     .footer-bottom-links a {
@@ -958,7 +862,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: 1000;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -1103,74 +1007,113 @@
       color: #ff9800;
     }
 
-    /* Responsive Styles */
-    @media (max-width: 1100px) {
-      .content-container {
-        grid-template-columns: 1fr;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .testimonials-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 400px;
+      height: 100vh;
+      background: white;
+      z-index: 1000;
+      padding: 80px 40px;
+      transition: right 0.3s ease;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
     }
 
-    @media (max-width: 768px) {
-      .hero {
-        height: 400px;
-      }
-
-      .hero-title {
-        font-size: 36px;
-      }
-
-      .hero-subtitle {
-        font-size: 18px;
-      }
-
-      header {
-        padding: 15px;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .title {
-        font-size: 28px;
-      }
-
-      .report-card, .info-card {
-        padding: 30px 20px;
-      }
-
-      .report-card h2, .info-overlay-title {
-        font-size: 28px;
-      }
-
-      .stats-grid, .testimonials-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .modal-content {
-        padding: 30px 20px;
-      }
-
-      .modal-title {
-        font-size: 24px;
-      }
+    .mobile-menu.active {
+      right: 0;
     }
 
-    /* Animation for form elements */
+    .mobile-menu-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .mobile-menu-close:hover {
+      background: var(--orange-primary);
+      color: white;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .mobile-nav-link {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .mobile-nav-link:hover {
+      color: var(--orange-primary);
+      padding-left: 10px;
+    }
+
+    .mobile-about-btn {
+      background: var(--orange-primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 30px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px;
+      width: 100%;
+    }
+
+    .mobile-about-btn:hover {
+      background: var(--orange-dark);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Animations */
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -1182,29 +1125,30 @@
       }
     }
 
-    .input-group {
+    .fade-in-up {
       animation: fadeInUp 0.5s ease forwards;
-      opacity: 0;
     }
 
-    .input-group:nth-child(1) {
+    .delay-1 {
       animation-delay: 0.1s;
     }
 
-    .input-group:nth-child(2) {
+    .delay-2 {
       animation-delay: 0.2s;
     }
 
-    .input-group:nth-child(3) {
+    .delay-3 {
       animation-delay: 0.3s;
     }
 
-    .submit-btn {
-      animation: fadeInUp 0.5s 0.4s ease forwards;
-      opacity: 0;
+    .delay-4 {
+      animation-delay: 0.4s;
     }
 
-    /* Floating Elements Animation */
+    .delay-5 {
+      animation-delay: 0.5s;
+    }
+
     @keyframes float {
       0% {
         transform: translateY(0px);
@@ -1217,45 +1161,264 @@
       }
     }
 
-    .float-element {
+    .float {
       animation: float 6s ease-in-out infinite;
     }
-
-    .float-element-1 {
-      animation-delay: 0s;
+    
+    /* Enhanced Mobile Responsiveness */
+    @media (max-width: 1200px) {
+      .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
     }
 
-    .float-element-2 {
-      animation-delay: 2s;
+    @media (max-width: 992px) {
+      .hero-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .hero-text {
+        margin-bottom: 40px;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .process-steps::before {
+        display: none;
+      }
+
+      .process-steps {
+        flex-direction: column;
+        gap: 40px;
+      }
+
+      .process-step {
+        width: 100%;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .hero {
+        padding-top: 100px;
+      }
     }
 
-    .float-element-3 {
-      animation-delay: 4s;
+    @media (max-width: 768px) {
+      .header {
+        padding: 15px 20px;
+      }
+      
+      .header.scrolled {
+        padding: 12px 20px;
+      }
+      
+      .hero {
+        padding: 100px 20px 60px;
+      }
+
+      .hero-title {
+        font-size: 36px;
+      }
+
+      .hero-subtitle {
+        font-size: 16px;
+      }
+
+      .hero-form {
+        padding: 30px 20px;
+        width: 100%;
+      }
+      
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .primary-btn, .secondary-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .footer-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .footer-bottom-links {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .section-title {
+        font-size: 32px;
+      }
+      
+      .process-section {
+        padding: 60px 20px;
+      }
+      
+      .modal-content {
+        padding: 30px 20px;
+      }
+      
+      .notification {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        width: calc(100% - 40px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 32px;
+      }
+      
+      .hero-subtitle {
+        font-size: 15px;
+      }
+      
+      .form-title {
+        font-size: 24px;
+      }
+      
+      .logo {
+        height: 40px;
+      }
+      
+      .brand-name {
+        font-size: 20px;
+      }
+      
+      .step-number {
+        width: 60px;
+        height: 60px;
+        font-size: 22px;
+      }
+      
+      .step-title {
+        font-size: 18px;
+      }
+      
+      .footer {
+        padding: 60px 20px 30px;
+      }
+      
+      .footer-logo img {
+        height: 40px;
+      }
+      
+      .footer-logo-text {
+        font-size: 20px;
+      }
+      
+      .footer-bottom-links {
+        gap: 15px;
+      }
+      
+      .footer-bottom-links a {
+        font-size: 12px;
+      }
+      
+      .copyright {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Hero Section -->
-  <header>
+  <!-- Header -->
+  <header class="header" id="header">
     <div class="logo-container">
       <img src="SILAKBO.png" alt="ANG SILAKBO Logo" class="logo">
-      <h1 class="title">ANG SILAKBO</h1>
+      <span class="brand-name">ANG SILAKBO</span>
     </div>
-    <button class="about-btn" onclick="toggleAboutModal()">
-      <i class="fas fa-info-circle"></i>
-      About This Form
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="About Us.html" class="nav-link">About</a>
+      <a href="Chat Request.html" class="nav-link">Contact</a>
+      <button class="about-btn" onclick="toggleAboutModal()">
+        <i class="fas fa-info-circle"></i>
+        About This Form
+      </button>
+    </nav>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <i class="fas fa-bars"></i>
     </button>
   </header>
 
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileMenuClose">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-nav-links">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="About Us.html" class="mobile-nav-link">About</a>
+      <a href="Chat Request.html" class="mobile-nav-link">Contact</a>
+      <a href="FAQ.html" class="mobile-nav-link">FAQ</a>
+      <a href="Guidelines.html" class="mobile-nav-link">Guidelines</a>
+    </div>
+    <button class="mobile-about-btn" onclick="toggleAboutModal()">
+      <i class="fas fa-info-circle"></i>
+      About This Form
+    </button>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Hero Section -->
   <section class="hero">
-    <div class="hero-overlay"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-pattern"></div>
     <div class="hero-content">
-      <h1 class="hero-title">Report Portal</h1>
-      <p class="hero-subtitle">Help us improve by reporting issues and sharing your feedback</p>
-      <button class="hero-btn" onclick="document.getElementById('reportForm').scrollIntoView({behavior: 'smooth'})">
-        <i class="fas fa-arrow-down"></i>
-        Submit a Report
-      </button>
+      <div class="hero-text fade-in-up">
+        <h1 class="hero-title">Report Portal</h1>
+        <p class="hero-subtitle">Help us improve by reporting issues and sharing your feedback. Your input is valuable in creating a better experience for everyone.</p>
+        <div class="hero-buttons">
+          <a href="#process" class="primary-btn">
+            <i class="fas fa-info-circle"></i>
+            How It Works
+          </a>
+        </div>
+      </div>
+      <div class="hero-form fade-in-up delay-3">
+        <h2 class="form-title">Report an Issue</h2>
+        <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
+          <div class="input-group delay-1">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <label for="name">Your Full Name</label>
+          </div>
+          <div class="input-group delay-2">
+            <input type="email" id="email" placeholder="Your Email" required>
+            <label for="email">Your Email Address</label>
+          </div>
+          <div class="input-group delay-3">
+            <textarea id="issue" placeholder="Your Issue" required></textarea>
+            <label for="issue">Please describe your issue in detail...</label>
+          </div>
+          <button type="submit" id="submitBtn" class="submit-btn delay-4">
+            <div id="loadingSpinner" class="spinner"></div>
+            <span><i class="fas fa-paper-plane"></i> Submit Report</span>
+          </button>
+        </form>
+      </div>
     </div>
     <div class="wave-divider">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -1264,117 +1427,90 @@
     </div>
   </section>
 
-  <section class="main-content">
-    <div class="content-container">
-      <div class="report-card">
-        <h2>Report an Issue</h2>
-        <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
-          <div class="input-group">
-            <input type="text" id="name" placeholder="Your Name" required>
-            <label for="name">Your Full Name</label>
-          </div>
-          <div class="input-group">
-            <input type="email" id="email" placeholder="Your Email" required>
-            <label for="email">Your Email Address</label>
-          </div>
-          <div class="input-group">
-            <textarea id="issue" placeholder="Your Issue" required></textarea>
-            <label for="issue">Please describe your issue in detail...</label>
-          </div>
-          <button type="submit" class="submit-btn">
-            <i class="fas fa-paper-plane"></i>
-            Submit Report
-          </button>
-        </form>
-      </div>
-
-      <div class="info-card">
-        <div class="info-image-container">
-          <img src="Report.PNG" alt="Community Support" class="info-image">
-          <div class="info-overlay">
-            <h2 class="info-overlay-title">We Value Your Feedback</h2>
-          </div>
+  <!-- Process Section -->
+  <section class="process-section" id="process">
+    <div class="process-container">
+      <div class="section-title">How It Works</div>
+      <p class="section-subtitle">Our streamlined reporting process ensures your concerns are addressed quickly and effectively.</p>
+      
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Submit Report</h3>
+          <p class="step-description">Fill out the report form with detailed information about the issue you're experiencing.</p>
         </div>
-        <div class="info-content">
-          <p class="info-description">ANG SILAKBO is committed to providing a safe and supportive environment for all community members. Your reports help us maintain the quality and integrity of our platform.</p>
-          
-          <div class="info-features">
-            <div class="feature-item">
-              <div class="feature-icon">
-                <i class="fas fa-shield-alt"></i>
-              </div>
-              <div class="feature-text">
-                <h3 class="feature-title">Secure Reporting</h3>
-                <p class="feature-desc">All reports are encrypted and handled with strict confidentiality.</p>
-              </div>
-            </div>
-            
-            <div class="feature-item">
-              <div class="feature-icon">
-                <i class="fas fa-bolt"></i>
-              </div>
-              <div class="feature-text">
-                <h3 class="feature-title">Quick Response</h3>
-                <p class="feature-desc">Our team reviews all submissions within 24-48 hours.</p>
-              </div>
-            </div>
-              </div>
-            </div>
-          </div>
+        
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Review Process</h3>
+          <p class="step-description">Our team carefully reviews your submission and categorizes it based on priority and type.</p>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Resolution</h3>
+          <p class="step-description">We take appropriate action to resolve the issue, which may include content removal or system updates.</p>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Follow-up</h3>
+          <p class="step-description">For complex issues, we may contact you for additional information or to provide updates.</p>
         </div>
       </div>
     </div>
   </section>
-  <footer>
+
+  <!-- Footer -->
+  <footer class="footer">
     <div class="footer-wave">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
       </svg>
     </div>
-    <div class="footer-content">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <img src="SILAKBO.png" alt="ANG SILAKBO Logo">
-            <div class="footer-logo-text">ANG SILAKBO</div>
-          </div>
-          <p class="footer-description">
-            ANG SILAKBO is dedicated to creating a safe, supportive, and engaging environment for all community members. Your feedback helps us improve and grow.
-          </p>
-          <div class="footer-social">
-            <a href="https://www.facebook.com/AngSilakboUCLM" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-          </div>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="SILAKBO.png" alt="ANG SILAKBO Logo">
+          <div class="footer-logo-text">ANG SILAKBO</div>
         </div>
-        <div class="footer-links">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
-            <li><a href="About Us.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
-            <li><a href="Chat Request.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
-            <li><a href="FAQ.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h3>Resources</h3>
-          <ul>
-            <li><a href="Guidelines.html"><i class="fas fa-chevron-right"></i> Community Guidelines</a></li>
-            <li><a href="Dev's Note.html"><i class="fas fa-chevron-right"></i> Blog</a></li>
-            <li><a href="Artikulo.html"><i class="fas fa-chevron-right"></i> News</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h3>Contact Us</h3>
-          <ul>
-            <li><a href="#"><i class="fas fa-map-marker-alt"></i> University of Cebu Lapu-Lapu and Mandaue Senior High School</a></li>
-            <li><a href="#"><i class="fas fa-envelope"></i> uclm.angsilakbo@uc.edu.ph</a></li>
-          </ul>
-        </div>
+        <p class="footer-description">
+          ANG SILAKBO is dedicated to creating a safe, supportive, and engaging environment for all community members. Your feedback helps us improve and grow.
+        </p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/AngSilakboUCLM" class="social-icon"><i class="fab fa-facebook-f"></i></a>        </div>
       </div>
-      <div class="footer-bottom">
-        <p class="copyright">© 2025 ANG SILAKBO. All rights reserved.</p>
-        <div class="footer-bottom-links">
-          <a href="ToS.html">Terms of Service</a>
-        </div>
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="About Us.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a href="Chat Request.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+          <li><a href="FAQ.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="Guidelines.html"><i class="fas fa-chevron-right"></i> Community Guidelines</a></li>
+          <li><a href="Dev's Note.html"><i class="fas fa-chevron-right"></i> Blog</a></li>
+          <li><a href="Artikulo.html"><i class="fas fa-chevron-right"></i> News</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h3>Contact Us</h3>
+        <ul>
+          <li><a href="#"><i class="fas fa-map-marker-alt"></i> University of Cebu Lapu-Lapu and Mandaue Senior High School</a></li>
+          <li><a href="#"><i class="fas fa-envelope"></i> uclm.angsilakbo@uc.edu.ph</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">© 2025 ANG SILAKBO. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="ToS.html">Terms of Service</a>
+        <a href="Privacy.html">Privacy Policy</a>
+        <a href="Cookies.html">Cookie Policy</a>
       </div>
     </div>
   </footer>
@@ -1416,5 +1552,62 @@
       </div>
     </div>
   </div>
+
+  <!-- JavaScript for Header Scroll Effect -->
+  <script>
+    // Header scroll effect
+    window.addEventListener('scroll', function() {
+      const header = document.getElementById('header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile menu functionality
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const overlay = document.getElementById('overlay');
+
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.classList.add('active');
+      overlay.classList.add('active');
+      document.body.classList.add('no-scroll');
+    });
+
+    mobileMenuClose.addEventListener('click', function() {
+      mobileMenu.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('no-scroll');
+    });
+
+    overlay.addEventListener('click', function() {
+      mobileMenu.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('no-scroll');
+      if (document.getElementById('aboutModal').classList.contains('active')) {
+        toggleAboutModal();
+      }
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
