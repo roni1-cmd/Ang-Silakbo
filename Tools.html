@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANG SILAKBO - Text Analysis Tool</title>
-    <link rel="icon" href="SILAKBO (1).png">
+    <link rel="icon" href="SILAKBO.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #e65100;
             --primary-light: #ff833a;
             --primary-dark: #ac1900;
             --primary-transparent: rgba(230, 81, 0, 0.1);
+            --primary-bg: rgba(230, 81, 0, 0.05);
+            --primary-bg-medium: rgba(230, 81, 0, 0.15);
             --white: #ffffff;
             --off-white: #f9f9f9;
             --light-gray: #f5f5f5;
@@ -22,16 +24,13 @@
             --dark-gray: #757575;
             --text-dark: #333333;
             --text-light: #ffffff;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
-            --border-radius: 20px;
-            --border-radius-sm: 16px;
-            --border-radius-xs: 12px;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 16px;
             --border-radius-round: 50px;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -41,169 +40,262 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--white);
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: var(--off-white);
             color: var(--text-dark);
             line-height: 1.6;
             min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 10% 20%, var(--primary-transparent) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, var(--primary-transparent) 0%, transparent 20%);
-            background-attachment: fixed;
+            position: relative;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        h4, h5, h6 {
             font-family: 'Playfair Display', serif;
             font-weight: 600;
         }
 
-        p, li, span {
-            font-family: 'Inter', sans-serif;
+        p, li {
+            font-family: 'Source Sans Pro', sans-serif;
         }
 
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main"
+                "sidebar footer";
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
         .header {
-            background: var(--glass-bg);
-            color: var(--text-dark);
+            grid-area: header;
+            background: var(--white);
             padding: 1rem 2rem;
-            box-shadow: var(--glass-shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
+            box-shadow: var(--shadow-sm);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 10;
+            border-bottom: 1px solid var(--primary-bg-medium);
         }
 
-        .logo {
+        .header-title {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
-        .logo h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+        .header-title h1 {
+            font-size: 1.5rem;
             color: var(--primary);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
         }
 
         .logo-img {
-            width: 38px;
-            height: 38px;
-            border-radius: var(--border-radius-round);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
             object-fit: cover;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 8px rgba(230, 81, 0, 0.2);
+            border: 2px solid var(--primary-light);
         }
 
         .header-actions {
             display: flex;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
-        .main-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+        /* Sidebar Styles - Now White */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 2rem 0;
+            overflow-y: auto;
             display: flex;
-            gap: 1.5rem;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 20;
+            border-right: 1px solid var(--medium-gray);
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--medium-gray);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+        }
+
+        .sidebar-header p {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-menu-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        .sidebar-menu-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .sidebar-menu-link:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu-link.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .sidebar-menu-link i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            border-top: 1px solid var(--medium-gray);
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            background-color: var(--off-white);
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, var(--primary-transparent) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, var(--primary-transparent) 0%, transparent 25%);
+            background-attachment: fixed;
         }
 
         .editor-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px); /* Make editor taller */
+            border: 1px solid var(--primary-bg-medium);
+        }
+
+        .editor-toolbar {
+            background: var(--white);
+            padding: 1rem;
+            border-bottom: 1px solid var(--primary-bg-medium);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.3rem;
+            border-right: 1px solid var(--light-gray);
+            margin-right: 0.5rem;
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .editor-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .sidebar {
-            width: 350px;
-            background: var(--glass-bg);
-            box-shadow: var(--glass-shadow);
             overflow: hidden;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .toolbar {
-            background: var(--glass-bg);
-            box-shadow: var(--glass-shadow);
-            padding: 1rem;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .toolbar-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-            padding: 0.6rem 0;
-        }
-
-        .toolbar-section:not(:last-child) {
-            border-bottom: 1px solid var(--glass-border);
-            margin-bottom: 0.6rem;
-        }
-
-        .toolbar-label {
-            width: 100%;
-            font-size: 0.85rem;
-            color: var(--dark-gray);
-            margin-bottom: 0.25rem;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
         }
 
         .editor {
-            min-height: 500px;
-            padding: 1.8rem;
-            background: var(--glass-bg);
-            box-shadow: var(--glass-shadow);
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
             outline: none;
-            transition: var(--transition);
             line-height: 1.8;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            font-size: 1rem;
+            background-color: var(--white);
+            font-family: 'Merriweather', serif;
         }
 
         .editor:focus {
-            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2);
+            outline: none;
         }
 
-        .word-count {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            padding: 0.8rem 1.2rem;
-            background: var(--glass-bg);
-            box-shadow: var(--glass-shadow);
+        .editor-statusbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-round);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-bg);
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            border-top: 1px solid var(--primary-bg-medium);
+            font-family: 'Source Sans Pro', sans-serif;
         }
 
+        /* Button Styles */
         .btn {
-            padding: 0.7rem 1.2rem;
+            padding: 0.6rem 1.2rem;
             border: none;
-            border-radius: var(--border-radius-round);
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
@@ -211,149 +303,438 @@
             align-items: center;
             gap: 0.5rem;
             transition: var(--transition);
-            background: var(--glass-bg);
-            color: var(--primary);
-            border: 1px solid var(--glass-border);
-            font-family: 'Inter', sans-serif;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            box-shadow: var(--shadow-sm);
+            background: var(--light-gray);
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-            background: var(--white);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
+            background: var(--medium-gray);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-primary {
             background: var(--primary);
             color: var(--white);
-            border: none;
         }
 
         .btn-primary:hover {
             background: var(--primary-light);
         }
 
-        .btn-success {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-        }
-
-        .btn-success:hover {
-            background: var(--primary-light);
-        }
-
-        .btn-danger {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background: var(--primary-light);
-        }
-
         .btn-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
+            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            border-radius: var(--border-radius-round);
+            border-radius: var(--border-radius-sm);
         }
 
-        .tab-container {
-            display: flex;
-            background: var(--glass-bg);
-            overflow: hidden;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .tab {
-            padding: 1rem 1.25rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            flex: 1;
-            text-align: center;
-            border-bottom: 2px solid transparent;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
-        }
-
-        .tab:hover {
-            background: var(--off-white);
-        }
-
-        .tab.active {
-            background: var(--white);
-            border-bottom: 2px solid var(--primary);
+        .btn-icon:hover {
+            background: var(--primary-bg);
             color: var(--primary);
-            font-weight: 600;
         }
 
-        .tab-content {
-            display: none;
+        .btn-icon.active {
+            background: var(--primary-transparent);
+            color: var(--primary);
+        }
+
+        /* AI Analysis Panel */
+        .analysis-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--primary-bg-medium);
+        }
+
+        .analysis-panel.active {
+            right: 0;
+        }
+
+        .analysis-header {
             padding: 1.5rem;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .tab-content.active {
-            display: block;
+        .analysis-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .loading {
-            display: none;
-            padding: 2.5rem;
-            text-align: center;
-            background: var(--glass-bg);
-            box-shadow: var(--glass-shadow);
-            margin-top: 1rem;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .loading-spinner {
-            border: 4px solid var(--light-gray);
-            border-top: 4px solid var(--primary);
+        .analysis-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--white);
+            transition: var(--transition);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .analysis-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
         }
 
+        .analysis-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .analysis-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--primary-bg-medium);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--primary-bg);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--primary-bg-medium);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid var(--primary-bg-medium);
+            background: var(--primary-bg);
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--primary-bg-medium);
+        }
+
+        .settings-panel.active {
+            right: 0;
+        }
+
+        .settings-header {
+            padding: 1.5rem;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .settings-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .settings-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .settings-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--primary-bg-medium);
+        }
+
+        .settings-section-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .settings-option {
+            margin-bottom: 1.2rem;
+        }
+
+        .settings-option label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .settings-option select,
+        .settings-option input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--medium-gray);
+            background: var(--white);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .settings-option select:focus,
+        .settings-option input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-transparent);
+        }
+
+        .settings-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--primary-bg-medium);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--primary-bg);
+        }
+
+        /* Notes Panel */
+        .notes-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--primary-bg-medium);
+        }
+
+        .notes-panel.active {
+            right: 0;
+        }
+
+        .notes-header {
+            padding: 1.5rem;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .notes-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .notes-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .notes-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: var(--primary-bg);
+        }
+
+        .notes-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--primary-bg-medium);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--primary-bg);
+        }
+
+        .note-item {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--primary-bg-medium);
+        }
+
+        .note-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-light);
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .note-date {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        /* Context Menu */
         .context-menu {
             position: absolute;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius-sm);
-            box-shadow: var(--glass-shadow);
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             padding: 0.5rem 0;
             z-index: 1000;
             display: none;
-            min-width: 220px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            min-width: 200px;
+            border: 1px solid var(--primary-bg-medium);
         }
 
         .context-menu-item {
@@ -363,129 +744,91 @@
             align-items: center;
             gap: 0.8rem;
             transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
+            font-family: 'Source Sans Pro', sans-serif;
         }
 
         .context-menu-item:hover {
-            background: var(--light-gray);
+            background: var(--primary-bg);
             color: var(--primary);
         }
 
         .context-menu-divider {
             height: 1px;
-            background: var(--glass-border);
+            background: var(--primary-bg-medium);
             margin: 0.5rem 0;
         }
 
-        .history-item, .note-item {
-            padding: 1rem;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            margin-bottom: 0.8rem;
-            background: var(--glass-bg);
-            transition: var(--transition);
-            border: 1px solid var(--glass-border);
+        /* Loading Indicator */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
             backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
         }
 
-        .history-item:hover, .note-item:hover {
+        .loading-spinner {
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
             background: var(--white);
-            transform: translateY(-3px);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
             box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 350px;
+            border-left: 4px solid var(--primary);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
         }
 
-        .note-date {
-            font-size: 0.8rem;
-            color: var(--dark-gray);
-            margin-top: 0.4rem;
-            font-family: 'Inter', sans-serif;
+        .notification.active {
+            transform: translateX(0);
         }
 
-        .settings-option {
-            margin-bottom: 1.2rem;
-        }
-
-        .settings-option label {
-            display: block;
-            margin-bottom: 0.6rem;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
-        }
-
-        .settings-option select, .settings-option input {
-            width: 100%;
-            padding: 0.8rem 1.2rem;
-            border-radius: var(--border-radius-round);
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .theme-selector {
-            display: flex;
-            gap: 0.8rem;
-            margin-top: 0.8rem;
-        }
-
-        .theme-option {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--border-radius-round);
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: var(--transition);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .theme-option.selected {
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-
-        .ai-suggestions {
-            margin-top: 1rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .suggestion {
-            padding: 1rem;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius-sm);
-            margin-bottom: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .suggestion:hover {
-            background: var(--white);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-        }
-
-        .suggestion-title {
+        .notification-title {
             font-weight: 600;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
             color: var(--primary);
-            font-family: 'Playfair Display', serif;
+            font-family: 'Poppins', sans-serif;
         }
 
+        .notification-message {
+            font-size: 0.9rem;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        /* Badge */
         .badge {
             display: inline-block;
             padding: 0.3rem 0.8rem;
             border-radius: var(--border-radius-round);
             font-size: 0.75rem;
             font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .badge-success {
@@ -508,204 +851,85 @@
             color: var(--primary);
         }
 
-        .footer {
-            background: var(--glass-bg);
-            color: var(--text-dark);
-            padding: 3rem 2rem;
-            margin-top: 3rem;
-            position: relative;
-            overflow: hidden;
-            border-top: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2.5rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1.2rem;
-            font-size: 1.3rem;
-            position: relative;
-            display: inline-block;
-            color: var(--primary);
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .footer-section h3::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -5px;
-            width: 40px;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.7rem;
-        }
-
-        .footer-links a {
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .footer-links a i {
-            color: var(--primary);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2.5rem;
-            margin-top: 2.5rem;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.9rem;
-            color: var(--dark-gray);
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background: var(--glass-bg);
+        /* Result Card */
+        .result-card {
+            background: var(--white);
             border-radius: var(--border-radius);
-            box-shadow: var(--glass-shadow);
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            border: 1px solid var(--glass-border);
-            position: relative;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--primary-bg-medium);
         }
 
-        .modal-overlay.active .modal {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.2rem 1.5rem;
-            background: var(--primary);
-            color: var(--text-light);
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-        }
-
-        .modal-header h3 {
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            font-size: 1.3rem;
+            gap: 0.6rem;
+            color: var(--primary);
             font-family: 'Poppins', sans-serif;
-            font-weight: 500;
         }
 
-        .modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: var(--border-radius-round);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
+        .result-content {
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--primary);
+            font-family: 'Source Sans Pro', sans-serif;
         }
 
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        /* Grammar Check Modal */
-        .grammar-result, .plagiarism-result, .sentiment-result, .keywords-result {
-            margin-bottom: 1.5rem;
-        }
-
-        .grammar-item, .plagiarism-item {
+        /* Grammar Check Results */
+        .grammar-item {
             margin-bottom: 1rem;
             padding: 1rem;
-            border-radius: var(--border-radius-sm);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            background: var(--primary-bg);
             box-shadow: var(--shadow-sm);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--primary-bg-medium);
         }
 
-        .grammar-original, .plagiarism-text {
+        .grammar-original {
             text-decoration: line-through;
             color: var(--primary);
+            font-family: 'Merriweather', serif;
         }
 
-        .grammar-suggestion, .plagiarism-source {
+        .grammar-suggestion {
             color: var(--primary);
             font-weight: 600;
+            font-family: 'Merriweather', serif;
         }
 
-        /* Sentiment Analysis Modal */
+        /* Keywords */
+        .keywords-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .keyword {
+            background: var(--primary-bg);
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius-round);
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--primary-bg-medium);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .keyword:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Sentiment Analysis */
         .sentiment-meter {
             height: 10px;
             width: 100%;
@@ -734,142 +958,7 @@
             justify-content: space-between;
             font-size: 0.85rem;
             color: var(--dark-gray);
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Keywords Modal */
-        .keywords-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-
-        .keyword {
-            background: var(--glass-bg);
-            color: var(--primary);
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--border-radius-round);
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .keyword:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        /* Quick Access Toolbar */
-        .quick-access {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            z-index: 90;
-        }
-
-        .quick-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--border-radius-round);
-            background: var(--primary);
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: none;
-            font-size: 1.2rem;
-        }
-
-        .quick-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 10px 25px rgba(230, 81, 0, 0.3);
-        }
-
-        .quick-menu {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius-sm);
-            box-shadow: var(--glass-shadow);
-            padding: 0.5rem;
-            display: none;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .quick-menu.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .quick-menu-item {
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            cursor: pointer;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition);
-            white-space: nowrap;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
-        }
-
-        .quick-menu-item:hover {
-            background: var(--light-gray);
-            color: var(--primary);
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem 1.2rem;
-            box-shadow: var(--glass-shadow);
-            z-index: 1000;
-            max-width: 350px;
-            border-left: 4px solid var(--primary);
-            transform: translateX(120%);
-            transition: transform 0.3s ease;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .notification.active {
-            transform: translateX(0);
-        }
-
-        .notification-title {
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-            color: var(--primary);
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .notification-message {
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
+            font-family: 'Source Sans Pro', sans-serif;
         }
 
         /* Progress Bar */
@@ -890,46 +979,16 @@
             transition: width 0.3s ease;
         }
 
-        /* Result Card */
-        .result-card {
-            background: var(--glass-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .result-title {
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-family: 'Poppins', sans-serif;
-            color: var(--primary);
-        }
-
-        .result-content {
-            padding: 1rem;
-            background: var(--white);
-            border-radius: var(--border-radius-sm);
-            border-left: 3px solid var(--primary);
-            color: var(--text-dark);
-        }
-
-        /* Help Button & Modal */
-        .help-btn {
+        /* Tutorial Button */
+        .tutorial-btn {
             position: fixed;
             bottom: 2rem;
-            left: 2rem;
+            right: 2rem;
             width: 60px;
             height: 60px;
-            border-radius: var(--border-radius-round);
+            border-radius: 50%;
             background: var(--primary);
-            color: var(--text-light);
+            color: var(--white);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -937,206 +996,105 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             z-index: 90;
         }
 
-        .help-btn:hover {
+        .tutorial-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 10px 25px rgba(230, 81, 0, 0.3);
         }
 
-        .help-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .help-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .help-modal {
-            background: var(--glass-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--glass-shadow);
-            width: 90%;
-            max-width: 900px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            border: 1px solid var(--glass-border);
-            position: relative;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .help-modal-overlay.active .help-modal {
-            transform: translateY(0);
-        }
-
-        .help-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.2rem 1.5rem;
-            background: var(--primary);
-            color: var(--text-light);
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-        }
-
-        .help-modal-header h3 {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.3rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-        }
-
-        .help-modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: var(--border-radius-round);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
-
-        .help-modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .help-modal-body {
-            padding: 1.5rem;
-        }
-
-        .help-section {
-            margin-bottom: 2rem;
-        }
-
-        .help-section-title {
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .help-content {
-            background: var(--white);
-            border-radius: var(--border-radius-sm);
-            padding: 1.2rem;
-            border-left: 3px solid var(--primary);
-        }
-
-        .help-content p {
-            margin-bottom: 0.8rem;
-        }
-
-        .help-content ul {
-            padding-left: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .help-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .help-footer {
-            text-align: center;
-            padding: 1rem;
-            border-top: 1px solid var(--glass-border);
-            color: var(--dark-gray);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 1024px) {
-            .main-container {
-                flex-direction: column;
+        /* Mobile Styles */
+        @media (max-width: 992px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "footer";
             }
-            
+
             .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .analysis-panel,
+            .settings-panel,
+            .notes-panel {
                 width: 100%;
+                right: -100%;
+            }
+
+            .editor-container {
+                height: calc(100vh - 120px);
             }
         }
 
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .logo {
-                justify-content: center;
-            }
-            
-            .toolbar-section {
-                justify-content: center;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .footer-section h3::after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            
-            .footer-links a {
-                justify-content: center;
-            }
-            
-            .footer-links a:hover {
-                transform: translateX(0) scale(1.05);
-            }
-            
-            .quick-access {
-                bottom: 1rem;
-                right: 1rem;
+            .header {
+                padding: 1rem;
             }
 
-            .help-btn {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .editor {
+                padding: 1rem;
+            }
+
+            .toolbar-group {
+                margin-bottom: 0.5rem;
+            }
+
+            .tutorial-btn {
                 bottom: 1rem;
-                left: 1rem;
+                right: 1rem;
                 width: 50px;
                 height: 50px;
+                font-size: 1.2rem;
             }
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 992px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            grid-area: footer;
+            background: var(--white);
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            border-top: 1px solid var(--primary-bg-medium);
+            font-family: 'Source Sans Pro', sans-serif;
         }
     </style>
 </head>
@@ -1145,241 +1103,193 @@
         <div class="progress-bar" id="progress-bar"></div>
     </div>
 
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img">
-                <h1><strong>ANG SILAKBO</strong></h1>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="Coral.png" alt="SILAKBO Logo" class="logo-img" style="width: 80px; height: 80px; margin-bottom: 1rem;">
+                <h2>CoralVIA</h2>
+                <p>Text Analysis Tool</p>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="sidebar-menu-title">Document</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link active" id="btn-new-document">
+                            <i class="fas fa-file"></i> New Document
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-save">
+                            <i class="fas fa-save"></i> Save Document
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-load">
+                            <i class="fas fa-folder-open"></i> Load Document
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-export">
+                            <i class="fas fa-file-export"></i> Export Document
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="sidebar-menu-title">AI Analysis</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-summarize">
+                            <i class="fas fa-compress-alt"></i> Summarize
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-grammar">
+                            <i class="fas fa-spell-check"></i> Grammar Check
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-plagiarism">
+                            <i class="fas fa-search"></i> Plagiarism Check
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-sentiment">
+                            <i class="fas fa-smile"></i> Sentiment Analysis
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-keywords">
+                            <i class="fas fa-key"></i> Extract Keywords
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-translate">
+                            <i class="fas fa-language"></i> Translate
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="sidebar-menu-title">Tools</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-notes-toggle">
+                            <i class="fas fa-sticky-note"></i> Notes
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-settings-toggle">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#" class="sidebar-menu-link" id="btn-help">
+                            <i class="fas fa-question-circle"></i> Help
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="tutorial.html" class="sidebar-menu-link" id="btn-tutorial">
+                            <i class="fas fa-book"></i> Tutorial
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                &copy; 2025 ANG SILAKBO
+            </div>
+        </aside>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="SILAKBO.png" alt="SILAKBO Logo" class="logo-img">
+                <h1>ANG SILAKBO</h1>
             </div>
             <div class="header-actions">
-                <button class="btn btn-primary" id="btn-new-document">
-                    <i class="fas fa-plus"></i> New Document
+                <button class="btn" id="btn-clear">
+                    <i class="fas fa-trash-alt"></i> Clear
                 </button>
-                <button class="btn" id="btn-settings-toggle">
-                    <i class="fas fa-cog"></i> Settings
+                <button class="btn btn-primary" id="btn-analyze">
+                    <i class="fas fa-robot"></i> Analyze
                 </button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <div class="main-container">
-        <div class="editor-container">
-            <div class="toolbar">
-                <div class="toolbar-section">
-                    <div class="toolbar-label">Formatting</div>
-                    <button class="btn btn-icon" id="btn-bold" title="Bold">
-                        <i class="fas fa-bold"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-italic" title="Italic">
-                        <i class="fas fa-italic"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-underline" title="Underline">
-                        <i class="fas fa-underline"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-link" title="Insert Link">
-                        <i class="fas fa-link"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-list" title="Bullet List">
-                        <i class="fas fa-list-ul"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-numbering" title="Numbered List">
-                        <i class="fas fa-list-ol"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-quote" title="Blockquote">
-                        <i class="fas fa-quote-right"></i>
-                    </button>
-                    <button class="btn btn-icon" id="btn-code" title="Code Block">
-                        <i class="fas fa-code"></i>
-                    </button>
-                </div>
-                
-                <div class="toolbar-section">
-                    <div class="toolbar-label">AI Analysis</div>
-                    <button class="btn" id="btn-summarize">
-                        <i class="fas fa-compress-alt"></i> Summarize
-                    </button>
-                    <button class="btn" id="btn-plagiarism">
-                        <i class="fas fa-search"></i> Check Plagiarism
-                    </button>
-                    <button class="btn" id="btn-grammar">
-                        <i class="fas fa-spell-check"></i> Grammar Check
-                    </button>
-                    <button class="btn" id="btn-translate">
-                        <i class="fas fa-language"></i> Translate
-                    </button>
-                    <button class="btn" id="btn-sentiment">
-                        <i class="fas fa-smile"></i> Sentiment Analysis
-                    </button>
-                    <button class="btn" id="btn-keywords">
-                        <i class="fas fa-key"></i> Extract Keywords
-                    </button>
-                </div>
-                
-                <div class="toolbar-section">
-                    <div class="toolbar-label">Document</div>
-                    <button class="btn btn-success" id="btn-save">
-                        <i class="fas fa-save"></i> Save
-                    </button>
-                    <button class="btn" id="btn-load">
-                        <i class="fas fa-folder-open"></i> Load
-                    </button>
-                    <button class="btn" id="btn-export">
-                        <i class="fas fa-file-export"></i> Export
-                    </button>
-                    <button class="btn btn-danger" id="btn-clear">
-                        <i class="fas fa-trash-alt"></i> Clear
-                    </button>
-                </div>
-            </div>
-            
-            <div class="editor" id="editor" contenteditable="true">
-                <p>Welcome to <strong>ANG SILAKBO</strong> - your advanced text analysis tool!</p>
-                <p>Start typing here or paste your text. Use the toolbar above to format your content or analyze your writing.</p>
-                <p>Key features:</p>
-                <ul>
-                    <li>Grammar and spelling check</li>
-                    <li>Plagiarism detection</li>
-                    <li>Sentiment analysis</li>
-                    <li>Text summarization</li>
-                    <li>Keyword extraction</li>
-                    <li>Translation services</li>
-                </ul>
-                <p>Highlight any text and right-click for additional options.</p>
-            </div>
-            
-            <div class="word-count" id="word-count">
-                <span>Words: 0</span>
-                <span>Characters: 0</span>
-                <span id="status" class="badge badge-success">Ready</span>
-            </div>
-            
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <div id="loading-text">Processing your request...</div>
-            </div>
-        </div>
-        
-        <div class="sidebar">
-            <div class="tab-container">
-                <div class="tab active" data-tab="instructions">Guide</div>
-                <div class="tab" data-tab="notes">Notes</div>
-                <div class="tab" data-tab="settings">Settings</div>
-            </div>
-            
-            <div class="tab-content active" id="instructions-content">
-                <h3><i class="fas fa-book"></i> How to Use</h3>
-                
-                <div class="result-card">
-                    <div class="result-title">
-                        <i class="fas fa-edit"></i> Basic Editing
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <div class="toolbar-group">
+                        <button class="btn btn-icon" id="btn-bold" title="Bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button class="btn btn-icon" id="btn-italic" title="Italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button class="btn btn-icon" id="btn-underline" title="Underline">
+                            <i class="fas fa-underline"></i>
+                        </button>
                     </div>
-                    <div class="result-content">
+                    <div class="toolbar-group">
+                        <button class="btn btn-icon" id="btn-list" title="Bullet List">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button class="btn btn-icon" id="btn-numbering" title="Numbered List">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="btn btn-icon" id="btn-link" title="Insert Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button class="btn btn-icon" id="btn-quote" title="Blockquote">
+                            <i class="fas fa-quote-right"></i>
+                        </button>
+                        <button class="btn btn-icon" id="btn-code" title="Code Block">
+                            <i class="fas fa-code"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor-wrapper">
+                    <div class="editor" id="editor" contenteditable="true">
+                        <p>Welcome to <strong>ANG SILAKBO</strong> - your advanced text analysis tool!</p>
+                        <p>Start typing here or paste your text. Use the toolbar above to format your content or analyze your writing.</p>
+                        <p>Key features:</p>
                         <ul>
-                            <li>Type or paste your text in the editor</li>
-                            <li>Use formatting buttons for styling</li>
-                            <li>Right-click highlighted text for more options</li>
+                            <li>Grammar and spelling check</li>
+                            <li>Plagiarism detection</li>
+                            <li>Sentiment analysis</li>
+                            <li>Text summarization</li>
+                            <li>Keyword extraction</li>
+                            <li>Translation services</li>
                         </ul>
+                        <p>Highlight any text and right-click for additional options.</p>
                     </div>
-                </div>
-                
-                <div class="result-card">
-                    <div class="result-title">
-                        <i class="fas fa-robot"></i> AI Features
-                    </div>
-                    <div class="result-content">
-                        <ul>
-                            <li><strong>Rephrase:</strong> Rewrite selected text</li>
-                            <li><strong>Improve:</strong> Enhance text quality</li>
-                            <li><strong>Summarize:</strong> Create concise summary</li>
-                            <li><strong>Grammar Check:</strong> Fix grammatical errors</li>
-                            <li><strong>Sentiment Analysis:</strong> Analyze emotional tone</li>
-                            <li><strong>Keywords:</strong> Extract important terms</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="result-card">
-                    <div class="result-title">
-                        <i class="fas fa-file-alt"></i> Document Management
-                    </div>
-                    <div class="result-content">
-                        <ul>
-                            <li>Save your work locally</li>
-                            <li>Export to various formats</li>
-                            <li>View version history</li>
-                            <li>Create and manage notes</li>
-                        </ul>
+                    <div class="editor-statusbar">
+                        <div id="word-count">Words: 0 | Characters: 0</div>
+                        <div id="status" class="badge badge-success">Ready</div>
                     </div>
                 </div>
             </div>
-            
-            <div class="tab-content" id="notes-content">
-                <h3><i class="fas fa-sticky-note"></i> Saved Notes</h3>
-                <div id="saved-notes-list">
-                    <p>No saved notes yet.</p>
-                </div>
-                <button class="btn btn-primary" id="btn-new-note">
-                    <i class="fas fa-plus"></i> New Note
-                </button>
-            </div>
-            
-            <div class="tab-content" id="settings-content">
-                <h3><i class="fas fa-cog"></i> Settings</h3>
-                
-                <div class="settings-option">
-                    <label for="font-family">Font Family:</label>
-                    <select id="font-family">
-                        <option value="'Inter', sans-serif">Inter</option>
-                        <option value="'Merriweather', serif">Merriweather</option>
-                        <option value="'Playfair Display', serif">Playfair Display</option>
-                        <option value="'Poppins', sans-serif">Poppins</option>
-                        <option value="'Georgia', serif">Georgia</option>
-                    </select>
-                </div>
-                
-                <div class="settings-option">
-                    <label for="font-size">Font Size:</label>
-                    <select id="font-size">
-                        <option value="14px">Small</option>
-                        <option value="16px" selected>Medium</option>
-                        <option value="18px">Large</option>
-                        <option value="20px">Extra Large</option>
-                    </select>
-                </div>
-                
-                <div class="settings-option">
-                    <label>Editor Theme:</label>
-                    <div class="theme-selector">
-                        <div class="theme-option selected" style="background-color: #ffffff;" data-theme="light"></div>
-                        <div class="theme-option" style="background-color: #f5f5f5;" data-theme="light-gray"></div>
-                        <div class="theme-option" style="background-color: #fff3e0;" data-theme="light-orange"></div>
-                        <div class="theme-option" style="background-color: #ffebee;" data-theme="light-pink"></div>
-                        <div class="theme-option" style="background-color: #f9f3e6;" data-theme="sepia"></div>
-                    </div>
-                </div>
-                
-                <div class="settings-option">
-                    <label for="auto-save">Auto-save:</label>
-                    <select id="auto-save">
-                        <option value="off">Off</option>
-                        <option value="1">Every 1 minute</option>
-                        <option value="5" selected>Every 5 minutes</option>
-                        <option value="10">Every 10 minutes</option>
-                    </select>
-                </div>
-                
-                <div class="settings-option">
-                    <label for="api-key">Cohere API Key:</label>
-                    <input type="password" id="api-key" placeholder="Enter your API key">
-                </div>
-                
-                <button class="btn btn-primary" id="btn-reset-settings">
-                    <i class="fas fa-undo"></i> Reset to Defaults
-                </button>
-            </div>
-        </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            2025 ANG SILAKBO | All Rights Reserved
+        </footer>
     </div>
 
+    <!-- Tutorial Button -->
+    <a href="tutorial.html" class="tutorial-btn" title="View Tutorial">
+        <i class="fas fa-graduation-cap"></i>
+    </a>
+
+    <!-- Context Menu -->
     <div class="context-menu" id="context-menu">
         <div class="context-menu-item" id="menu-rephrase">
             <i class="fas fa-sync-alt"></i> Rephrase
@@ -1419,95 +1329,128 @@
         </div>
     </div>
 
-    <!-- Modal Templates -->
-    <div class="modal-overlay" id="grammar-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-spell-check"></i> Grammar Check Results</h3>
-                <button class="modal-close" id="close-grammar-modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body" id="grammar-modal-content">
-                <!-- Content will be dynamically inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn" id="btn-apply-corrections">Apply All Corrections</button>
-                <button class="btn btn-primary" id="btn-close-grammar">Close</button>
-            </div>
+    <!-- Analysis Panel -->
+    <div class="analysis-panel" id="analysis-panel">
+        <div class="analysis-header">
+            <h3><i class="fas fa-robot"></i> <span id="analysis-title">AI Analysis</span></h3>
+            <button class="analysis-close" id="analysis-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="analysis-content" id="analysis-content">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+        <div class="analysis-footer">
+            <button class="btn" id="analysis-action-secondary">Cancel</button>
+            <button class="btn btn-primary" id="analysis-action-primary">Apply</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="plagiarism-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-search"></i> Plagiarism Check Results</h3>
-                <button class="modal-close" id="close-plagiarism-modal"><i class="fas fa-times"></i></button>
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settings-panel">
+        <div class="settings-header">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <button class="settings-close" id="settings-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-content">
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-font"></i> Text Preferences
+                </div>
+                <div class="settings-option">
+                    <label for="font-family">Font Family:</label>
+                    <select id="font-family">
+                        <option value="'Merriweather', serif">Merriweather</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Source Sans Pro', sans-serif">Source Sans Pro</option>
+                        <option value="'Georgia', serif">Georgia</option>
+                    </select>
+                </div>
+                <div class="settings-option">
+                    <label for="font-size">Font Size:</label>
+                    <select id="font-size">
+                        <option value="14px">Small</option>
+                        <option value="16px" selected>Medium</option>
+                        <option value="18px">Large</option>
+                        <option value="20px">Extra Large</option>
+                    </select>
+                </div>
             </div>
-            <div class="modal-body" id="plagiarism-modal-content">
-                <!-- Content will be dynamically inserted here -->
+
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-sliders-h"></i> Application Settings
+                </div>
+                <div class="settings-option">
+                    <label for="auto-save">Auto-save:</label>
+                    <select id="auto-save">
+                        <option value="off">Off</option>
+                        <option value="1">Every 1 minute</option>
+                        <option value="5" selected>Every 5 minutes</option>
+                        <option value="10">Every 10 minutes</option>
+                    </select>
+                </div>
+                <div class="settings-option">
+                    <label for="api-key">Cohere API Key:</label>
+                    <input type="password" id="api-key" placeholder="Enter your API key">
+                </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="btn-close-plagiarism">Close</button>
-            </div>
+        </div>
+        <div class="settings-footer">
+            <button class="btn" id="btn-reset-settings">Reset to Defaults</button>
+            <button class="btn btn-primary" id="btn-save-settings">Save Settings</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="sentiment-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-smile"></i> Sentiment Analysis</h3>
-                <button class="modal-close" id="close-sentiment-modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body" id="sentiment-modal-content">
-                <!-- Content will be dynamically inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="btn-close-sentiment">Close</button>
-            </div>
+    <!-- Notes Panel -->
+    <div class="notes-panel" id="notes-panel">
+        <div class="notes-header">
+            <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+            <button class="notes-close" id="notes-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notes-content" id="saved-notes-list">
+            <p>No saved notes yet.</p>
+        </div>
+        <div class="notes-footer">
+            <button class="btn btn-primary" id="btn-new-note">
+                <i class="fas fa-plus"></i> New Note
+            </button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="keywords-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-key"></i> Extracted Keywords</h3>
-                <button class="modal-close" id="close-keywords-modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body" id="keywords-modal-content">
-                <!-- Content will be dynamically inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn" id="btn-copy-keywords">Copy Keywords</button>
-                <button class="btn btn-primary" id="btn-close-keywords">Close</button>
-            </div>
-        </div>
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div id="loading-text">Processing your request...</div>
     </div>
 
-    <!-- Help Button and Modal -->
-    <button class="help-btn" id="help-btn">
-        <i class="fas fa-question"></i>
-    </button>
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-title" id="notification-title">Success</div>
+        <div class="notification-message" id="notification-message">Operation completed successfully.</div>
+    </div>
 
-    <div class="help-modal-overlay" id="help-modal">
-        <div class="help-modal">
-            <div class="help-modal-header">
+    <!-- Help Modal -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal">
+            <div class="modal-header">
                 <h3><i class="fas fa-question-circle"></i> ANG SILAKBO Help Center</h3>
-                <button class="help-modal-close" id="close-help-modal"><i class="fas fa-times"></i></button>
+                <button class="modal-close" id="close-help-modal"><i class="fas fa-times"></i></button>
             </div>
-            <div class="help-modal-body">
-                <div class="help-section">
-                    <div class="help-section-title">
+            <div class="modal-body">
+                <div class="result-card">
+                    <div class="result-title">
                         <i class="fas fa-info-circle"></i> About ANG SILAKBO
                     </div>
-                    <div class="help-content">
+                    <div class="result-content">
                         <p>ANG SILAKBO is an advanced text analysis tool designed to help you improve your writing through AI-powered features. Whether you're writing an essay, article, or any other text content, our tool provides comprehensive analysis and suggestions to enhance your work.</p>
                     </div>
                 </div>
 
-                <div class="help-section">
-                    <div class="help-section-title">
+                <div class="result-card">
+                    <div class="result-title">
                         <i class="fas fa-edit"></i> Basic Text Editing
                     </div>
-                    <div class="help-content">
+                    <div class="result-content">
                         <p><strong>Getting Started:</strong></p>
                         <ul>
                             <li>Type directly in the editor or paste your text</li>
@@ -1526,11 +1469,11 @@
                     </div>
                 </div>
 
-                <div class="help-section">
-                    <div class="help-section-title">
+                <div class="result-card">
+                    <div class="result-title">
                         <i class="fas fa-robot"></i> AI Analysis Features
                     </div>
-                    <div class="help-content">
+                    <div class="result-content">
                         <p>ANG SILAKBO offers several AI-powered analysis tools:</p>
                         
                         <p><strong>Grammar Check:</strong> Identifies grammatical errors and suggests corrections.</p>
@@ -1539,128 +1482,77 @@
                         <p><strong>Text Summarization:</strong> Creates a concise summary of your text, capturing the main points.</p>
                         <p><strong>Keyword Extraction:</strong> Identifies the most important keywords and phrases in your text.</p>
                         <p><strong>Translation:</strong> Translates your text to various languages while preserving meaning.</p>
-                        
-                        <p>To use these features, select the text you want to analyze (or leave unselected to analyze the entire document) and click the corresponding button in the toolbar.</p>
                     </div>
                 </div>
-
-                <div class="help-section">
-                    <div class="help-section-title">
-                        <i class="fas fa-file-alt"></i> Document Management
-                    </div>
-                    <div class="help-content">
-                        <p><strong>Saving and Loading:</strong></p>
-                        <ul>
-                            <li>Click the "Save" button to save your document locally</li>
-                            <li>Use "Load" to retrieve your saved document</li>
-                            <li>Configure auto-save in Settings to automatically save your work</li>
-                        </ul>
-                        
-                        <p><strong>Exporting:</strong></p>
-                        <ul>
-                            <li>Click "Export" to download your document as TXT or HTML</li>
-                            <li>Choose your preferred format when prompted</li>
-                        </ul>
-                        
-                        <p><strong>Notes:</strong></p>
-                        <ul>
-                            <li>Create notes to save important snippets or ideas</li>
-                            <li>Access your notes from the "Notes" tab in the sidebar</li>
-                            <li>Click on a saved note to load it into the editor</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="help-section">
-                    <div class="help-section-title">
-                        <i class="fas fa-cog"></i> Customization
-                    </div>
-                    <div class="help-content">
-                        <p>Personalize your experience through the Settings tab:</p>
-                        <ul>
-                            <li><strong>Font Family:</strong> Choose from various font options</li>
-                            <li><strong>Font Size:</strong> Adjust text size for better readability</li>
-                            <li><strong>Editor Theme:</strong> Select a color theme that suits your preference</li>
-                            <li><strong>Auto-save:</strong> Configure automatic saving intervals</li>
-                            <li><strong>API Key:</strong> Enter your Cohere API key for enhanced AI features</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="help-footer">
-                <p>For additional support, contact us at uclm.angsilakbo@uc.edu.ph</p>
             </div>
         </div>
     </div>
 
-    <!-- Quick Access Menu -->
-    <div class="quick-access">
-        <button class="quick-btn" id="quick-menu-toggle">
-            <i class="fas fa-bolt"></i>
-        </button>
-        <div class="quick-menu" id="quick-menu">
-            <div class="quick-menu-item" id="quick-grammar">
-                <i class="fas fa-spell-check"></i> Grammar Check
+    <!-- Grammar Check Modal -->
+    <div class="modal-overlay" id="grammar-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-spell-check"></i> Grammar Check Results</h3>
+                <button class="modal-close" id="close-grammar-modal"><i class="fas fa-times"></i></button>
             </div>
-            <div class="quick-menu-item" id="quick-summarize">
-                <i class="fas fa-compress-alt"></i> Summarize
+            <div class="modal-body" id="grammar-modal-content">
+                <!-- Content will be dynamically inserted here -->
             </div>
-            <div class="quick-menu-item" id="quick-keywords">
-                <i class="fas fa-key"></i> Extract Keywords
-            </div>
-            <div class="quick-menu-item" id="quick-save">
-                <i class="fas fa-save"></i> Quick Save
+            <div class="modal-footer">
+                <button class="btn" id="btn-apply-corrections">Apply All Corrections</button>
+                <button class="btn btn-primary" id="btn-close-grammar">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <div class="notification-title" id="notification-title">Success</div>
-        <div class="notification-message" id="notification-message">Operation completed successfully.</div>
+    <!-- Plagiarism Check Modal -->
+    <div class="modal-overlay" id="plagiarism-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-search"></i> Plagiarism Check Results</h3>
+                <button class="modal-close" id="close-plagiarism-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="plagiarism-modal-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-close-plagiarism">Close</button>
+            </div>
+        </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>ANG SILAKBO</h3>
-                <p>Advanced text analysis and writing assistant powered by AI. Improve your writing with grammar checks, plagiarism detection, sentiment analysis, and more.</p>
+    <!-- Sentiment Analysis Modal -->
+    <div class="modal-overlay" id="sentiment-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-smile"></i> Sentiment Analysis</h3>
+                <button class="modal-close" id="close-sentiment-modal"><i class="fas fa-times"></i></button>
             </div>
-            
-            <div class="footer-section">
-                <h3>Features</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-check"></i> Grammar Check</a></li>
-                    <li><a href="#"><i class="fas fa-search"></i> Plagiarism Detection</a></li>
-                    <li><a href="#"><i class="fas fa-smile"></i> Sentiment Analysis</a></li>
-                    <li><a href="#"><i class="fas fa-compress-alt"></i> Text Summarization</a></li>
-                    <li><a href="#"><i class="fas fa-language"></i> Translation</a></li>
-                </ul>
+            <div class="modal-body" id="sentiment-modal-content">
+                <!-- Content will be dynamically inserted here -->
             </div>
-            
-            <div class="footer-section">
-                <h3>Resources</h3>
-                <ul class="footer-links">
-                    <li><a href="Guidelines.html"><i class="fas fa-book"></i> User Guide</a></li>
-                    <li><a href="FAQ.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-                    <li><a href="Tutorial.html"><i class="fas fa-video"></i> Tutorials</a></li>
-                    <li><a href="Dev's Note.html"><i class="fas fa-newspaper"></i> Blog</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-envelope"></i> uclm.angsilakbo@uc.edu.ph</a></li>
-                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> University of Cebu Lapu-Lapu and Mandaue Senior High School</a></li>
-                </ul>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-close-sentiment">Close</button>
             </div>
         </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 ANG SILAKBO. All rights reserved.</p>
+    </div>
+
+    <!-- Keywords Modal -->
+    <div class="modal-overlay" id="keywords-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Extracted Keywords</h3>
+                <button class="modal-close" id="close-keywords-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="keywords-modal-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="btn-copy-keywords">Copy Keywords</button>
+                <button class="btn btn-primary" id="btn-close-keywords">Close</button>
+            </div>
         </div>
-    </footer>
+    </div>
 
     <script>
         // API key for Cohere (in a real app, this should be handled server-side)
@@ -1674,8 +1566,19 @@
         const loadingIndicator = document.getElementById('loading');
         const loadingText = document.getElementById('loading-text');
         const progressBar = document.getElementById('progress-bar');
+        const sidebar = document.getElementById('sidebar');
+        
+        // Panels
+        const analysisPanel = document.getElementById('analysis-panel');
+        const settingsPanel = document.getElementById('settings-panel');
+        const notesPanel = document.getElementById('notes-panel');
+        const analysisContent = document.getElementById('analysis-content');
+        const analysisTitle = document.getElementById('analysis-title');
+        const analysisActionPrimary = document.getElementById('analysis-action-primary');
+        const analysisActionSecondary = document.getElementById('analysis-action-secondary');
         
         // Modal elements
+        const helpModal = document.getElementById('help-modal');
         const grammarModal = document.getElementById('grammar-modal');
         const plagiarismModal = document.getElementById('plagiarism-modal');
         const sentimentModal = document.getElementById('sentiment-modal');
@@ -1684,11 +1587,6 @@
         const plagiarismModalContent = document.getElementById('plagiarism-modal-content');
         const sentimentModalContent = document.getElementById('sentiment-modal-content');
         const keywordsModalContent = document.getElementById('keywords-modal-content');
-        
-        // Help modal elements
-        const helpBtn = document.getElementById('help-btn');
-        const helpModal = document.getElementById('help-modal');
-        const closeHelpModal = document.getElementById('close-help-modal');
         
         // Toolbar buttons
         const btnBold = document.getElementById('btn-bold');
@@ -1699,6 +1597,8 @@
         const btnNumbering = document.getElementById('btn-numbering');
         const btnQuote = document.getElementById('btn-quote');
         const btnCode = document.getElementById('btn-code');
+        
+        // Sidebar buttons
         const btnSummarize = document.getElementById('btn-summarize');
         const btnPlagiarism = document.getElementById('btn-plagiarism');
         const btnGrammar = document.getElementById('btn-grammar');
@@ -1709,12 +1609,19 @@
         const btnLoad = document.getElementById('btn-load');
         const btnExport = document.getElementById('btn-export');
         const btnClear = document.getElementById('btn-clear');
-        const btnNewNote = document.getElementById('btn-new-note');
-        const btnResetSettings = document.getElementById('btn-reset-settings');
         const btnNewDocument = document.getElementById('btn-new-document');
         const btnSettingsToggle = document.getElementById('btn-settings-toggle');
+        const btnNotesToggle = document.getElementById('btn-notes-toggle');
+        const btnHelp = document.getElementById('btn-help');
+        const btnAnalyze = document.getElementById('btn-analyze');
+        
+        // Panel close buttons
+        const analysisClose = document.getElementById('analysis-close');
+        const settingsClose = document.getElementById('settings-close');
+        const notesClose = document.getElementById('notes-close');
         
         // Modal buttons
+        const closeHelpModal = document.getElementById('close-help-modal');
         const btnCloseGrammar = document.getElementById('btn-close-grammar');
         const btnClosePlagiarism = document.getElementById('btn-close-plagiarism');
         const btnCloseSentiment = document.getElementById('btn-close-sentiment');
@@ -1726,13 +1633,20 @@
         const btnApplyCorrections = document.getElementById('btn-apply-corrections');
         const btnCopyKeywords = document.getElementById('btn-copy-keywords');
         
-        // Quick access elements
-        const quickMenuToggle = document.getElementById('quick-menu-toggle');
-        const quickMenu = document.getElementById('quick-menu');
-        const quickGrammar = document.getElementById('quick-grammar');
-        const quickSummarize = document.getElementById('quick-summarize');
-        const quickKeywords = document.getElementById('quick-keywords');
-        const quickSave = document.getElementById('quick-save');
+        // Settings elements
+        const fontFamilySelect = document.getElementById('font-family');
+        const fontSizeSelect = document.getElementById('font-size');
+        const autoSaveSelect = document.getElementById('auto-save');
+        const apiKeyInput = document.getElementById('api-key');
+        const btnResetSettings = document.getElementById('btn-reset-settings');
+        const btnSaveSettings = document.getElementById('btn-save-settings');
+        
+        // Notes elements
+        const savedNotesList = document.getElementById('saved-notes-list');
+        const btnNewNote = document.getElementById('btn-new-note');
+        
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         
         // Notification elements
         const notification = document.getElementById('notification');
@@ -1752,17 +1666,6 @@
         const menuGrammar = document.getElementById('menu-grammar');
         const menuSentiment = document.getElementById('menu-sentiment');
         
-        // Tab elements
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        // Settings elements
-        const fontFamilySelect = document.getElementById('font-family');
-        const fontSizeSelect = document.getElementById('font-size');
-        const themeOptions = document.querySelectorAll('.theme-option');
-        const autoSaveSelect = document.getElementById('auto-save');
-        const apiKeyInput = document.getElementById('api-key');
-        
         // Current selection tracking
         let selectedText = '';
         let selectionRange = null;
@@ -1779,40 +1682,11 @@
             loadNotes();
             setupAutoSave();
             
-            // Initialize tabs
-            setupTabs();
-            
             // Add event listeners
             addEventListeners();
             
             // Show welcome notification
             showNotification('Welcome to ANG SILAKBO', 'Your advanced text analysis tool is ready to use.');
-        }
-        
-        // Set up tab functionality
-        function setupTabs() {
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Find the parent tab container
-                    const tabContainer = tab.closest('.tab-container');
-                    const tabContentContainer = tabContainer.nextElementSibling;
-                    
-                    // Remove active class from all tabs in this container
-                    tabContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    
-                    // Remove active class from all tab contents in this container
-                    if (tabContentContainer && tabContentContainer.classList.contains('results-body')) {
-                        tabContentContainer.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    } else {
-                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    }
-                    
-                    // Add active class to clicked tab and corresponding content
-                    tab.classList.add('active');
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-content`).classList.add('active');
-                });
-            });
         }
         
         // Add all event listeners
@@ -1822,9 +1696,20 @@
             editor.addEventListener('keydown', handleKeyDown);
             editor.addEventListener('contextmenu', handleContextMenu);
             
-            // Help button
-            helpBtn.addEventListener('click', () => openModal(helpModal));
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            
+            // Panel close buttons
+            analysisClose.addEventListener('click', () => closePanel(analysisPanel));
+            settingsClose.addEventListener('click', () => closePanel(settingsPanel));
+            notesClose.addEventListener('click', () => closePanel(notesPanel));
+            
+            // Help modal
+            btnHelp.addEventListener('click', () => openModal(helpModal));
             closeHelpModal.addEventListener('click', () => closeModal(helpModal));
+            
+            // Analyze button
+            btnAnalyze.addEventListener('click', showAnalysisOptions);
             
             // Formatting buttons
             btnBold.addEventListener('click', () => formatText('bold'));
@@ -1849,10 +1734,14 @@
             btnLoad.addEventListener('click', loadDocument);
             btnExport.addEventListener('click', exportDocument);
             btnClear.addEventListener('click', clearEditor);
-            btnNewNote.addEventListener('click', createNewNote);
-            btnResetSettings.addEventListener('click', resetSettings);
             btnNewDocument.addEventListener('click', createNewDocument);
-            btnSettingsToggle.addEventListener('click', toggleSettingsTab);
+            btnSettingsToggle.addEventListener('click', () => openPanel(settingsPanel));
+            btnNotesToggle.addEventListener('click', () => openPanel(notesPanel));
+            btnNewNote.addEventListener('click', createNewNote);
+            
+            // Settings buttons
+            btnResetSettings.addEventListener('click', resetSettings);
+            btnSaveSettings.addEventListener('click', saveSettings);
             
             // Modal buttons
             btnCloseGrammar.addEventListener('click', () => closeModal(grammarModal));
@@ -1865,25 +1754,6 @@
             closeKeywordsModal.addEventListener('click', () => closeModal(keywordsModal));
             btnApplyCorrections.addEventListener('click', applyAllCorrections);
             btnCopyKeywords.addEventListener('click', copyKeywordsToClipboard);
-            
-            // Quick access buttons
-            quickMenuToggle.addEventListener('click', toggleQuickMenu);
-            quickGrammar.addEventListener('click', () => {
-                checkGrammar();
-                toggleQuickMenu();
-            });
-            quickSummarize.addEventListener('click', () => {
-                summarizeText();
-                toggleQuickMenu();
-            });
-            quickKeywords.addEventListener('click', () => {
-                extractKeywords();
-                toggleQuickMenu();
-            });
-            quickSave.addEventListener('click', () => {
-                saveDocument();
-                toggleQuickMenu();
-            });
             
             // Context menu items
             menuRephrase.addEventListener('click', () => handleContextMenuAction('rephrase'));
@@ -1901,9 +1771,6 @@
             // Settings changes
             fontFamilySelect.addEventListener('change', updateEditorStyle);
             fontSizeSelect.addEventListener('change', updateEditorStyle);
-            themeOptions.forEach(option => {
-                option.addEventListener('click', changeTheme);
-            });
             autoSaveSelect.addEventListener('change', setupAutoSave);
             apiKeyInput.addEventListener('change', saveSettings);
             
@@ -1914,22 +1781,98 @@
             
             // Close modals when clicking outside
             document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('help-modal-overlay')) {
+                if (e.target.classList.contains('modal-overlay')) {
                     closeModal(e.target);
-                }
-            });
-            
-            // Close quick menu when clicking elsewhere
-            document.addEventListener('click', (e) => {
-                if (e.target !== quickMenuToggle && !quickMenu.contains(e.target)) {
-                    quickMenu.classList.remove('active');
                 }
             });
         }
         
-        // Toggle quick menu
-        function toggleQuickMenu() {
-            quickMenu.classList.toggle('active');
+        // Show analysis options
+        function showAnalysisOptions() {
+            analysisTitle.textContent = 'Choose Analysis Type';
+            analysisContent.innerHTML = `
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-robot"></i> AI Analysis Options
+                    </div>
+                    <div class="result-content">
+                        <p>Select the type of analysis you want to perform on your text:</p>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+                            <button class="btn btn-primary" id="analysis-grammar">
+                                <i class="fas fa-spell-check"></i> Grammar Check
+                            </button>
+                            <button class="btn btn-primary" id="analysis-plagiarism">
+                                <i class="fas fa-search"></i> Plagiarism Check
+                            </button>
+                            <button class="btn btn-primary" id="analysis-sentiment">
+                                <i class="fas fa-smile"></i> Sentiment Analysis
+                            </button>
+                            <button class="btn btn-primary" id="analysis-summarize">
+                                <i class="fas fa-compress-alt"></i> Summarize
+                            </button>
+                            <button class="btn btn-primary" id="analysis-keywords">
+                                <i class="fas fa-key"></i> Extract Keywords
+                            </button>
+                            <button class="btn btn-primary" id="analysis-translate">
+                                <i class="fas fa-language"></i> Translate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to the analysis buttons
+            document.getElementById('analysis-grammar').addEventListener('click', () => {
+                closePanel(analysisPanel);
+                checkGrammar();
+            });
+            document.getElementById('analysis-plagiarism').addEventListener('click', () => {
+                closePanel(analysisPanel);
+                checkPlagiarism();
+            });
+            document.getElementById('analysis-sentiment').addEventListener('click', () => {
+                closePanel(analysisPanel);
+                analyzeSentiment();
+            });
+            document.getElementById('analysis-summarize').addEventListener('click', () => {
+                closePanel(analysisPanel);
+                summarizeText();
+            });
+            document.getElementById('analysis-keywords').addEventListener('click', () => {
+                closePanel(analysisPanel);
+                extractKeywords();
+            });
+            document.getElementById('analysis-translate').addEventListener('click', () => {
+                closePanel(analysisPanel);
+                translateText();
+            });
+            
+            analysisActionPrimary.style.display = 'none';
+            analysisActionSecondary.textContent = 'Cancel';
+            analysisActionSecondary.onclick = () => closePanel(analysisPanel);
+            
+            openPanel(analysisPanel);
+        }
+        
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+        }
+        
+        // Open panel
+        function openPanel(panel) {
+            // Close all panels first
+            closePanel(analysisPanel);
+            closePanel(settingsPanel);
+            closePanel(notesPanel);
+            
+            // Open the requested panel
+            panel.classList.add('active');
+        }
+        
+        // Close panel
+        function closePanel(panel) {
+            panel.classList.remove('active');
         }
         
         // Show notification
@@ -1978,15 +1921,6 @@
             navigator.clipboard.writeText(keywordsText).then(() => {
                 showNotification('Keywords Copied', 'Keywords have been copied to clipboard.');
             });
-        }
-        
-        // Toggle settings tab
-        function toggleSettingsTab() {
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            
-            document.querySelector('.tab[data-tab="settings"]').classList.add('active');
-            document.getElementById('settings-content').classList.add('active');
         }
         
         // Create new document
@@ -2108,17 +2042,17 @@
             if (selection.toString().trim()) {
                 const range = selection.getRangeAt(0);
                 const code = document.createElement('pre');
-                code.style.backgroundColor = 'var(--light-gray)';
+                code.style.backgroundColor = 'var(--primary-bg)';
                 code.style.padding = '10px';
-                code.style.borderRadius = 'var(--border-radius-sm)';
+                code.style.borderRadius = 'var(--border-radius)';
                 code.style.fontFamily = 'monospace';
                 code.style.overflowX = 'auto';
                 range.surroundContents(code);
             } else {
                 const codeBlock = document.createElement('pre');
-                codeBlock.style.backgroundColor = 'var(--light-gray)';
+                codeBlock.style.backgroundColor = 'var(--primary-bg)';
                 codeBlock.style.padding = '10px';
-                codeBlock.style.borderRadius = 'var(--border-radius-sm)';
+                codeBlock.style.borderRadius = 'var(--border-radius)';
                 codeBlock.style.fontFamily = 'monospace';
                 codeBlock.innerHTML = '// Your code here';
                 insertAtCursor(codeBlock);
@@ -2177,16 +2111,12 @@
             const text = editor.innerText || '';
             const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
             const charCount = text.length;
-            wordCountDisplay.innerHTML = `
-                <span>Words: ${wordCount}</span>
-                <span>Characters: ${charCount}</span>
-                <span id="status" class="${statusIndicator.className}">${statusIndicator.textContent}</span>
-            `;
+            wordCountDisplay.innerHTML = `Words: ${wordCount} | Characters: ${charCount}`;
         }
         
         // Show loading indicator
         function showLoading(show, message = 'Processing your request...') {
-            loadingIndicator.style.display = show ? 'block' : 'none';
+            loadingIndicator.style.display = show ? 'flex' : 'none';
             loadingText.textContent = message;
         }
         
@@ -2209,7 +2139,6 @@
             if (badgeClass) {
                 statusIndicator.classList.add(badgeClass);
             }
-            updateWordCount();
         }
         
         // Add to document history
@@ -2217,38 +2146,6 @@
             const timestamp = new Date().toLocaleString();
             const content = editor.innerHTML;
             documentHistory.unshift({ action, timestamp, content });
-            updateHistoryDisplay();
-        }
-        
-        // Update history display
-        function updateHistoryDisplay() {
-            const historyList = document.getElementById('history-list');
-            if (!historyList) return;
-            
-            historyList.innerHTML = '';
-            
-            if (documentHistory.length === 0) {
-                historyList.innerHTML = '<p>No history yet.</p>';
-                return;
-            }
-            
-            documentHistory.slice(0, 10).forEach((item, index) => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                historyItem.innerHTML = `
-                    <div class="result-title">
-                        <i class="fas fa-history"></i> ${item.action}
-                    </div>
-                    <div class="note-date">${item.timestamp}</div>
-                `;
-                historyItem.addEventListener('click', () => {
-                    editor.innerHTML = item.content;
-                    setStatus(`Restored version from ${item.timestamp}`, 'badge-success');
-                    updateWordCount();
-                    showNotification('History Restored', `Document version from ${item.timestamp} has been restored.`);
-                });
-                historyList.appendChild(historyItem);
-            });
         }
         
         // Load saved notes
@@ -2262,13 +2159,12 @@
         
         // Update notes display
         function updateNotesDisplay() {
-            const notesList = document.getElementById('saved-notes-list');
-            if (!notesList) return;
+            if (!savedNotesList) return;
             
-            notesList.innerHTML = '';
+            savedNotesList.innerHTML = '';
             
             if (savedNotes.length === 0) {
-                notesList.innerHTML = '<p>No saved notes yet.</p>';
+                savedNotesList.innerHTML = '<p>No saved notes yet.</p>';
                 return;
             }
             
@@ -2276,9 +2172,7 @@
                 const noteItem = document.createElement('div');
                 noteItem.className = 'note-item';
                 noteItem.innerHTML = `
-                    <div class="result-title">
-                        <i class="fas fa-sticky-note"></i> ${note.title || 'Untitled Note'}
-                    </div>
+                    <div class="note-title">${note.title || 'Untitled Note'}</div>
                     <div class="note-date">${note.timestamp}</div>
                 `;
                 noteItem.addEventListener('click', () => {
@@ -2286,8 +2180,9 @@
                     setStatus(`Loaded note: ${note.title}`, 'badge-success');
                     updateWordCount();
                     showNotification('Note Loaded', `"${note.title}" has been loaded into the editor.`);
+                    closePanel(notesPanel);
                 });
-                notesList.appendChild(noteItem);
+                savedNotesList.appendChild(noteItem);
             });
         }
         
@@ -2343,10 +2238,11 @@
                 const result = await makeCohereRequest('summarize', text);
                 updateProgress(100);
                 
-                const modalContent = `
+                analysisTitle.textContent = 'Text Summary';
+                analysisContent.innerHTML = `
                     <div class="result-card">
                         <div class="result-title">
-                            <i class="fas fa-compress-alt" style="color: var(--primary)"></i> Summary
+                            <i class="fas fa-compress-alt"></i> Summary
                         </div>
                         <div class="result-content">
                             ${result}
@@ -2354,48 +2250,19 @@
                     </div>
                 `;
                 
-                // Create a custom modal for summary
-                const summaryModal = document.createElement('div');
-                summaryModal.className = 'modal-overlay';
-                summaryModal.innerHTML = `
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h3><i class="fas fa-compress-alt"></i> Text Summary</h3>
-                            <button class="modal-close"><i class="fas fa-times"></i></button>
-                        </div>
-                        <div class="modal-body">
-                            ${modalContent}
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn" id="btn-copy-summary">Copy Summary</button>
-                            <button class="btn btn-primary" id="btn-close-summary">Close</button>
-                        </div>
-                    </div>
-                `;
+                analysisActionPrimary.textContent = 'Copy Summary';
+                analysisActionPrimary.style.display = 'block';
+                analysisActionSecondary.textContent = 'Close';
                 
-                document.body.appendChild(summaryModal);
-                
-                // Add event listeners
-                const closeBtn = summaryModal.querySelector('.modal-close');
-                const closeSummaryBtn = summaryModal.querySelector('#btn-close-summary');
-                const copySummaryBtn = summaryModal.querySelector('#btn-copy-summary');
-                
-                closeBtn.addEventListener('click', () => {
-                    document.body.removeChild(summaryModal);
-                });
-                
-                closeSummaryBtn.addEventListener('click', () => {
-                    document.body.removeChild(summaryModal);
-                });
-                
-                copySummaryBtn.addEventListener('click', () => {
+                analysisActionPrimary.onclick = () => {
                     navigator.clipboard.writeText(result).then(() => {
                         showNotification('Summary Copied', 'Summary has been copied to clipboard.');
                     });
-                });
+                };
                 
-                // Open the modal
-                summaryModal.classList.add('active');
+                analysisActionSecondary.onclick = () => closePanel(analysisPanel);
+                
+                openPanel(analysisPanel);
                 
                 setStatus('Summarization complete', 'badge-success');
                 addToHistory('Text summarized');
@@ -2453,20 +2320,11 @@
         function loadSettings() {
             const settings = localStorage.getItem('editorSettings');
             if (settings) {
-                const { fontFamily, fontSize, theme, autoSave, apiKey } = JSON.parse(settings);
+                const { fontFamily, fontSize, autoSave, apiKey } = JSON.parse(settings);
                 
                 if (fontFamily) fontFamilySelect.value = fontFamily;
                 if (fontSize) fontSizeSelect.value = fontSize;
                 if (apiKey) apiKeyInput.value = apiKey;
-                if (theme) {
-                    themeOptions.forEach(option => {
-                        if (option.getAttribute('data-theme') === theme) {
-                            option.classList.add('selected');
-                        } else {
-                            option.classList.remove('selected');
-                        }
-                    });
-                }
                 if (autoSave) autoSaveSelect.value = autoSave;
                 
                 // Apply settings
@@ -2479,45 +2337,6 @@
         function updateEditorStyle() {
             editor.style.fontFamily = fontFamilySelect.value;
             editor.style.fontSize = fontSizeSelect.value;
-            
-            // Save settings
-            saveSettings();
-        }
-
-        // Change editor theme
-        function changeTheme(e) {
-            const theme = e.target.getAttribute('data-theme');
-            
-            // Remove selection from all theme options
-            themeOptions.forEach(option => option.classList.remove('selected'));
-            
-            // Apply selected theme
-            e.target.classList.add('selected');
-            
-            switch(theme) {
-                case 'light':
-                    editor.style.backgroundColor = '#ffffff';
-                    editor.style.color = '#333333';
-                    break;
-                case 'light-gray':
-                    editor.style.backgroundColor = '#f5f5f5';
-                    editor.style.color = '#333333';
-                    break;
-                case 'light-orange':
-                    editor.style.backgroundColor = '#fff3e0';
-                    editor.style.color = '#333333';
-                    break;
-                case 'light-pink':
-                    editor.style.backgroundColor = '#ffebee';
-                    editor.style.color = '#333333';
-                    break;
-                case 'sepia':
-                    editor.style.backgroundColor = '#f9f3e6';
-                    editor.style.color = '#5b4636';
-                    break;
-            }
-            
-            saveSettings();
         }
 
         // Set up auto-save functionality
@@ -2539,27 +2358,17 @@
         // Reset settings to defaults
         function resetSettings() {
             if (confirm('Reset all settings to default?')) {
-                localStorage.removeItem('editorSettings');
-                fontFamilySelect.value = "'Inter', sans-serif";
+                fontFamilySelect.value = "'Merriweather', serif";
                 fontSizeSelect.value = '16px';
                 autoSaveSelect.value = '5';
                 apiKeyInput.value = '';
                 
-                // Reset theme
-                themeOptions.forEach(option => {
-                    option.classList.remove('selected');
-                    if (option.getAttribute('data-theme') === 'light') {
-                        option.classList.add('selected');
-                    }
-                });
-                
                 // Apply default styles
-                editor.style.fontFamily = "'Inter', sans-serif";
+                editor.style.fontFamily = "'Merriweather', serif";
                 editor.style.fontSize = '16px';
-                editor.style.backgroundColor = '#ffffff';
-                editor.style.color = '#333333';
                 
                 setupAutoSave();
+                saveSettings();
                 setStatus('Settings reset to defaults', 'badge-success');
                 showNotification('Settings Reset', 'All settings have been reset to their default values.');
             }
@@ -2570,11 +2379,11 @@
             const settings = {
                 fontFamily: fontFamilySelect.value,
                 fontSize: fontSizeSelect.value,
-                theme: document.querySelector('.theme-option.selected').getAttribute('data-theme'),
                 autoSave: autoSaveSelect.value,
                 apiKey: apiKeyInput.value
             };
             localStorage.setItem('editorSettings', JSON.stringify(settings));
+            showNotification('Settings Saved', 'Your settings have been saved successfully.');
         }
 
         // Grammar check
@@ -2702,59 +2511,35 @@
                 const result = await makeCohereRequest('translate', text, { targetLanguage });
                 updateProgress(100);
                 
-                // Create a custom modal for translation
-                const translationModal = document.createElement('div');
-                translationModal.className = 'modal-overlay';
-                translationModal.innerHTML = `
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h3><i class="fas fa-language"></i> Translation to ${targetLanguage}</h3>
-                            <button class="modal-close"><i class="fas fa-times"></i></button>
+                analysisTitle.textContent = `Translation to ${targetLanguage}`;
+                analysisContent.innerHTML = `
+                    <div class="result-card">
+                        <div class="result-title">
+                            <i class="fas fa-language"></i> Translation
                         </div>
-                        <div class="modal-body">
-                            <div class="result-card">
-                                <div class="result-title">
-                                    <i class="fas fa-language" style="color: var(--primary)"></i> Translation
-                                </div>
-                                <div class="result-content">
-                                    <p><strong>Original:</strong></p>
-                                    <p>${text}</p>
-                                    <hr style="margin: 10px 0; border-color: var(--medium-gray);">
-                                    <p><strong>Translation:</strong></p>
-                                    <p>${result}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn" id="btn-copy-translation">Copy Translation</button>
-                            <button class="btn btn-primary" id="btn-close-translation">Close</button>
+                        <div class="result-content">
+                            <p><strong>Original:</strong></p>
+                            <p>${text}</p>
+                            <hr style="margin: 10px 0; border-color: var(--medium-gray);">
+                            <p><strong>Translation:</strong></p>
+                            <p>${result}</p>
                         </div>
                     </div>
                 `;
                 
-                document.body.appendChild(translationModal);
+                analysisActionPrimary.textContent = 'Copy Translation';
+                analysisActionPrimary.style.display = 'block';
+                analysisActionSecondary.textContent = 'Close';
                 
-                // Add event listeners
-                const closeBtn = translationModal.querySelector('.modal-close');
-                const closeTranslationBtn = translationModal.querySelector('#btn-close-translation');
-                const copyTranslationBtn = translationModal.querySelector('#btn-copy-translation');
-                
-                closeBtn.addEventListener('click', () => {
-                    document.body.removeChild(translationModal);
-                });
-                
-                closeTranslationBtn.addEventListener('click', () => {
-                    document.body.removeChild(translationModal);
-                });
-                
-                copyTranslationBtn.addEventListener('click', () => {
+                analysisActionPrimary.onclick = () => {
                     navigator.clipboard.writeText(result).then(() => {
                         showNotification('Translation Copied', 'Translation has been copied to clipboard.');
                     });
-                });
+                };
                 
-                // Open the modal
-                translationModal.classList.add('active');
+                analysisActionSecondary.onclick = () => closePanel(analysisPanel);
+                
+                openPanel(analysisPanel);
                 
                 setStatus('Translation completed', 'badge-success');
                 addToHistory(`Text translated to ${targetLanguage}`);
@@ -2911,9 +2696,9 @@
                     
                     matches.forEach((item, index) => {
                         html += `
-                            <div class="plagiarism-item">
-                                <div><strong>${index + 1}.</strong> <span class="plagiarism-text">${item.text}</span></div>
-                                ${item.source ? `<div><strong>Source:</strong> <span class="plagiarism-source">${item.source}</span></div>` : ''}
+                            <div class="grammar-item">
+                                <div><strong>${index + 1}.</strong> <span class="grammar-original">${item.text}</span></div>
+                                ${item.source ? `<div><strong>Source:</strong> <span class="grammar-suggestion">${item.source}</span></div>` : ''}
                             </div>
                         `;
                     });
