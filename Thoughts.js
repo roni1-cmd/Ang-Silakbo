@@ -1,4 +1,4 @@
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
     import { 
       getAuth, 
       signOut, 
@@ -29,7 +29,8 @@
       getStorage, 
       ref, 
       uploadBytes, 
-      getDownloadURL 
+      getDownloadURL,
+      deleteObject
     } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -46,6 +47,10 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const storage = getStorage(app);
+
+    // Cloudinary configuration
+    const cloudName = "dz3sdis2x";
+    const uploadPreset = "Ang Silakbo 1";
 
     // Admin users mapping
     const adminUsers = {
@@ -94,6 +99,27 @@
     const mobileNotifications = document.getElementById('mobile-notifications');
     const mobileProfile = document.getElementById('mobile-profile');
     const pageTitle = document.getElementById('page-title');
+    
+    // Image Upload Elements
+    const imageUploadContainer = document.getElementById('image-upload-container');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const imageRemoveBtn = document.getElementById('image-remove-btn');
+    const uploadImageBtn = document.getElementById('upload-image-btn');
+    
+    // Edit Image Upload Elements
+    const editImageUploadContainer = document.getElementById('edit-image-upload-container');
+    const editImagePreviewContainer = document.getElementById('edit-image-preview-container');
+    const editImagePreview = document.getElementById('edit-image-preview');
+    const editImageRemoveBtn = document.getElementById('edit-image-remove-btn');
+    
+    // Profile Image Upload
+    const profileImageUpload = document.getElementById('profile-image-upload');
+    
+    // Lightbox Elements
+    const lightboxOverlay = document.getElementById('lightbox-overlay');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxClose = document.getElementById('lightbox-close');
     
     // Pages
     const homePage = document.getElementById('home-page');
@@ -156,6 +182,11 @@
     const activityStatus = document.getElementById('activity-status');
     const saveSettings = document.getElementById('save-settings');
 
+    // Variables for image upload
+    let currentUploadedImageUrl = null;
+    let editImageUrl = null;
+    let profileImageUrl = null;
+
     // Helper Functions
     function generateAvatarUrl(seed) {
       return `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
@@ -172,6 +203,128 @@
         toast.remove();
       }, 5000);
     }
+
+    // Cloudinary Upload Widget
+    function initCloudinaryUploadWidget(callback) {
+      const options = {
+        cloudName: cloudName,
+        uploadPreset: uploadPreset,
+        sources: ['local', 'url', 'camera'],
+        multiple: false,
+        maxFiles: 1,
+        maxFileSize: 10000000, // 10MB
+        resourceType: 'image',
+        cropping: false,
+        styles: {
+          palette: {
+            window: "#FFFFFF",
+            sourceBg: "#F7F9FA",
+            windowBorder: "#E1E8ED",
+            tabIcon: "#E65100",
+            inactiveTabIcon: "#657786",
+            menuIcons: "#E65100",
+            link: "#E65100",
+            action: "#E65100",
+            inProgress: "#E65100",
+            complete: "#4E9F3D",
+            error: "#E0245E",
+            textDark: "#14171A",
+            textLight: "#FFFFFF"
+          }
+        }
+      };
+      
+      return cloudinary.createUploadWidget(options, (error, result) => {
+        if (!error && result && result.event === "success") {
+          const imageUrl = result.info.secure_url;
+          callback(imageUrl);
+        }
+        
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          showToast('Error uploading image. Please try again.');
+        }
+      });
+    }
+
+    // Initialize Cloudinary Upload Widgets
+    const uploadWidget = initCloudinaryUploadWidget((imageUrl) => {
+      currentUploadedImageUrl = imageUrl;
+      imagePreview.src = imageUrl;
+      imagePreviewContainer.style.display = 'block';
+      imageUploadContainer.style.display = 'none';
+      showToast('Image uploaded successfully!');
+    });
+    
+    const editUploadWidget = initCloudinaryUploadWidget((imageUrl) => {
+      editImageUrl = imageUrl;
+      editImagePreview.src = imageUrl;
+      editImagePreviewContainer.style.display = 'block';
+      editImageUploadContainer.style.display = 'none';
+      showToast('Image uploaded successfully!');
+    });
+    
+    const profileUploadWidget = initCloudinaryUploadWidget((imageUrl) => {
+      profileImageUrl = imageUrl;
+      
+      // Update user's profile picture in Firebase
+      updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        photoURL: imageUrl
+      }).then(() => {
+        // Update UI
+        sidebarAvatar.src = imageUrl;
+        composeAvatar.src = imageUrl;
+        profileAvatar.src = imageUrl;
+        showToast('Profile picture updated successfully!');
+      }).catch((error) => {
+        console.error('Error updating profile picture:', error);
+        showToast('Error updating profile picture. Please try again.');
+      });
+    });
+
+    // Image Upload Event Listeners
+    imageUploadContainer.addEventListener('click', () => {
+      uploadWidget.open();
+    });
+    
+    uploadImageBtn.addEventListener('click', () => {
+      uploadWidget.open();
+    });
+    
+    imageRemoveBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentUploadedImageUrl = null;
+      imagePreview.src = '';
+      imagePreviewContainer.style.display = 'none';
+      imageUploadContainer.style.display = 'block';
+    });
+    
+    editImageUploadContainer.addEventListener('click', () => {
+      editUploadWidget.open();
+    });
+    
+    editImageRemoveBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      editImageUrl = null;
+      editImagePreview.src = '';
+      editImagePreviewContainer.style.display = 'none';
+      editImageUploadContainer.style.display = 'block';
+    });
+    
+    profileImageUpload.addEventListener('click', () => {
+      profileUploadWidget.open();
+    });
+    
+    // Lightbox Event Listeners
+    lightboxClose.addEventListener('click', () => {
+      lightboxOverlay.style.display = 'none';
+    });
+    
+    lightboxOverlay.addEventListener('click', (e) => {
+      if (e.target === lightboxOverlay) {
+        lightboxOverlay.style.display = 'none';
+      }
+    });
 
     // Toggle Profile Dropdown
     userProfileBtn.addEventListener('click', () => {
@@ -272,7 +425,7 @@
       if (title && content && category) {
         tweetSubmit.disabled = true;
         
-        addDoc(collection(db, 'posts'), {
+        const postData = {
           title: title,
           content: content,
           category: category,
@@ -286,13 +439,24 @@
           dislikes: 0,
           likedBy: [],
           dislikedBy: []
-        })
+        };
+        
+        // Add image URL if uploaded
+        if (currentUploadedImageUrl) {
+          postData.imageUrl = currentUploadedImageUrl;
+        }
+        
+        addDoc(collection(db, 'posts'), postData)
         .then(() => {
           // Clear form fields
           tweetTitle.value = '';
           tweetContent.value = '';
           categorySelect.value = '';
           tweetTags.value = '';
+          currentUploadedImageUrl = null;
+          imagePreview.src = '';
+          imagePreviewContainer.style.display = 'none';
+          imageUploadContainer.style.display = 'block';
           
           showToast('Scrib posted successfully!');
           tweetSubmit.disabled = false;
@@ -399,6 +563,10 @@
           const tagsHtml = post.tags && post.tags.length > 0 ? 
             post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
           
+          // Create image HTML if post has an image
+          const imageHtml = post.imageUrl ? 
+            `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+          
           tweetElement.innerHTML = `
             <div class="tweet-header">
               <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
@@ -447,6 +615,7 @@
             <div class="tweet-content">
               <h3 class="tweet-title">${post.title}</h3>
               <p class="tweet-text">${post.content}</p>
+              ${imageHtml}
               <div style="margin-top: 0.8rem;">
                 <span class="tweet-category">${post.category}</span>
                 ${tagsHtml}
@@ -502,6 +671,15 @@
             loadUserProfile(tweetUserName.dataset.userId);
           });
 
+          // Image click event for lightbox
+          const tweetImage = tweetElement.querySelector('.tweet-image');
+          if (tweetImage) {
+            tweetImage.addEventListener('click', () => {
+              lightboxImage.src = tweetImage.dataset.fullImage;
+              lightboxOverlay.style.display = 'flex';
+            });
+          }
+
           const commentsSection = tweetElement.querySelector('.comments-section');
           const commentBtn = tweetElement.querySelector('.comment-btn');
           commentBtn.addEventListener('click', () => {
@@ -544,7 +722,7 @@
             if (deleteBtn) {
               deleteBtn.addEventListener('click', () => {
                 if (confirm('Are you sure you want to delete this scrib?')) {
-                  deletePost(doc.id);
+                  deletePost(doc.id, post.imageUrl);
                 }
               });
             }
@@ -552,7 +730,7 @@
             const editBtn = tweetElement.querySelector('.edit-tweet-btn');
             if (editBtn) {
               editBtn.addEventListener('click', () => {
-                showEditModal(doc.id, post.title, post.content);
+                showEditModal(doc.id, post.title, post.content, post.imageUrl);
               });
             }
             
@@ -712,14 +890,29 @@
     }
 
     // Edit Modal
-    function showEditModal(postId, title, content) {
+    function showEditModal(postId, title, content, imageUrl = null) {
       editTitle.value = title;
       editContent.value = content;
+      
+      // Reset image preview
+      editImageUrl = null;
+      editImagePreview.src = '';
+      editImagePreviewContainer.style.display = 'none';
+      editImageUploadContainer.style.display = 'block';
+      
+      // If post has an image, show it in the preview
+      if (imageUrl) {
+        editImageUrl = imageUrl;
+        editImagePreview.src = imageUrl;
+        editImagePreviewContainer.style.display = 'block';
+        editImageUploadContainer.style.display = 'none';
+      }
+      
       editModal.style.display = 'block';
       editModalOverlay.style.display = 'block';
 
       editSave.onclick = () => {
-        updatePost(postId, editTitle.value, editContent.value);
+        updatePost(postId, editTitle.value, editContent.value, editImageUrl);
         closeEditModal();
       };
     }
@@ -883,9 +1076,15 @@
     }
 
     // Post CRUD Operations
-    async function deletePost(postId) {
+    async function deletePost(postId, imageUrl = null) {
       try {
         await deleteDoc(doc(db, 'posts', postId));
+        
+        // If post has an image, delete it from Cloudinary
+        // Note: Cloudinary doesn't provide a direct way to delete images via client-side JavaScript
+        // You would typically need a server-side function to handle this securely
+        // For now, we'll just show a success message
+        
         showToast('Scrib deleted successfully');
         loadTrendingTopics();
         loadTopContributors();
@@ -895,12 +1094,38 @@
       }
     }
 
-    async function updatePost(postId, newTitle, newContent) {
+    async function updatePost(postId, newTitle, newContent, newImageUrl = null) {
       try {
-        await updateDoc(doc(db, 'posts', postId), {
+        const postRef = doc(db, 'posts', postId);
+        const postDoc = await getDoc(postRef);
+        
+        if (!postDoc.exists()) {
+          throw new Error('Post does not exist!');
+        }
+        
+        const postData = postDoc.data();
+        const updateData = {
           title: newTitle,
           content: newContent
-        });
+        };
+        
+        // Handle image update
+        if (newImageUrl !== postData.imageUrl) {
+          // If there's a new image URL, update it
+          if (newImageUrl) {
+            updateData.imageUrl = newImageUrl;
+          } else {
+            // If the image was removed, remove the imageUrl field
+            // Note: In Firestore, you can't directly set a field to undefined to remove it
+            // We'll use a server-side function or update the entire document without the field
+            const { imageUrl, ...restData } = postData;
+            await setDoc(postRef, { ...restData, title: newTitle, content: newContent });
+            showToast('Scrib updated successfully');
+            return;
+          }
+        }
+        
+        await updateDoc(postRef, updateData);
         showToast('Scrib updated successfully');
       } catch (error) {
         console.error('Error updating post:', error);
@@ -1075,7 +1300,7 @@
           if (reportCommentBtn) {
             reportCommentBtn.addEventListener('click', () => {
               showReportModal('comment', doc.id);
-            });
+                          });
           }
         });
       });
@@ -1321,6 +1546,10 @@
         const tagsHtml = post.tags && post.tags.length > 0 ? 
           post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
         
+        // Create image HTML if post has an image
+        const imageHtml = post.imageUrl ? 
+          `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+        
         tweetElement.innerHTML = `
           <div class="tweet-header">
             <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
@@ -1369,6 +1598,7 @@
           <div class="tweet-content">
             <h3 class="tweet-title">${post.title}</h3>
             <p class="tweet-text">${post.content}</p>
+            ${imageHtml}
             <div style="margin-top: 0.8rem;">
               <span class="tweet-category">${post.category}</span>
               ${tagsHtml}
@@ -1412,8 +1642,132 @@
           }
         });
         
-        // Add event listeners (similar to loadPosts function)
-        // ... (add all the event listeners from the loadPosts function)
+        // Add event listeners
+        const tweetAvatar = tweetElement.querySelector('.tweet-avatar');
+        const tweetUserName = tweetElement.querySelector('.tweet-user-name');
+        
+        tweetAvatar.addEventListener('click', () => {
+          loadUserProfile(tweetAvatar.dataset.userId);
+        });
+        
+        tweetUserName.addEventListener('click', () => {
+          loadUserProfile(tweetUserName.dataset.userId);
+        });
+        
+        // Image click event for lightbox
+        const tweetImage = tweetElement.querySelector('.tweet-image');
+        if (tweetImage) {
+          tweetImage.addEventListener('click', () => {
+            lightboxImage.src = tweetImage.dataset.fullImage;
+            lightboxOverlay.style.display = 'flex';
+          });
+        }
+        
+        const commentsSection = tweetElement.querySelector('.comments-section');
+        const commentBtn = tweetElement.querySelector('.comment-btn');
+        commentBtn.addEventListener('click', () => {
+          commentsSection.classList.toggle('show');
+          if (commentsSection.classList.contains('show')) {
+            loadComments(postDoc.id, commentsSection);
+          }
+        });
+        
+        const commentForm = tweetElement.querySelector('.comment-form');
+        commentForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const commentInput = commentForm.querySelector('.comment-input');
+          const commentContent = commentInput.value.trim();
+          if (commentContent) {
+            addComment(postDoc.id, commentContent);
+            commentInput.value = '';
+          } else {
+            showToast('Comment cannot be empty');
+          }
+        });
+        
+        const tweetMore = tweetElement.querySelector('.tweet-more');
+        const tweetDropdown = tweetElement.querySelector('.tweet-dropdown');
+        
+        if (tweetMore && tweetDropdown) {
+          tweetMore.addEventListener('click', (e) => {
+            e.stopPropagation();
+            tweetDropdown.style.display = tweetDropdown.style.display === 'block' ? 'none' : 'block';
+          });
+          
+          // Close dropdown when clicking outside
+          document.addEventListener('click', () => {
+            if (tweetDropdown) {
+              tweetDropdown.style.display = 'none';
+            }
+          });
+          
+          const deleteBtn = tweetElement.querySelector('.delete-tweet-btn');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+              if (confirm('Are you sure you want to delete this scrib?')) {
+                deletePost(postDoc.id, post.imageUrl);
+              }
+            });
+          }
+          
+          const editBtn = tweetElement.querySelector('.edit-tweet-btn');
+          if (editBtn) {
+            editBtn.addEventListener('click', () => {
+              showEditModal(postDoc.id, post.title, post.content, post.imageUrl);
+            });
+          }
+          
+          const reportBtn = tweetElement.querySelector('.report-tweet-btn');
+          if (reportBtn) {
+            reportBtn.addEventListener('click', () => {
+              showReportModal('post', postDoc.id);
+            });
+          }
+        }
+        
+        const likeBtn = tweetElement.querySelector('.like-btn');
+        const dislikeBtn = tweetElement.querySelector('.dislike-btn');
+        
+        likeBtn.addEventListener('click', async () => {
+          if (likeBtn.disabled) return;
+          likeBtn.disabled = true;
+          dislikeBtn.disabled = true;
+          
+          try {
+            await handleLike(postDoc.id);
+          } catch (error) {
+            console.error('Error updating like:', error);
+            showToast('Failed to update like. Please try again.');
+          } finally {
+            likeBtn.disabled = false;
+            dislikeBtn.disabled = false;
+          }
+        });
+        
+        dislikeBtn.addEventListener('click', async () => {
+          if (dislikeBtn.disabled) return;
+          dislikeBtn.disabled = true;
+          likeBtn.disabled = true;
+          
+          try {
+            await handleDislike(postDoc.id);
+          } catch (error) {
+            console.error('Error updating dislike:', error);
+            showToast('Failed to update dislike. Please try again.');
+          } finally {
+            dislikeBtn.disabled = false;
+            likeBtn.disabled = false;
+          }
+        });
+        
+        const shareBtn = tweetElement.querySelector('.share-btn');
+        shareBtn.addEventListener('click', () => {
+          // Simple share functionality - copy URL to clipboard
+          const url = window.location.href.split('?')[0] + '?post=' + postDoc.id;
+          navigator.clipboard.writeText(url).then(() => {
+            showToast('Link copied to clipboard!');
+          });
+        });
         
         // Highlight the post
         tweetElement.style.backgroundColor = 'rgba(230, 81, 0, 0.05)';
@@ -1449,7 +1803,7 @@
             
             // Search in posts (content)
             const postsContentQuery = query(
-                            collection(db, 'posts'),
+              collection(db, 'posts'),
               orderBy('content'),
               where('content', '>=', searchTerm),
               where('content', '<=', searchTerm + '\uf8ff')
@@ -1472,7 +1826,7 @@
             
             function addPostToResults(doc) {
               if (!postResults.has(doc.id)) {
-                postResults.set(doc.id, doc.data());
+                postResults.set(doc.id, { id: doc.id, ...doc.data() });
               }
             }
             
@@ -1491,8 +1845,7 @@
             }
             
             // Convert Map to Array and sort by timestamp
-            const sortedResults = Array.from(postResults.entries())
-              .map(([id, post]) => ({ id, ...post }))
+            const sortedResults = Array.from(postResults.values())
               .sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
             
             sortedResults.forEach(post => {
@@ -1516,6 +1869,10 @@
               const tagsHtml = post.tags && post.tags.length > 0 ? 
                 post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
               
+              // Create image HTML if post has an image
+              const imageHtml = post.imageUrl ? 
+                `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+              
               tweetElement.innerHTML = `
                 <div class="tweet-header">
                   <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
@@ -1531,6 +1888,7 @@
                 <div class="tweet-content">
                   <h3 class="tweet-title">${post.title}</h3>
                   <p class="tweet-text">${post.content}</p>
+                  ${imageHtml}
                   <div style="margin-top: 0.8rem;">
                     <span class="tweet-category">${post.category}</span>
                     ${tagsHtml}
@@ -1568,6 +1926,15 @@
               tweetUserName.addEventListener('click', () => {
                 loadUserProfile(tweetUserName.dataset.userId);
               });
+              
+              // Image click event for lightbox
+              const tweetImage = tweetElement.querySelector('.tweet-image');
+              if (tweetImage) {
+                tweetImage.addEventListener('click', () => {
+                  lightboxImage.src = tweetImage.dataset.fullImage;
+                  lightboxOverlay.style.display = 'flex';
+                });
+              }
               
               // Get comments count
               getCommentsCount(post.id).then(count => {
@@ -1809,6 +2176,10 @@
           const tagsHtml = post.tags && post.tags.length > 0 ? 
             post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
           
+          // Create image HTML if post has an image
+          const imageHtml = post.imageUrl ? 
+            `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+          
           tweetElement.innerHTML = `
             <div class="tweet-header">
               <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
@@ -1824,6 +2195,7 @@
             <div class="tweet-content">
               <h3 class="tweet-title">${post.title}</h3>
               <p class="tweet-text">${post.content}</p>
+              ${imageHtml}
               <div style="margin-top: 0.8rem;">
                 <span class="tweet-category">${post.category}</span>
                 ${tagsHtml}
@@ -1862,6 +2234,15 @@
             loadUserProfile(tweetUserName.dataset.userId);
           });
           
+          // Image click event for lightbox
+          const tweetImage = tweetElement.querySelector('.tweet-image');
+          if (tweetImage) {
+            tweetImage.addEventListener('click', () => {
+              lightboxImage.src = tweetImage.dataset.fullImage;
+              lightboxOverlay.style.display = 'flex';
+            });
+          }
+          
           // Get comments count
           getCommentsCount(doc.id).then(count => {
             const commentCount = tweetElement.querySelector('.comment-count');
@@ -1879,8 +2260,130 @@
     
     // Load Media Posts
     async function loadMediaPosts(userId) {
-      // For now, just show a message that this feature is coming soon
-      profileTweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">Media posts feature coming soon!</p></div>';
+      try {
+        profileTweetsContainer.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading media posts...</div>';
+        
+        // Get user's posts
+        const postsQuery = query(
+          collection(db, 'posts'),
+          where('userId', '==', userId),
+          orderBy('timestamp', 'desc')
+        );
+        
+        const postsSnapshot = await getDocs(postsQuery);
+        
+        // Filter posts with images
+        const mediaPosts = postsSnapshot.docs.filter(doc => {
+          const post = doc.data();
+          return post.imageUrl;
+        });
+        
+        if (mediaPosts.length === 0) {
+          profileTweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">No media posts found.</p></div>';
+          return;
+        }
+        
+        profileTweetsContainer.innerHTML = '';
+        
+        // Render media posts
+        mediaPosts.forEach(doc => {
+          const post = doc.data();
+          const tweetElement = document.createElement('div');
+          tweetElement.className = 'tweet';
+          tweetElement.dataset.postId = doc.id;
+          
+          // Format date
+          const postDate = post.timestamp?.toDate();
+          const formattedDate = postDate ? formatDate(postDate) : '';
+          
+          // Check if user is admin to add badge
+          const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
+            return adminUsers[adminEmail] === post.userName;
+          });
+          
+          const adminBadgeHtml = isUserAdmin ? 
+            `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
+          
+          // Create tags HTML
+          const tagsHtml = post.tags && post.tags.length > 0 ? 
+            post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
+          
+          tweetElement.innerHTML = `
+            <div class="tweet-header">
+              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="tweet-user-info">
+                <div>
+                  <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
+                  ${adminBadgeHtml}
+                  <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
+                </div>
+                <p class="tweet-time">${formattedDate}</p>
+              </div>
+            </div>
+            <div class="tweet-content">
+              <h3 class="tweet-title">${post.title}</h3>
+              <p class="tweet-text">${post.content}</p>
+              <img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">
+              <div style="margin-top: 0.8rem;">
+                <span class="tweet-category">${post.category}</span>
+                ${tagsHtml}
+              </div>
+            </div>
+            <div class="tweet-actions">
+              <button class="tweet-action comment-btn">
+                <i class="far fa-comment"></i>
+                <span class="comment-count">0</span>
+              </button>
+              <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
+                <i class="far fa-heart"></i>
+                <span class="like-count">${post.likes || 0}</span>
+              </button>
+              <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
+                <i class="far fa-thumbs-down"></i>
+                <span class="dislike-count">${post.dislikes || 0}</span>
+              </button>
+              <button class="tweet-action share-btn">
+                <i class="far fa-share-square"></i>
+              </button>
+            </div>
+          `;
+          
+          profileTweetsContainer.appendChild(tweetElement);
+          
+          // Add event listeners
+          const tweetAvatar = tweetElement.querySelector('.tweet-avatar');
+          const tweetUserName = tweetElement.querySelector('.tweet-user-name');
+          
+          tweetAvatar.addEventListener('click', () => {
+            loadUserProfile(tweetAvatar.dataset.userId);
+          });
+          
+          tweetUserName.addEventListener('click', () => {
+            loadUserProfile(tweetUserName.dataset.userId);
+          });
+          
+          // Image click event for lightbox
+          const tweetImage = tweetElement.querySelector('.tweet-image');
+          if (tweetImage) {
+            tweetImage.addEventListener('click', () => {
+              lightboxImage.src = tweetImage.dataset.fullImage;
+              lightboxOverlay.style.display = 'flex';
+            });
+          }
+          
+          // Get comments count
+          getCommentsCount(doc.id).then(count => {
+            const commentCount = tweetElement.querySelector('.comment-count');
+            if (commentCount) {
+              commentCount.textContent = count;
+            }
+          });
+        });
+        
+      } catch (error) {
+        console.error('Error loading media posts:', error);
+        profileTweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">Error loading media posts.</p></div>';
+      }
     }
     
     // Show Followers Modal
