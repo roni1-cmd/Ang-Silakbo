@@ -1,1742 +1,2462 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { 
-  getAuth, 
-  signOut, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  query, 
-  orderBy, 
-  onSnapshot,
-  where,
-  getDocs,
-  getDoc,
-  doc,
-  deleteDoc,
-  updateDoc,
-  increment,
-  arrayUnion,
-  arrayRemove,
-  writeBatch,
-  limit,
-  Timestamp
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-import { 
-  getStorage, 
-  ref, 
-  uploadBytes, 
-  getDownloadURL 
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      query, 
+      orderBy, 
+      onSnapshot,
+      where,
+      getDocs,
+      getDoc,
+      doc,
+      deleteDoc,
+      updateDoc,
+      increment,
+      arrayUnion,
+      arrayRemove,
+      writeBatch,
+      limit,
+      Timestamp,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+    import { 
+      getStorage, 
+      ref, 
+      uploadBytes, 
+      getDownloadURL 
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
-  authDomain: "ang-silakbo.firebaseapp.com",
-  projectId: "ang-silakbo",
-  storageBucket: "ang-silakbo.appspot.com",
-  messagingSenderId: "1006400633782",
-  appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
-  measurementId: "G-TSDTG2YJ94"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+      authDomain: "ang-silakbo.firebaseapp.com",
+      projectId: "ang-silakbo",
+      storageBucket: "ang-silakbo.appspot.com",
+      messagingSenderId: "1006400633782",
+      appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
+      measurementId: "G-TSDTG2YJ94"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
-// Admin users mapping
-const adminUsers = {
-  "angsilakbo1@uclm.com": "Miss Queen",
-  "angsilakbo2@uclm.com": "Miss June",
-  "angsilakbo3@uclm.com": "Miss Diana"
-};
+    // Admin users mapping
+    const adminUsers = {
+      "angsilakbo1@uclm.com": "Miss Queen",
+      "angsilakbo2@uclm.com": "Miss June",
+      "angsilakbo3@uclm.com": "Miss Diana"
+    };
 
-// Check if a user is an admin
-function isAdmin(email) {
-  return Object.keys(adminUsers).includes(email);
-}
+    // Check if a user is an admin
+    function isAdmin(email) {
+      return Object.keys(adminUsers).includes(email);
+    }
 
-// Get admin display name
-function getAdminDisplayName(email) {
-  return adminUsers[email] || email;
-}
+    // Get admin display name
+    function getAdminDisplayName(email) {
+      return adminUsers[email] || email;
+    }
 
-// DOM Elements
-const logoutBtn = document.getElementById('logout-btn');
-const mobileLogoutBtn = document.getElementById('mobile-logout');
-const postForm = document.getElementById('post-form');
-const postContent = document.getElementById('post-content');
-const submitPostBtn = document.getElementById('submit-post');
-const postsSection = document.getElementById('posts');
-const greetingText = document.getElementById('greeting-text');
-const userName = document.getElementById('user-name');
-const searchBar = document.getElementById('search-bar');
-const searchBtn = document.getElementById('search-btn');
-const searchToggle = document.getElementById('search-toggle');
-const searchContainer = document.querySelector('.search-container');
-const editPopup = document.getElementById('edit-popup');
-const editTitle = document.getElementById('edit-title');
-const editContent = document.getElementById('edit-content');
-const saveEditBtn = document.getElementById('save-edit');
-const cancelEditBtn = document.getElementById('cancel-edit');
-const overlay = document.getElementById('overlay');
-const categorySelect = document.getElementById('category-select');
-const postTags = document.getElementById('post-tags');
-const profileSection = document.getElementById('profile-section');
-const profilePicture = document.getElementById('profile-picture');
-const uploadPicture = document.getElementById('upload-picture');
-const profileName = document.getElementById('profile-name');
-const profileEmail = document.getElementById('profile-email');
-const homeLink = document.getElementById('home-link');
-const profileLink = document.getElementById('profile-link');
-const notificationsLink = document.getElementById('notifications-link');
-const notificationsPanel = document.getElementById('notifications-panel');
-const closeNotificationsBtn = document.getElementById('close-notifications');
-const menuToggle = document.getElementById('menu-toggle');
-const sidebar = document.getElementById('sidebar');
-const mobileHome = document.getElementById('mobile-home');
-const mobileProfile = document.getElementById('mobile-profile');
-const mobileNotifications = document.getElementById('mobile-notifications');
-const addPostFab = document.getElementById('add-post-fab');
-const mobilePostForm = document.getElementById('mobile-post-form');
-const closeMobileForm = document.getElementById('close-mobile-form');
-const mobileCategorySelect = document.getElementById('mobile-category-select');
-const mobilePostTitle = document.getElementById('mobile-post-title');
-const mobilePostContent = document.getElementById('mobile-post-content');
-const mobilePostTags = document.getElementById('mobile-post-tags');
-const mobileSubmitPost = document.getElementById('mobile-submit-post');
-const userStats = document.getElementById('user-stats');
-const postsCount = document.getElementById('posts-count');
-const commentsCount = document.getElementById('comments-count');
-const likesCount = document.getElementById('likes-count');
-const receivedLikesCount = document.getElementById('received-likes-count');
-const trendingTopicsList = document.getElementById('trending-topics-list');
-const categoryFilterBtns = document.querySelectorAll('.category-btn');
-const postFormAvatar = document.getElementById('post-form-avatar');
-const profileBtn = document.getElementById('profile-btn');
-const notificationsBtn = document.getElementById('notifications-btn');
-const categoryLinks = document.querySelectorAll('.category-link');
-const profilePosts = document.getElementById('profile-posts');
-const profileComments = document.getElementById('profile-comments');
-const profileLikes = document.getElementById('profile-likes');
-const topContributorsList = document.getElementById('top-contributors-list');
-const totalPosts = document.getElementById('total-posts');
-const totalUsers = document.getElementById('total-users');
-const totalComments = document.getElementById('total-comments');
-const totalLikes = document.getElementById('total-likes');
-const onlineCount = document.getElementById('online-count');
+    // DOM Elements
+    const tweetsContainer = document.getElementById('tweets-container');
+    const tweetContent = document.getElementById('tweet-content');
+    const tweetTitle = document.getElementById('tweet-title');
+    const tweetTags = document.getElementById('tweet-tags');
+    const categorySelect = document.getElementById('category-select');
+    const tweetSubmit = document.getElementById('tweet-submit');
+    const composeBtn = document.getElementById('compose-btn');
+    const floatTweetBtn = document.getElementById('float-tweet-btn');
+    const searchInput = document.getElementById('search-input');
+    const trendingTopicsList = document.getElementById('trending-topics-list');
+    const topContributorsList = document.getElementById('top-contributors-list');
+    const userProfileBtn = document.getElementById('user-profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const dropdownProfile = document.getElementById('dropdown-profile');
+    const dropdownLogout = document.getElementById('dropdown-logout');
+    const sidebarAvatar = document.getElementById('sidebar-avatar');
+    const sidebarName = document.getElementById('sidebar-name');
+    const sidebarHandle = document.getElementById('sidebar-handle');
+    const composeAvatar = document.getElementById('compose-avatar');
+    const homeLink = document.getElementById('home-link');
+    const exploreLink = document.getElementById('explore-link');
+    const notificationsLink = document.getElementById('notifications-link');
+    const profileLink = document.getElementById('profile-link');
+    const settingsLink = document.getElementById('settings-link');
+    const mobileHome = document.getElementById('mobile-home');
+    const mobileExplore = document.getElementById('mobile-explore');
+    const mobileNotifications = document.getElementById('mobile-notifications');
+    const mobileProfile = document.getElementById('mobile-profile');
+    const pageTitle = document.getElementById('page-title');
+    
+    // Pages
+    const homePage = document.getElementById('home-page');
+    const notificationsPage = document.getElementById('notifications-page');
+    const profilePage = document.getElementById('profile-page');
+    const explorePage = document.getElementById('explore-page');
+    const settingsPage = document.getElementById('settings-page');
+    
+    // Modals
+    const editModal = document.getElementById('edit-modal');
+    const editModalOverlay = document.getElementById('edit-modal-overlay');
+    const editModalClose = document.getElementById('edit-modal-close');
+    const editTitle = document.getElementById('edit-title');
+    const editContent = document.getElementById('edit-content');
+    const editSave = document.getElementById('edit-save');
+    const editCancel = document.getElementById('edit-cancel');
+    
+    const reportModal = document.getElementById('report-modal');
+    const reportModalOverlay = document.getElementById('report-modal-overlay');
+    const reportModalClose = document.getElementById('report-modal-close');
+    const reportSubmit = document.getElementById('report-submit');
+    const reportCancel = document.getElementById('report-cancel');
+    const reportOptions = document.querySelectorAll('.report-option');
+    const reportDetails = document.getElementById('report-details');
+    
+    const followersModal = document.getElementById('followers-modal');
+    const followersModalOverlay = document.getElementById('followers-modal-overlay');
+    const followersModalClose = document.getElementById('followers-modal-close');
+    const followersList = document.getElementById('followers-list');
+    
+    const followingModal = document.getElementById('following-modal');
+    const followingModalOverlay = document.getElementById('following-modal-overlay');
+    const followingModalClose = document.getElementById('following-modal-close');
+    const followingList = document.getElementById('following-list');
+    
+    // Profile Elements
+    const profileAvatar = document.getElementById('profile-avatar');
+    const profileName = document.getElementById('profile-name');
+    const profileHandle = document.getElementById('profile-handle');
+    const profileBio = document.getElementById('profile-bio');
+    const profilePostsCount = document.getElementById('profile-posts').querySelector('.profile-stat-value');
+    const profileFollowersCount = document.getElementById('profile-followers').querySelector('.profile-stat-value');
+    const profileFollowingCount = document.getElementById('profile-following').querySelector('.profile-stat-value');
+    const profileActions = document.getElementById('profile-actions');
+    const followBtn = document.getElementById('follow-btn');
+    const reportUserBtn = document.getElementById('report-user-btn');
+    const profileTabs = document.querySelectorAll('.profile-tab');
+    const profileTweetsContainer = document.getElementById('profile-tweets-container');
+    
+    // Explore Elements
+    const exploreTabs = document.querySelectorAll('.explore-tab');
+    const exploreTweetsContainer = document.getElementById('explore-tweets-container');
+    
+    // Settings Elements
+    const settingsUsername = document.getElementById('settings-username');
+    const settingsBio = document.getElementById('settings-bio');
+    const emailNotifications = document.getElementById('email-notifications');
+    const pushNotifications = document.getElementById('push-notifications');
+    const privateAccount = document.getElementById('private-account');
+    const activityStatus = document.getElementById('activity-status');
+    const saveSettings = document.getElementById('save-settings');
 
-// Helper Functions
-function generateAvatarUrl(seed) {
-  return `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
-}
+    // Helper Functions
+    function generateAvatarUrl(seed) {
+      return `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
+    }
 
-function showToast(message) {
-  const toastContainer = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
-  toastContainer.appendChild(toast);
-  
-  setTimeout(() => {
-    toast.remove();
-  }, 5000);
-}
+    function showToast(message) {
+      const toastContainer = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      toastContainer.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 5000);
+    }
 
-// Get time of day for greeting
-function getTimeBasedGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
+    // Toggle Profile Dropdown
+    userProfileBtn.addEventListener('click', () => {
+      profileDropdown.classList.toggle('show');
+    });
 
-// Event Listeners
-logoutBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (confirm('Are you sure you want to log out?')) {
-    signOut(auth)
-      .then(() => {
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.classList.remove('show');
+      }
+    });
+
+    // Dropdown Actions
+    dropdownProfile.addEventListener('click', (e) => {
+      e.preventDefault();
+      profileDropdown.classList.remove('show');
+      setActiveNavItem('profile');
+      loadUserProfile(auth.currentUser.uid);
+    });
+
+    dropdownLogout.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Are you sure you want to log out?')) {
+        signOut(auth)
+          .then(() => {
+            window.location.href = 'Silakbo Freedom Wall.html';
+          })
+          .catch((error) => showToast(error.message));
+      }
+    });
+
+    // Auth State Change
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Update user info in sidebar
+        let displayName = user.displayName || user.email.split('@')[0];
+        let userHandle = '@' + (user.displayName || user.email.split('@')[0]).toLowerCase().replace(/\s+/g, '');
+        
+        // Check if user is an admin and update display name
+        if (isAdmin(user.email)) {
+          displayName = getAdminDisplayName(user.email);
+          userHandle = '@admin_' + displayName.toLowerCase().replace(/\s+/g, '');
+        }
+        
+        sidebarName.textContent = displayName;
+        sidebarHandle.textContent = userHandle;
+        sidebarAvatar.src = user.photoURL || generateAvatarUrl(user.uid);
+        composeAvatar.src = user.photoURL || generateAvatarUrl(user.uid);
+        
+        // Initialize user data if it doesn't exist
+        initializeUserData(user);
+        
+        loadPosts();
+        loadTrendingTopics();
+        loadTopContributors();
+        loadNotifications();
+      } else {
         window.location.href = 'Silakbo Freedom Wall.html';
-      })
-      .catch((error) => showToast(error.message));
-  }
-});
-
-mobileLogoutBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (confirm('Are you sure you want to log out?')) {
-    signOut(auth)
-      .then(() => {
-        window.location.href = 'Silakbo Freedom Wall.html';
-      })
-      .catch((error) => showToast(error.message));
-  }
-});
-
-menuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('show');
-});
-
-searchToggle?.addEventListener('click', () => {
-  searchContainer.classList.toggle('show');
-  if (searchContainer.classList.contains('show')) {
-    searchBar.focus();
-  }
-});
-
-// Mobile Post Form
-addPostFab.addEventListener('click', () => {
-  mobilePostForm.classList.add('show');
-});
-
-closeMobileForm.addEventListener('click', () => {
-  mobilePostForm.classList.remove('show');
-});
-
-// Auth State Change
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // Update greeting with user's name
-    const timeGreeting = getTimeBasedGreeting();
-    let displayName = user.displayName || user.email.split('@')[0];
-    
-    // Check if user is an admin and update display name
-    if (isAdmin(user.email)) {
-      displayName = getAdminDisplayName(user.email);
-    }
-    
-    userName.textContent = displayName;
-    greetingText.innerHTML = `${timeGreeting}, <span id="user-name">${displayName}</span>!`;
-    
-    postFormAvatar.src = user.photoURL || generateAvatarUrl(user.uid);
-    loadPosts();
-    listenForNotifications(user.uid);
-    updateProfileInfo(user);
-    loadTrendingTopics();
-    loadUserStats(user.uid);
-    loadTopContributors();
-    loadCommunityStats();
-    
-    // Show post form on desktop
-    if (window.innerWidth > 992) {
-      postForm.style.display = 'block';
-    }
-  } else {
-    window.location.href = 'Silakbo Freedom Wall.html';
-  }
-});
-
-// Post Submission
-submitPostBtn.addEventListener('click', () => {
-  submitPost(
-    categorySelect.value,
-    document.getElementById('post-title').value.trim(),
-    postContent.value.trim(),
-    postTags.value
-  );
-});
-
-mobileSubmitPost.addEventListener('click', () => {
-  submitPost(
-    mobileCategorySelect.value,
-    mobilePostTitle.value.trim(),
-    mobilePostContent.value.trim(),
-    mobilePostTags.value
-  );
-});
-
-function submitPost(category, title, content, tags) {
-  const tagsList = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-  
-  if (title && content && category) {
-    submitPostBtn.disabled = true;
-    mobileSubmitPost.disabled = true;
-    
-    addDoc(collection(db, 'posts'), {
-      title: title,
-      content: content,
-      category: category,
-      tags: tagsList,
-      timestamp: new Date(),
-      userId: auth.currentUser.uid,
-      userName: isAdmin(auth.currentUser.email) ? 
-                getAdminDisplayName(auth.currentUser.email) : 
-                (auth.currentUser.displayName || auth.currentUser.email),
-      likes: 0,
-      dislikes: 0,
-      likedBy: [],
-      dislikedBy: []
-    })
-    .then(() => {
-      // Clear form fields
-      document.getElementById('post-title').value = '';
-      postContent.value = '';
-      categorySelect.value = '';
-      postTags.value = '';
-      
-      // Clear mobile form fields
-      mobilePostTitle.value = '';
-      mobilePostContent.value = '';
-      mobileCategorySelect.value = '';
-      mobilePostTags.value = '';
-      
-      // Hide mobile form
-      mobilePostForm.classList.remove('show');
-      
-      showToast('Post created successfully!');
-      submitPostBtn.disabled = false;
-      mobileSubmitPost.disabled = false;
-      
-      // Update trending topics
-      loadTrendingTopics();
-      loadCommunityStats();
-      loadTopContributors();
-    })
-    .catch((error) => {
-      showToast(error.message);
-      submitPostBtn.disabled = false;
-      mobileSubmitPost.disabled = false;
-    });
-  } else {
-    showToast('Please fill in all required fields');
-  }
-}
-
-// Load Posts
-let unsubscribePosts = null;
-let currentQuery = null;
-let currentCategory = 'all';
-
-function loadPosts(userId = null, category = currentCategory) {
-  // Unsubscribe from previous listener if exists
-  if (unsubscribePosts) {
-    unsubscribePosts();
-    unsubscribePosts = null;
-  }
-
-  // If the query is the same as the current one, don't reload
-  const queryString = userId ? `user-${userId}-${category}` : `all-${category}`;
-  if (queryString === currentQuery) {
-    return;
-  }
-  currentQuery = queryString;
-  currentCategory = category;
-  
-  let q;
-  if (userId) {
-    if (category !== 'all') {
-      q = query(
-        collection(db, 'posts'), 
-        where('userId', '==', userId),
-        where('category', '==', category),
-        orderBy('timestamp', 'desc')
-      );
-    } else {
-      q = query(
-        collection(db, 'posts'), 
-        where('userId', '==', userId), 
-        orderBy('timestamp', 'desc')
-      );
-    }
-  } else {
-    if (category !== 'all') {
-      q = query(
-        collection(db, 'posts'),
-        where('category', '==', category),
-        orderBy('timestamp', 'desc')
-      );
-    } else {
-      q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
-    }
-  }
-  
-  unsubscribePosts = onSnapshot(q, (querySnapshot) => {
-    postsSection.innerHTML = ''; // Clear posts section before rendering
-    
-    if (querySnapshot.empty) {
-      postsSection.innerHTML = '<div class="post"><p>No posts found.</p></div>';
-      return;
-    }
-    
-    querySnapshot.forEach((doc) => {
-      const post = doc.data();
-      const postElement = document.createElement('div');
-      postElement.className = 'post';
-      
-      // Check if current user is admin or post owner
-      const isCurrentUserAdmin = isAdmin(auth.currentUser.email);
-      const isPostOwner = post.userId === auth.currentUser.uid;
-      
-      // Determine if delete button should be shown
-      const showDeleteButton = isCurrentUserAdmin || isPostOwner;
-      
-      // Create post menu buttons based on permissions
-      let postActions = '';
-      if (isPostOwner) {
-        postActions = `
-          <div class="post-menu">
-            <button class="post-menu-btn edit-post-btn" title="Edit Post"><i class="fas fa-edit"></i></button>
-            <button class="post-menu-btn delete-post-btn" title="Delete Post"><i class="fas fa-trash"></i></button>
-          </div>`;
-      } else if (isCurrentUserAdmin) {
-        postActions = `
-          <div class="post-menu">
-            <button class="post-menu-btn delete-post-btn" title="Delete Post"><i class="fas fa-trash"></i></button>
-          </div>`;
       }
-      
-      const tagsHtml = post.tags && post.tags.length > 0 ? 
-        post.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
-      
-      // Check if user is admin to add badge
-      const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
-        // Check if this post's user is an admin by comparing with known admin usernames
-        return adminUsers[adminEmail] === post.userName;
-      });
-      
-      const adminBadgeHtml = isUserAdmin ? 
-        `<span class="admin-badge">Admin</span>` : '';
-      
-      postElement.innerHTML = `
-        <div class="post-header">
-          <div class="post-header-left">
-            <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="post-avatar" />
-            <div class="post-user">
-              <h3 class="user-name" data-user-id="${post.userId}">${post.userName}</h3>
-              <p>${new Date(post.timestamp?.toDate()).toLocaleString()}</p>
-              ${adminBadgeHtml}
-            </div>
-          </div>
-          ${postActions}
-        </div>
-        <h2 class="post-title">${post.title}</h2>
-        <p class="post-content">${post.content}</p>
-        <div class="post-meta">
-          <p class="post-category">Category: ${post.category}</p>
-          <div class="post-tags">
-            ${tagsHtml}
-          </div>
-        </div>
-        <div class="post-actions">
-          <button class="post-action-btn like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'active' : ''}" data-post-id="${doc.id}">
-            <i class="fas fa-thumbs-up"></i> <span class="like-count">${post.likes || 0}</span>
-          </button>
-          <button class="post-action-btn dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'active' : ''}" data-post-id="${doc.id}">
-            <i class="fas fa-thumbs-down"></i> <span class="dislike-count">${post.dislikes || 0}</span>
-          </button>
-          <button class="post-action-btn comment-btn">
-            <i class="fas fa-comment"></i> Comments
-          </button>
-        </div>
-        <div class="comments-section">
-          <div class="comments-container"></div>
-          <form class="comment-form">
-            <input type="text" class="comment-input" placeholder="Write a comment..." />
-            <button type="submit" class="comment-submit">Send</button>
-          </form>
-        </div>
-      `;
-      
-      postsSection.appendChild(postElement);
+    });
 
-      // Event Listeners for Post Elements
-      const userNameElement = postElement.querySelector('.user-name');
-      userNameElement.addEventListener('click', (e) => {
-        e.preventDefault();
-        profileSection.style.display = 'block';
-        userStats.style.display = 'block';
-        postForm.style.display = 'none';
-        loadPosts(e.target.dataset.userId);
-        loadUserStats(e.target.dataset.userId);
-        
-        // Update active states
-        document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-        document.querySelectorAll('.mobile-nav-link').forEach(link => link.classList.remove('active'));
-        profileLink.classList.add('active');
-        mobileProfile.classList.add('active');
-      });
-
-      const commentsSection = postElement.querySelector('.comments-section');
-      const commentBtn = postElement.querySelector('.comment-btn');
-      commentBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        commentsSection.classList.toggle('show');
-        if (commentsSection.classList.contains('show')) {
-          loadComments(doc.id, commentsSection);
-        }
-      });
-
-      const commentForm = postElement.querySelector('.comment-form');
-      commentForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const commentInput = commentForm.querySelector('.comment-input');
-        const commentContent = commentInput.value.trim();
-        if (commentContent) {
-          addComment(doc.id, commentContent);
-          commentInput.value = '';
-        } else {
-          showToast('Comment cannot be empty');
-        }
-      });
-
-      const deleteBtn = postElement.querySelector('.delete-post-btn');
-      if (deleteBtn) {
-        deleteBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to delete this post?')) {
-            deletePost(doc.id);
+    // Initialize user data
+    async function initializeUserData(user) {
+      const userRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (!userDoc.exists()) {
+        // Create user document if it doesn't exist
+        await setDoc(userRef, {
+          displayName: isAdmin(user.email) ? getAdminDisplayName(user.email) : (user.displayName || user.email.split('@')[0]),
+          email: user.email,
+          photoURL: user.photoURL || generateAvatarUrl(user.uid),
+          bio: '',
+          followers: [],
+          following: [],
+          createdAt: new Date(),
+          isAdmin: isAdmin(user.email),
+          settings: {
+            emailNotifications: false,
+            pushNotifications: true,
+            privateAccount: false,
+            activityStatus: true
           }
         });
       }
-
-      const editBtn = postElement.querySelector('.edit-post-btn');
-      if (editBtn) {
-        editBtn.addEventListener('click', () => {
-          showEditPopup(doc.id, post.title, post.content);
-        });
-      }
-
-      const likeBtn = postElement.querySelector('.like-btn');
-      const dislikeBtn = postElement.querySelector('.dislike-btn');
-      
-      likeBtn.addEventListener('click', async () => {
-        if (likeBtn.disabled) return;
-        likeBtn.disabled = true;
-        dislikeBtn.disabled = true;
-        
-        try {
-          await handleLike(doc.id);
-        } catch (error) {
-          console.error('Error updating like:', error);
-          showToast('Failed to update like. Please try again.');
-        } finally {
-          likeBtn.disabled = false;
-          dislikeBtn.disabled = false;
-        }
-      });
-
-      dislikeBtn.addEventListener('click', async () => {
-        if (dislikeBtn.disabled) return;
-        dislikeBtn.disabled = true;
-        likeBtn.disabled = true;
-        
-        try {
-          await handleDislike(doc.id);
-        } catch (error) {
-          console.error('Error updating dislike:', error);
-          showToast('Failed to update dislike. Please try again.');
-        } finally {
-          dislikeBtn.disabled = false;
-          likeBtn.disabled = false;
-        }
-      });
-    });
-  });
-}
-
-// Handle Likes and Dislikes
-async function handleLike(postId) {
-  const postRef = doc(db, 'posts', postId);
-  const postDoc = await getDoc(postRef);
-  const post = postDoc.data();
-  const userId = auth.currentUser.uid;
-  const batch = writeBatch(db);
-
-  if (post.likedBy.includes(userId)) {
-    // User has already liked, remove the like
-    batch.update(postRef, {
-      likes: increment(-1),
-      likedBy: arrayRemove(userId)
-    });
-  } else {
-    // User hasn't liked, add the like
-    batch.update(postRef, {
-      likes: increment(1),
-      likedBy: arrayUnion(userId)
-    });
-
-    // If the user had previously disliked, remove the dislike
-    if (post.dislikedBy.includes(userId)) {
-      batch.update(postRef, {
-        dislikes: increment(-1),
-        dislikedBy: arrayRemove(userId)
-      });
     }
+
+    // Tweet Submission
+    tweetSubmit.addEventListener('click', submitTweet);
     
-    // Add notification for the post owner if it's not the current user
-    if (post.userId !== userId) {
-      addNotification(post.userId, `${auth.currentUser.displayName || auth.currentUser.email} liked your post.`);
-    }
-  }
-
-  await batch.commit();
-  
-  // Update user stats
-  loadUserStats(auth.currentUser.uid);
-  loadCommunityStats();
-}
-
-async function handleDislike(postId) {
-  const postRef = doc(db, 'posts', postId);
-  const postDoc = await getDoc(postRef);
-  const post = postDoc.data();
-  const userId = auth.currentUser.uid;
-  const batch = writeBatch(db);
-
-  if (post.dislikedBy.includes(userId)) {
-    // User has already disliked, remove the dislike
-    batch.update(postRef, {
-      dislikes: increment(-1),
-      dislikedBy: arrayRemove(userId)
-    });
-  } else {
-    // User hasn't disliked, add the dislike
-    batch.update(postRef, {
-      dislikes: increment(1),
-      dislikedBy: arrayUnion(userId)
-    });
-
-    // If the user had previously liked, remove the like
-    if (post.likedBy.includes(userId)) {
-      batch.update(postRef, {
-        likes: increment(-1),
-        likedBy: arrayRemove(userId)
-      });
-    }
-  }
-
-  await batch.commit();
-}
-
-// Edit Post Popup
-function showEditPopup(postId, title, content) {
-  editTitle.value = title;
-  editContent.value = content;
-  editPopup.classList.add('show');
-  overlay.style.display = 'block';
-
-  saveEditBtn.onclick = () => {
-    updatePost(postId, editTitle.value, editContent.value);
-    closeEditPopup();
-  };
-}
-
-function closeEditPopup() {
-  editPopup.classList.remove('show');
-  overlay.style.display = 'none';
-}
-
-// Post CRUD Operations
-async function deletePost(postId) {
-  try {
-    await deleteDoc(doc(db, 'posts', postId));
-    showToast('Post deleted successfully');
-    loadTrendingTopics();
-    loadUserStats(auth.currentUser.uid);
-    loadCommunityStats();
-    loadTopContributors();
-  } catch (error) {
-    console.error('Error deleting post:', error);
-    showToast('Failed to delete post. Please try again.');
-  }
-}
-
-async function updatePost(postId, newTitle, newContent) {
-  try {
-    await updateDoc(doc(db, 'posts', postId), {
-      title: newTitle,
-      content: newContent
-    });
-    showToast('Post updated successfully');
-  } catch (error) {
-    console.error('Error updating post:', error);
-    showToast('Failed to update post. Please try again.');
-  }
-}
-
-// Comments
-async function addComment(postId, content) {
-  try {
-    const postRef = doc(db, 'posts', postId);
-    const postSnapshot = await getDoc(postRef);
-
-    if (!postSnapshot.exists()) {
-      throw new Error('Post does not exist!');
-    }
-
-    const postData = postSnapshot.data();
-
-    // Use admin display name if user is admin
-    const commentUserName = isAdmin(auth.currentUser.email) ? 
-                           getAdminDisplayName(auth.currentUser.email) : 
-                           (auth.currentUser.displayName || auth.currentUser.email);
-
-    await addDoc(collection(db, 'posts', postId, 'comments'), {
-      content: content,
-      timestamp: new Date(),
-      userId: auth.currentUser.uid,
-      userName: commentUserName
-    });
-
-    // Add notification for the post owner
-    if (postData.userId !== auth.currentUser.uid) {
-      addNotification(postData.userId, `${commentUserName} commented on your post.`);
-    }
-    
-    showToast('Comment added successfully');
-    loadUserStats(auth.currentUser.uid);
-    loadCommunityStats();
-  } catch (error) {
-    showToast(error.message);
-  }
-}
-
-const unsubscribeMap = new Map();
-
-function loadComments(postId, commentsSection) {
-  // Unsubscribe from previous listener for this postId if exists
-  if (unsubscribeMap.has(postId)) {
-    unsubscribeMap.get(postId)();
-  }
-
-  const commentsContainer = commentsSection.querySelector('.comments-container');
-  const q = query(collection(db, 'posts', postId, 'comments'), orderBy('timestamp', 'asc'));
-  
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    commentsContainer.innerHTML = '';
-    
-    if (querySnapshot.empty) {
-      commentsContainer.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
-      return;
-    }
-    
-    querySnapshot.forEach((doc) => {
-      const comment = doc.data();
-      const commentElement = document.createElement('div');
-      commentElement.className = 'comment';
+    function submitTweet() {
+      const title = tweetTitle.value.trim();
+      const content = tweetContent.value.trim();
+      const category = categorySelect.value;
+      const tagsList = tweetTags.value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
       
-      // Check if current user is admin or comment owner
-      const isCurrentUserAdmin = isAdmin(auth.currentUser.email);
-      const isCommentOwner = comment.userId === auth.currentUser.uid;
-      
-      // Determine if delete/edit buttons should be shown
-      let editDeleteButtons = '';
-      if (isCommentOwner) {
-        editDeleteButtons = `
-          <button class="comment-action-btn edit-comment-btn"><i class="fas fa-edit"></i></button>
-          <button class="comment-action-btn delete-comment-btn"><i class="fas fa-trash"></i></button>`;
-      } else if (isCurrentUserAdmin) {
-        editDeleteButtons = `
-          <button class="comment-action-btn delete-comment-btn"><i class="fas fa-trash"></i></button>`;
-      }
-      
-      // Check if comment user is admin to add badge
-      const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
-        return adminUsers[adminEmail] === comment.userName;
-      });
-      
-      const adminBadgeHtml = isUserAdmin ? 
-        `<span class="admin-badge">Admin</span>` : '';
-      
-      commentElement.innerHTML = `
-        <div class="comment-header">
-          <img src="${generateAvatarUrl(comment.userId)}" alt="Profile Picture" class="comment-avatar" />
-          <div class="comment-user">
-            <h3>${comment.userName} ${adminBadgeHtml}</h3>
-            <p>${new Date(comment.timestamp?.toDate()).toLocaleString()}</p>
-          </div>
-        </div>
-        <p class="comment-content">${comment.content}</p>
-        <div class="comment-actions">
-          <button class="comment-action-btn reply-btn"><i class="fas fa-reply"></i> Reply</button>
-          ${editDeleteButtons}
-        </div>
-        <div class="replies"></div>
-        <form class="reply-form" style="display: none;">
-          <input type="text" class="reply-input" placeholder="Write a reply..." />
-          <button type="submit" class="reply-submit">Send</button>
-        </form>
-      `;
-      
-      commentsContainer.appendChild(commentElement);
-
-      const replyBtn = commentElement.querySelector('.reply-btn');
-      const replyForm = commentElement.querySelector('.reply-form');
-      
-      replyBtn.addEventListener('click', () => {
-        replyForm.style.display = replyForm.style.display === 'none' ? 'flex' : 'none';
-      });
-
-      replyForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const replyInput = replyForm.querySelector('.reply-input');
-        const replyContent = replyInput.value.trim();
-        if (replyContent) {
-          addReply(postId, doc.id, replyContent);
-          replyInput.value = '';
-          replyForm.style.display = 'none';
-        } else {
-          showToast('Reply cannot be empty');
-        }
-      });
-
-      const deleteCommentBtn = commentElement.querySelector('.delete-comment-btn');
-      if (deleteCommentBtn) {
-        deleteCommentBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to delete this comment?')) {
-            deleteComment(postId, doc.id);
-          }
-        });
-      }
-
-      const editCommentBtn = commentElement.querySelector('.edit-comment-btn');
-      if (editCommentBtn) {
-        editCommentBtn.addEventListener('click', () => {
-          const commentContent = commentElement.querySelector('.comment-content');
-          const currentContent = commentContent.textContent;
-          showEditPopup(doc.id, '', currentContent);
-          saveEditBtn.onclick = () => {
-            updateComment(postId, doc.id, editContent.value);
-            closeEditPopup();
-          };
-        });
-      }
-
-      loadReplies(postId, doc.id, commentElement.querySelector('.replies'));
-    });
-  });
-  
-  unsubscribeMap.set(postId, unsubscribe);
-}
-
-// Replies
-async function addReply(postId, commentId, content) {
-  try {
-    const commentRef = doc(db, 'posts', postId, 'comments', commentId);
-    const commentSnapshot = await getDoc(commentRef);
-
-    if (!commentSnapshot.exists()) {
-      throw new Error('Comment does not exist!');
-    }
-
-    const commentData = commentSnapshot.data();
-
-    // Use admin display name if user is admin
-    const replyUserName = isAdmin(auth.currentUser.email) ? 
-                         getAdminDisplayName(auth.currentUser.email) : 
-                         (auth.currentUser.displayName || auth.currentUser.email);
-
-    await addDoc(collection(db, 'posts', postId, 'comments', commentId, 'replies'), {
-      content: content,
-      timestamp: new Date(),
-      userId: auth.currentUser.uid,
-      userName: replyUserName
-    });
-
-    // Add notification for the comment owner
-    if (commentData.userId !== auth.currentUser.uid) {
-      addNotification(commentData.userId, `${replyUserName} replied to your comment.`);
-    }
-    
-    showToast('Reply added successfully');
-    loadCommunityStats();
-  } catch (error) {
-    showToast(error.message);
-  }
-}
-
-function loadReplies(postId, commentId, repliesSection) {
-  const q = query(collection(db, 'posts', postId, 'comments', commentId, 'replies'), orderBy('timestamp', 'asc'));
-  
-  onSnapshot(q, (querySnapshot) => {
-    repliesSection.innerHTML = '';
-    
-    querySnapshot.forEach((doc) => {
-      const reply = doc.data();
-      const replyElement = document.createElement('div');
-      replyElement.className = 'reply';
-      
-      // Check if current user is admin or reply owner
-      const isCurrentUserAdmin = isAdmin(auth.currentUser.email);
-      const isReplyOwner = reply.userId === auth.currentUser.uid;
-      
-      // Determine if delete/edit buttons should be shown
-      let editDeleteButtons = '';
-      if (isReplyOwner) {
-        editDeleteButtons = `
-          <button class="comment-action-btn edit-reply-btn"><i class="fas fa-edit"></i></button>
-          <button class="comment-action-btn delete-reply-btn"><i class="fas fa-trash"></i></button>`;
-      } else if (isCurrentUserAdmin) {
-        editDeleteButtons = `
-          <button class="comment-action-btn delete-reply-btn"><i class="fas fa-trash"></i></button>`;
-      }
-      
-      // Check if reply user is admin to add badge
-      const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
-        return adminUsers[adminEmail] === reply.userName;
-      });
-      
-      const adminBadgeHtml = isUserAdmin ? 
-        `<span class="admin-badge">Admin</span>` : '';
-      
-      replyElement.innerHTML = `
-        <div class="comment-header">
-          <img src="${generateAvatarUrl(reply.userId)}" alt="Profile Picture" class="comment-avatar">
-          <div class="comment-user">
-            <h3>${reply.userName} ${adminBadgeHtml}</h3>
-            <p>${new Date(reply.timestamp?.toDate()).toLocaleString()}</p>
-          </div>
-        </div>
-        <p class="comment-content">${reply.content}</p>
-        <div class="comment-actions">
-          ${editDeleteButtons}
-        </div>
-      `;
-      
-      repliesSection.appendChild(replyElement);
-
-      const deleteReplyBtn = replyElement.querySelector('.delete-reply-btn');
-      if (deleteReplyBtn) {
-        deleteReplyBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to delete this reply?')) {
-            deleteReply(postId, commentId, doc.id);
-          }
-        });
-      }
-
-      const editReplyBtn = replyElement.querySelector('.edit-reply-btn');
-      if (editReplyBtn) {
-        editReplyBtn.addEventListener('click', () => {
-          const replyContent = replyElement.querySelector('.comment-content');
-          const currentContent = replyContent.textContent;
-          showEditPopup(doc.id, '', currentContent);
-          saveEditBtn.onclick = () => {
-            updateReply(postId, commentId, doc.id, editContent.value);
-            closeEditPopup();
-          };
-        });
-      }
-    });
-  });
-}
-
-// Comment CRUD Operations
-async function deleteComment(postId, commentId) {
-  try {
-    await deleteDoc(doc(db, 'posts', postId, 'comments', commentId));
-    showToast('Comment deleted successfully');
-    loadUserStats(auth.currentUser.uid);
-    loadCommunityStats();
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-    showToast('Failed to delete comment. Please try again.');
-  }
-}
-
-async function updateComment(postId, commentId, newContent) {
-  try {
-    await updateDoc(doc(db, 'posts', postId, 'comments', commentId), {
-      content: newContent
-    });
-    showToast('Comment updated successfully');
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    showToast('Failed to update comment. Please try again.');
-  }
-}
-
-async function deleteReply(postId, commentId, replyId) {
-  try {
-    await deleteDoc(doc(db, 'posts', postId, 'comments', commentId, 'replies', replyId));
-    showToast('Reply deleted successfully');
-  } catch (error) {
-    console.error('Error deleting reply:', error);
-    showToast('Failed to delete reply. Please try again.');
-  }
-}
-
-async function updateReply(postId, commentId, replyId, newContent) {
-  try {
-    await updateDoc(doc(db, 'posts', postId, 'comments', commentId, 'replies', replyId), {
-      content: newContent
-    });
-    showToast('Reply updated successfully');
-  } catch (error) {
-    console.error('Error updating reply:', error);
-    showToast('Failed to update reply. Please try again.');
-  }
-}
-
-// Notifications
-function addNotification(userId, message) {
-  addDoc(collection(db, 'notifications'), {
-    userId: userId,
-    message: message,
-    timestamp: new Date(),
-    read: false
-  }).then(() => {
-    console.log('Notification added successfully');
-  }).catch((error) => {
-    console.error('Error adding notification:', error);
-  });
-}
-
-function getNotificationIcon(message) {
-  if (message.includes('commented')) {
-    return 'fa-comment';
-  } else if (message.includes('replied')) {
-    return 'fa-reply';
-  } else if (message.includes('liked')) {
-    return 'fa-thumbs-up';
-  } else {
-    return 'fa-bell';
-  }
-}
-
-function listenForNotifications(userId) {
-  const q = query(collection(db, 'notifications'), where('userId', '==', userId), orderBy('timestamp', 'desc'));
-  onSnapshot(q, (querySnapshot) => {
-    const notificationsList = document.getElementById('notifications-list');
-    notificationsList.innerHTML = '';
-    
-    if (querySnapshot.empty) {
-      notificationsList.innerHTML = '<div class="notification-item">No notifications yet.</div>';
-      return;
-    }
-    
-    querySnapshot.forEach((doc) => {
-      const notification = doc.data();
-      const notificationElement = document.createElement('div');
-      notificationElement.className = 'notification-item';
-      
-      const iconClass = getNotificationIcon(notification.message);
-      
-      notificationElement.innerHTML = `
-        <div class="notification-icon">
-          <i class="fas ${iconClass}"></i>
-        </div>
-        <div class="notification-content">
-          <p>${notification.message}</p>
-          <p class="notification-time">${new Date(notification.timestamp.toDate()).toLocaleString()}</p>
-        </div>
-      `;
-      
-      notificationsList.appendChild(notificationElement);
-    });
-  });
-}
-
-// Search Functionality
-searchBtn.addEventListener('click', function() {
-  performSearch();
-});
-
-searchBar.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    performSearch();
-  }
-});
-
-function performSearch() {
-  const searchTerm = searchBar.value.trim().toLowerCase();
-  if (searchTerm) {
-    Promise.resolve().then(async () => {
-      try {
-        // Search in users
-        const usersQuery = query(
-          collection(db, 'users'),
-          where('userName', '>=', searchTerm),
-          where('userName', '<=', searchTerm + '\uf8ff')
-        );
+      if (title && content && category) {
+        tweetSubmit.disabled = true;
         
-        
-        // Search in posts (title)
-        const postsTitleQuery = query(
-          collection(db, 'posts'),
-          orderBy('title'),
-          where('title', '>=', searchTerm),
-          where('title', '<=', searchTerm + '\uf8ff')
-        );
-        
-        // Search in posts (content)
-        const postsContentQuery = query(
-          collection(db, 'posts'),
-          orderBy('content'),
-          where('content', '>=', searchTerm),
-          where('content', '<=', searchTerm + '\uf8ff')
-        );
-        
-        // Search in posts (tags)
-        const postsTagsQuery = query(
-          collection(db, 'posts'),
-          where('tags', 'array-contains', searchTerm)
-        );
-
-        const [usersSnapshot, postsTitleSnapshot, postsContentSnapshot, postsTagsSnapshot] = await Promise.all([
-          getDocs(usersQuery),
-          getDocs(postsTitleQuery),
-          getDocs(postsContentQuery),
-          getDocs(postsTagsQuery)
-        ]);
-
-        // Combine post results and remove duplicates
-        const postResults = new Map();
-        
-        function addPostToResults(doc) {
-          if (!postResults.has(doc.id)) {
-            postResults.set(doc.id, doc.data());
-          }
-        }
-        
-        postsTitleSnapshot.forEach(addPostToResults);
-        postsContentSnapshot.forEach(addPostToResults);
-        postsTagsSnapshot.forEach(addPostToResults);
-
-        // Display results
-        postsSection.innerHTML = '';
-        
-        const resultsHeader = document.createElement('div');
-        resultsHeader.className = 'post';
-        resultsHeader.innerHTML = `<h3>Search Results for "${searchTerm}"</h3>`;
-        postsSection.appendChild(resultsHeader);
-        
-        // Display user results
-        if (!usersSnapshot.empty) {
-          const usersResultsSection = document.createElement('div');
-          usersResultsSection.className = 'post';
-          usersResultsSection.innerHTML = '<h4>Users:</h4>';
+        addDoc(collection(db, 'posts'), {
+          title: title,
+          content: content,
+          category: category,
+          tags: tagsList,
+          timestamp: new Date(),
+          userId: auth.currentUser.uid,
+          userName: isAdmin(auth.currentUser.email) ? 
+                    getAdminDisplayName(auth.currentUser.email) : 
+                    (auth.currentUser.displayName || auth.currentUser.email),
+          likes: 0,
+          dislikes: 0,
+          likedBy: [],
+          dislikedBy: []
+        })
+        .then(() => {
+          // Clear form fields
+          tweetTitle.value = '';
+          tweetContent.value = '';
+          categorySelect.value = '';
+          tweetTags.value = '';
           
-          usersSnapshot.forEach((userDoc) => {
-            const user = userDoc.data();
-            const userItem = document.createElement('div');
-            userItem.className = 'post-header-left';
-            userItem.style.margin = '10px 0';
-            userItem.style.cursor = 'pointer';
-            
-            // Check if user is admin
-            let displayName = user.userName || 'Anonymous';
-            const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
-              if (user.email === adminEmail) {
-                displayName = adminUsers[adminEmail];
-                return true;
-              }
-              return false;
-            });
-            
-            const adminBadgeHtml = isUserAdmin ? 
-              `<span class="admin-badge">Admin</span>` : '';
-            
-            userItem.innerHTML = `
-              <img src="${generateAvatarUrl(userDoc.id)}" alt="Profile Picture" class="post-avatar" />
-              <div class="post-user">
-                <h3 class="user-name" data-user-id="${userDoc.id}">${displayName}</h3>
-                ${adminBadgeHtml}
-              </div>
-            `;
-            
-            userItem.addEventListener('click', () => {
-              profileSection.style.display = 'block';
-              userStats.style.display = 'block';
-              postForm.style.display = 'none';
-              loadPosts(userDoc.id);
-              loadUserStats(userDoc.id);
-              
-              // Update active states
-              document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-              document.querySelectorAll('.mobile-nav-link').forEach(link => link.classList.remove('active'));
-              profileLink.classList.add('active');
-              mobileProfile.classList.add('active');
-            });
-            
-            usersResultsSection.appendChild(userItem);
+          showToast('Scrib posted successfully!');
+          tweetSubmit.disabled = false;
+          
+          // Update trending topics
+          loadTrendingTopics();
+          loadTopContributors();
+        })
+        .catch((error) => {
+          showToast(error.message);
+          tweetSubmit.disabled = false;
+        });
+      } else {
+        showToast('Please fill in all required fields');
+      }
+    }
+
+    // Load Posts
+    let unsubscribePosts = null;
+    let currentQuery = null;
+    let currentCategory = 'all';
+
+    function loadPosts(userId = null, category = currentCategory) {
+      // Unsubscribe from previous listener if exists
+      if (unsubscribePosts) {
+        unsubscribePosts();
+        unsubscribePosts = null;
+      }
+
+      // If the query is the same as the current one, don't reload
+      const queryString = userId ? `user-${userId}-${category}` : `all-${category}`;
+      if (queryString === currentQuery) {
+        return;
+      }
+      currentQuery = queryString;
+      currentCategory = category;
+      
+      let q;
+      if (userId) {
+        if (category !== 'all') {
+          q = query(
+            collection(db, 'posts'), 
+            where('userId', '==', userId),
+            where('category', '==', category),
+            orderBy('timestamp', 'desc')
+          );
+        } else {
+          q = query(
+            collection(db, 'posts'), 
+            where('userId', '==', userId), 
+            orderBy('timestamp', 'desc')
+          );
+        }
+      } else {
+        if (category !== 'all') {
+          q = query(
+            collection(db, 'posts'),
+            where('category', '==', category),
+            orderBy('timestamp', 'desc')
+          );
+        } else {
+          q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+        }
+      }
+      
+      const container = userId ? profileTweetsContainer : tweetsContainer;
+      container.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading posts...</div>';
+      
+      unsubscribePosts = onSnapshot(q, (querySnapshot) => {
+        container.innerHTML = ''; // Clear container before rendering
+        
+        if (querySnapshot.empty) {
+          container.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">No scribs found.</p></div>';
+          return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+          const post = doc.data();
+          const tweetElement = document.createElement('div');
+          tweetElement.className = 'tweet';
+          tweetElement.dataset.postId = doc.id;
+          
+          // Check if current user is admin or post owner
+          const isCurrentUserAdmin = isAdmin(auth.currentUser.email);
+          const isPostOwner = post.userId === auth.currentUser.uid;
+          
+          // Determine if delete/edit buttons should be shown
+          const showDeleteButton = isCurrentUserAdmin || isPostOwner;
+          const showEditButton = isPostOwner;
+          
+          // Format date
+          const postDate = post.timestamp?.toDate();
+          const formattedDate = postDate ? formatDate(postDate) : '';
+          
+          // Check if user is admin to add badge
+          const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
+            return adminUsers[adminEmail] === post.userName;
           });
           
-          postsSection.appendChild(usersResultsSection);
-        }
-        
-        // Display post results
-        if (postResults.size > 0) {
-          const postsResultsSection = document.createElement('div');
-          postsResultsSection.className = 'post';
-          postsResultsSection.innerHTML = '<h4>Posts:</h4>';
+          const adminBadgeHtml = isUserAdmin ? 
+            `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
           
-          postResults.forEach((post, postId) => {
-            const postItem = document.createElement('div');
-            postItem.className = 'post-item';
-            postItem.style.margin = '10px 0';
-            postItem.style.padding = '10px';
-            postItem.style.borderRadius = '8px';
-            postItem.style.backgroundColor = 'var(--background-color)';
-            postItem.style.cursor = 'pointer';
-            postItem.style.transition = 'var(--transition)';
-            
-            // Check if post author is admin
-            const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
-              return adminUsers[adminEmail] === post.userName;
+          // Create tags HTML
+          const tagsHtml = post.tags && post.tags.length > 0 ? 
+            post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
+          
+          tweetElement.innerHTML = `
+            <div class="tweet-header">
+              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="tweet-user-info">
+                <div>
+                  <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
+                  ${adminBadgeHtml}
+                  <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
+                </div>
+                <p class="tweet-time">${formattedDate}</p>
+              </div>
+              ${showDeleteButton || showEditButton ? `
+                <div class="tweet-more-container" style="position: relative;">
+                  <button class="tweet-more">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                    ${showEditButton ? `
+                      <div class="dropdown-item edit-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
+                        <i class="fas fa-edit" style="margin-right: 0.8rem;"></i> Edit
+                      </div>
+                    ` : ''}
+                    ${showDeleteButton ? `
+                      <div class="dropdown-item delete-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer; color: var(--error-color);">
+                        <i class="fas fa-trash" style="margin-right: 0.8rem;"></i> Delete
+                      </div>
+                    ` : ''}
+                    <div class="dropdown-item report-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
+                      <i class="fas fa-flag" style="margin-right: 0.8rem;"></i> Report
+                    </div>
+                  </div>
+                </div>
+              ` : `
+                <div class="tweet-more-container" style="position: relative;">
+                  <button class="tweet-more">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                    <div class="dropdown-item report-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
+                      <i class="fas fa-flag" style="margin-right: 0.8rem;"></i> Report
+                    </div>
+                  </div>
+                </div>
+              `}
+            </div>
+            <div class="tweet-content">
+              <h3 class="tweet-title">${post.title}</h3>
+              <p class="tweet-text">${post.content}</p>
+              <div style="margin-top: 0.8rem;">
+                <span class="tweet-category">${post.category}</span>
+                ${tagsHtml}
+              </div>
+            </div>
+            <div class="tweet-actions">
+              <button class="tweet-action comment-btn">
+                <i class="far fa-comment"></i>
+                <span class="comment-count">0</span>
+              </button>
+              <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
+                <i class="far fa-heart"></i>
+                <span class="like-count">${post.likes || 0}</span>
+              </button>
+              <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
+                <i class="far fa-thumbs-down"></i>
+                <span class="dislike-count">${post.dislikes || 0}</span>
+              </button>
+              <button class="tweet-action share-btn">
+                <i class="far fa-share-square"></i>
+              </button>
+            </div>
+            <div class="comments-section">
+              <div class="comments-container"></div>
+              <form class="comment-form">
+                <input type="text" class="comment-input" placeholder="Scrib your reply">
+                <button type="submit" class="comment-submit">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
+          `;
+          
+          container.appendChild(tweetElement);
+
+          // Get comments count
+          getCommentsCount(doc.id).then(count => {
+            const commentCount = tweetElement.querySelector('.comment-count');
+            if (commentCount) {
+              commentCount.textContent = count;
+            }
+          });
+
+          // Event Listeners for Tweet Elements
+          const tweetAvatar = tweetElement.querySelector('.tweet-avatar');
+          const tweetUserName = tweetElement.querySelector('.tweet-user-name');
+          
+          tweetAvatar.addEventListener('click', () => {
+            loadUserProfile(tweetAvatar.dataset.userId);
+          });
+          
+          tweetUserName.addEventListener('click', () => {
+            loadUserProfile(tweetUserName.dataset.userId);
+          });
+
+          const commentsSection = tweetElement.querySelector('.comments-section');
+          const commentBtn = tweetElement.querySelector('.comment-btn');
+          commentBtn.addEventListener('click', () => {
+            commentsSection.classList.toggle('show');
+            if (commentsSection.classList.contains('show')) {
+              loadComments(doc.id, commentsSection);
+            }
+          });
+
+          const commentForm = tweetElement.querySelector('.comment-form');
+          commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const commentInput = commentForm.querySelector('.comment-input');
+            const commentContent = commentInput.value.trim();
+            if (commentContent) {
+              addComment(doc.id, commentContent);
+              commentInput.value = '';
+            } else {
+              showToast('Comment cannot be empty');
+            }
+          });
+
+          const tweetMore = tweetElement.querySelector('.tweet-more');
+          const tweetDropdown = tweetElement.querySelector('.tweet-dropdown');
+          
+          if (tweetMore && tweetDropdown) {
+            tweetMore.addEventListener('click', (e) => {
+              e.stopPropagation();
+              tweetDropdown.style.display = tweetDropdown.style.display === 'block' ? 'none' : 'block';
             });
             
-            const adminBadgeHtml = isUserAdmin ? 
-              `<span class="admin-badge">Admin</span>` : '';
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+              if (tweetDropdown) {
+                tweetDropdown.style.display = 'none';
+              }
+            });
             
-            postItem.innerHTML = `
-              <div class="post-header-left">
-                <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="post-avatar" style="width: 32px; height: 32px;" />
-                <div class="post-user">
-                  <h3>${post.userName} ${adminBadgeHtml}</h3>
-                </div>
+            const deleteBtn = tweetElement.querySelector('.delete-tweet-btn');
+            if (deleteBtn) {
+              deleteBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to delete this scrib?')) {
+                  deletePost(doc.id);
+                }
+              });
+            }
+
+            const editBtn = tweetElement.querySelector('.edit-tweet-btn');
+            if (editBtn) {
+              editBtn.addEventListener('click', () => {
+                showEditModal(doc.id, post.title, post.content);
+              });
+            }
+            
+            const reportBtn = tweetElement.querySelector('.report-tweet-btn');
+            if (reportBtn) {
+              reportBtn.addEventListener('click', () => {
+                showReportModal('post', doc.id);
+              });
+            }
+          }
+
+          const likeBtn = tweetElement.querySelector('.like-btn');
+          const dislikeBtn = tweetElement.querySelector('.dislike-btn');
+          
+          likeBtn.addEventListener('click', async () => {
+            if (likeBtn.disabled) return;
+            likeBtn.disabled = true;
+            dislikeBtn.disabled = true;
+            
+            try {
+              await handleLike(doc.id);
+            } catch (error) {
+              console.error('Error updating like:', error);
+              showToast('Failed to update like. Please try again.');
+            } finally {
+              likeBtn.disabled = false;
+              dislikeBtn.disabled = false;
+            }
+          });
+
+          dislikeBtn.addEventListener('click', async () => {
+            if (dislikeBtn.disabled) return;
+            dislikeBtn.disabled = true;
+            likeBtn.disabled = true;
+            
+            try {
+              await handleDislike(doc.id);
+            } catch (error) {
+              console.error('Error updating dislike:', error);
+              showToast('Failed to update dislike. Please try again.');
+            } finally {
+              dislikeBtn.disabled = false;
+              likeBtn.disabled = false;
+            }
+          });
+
+          const shareBtn = tweetElement.querySelector('.share-btn');
+          shareBtn.addEventListener('click', () => {
+            // Simple share functionality - copy URL to clipboard
+            const url = window.location.href.split('?')[0] + '?post=' + doc.id;
+            navigator.clipboard.writeText(url).then(() => {
+              showToast('Link copied to clipboard!');
+            });
+          });
+        });
+      });
+    }
+
+    // Format date for tweets
+    function formatDate(date) {
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000); // seconds
+      
+      if (diff < 60) {
+        return `${diff}s`;
+      } else if (diff < 3600) {
+        return `${Math.floor(diff / 60)}m`;
+      } else if (diff < 86400) {
+        return `${Math.floor(diff / 3600)}h`;
+      } else if (diff < 604800) {
+        return `${Math.floor(diff / 86400)}d`;
+      } else {
+        return date.toLocaleDateString();
+      }
+    }
+
+    // Get comments count
+    async function getCommentsCount(postId) {
+      try {
+        const commentsQuery = query(collection(db, 'posts', postId, 'comments'));
+        const commentsSnapshot = await getDocs(commentsQuery);
+        return commentsSnapshot.size;
+      } catch (error) {
+        console.error('Error getting comments count:', error);
+        return 0;
+      }
+    }
+
+    // Handle Likes and Dislikes
+    async function handleLike(postId) {
+      const postRef = doc(db, 'posts', postId);
+      const postDoc = await getDoc(postRef);
+      const post = postDoc.data();
+      const userId = auth.currentUser.uid;
+      const batch = writeBatch(db);
+
+      if (post.likedBy.includes(userId)) {
+        // User has already liked, remove the like
+        batch.update(postRef, {
+          likes: increment(-1),
+          likedBy: arrayRemove(userId)
+        });
+      } else {
+        // User hasn't liked, add the like
+        batch.update(postRef, {
+          likes: increment(1),
+          likedBy: arrayUnion(userId)
+        });
+
+        // If the user had previously disliked, remove the dislike
+        if (post.dislikedBy.includes(userId)) {
+          batch.update(postRef, {
+            dislikes: increment(-1),
+            dislikedBy: arrayRemove(userId)
+          });
+        }
+        
+        // Add notification for the post owner if it's not the current user
+        if (post.userId !== userId) {
+          addNotification(post.userId, `${auth.currentUser.displayName || auth.currentUser.email} liked your scrib.`, 'like', postId);
+        }
+      }
+
+      await batch.commit();
+    }
+
+    async function handleDislike(postId) {
+      const postRef = doc(db, 'posts', postId);
+      const postDoc = await getDoc(postRef);
+      const post = postDoc.data();
+      const userId = auth.currentUser.uid;
+      const batch = writeBatch(db);
+
+      if (post.dislikedBy.includes(userId)) {
+        // User has already disliked, remove the dislike
+        batch.update(postRef, {
+          dislikes: increment(-1),
+          dislikedBy: arrayRemove(userId)
+        });
+      } else {
+        // User hasn't disliked, add the dislike
+        batch.update(postRef, {
+          dislikes: increment(1),
+          dislikedBy: arrayUnion(userId)
+        });
+
+        // If the user had previously liked, remove the like
+        if (post.likedBy.includes(userId)) {
+          batch.update(postRef, {
+            likes: increment(-1),
+            likedBy: arrayRemove(userId)
+          });
+        }
+      }
+
+      await batch.commit();
+    }
+
+    // Edit Modal
+    function showEditModal(postId, title, content) {
+      editTitle.value = title;
+      editContent.value = content;
+      editModal.style.display = 'block';
+      editModalOverlay.style.display = 'block';
+
+      editSave.onclick = () => {
+        updatePost(postId, editTitle.value, editContent.value);
+        closeEditModal();
+      };
+    }
+
+    function closeEditModal() {
+      editModal.style.display = 'none';
+      editModalOverlay.style.display = 'none';
+    }
+
+    editModalClose.addEventListener('click', closeEditModal);
+    editCancel.addEventListener('click', closeEditModal);
+    editModalOverlay.addEventListener('click', closeEditModal);
+    
+    // Report Modal
+    let reportType = '';
+    let reportItemId = '';
+    
+    function showReportModal(type, itemId) {
+      reportType = type;
+      reportItemId = itemId;
+      
+      // Reset form
+      document.querySelectorAll('input[name="report-reason"]').forEach(radio => {
+        radio.checked = false;
+      });
+      reportDetails.value = '';
+      reportOptions.forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      reportModal.style.display = 'block';
+      reportModalOverlay.style.display = 'block';
+    }
+    
+    function closeReportModal() {
+      reportModal.style.display = 'none';
+      reportModalOverlay.style.display = 'none';
+    }
+    
+    reportModalClose.addEventListener('click', closeReportModal);
+    reportCancel.addEventListener('click', closeReportModal);
+    reportModalOverlay.addEventListener('click', closeReportModal);
+    
+    // Handle report option selection
+    reportOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const radio = option.querySelector('input[type="radio"]');
+        radio.checked = true;
+        
+        reportOptions.forEach(opt => {
+          opt.classList.remove('selected');
+        });
+        option.classList.add('selected');
+      });
+    });
+    
+    // Submit report
+    reportSubmit.addEventListener('click', () => {
+      const selectedReason = document.querySelector('input[name="report-reason"]:checked');
+      
+      if (!selectedReason) {
+        showToast('Please select a reason for reporting');
+        return;
+      }
+      
+      const reason = selectedReason.value;
+      const details = reportDetails.value.trim();
+      
+      submitReport(reportType, reportItemId, reason, details);
+      closeReportModal();
+    });
+    
+    async function submitReport(type, itemId, reason, details) {
+      try {
+        await addDoc(collection(db, 'reports'), {
+          type: type,
+          itemId: itemId,
+          reason: reason,
+          details: details,
+          reportedBy: auth.currentUser.uid,
+          reportedAt: new Date(),
+          status: 'pending'
+        });
+        
+        showToast('Report submitted successfully');
+        
+        // Save report to Feedback.html
+        saveReportToFeedback(type, itemId, reason, details);
+      } catch (error) {
+        console.error('Error submitting report:', error);
+        showToast('Failed to submit report. Please try again.');
+      }
+    }
+    
+    // Save report to Feedback.html
+    function saveReportToFeedback(type, itemId, reason, details) {
+      // Create a form to submit the report data
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'Feedback.html';
+      form.style.display = 'none';
+      
+      // Add form fields
+      const typeField = document.createElement('input');
+      typeField.name = 'type';
+      typeField.value = type;
+      form.appendChild(typeField);
+      
+      const itemIdField = document.createElement('input');
+      itemIdField.name = 'itemId';
+      itemIdField.value = itemId;
+      form.appendChild(itemIdField);
+      
+      const reasonField = document.createElement('input');
+      reasonField.name = 'reason';
+      reasonField.value = reason;
+      form.appendChild(reasonField);
+      
+      const detailsField = document.createElement('input');
+      detailsField.name = 'details';
+      detailsField.value = details;
+      form.appendChild(detailsField);
+      
+      const userIdField = document.createElement('input');
+      userIdField.name = 'userId';
+      userIdField.value = auth.currentUser.uid;
+      form.appendChild(userIdField);
+      
+      const userNameField = document.createElement('input');
+      userNameField.name = 'userName';
+      userNameField.value = auth.currentUser.displayName || auth.currentUser.email;
+      form.appendChild(userNameField);
+      
+      const dateField = document.createElement('input');
+      dateField.name = 'date';
+      dateField.value = new Date().toISOString();
+      form.appendChild(dateField);
+      
+      // Submit the form
+      document.body.appendChild(form);
+      
+      // Instead of submitting the form, we'll save the data to localStorage
+      // This is a workaround since we can't actually submit to a different HTML file in this context
+      const reportData = {
+        type: type,
+        itemId: itemId,
+        reason: reason,
+        details: details,
+        userId: auth.currentUser.uid,
+        userName: auth.currentUser.displayName || auth.currentUser.email,
+        date: new Date().toISOString()
+      };
+      
+      // Get existing reports or initialize empty array
+      const existingReports = JSON.parse(localStorage.getItem('silakboReports') || '[]');
+      existingReports.push(reportData);
+      localStorage.setItem('silakboReports', JSON.stringify(existingReports));
+      
+      // Remove the form
+      document.body.removeChild(form);
+    }
+
+    // Post CRUD Operations
+    async function deletePost(postId) {
+      try {
+        await deleteDoc(doc(db, 'posts', postId));
+        showToast('Scrib deleted successfully');
+        loadTrendingTopics();
+        loadTopContributors();
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        showToast('Failed to delete scrib. Please try again.');
+      }
+    }
+
+    async function updatePost(postId, newTitle, newContent) {
+      try {
+        await updateDoc(doc(db, 'posts', postId), {
+          title: newTitle,
+          content: newContent
+        });
+        showToast('Scrib updated successfully');
+      } catch (error) {
+        console.error('Error updating post:', error);
+        showToast('Failed to update scrib. Please try again.');
+      }
+    }
+
+    // Comments
+    async function addComment(postId, content) {
+      try {
+        const postRef = doc(db, 'posts', postId);
+        const postSnapshot = await getDoc(postRef);
+
+        if (!postSnapshot.exists()) {
+          throw new Error('Post does not exist!');
+        }
+
+        const postData = postSnapshot.data();
+
+        // Use admin display name if user is admin
+        const commentUserName = isAdmin(auth.currentUser.email) ? 
+                               getAdminDisplayName(auth.currentUser.email) : 
+                               (auth.currentUser.displayName || auth.currentUser.email);
+
+        await addDoc(collection(db, 'posts', postId, 'comments'), {
+          content: content,
+          timestamp: new Date(),
+          userId: auth.currentUser.uid,
+          userName: commentUserName
+        });
+
+        // Add notification for the post owner
+        if (postData.userId !== auth.currentUser.uid) {
+          addNotification(postData.userId, `${commentUserName} commented on your scrib.`, 'comment', postId);
+        }
+        
+        showToast('Reply sent successfully');
+        
+        // Update comment count
+        const tweetElement = document.querySelector(`[data-post-id="${postId}"]`);
+        if (tweetElement) {
+          const commentCount = tweetElement.querySelector('.comment-count');
+          if (commentCount) {
+            commentCount.textContent = parseInt(commentCount.textContent) + 1;
+          }
+        }
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    const unsubscribeMap = new Map();
+
+    function loadComments(postId, commentsSection) {
+      // Unsubscribe from previous listener for this postId if exists
+      if (unsubscribeMap.has(postId)) {
+        unsubscribeMap.get(postId)();
+      }
+
+      const commentsContainer = commentsSection.querySelector('.comments-container');
+      const q = query(collection(db, 'posts', postId, 'comments'), orderBy('timestamp', 'asc'));
+      
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        commentsContainer.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+          commentsContainer.innerHTML = '<p style="padding: 1rem 0; color: var(--text-secondary);">No replies yet. Be the first to reply!</p>';
+          return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+          const comment = doc.data();
+          const commentElement = document.createElement('div');
+          commentElement.className = 'comment';
+          
+          // Check if current user is admin or comment owner
+          const isCurrentUserAdmin = isAdmin(auth.currentUser.email);
+          const isCommentOwner = comment.userId === auth.currentUser.uid;
+          
+          // Check if comment user is admin to add badge
+          const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
+            return adminUsers[adminEmail] === comment.userName;
+          });
+          
+          const adminBadgeHtml = isUserAdmin ? 
+            `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
+          
+          commentElement.innerHTML = `
+            <img src="${generateAvatarUrl(comment.userId)}" alt="Profile Picture" class="comment-avatar" data-user-id="${comment.userId}">
+            <div class="comment-content">
+              <div>
+                <span class="comment-user-name" data-user-id="${comment.userId}">${comment.userName}</span>
+                ${adminBadgeHtml}
+                <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.3rem;">${formatDate(comment.timestamp.toDate())}</span>
               </div>
-              <h4 style="margin-top: 8px;">${post.title}</h4>
-              <p style="margin-top: 4px; font-size: 0.9rem;">${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>
-            `;
-            
-            postItem.addEventListener('click', () => {
-              // Close search results and show the actual post
-              loadPosts();
+              <p class="comment-text">${comment.content}</p>
+              <div class="comment-actions">
+                <button class="comment-action reply-btn">
+                  <i class="far fa-comment"></i> Reply
+                </button>
+                ${isCommentOwner || isCurrentUserAdmin ? `
+                  <button class="comment-action delete-comment-btn">
+                    <i class="far fa-trash-alt"></i> Delete
+                  </button>
+                ` : ''}
+                ${isCommentOwner ? `
+                  <button class="comment-action edit-comment-btn">
+                    <i class="far fa-edit"></i> Edit
+                  </button>
+                ` : ''}
+                <button class="comment-action report-comment-btn">
+                  <i class="far fa-flag"></i> Report
+                </button>
+              </div>
+            </div>
+          `;
+          
+          commentsContainer.appendChild(commentElement);
+
+          // Event listeners for comment elements
+          const commentAvatar = commentElement.querySelector('.comment-avatar');
+          const commentUserName = commentElement.querySelector('.comment-user-name');
+          
+          commentAvatar.addEventListener('click', () => {
+            loadUserProfile(commentAvatar.dataset.userId);
+          });
+          
+          commentUserName.addEventListener('click', () => {
+            loadUserProfile(commentUserName.dataset.userId);
+          });
+
+          const deleteCommentBtn = commentElement.querySelector('.delete-comment-btn');
+          if (deleteCommentBtn) {
+            deleteCommentBtn.addEventListener('click', () => {
+              if (confirm('Are you sure you want to delete this reply?')) {
+                deleteComment(postId, doc.id);
+              }
+            });
+          }
+
+          const editCommentBtn = commentElement.querySelector('.edit-comment-btn');
+          if (editCommentBtn) {
+            editCommentBtn.addEventListener('click', () => {
+              const commentText = commentElement.querySelector('.comment-text');
+              const currentContent = commentText.textContent;
               
-              // Scroll to the post after a short delay to allow posts to load
+              // Inline edit
+              commentText.innerHTML = `
+                <input type="text" value="${currentContent}" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 0.5rem;">
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="save-edit-btn" style="background-color: var(--primary-color); color: white; border: none; border-radius: var(--radius-full); padding: 0.3rem 0.8rem; cursor: pointer;">Save</button>
+                  <button class="cancel-edit-btn" style="background-color: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 0.3rem 0.8rem; cursor: pointer;">Cancel</button>
+                </div>
+              `;
+              
+              const saveEditBtn = commentText.querySelector('.save-edit-btn');
+              const cancelEditBtn = commentText.querySelector('.cancel-edit-btn');
+              const editInput = commentText.querySelector('input');
+              
+              saveEditBtn.addEventListener('click', () => {
+                updateComment(postId, doc.id, editInput.value);
+                commentText.textContent = editInput.value;
+              });
+              
+              cancelEditBtn.addEventListener('click', () => {
+                commentText.textContent = currentContent;
+              });
+            });
+          }
+          
+          const reportCommentBtn = commentElement.querySelector('.report-comment-btn');
+          if (reportCommentBtn) {
+            reportCommentBtn.addEventListener('click', () => {
+              showReportModal('comment', doc.id);
+            });
+          }
+        });
+      });
+      
+      unsubscribeMap.set(postId, unsubscribe);
+    }
+
+    // Comment CRUD Operations
+    async function deleteComment(postId, commentId) {
+      try {
+        await deleteDoc(doc(db, 'posts', postId, 'comments', commentId));
+        showToast('Reply deleted successfully');
+        
+        // Update comment count
+        const tweetElement = document.querySelector(`[data-post-id="${postId}"]`);
+        if (tweetElement) {
+          const commentCount = tweetElement.querySelector('.comment-count');
+          if (commentCount) {
+            const currentCount = parseInt(commentCount.textContent);
+            if (currentCount > 0) {
+              commentCount.textContent = currentCount - 1;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+        showToast('Failed to delete reply. Please try again.');
+      }
+    }
+
+    async function updateComment(postId, commentId, newContent) {
+      try {
+        await updateDoc(doc(db, 'posts', postId, 'comments', commentId), {
+          content: newContent
+        });
+        showToast('Reply updated successfully');
+      } catch (error) {
+        console.error('Error updating comment:', error);
+        showToast('Failed to update reply. Please try again.');
+      }
+    }
+
+    // Notifications
+    function addNotification(userId, message, type, referenceId) {
+      addDoc(collection(db, 'notifications'), {
+        userId: userId,
+        message: message,
+        type: type,
+        referenceId: referenceId,
+        timestamp: new Date(),
+        read: false
+      }).then(() => {
+        console.log('Notification added successfully');
+      }).catch((error) => {
+        console.error('Error adding notification:', error);
+      });
+    }
+    
+    // Load Notifications
+    let unsubscribeNotifications = null;
+    
+    function loadNotifications() {
+      if (unsubscribeNotifications) {
+        unsubscribeNotifications();
+      }
+      
+      const q = query(
+        collection(db, 'notifications'),
+        where('userId', '==', auth.currentUser.uid),
+        orderBy('timestamp', 'desc')
+      );
+      
+      unsubscribeNotifications = onSnapshot(q, (querySnapshot) => {
+        notificationsPage.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+          notificationsPage.innerHTML = '<div style="text-align: center; padding: 2rem;">No notifications yet.</div>';
+          return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+          const notification = doc.data();
+          const notificationElement = document.createElement('div');
+          notificationElement.className = `notification-item ${notification.read ? '' : 'unread'}`;
+          
+          // Determine icon based on notification type
+          let iconClass = 'fas fa-bell';
+          if (notification.type === 'like') {
+            iconClass = 'fas fa-heart';
+          } else if (notification.type === 'comment') {
+            iconClass = 'fas fa-comment';
+          } else if (notification.type === 'follow') {
+            iconClass = 'fas fa-user-plus';
+          }
+          
+          notificationElement.innerHTML = `
+            <div class="notification-icon">
+              <i class="${iconClass}"></i>
+            </div>
+            <div class="notification-content">
+              <p class="notification-text">${notification.message}</p>
+              <p class="notification-time">${formatDate(notification.timestamp.toDate())}</p>
+              <div class="notification-actions">
+                <button class="notification-action view-btn">View</button>
+                <button class="notification-action mark-read-btn">${notification.read ? 'Mark as unread' : 'Mark as read'}</button>
+              </div>
+            </div>
+          `;
+          
+          notificationsPage.appendChild(notificationElement);
+          
+          // Event listeners for notification actions
+          const viewBtn = notificationElement.querySelector('.view-btn');
+          viewBtn.addEventListener('click', () => {
+            // Mark as read
+            updateDoc(doc(db, 'notifications', doc.id), {
+              read: true
+            });
+            
+            // Navigate to the referenced content
+            if (notification.type === 'like' || notification.type === 'comment') {
+              // Navigate to the post
+              setActiveNavItem('home');
+              showPage('home-page');
+              
+              // Find and highlight the post
               setTimeout(() => {
-                const postElement = document.querySelector(`[data-post-id="${postId}"]`)?.closest('.post');
+                const postElement = document.querySelector(`[data-post-id="${notification.referenceId}"]`);
                 if (postElement) {
                   postElement.scrollIntoView({ behavior: 'smooth' });
-                  postElement.style.animation = 'highlight 2s';
+                  postElement.style.backgroundColor = 'rgba(230, 81, 0, 0.05)';
+                  setTimeout(() => {
+                    postElement.style.backgroundColor = '';
+                  }, 2000);
+                  
+                  // If it's a comment notification, open the comments section
+                  if (notification.type === 'comment') {
+                    const commentBtn = postElement.querySelector('.comment-btn');
+                    if (commentBtn) {
+                      commentBtn.click();
+                    }
+                  }
+                } else {
+                  // Post not found in current view, load it directly
+                  loadSinglePost(notification.referenceId);
                 }
-              }, 500);
-            });
-            
-            postItem.addEventListener('mouseenter', () => {
-              postItem.style.backgroundColor = 'rgba(230, 81, 0, 0.05)';
-              postItem.style.transform = 'translateY(-2px)';
-            });
-            
-            postItem.addEventListener('mouseleave', () => {
-              postItem.style.backgroundColor = 'var(--background-color)';
-              postItem.style.transform = 'translateY(0)';
-            });
-            
-            postsResultsSection.appendChild(postItem);
+              }, 300);
+            } else if (notification.type === 'follow') {
+              // Navigate to the user's profile
+              loadUserProfile(notification.referenceId);
+            }
           });
           
-          postsSection.appendChild(postsResultsSection);
+          const markReadBtn = notificationElement.querySelector('.mark-read-btn');
+          markReadBtn.addEventListener('click', () => {
+            updateDoc(doc(db, 'notifications', doc.id), {
+              read: !notification.read
+            });
+          });
+        });
+        
+        // Update notification badge
+        updateNotificationBadge(querySnapshot.docs.filter(doc => !doc.data().read).length);
+      });
+    }
+    
+    // Update notification badge
+    function updateNotificationBadge(count) {
+      const notificationBadge = document.createElement('span');
+      notificationBadge.className = 'notification-badge';
+      notificationBadge.style.cssText = `
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: var(--error-color);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.1rem 0.4rem;
+        border-radius: var(--radius-full);
+        transform: translate(50%, -50%);
+      `;
+      
+      // Remove existing badges
+      const existingBadges = document.querySelectorAll('.notification-badge');
+      existingBadges.forEach(badge => badge.remove());
+      
+      if (count > 0) {
+        // Add badge to notification links
+        const notificationLinks = [notificationsLink, mobileNotifications];
+        notificationLinks.forEach(link => {
+          const iconContainer = link.querySelector('i').parentElement;
+          iconContainer.style.position = 'relative';
+          
+          const badge = notificationBadge.cloneNode(true);
+          badge.textContent = count > 9 ? '9+' : count;
+          iconContainer.appendChild(badge);
+        });
+      }
+    }
+    
+    // Load single post
+    async function loadSinglePost(postId) {
+      try {
+        const postDoc = await getDoc(doc(db, 'posts', postId));
+        
+        if (!postDoc.exists()) {
+          showToast('Post not found');
+          return;
         }
         
-        // No results message
-        if (usersSnapshot.empty && postResults.size === 0) {
-          const noResultsMessage = document.createElement('div');
-          noResultsMessage.className = 'post';
-          noResultsMessage.innerHTML = '<p>No results found. Try a different search term.</p>';
-          postsSection.appendChild(noResultsMessage);
-        }
+        setActiveNavItem('home');
+        showPage('home-page');
         
-        // Hide search container on mobile after search
-        if (window.innerWidth <= 576) {
-          searchContainer.classList.remove('show');
-        }
+        tweetsContainer.innerHTML = '';
+        
+        const post = postDoc.data();
+        const tweetElement = document.createElement('div');
+        tweetElement.className = 'tweet';
+        tweetElement.dataset.postId = postDoc.id;
+        
+        // Check if current user is admin or post owner
+        const isCurrentUserAdmin = isAdmin(auth.currentUser.email);
+        const isPostOwner = post.userId === auth.currentUser.uid;
+        
+        // Determine if delete/edit buttons should be shown
+        const showDeleteButton = isCurrentUserAdmin || isPostOwner;
+        const showEditButton = isPostOwner;
+        
+        // Format date
+        const postDate = post.timestamp?.toDate();
+        const formattedDate = postDate ? formatDate(postDate) : '';
+        
+        // Check if user is admin to add badge
+        const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
+          return adminUsers[adminEmail] === post.userName;
+        });
+        
+        const adminBadgeHtml = isUserAdmin ? 
+          `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
+        
+        // Create tags HTML
+        const tagsHtml = post.tags && post.tags.length > 0 ? 
+          post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
+        
+        tweetElement.innerHTML = `
+          <div class="tweet-header">
+            <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+            <div class="tweet-user-info">
+              <div>
+                <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
+                ${adminBadgeHtml}
+                <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
+              </div>
+              <p class="tweet-time">${formattedDate}</p>
+            </div>
+            ${showDeleteButton || showEditButton ? `
+              <div class="tweet-more-container" style="position: relative;">
+                <button class="tweet-more">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                  ${showEditButton ? `
+                    <div class="dropdown-item edit-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
+                      <i class="fas fa-edit" style="margin-right: 0.8rem;"></i> Edit
+                    </div>
+                  ` : ''}
+                  ${showDeleteButton ? `
+                    <div class="dropdown-item delete-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer; color: var(--error-color);">
+                      <i class="fas fa-trash" style="margin-right: 0.8rem;"></i> Delete
+                    </div>
+                  ` : ''}
+                  <div class="dropdown-item report-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
+                    <i class="fas fa-flag" style="margin-right: 0.8rem;"></i> Report
+                  </div>
+                </div>
+              </div>
+            ` : `
+              <div class="tweet-more-container" style="position: relative;">
+                <button class="tweet-more">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                  <div class="dropdown-item report-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
+                    <i class="fas fa-flag" style="margin-right: 0.8rem;"></i> Report
+                  </div>
+                </div>
+              </div>
+            `}
+          </div>
+          <div class="tweet-content">
+            <h3 class="tweet-title">${post.title}</h3>
+            <p class="tweet-text">${post.content}</p>
+            <div style="margin-top: 0.8rem;">
+              <span class="tweet-category">${post.category}</span>
+              ${tagsHtml}
+            </div>
+          </div>
+          <div class="tweet-actions">
+            <button class="tweet-action comment-btn">
+              <i class="far fa-comment"></i>
+              <span class="comment-count">0</span>
+            </button>
+            <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
+              <i class="far fa-heart"></i>
+              <span class="like-count">${post.likes || 0}</span>
+            </button>
+            <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
+              <i class="far fa-thumbs-down"></i>
+              <span class="dislike-count">${post.dislikes || 0}</span>
+            </button>
+            <button class="tweet-action share-btn">
+              <i class="far fa-share-square"></i>
+            </button>
+          </div>
+          <div class="comments-section">
+            <div class="comments-container"></div>
+            <form class="comment-form">
+              <input type="text" class="comment-input" placeholder="Scrib your reply">
+              <button type="submit" class="comment-submit">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        `;
+        
+        tweetsContainer.appendChild(tweetElement);
+        
+        // Get comments count
+        getCommentsCount(postDoc.id).then(count => {
+          const commentCount = tweetElement.querySelector('.comment-count');
+          if (commentCount) {
+            commentCount.textContent = count;
+          }
+        });
+        
+        // Add event listeners (similar to loadPosts function)
+        // ... (add all the event listeners from the loadPosts function)
+        
+        // Highlight the post
+        tweetElement.style.backgroundColor = 'rgba(230, 81, 0, 0.05)';
+        setTimeout(() => {
+          tweetElement.style.backgroundColor = '';
+        }, 2000);
         
       } catch (error) {
-        console.error('Search error:', error);
-        showToast('Search error: ' + error.message);
-      }
-    });
-  } else {
-    showToast('Please enter a search term');
-  }
-}
-
-// Profile Management
-function updateProfileInfo(user) {
-  // Check if user is admin and update display name
-  let displayName = user.displayName || 'Anonymous';
-  if (isAdmin(user.email)) {
-    displayName = getAdminDisplayName(user.email);
-  }
-  
-  profileName.textContent = displayName;
-  profileEmail.textContent = user.email;
-  profilePicture.src = user.photoURL || generateAvatarUrl(user.uid);
-
-  const q = query(collection(db, 'posts'), where('userId', '==', user.uid));
-  getDocs(q).then((querySnapshot) => {
-    profilePosts.textContent = querySnapshot.size;
-  });
-  
-  // Get comments count
-  let commentsCount = 0;
-  getDocs(q).then(async (postsSnapshot) => {
-    for (const postDoc of postsSnapshot.docs) {
-      const commentsQuery = query(collection(db, 'posts', postDoc.id, 'comments'), where('userId', '==', user.uid));
-      const commentsSnapshot = await getDocs(commentsQuery);
-      commentsCount += commentsSnapshot.size;
-    }
-    profileComments.textContent = commentsCount;
-  });
-  
-  // Get likes count
-  const likedPostsQuery = query(collection(db, 'posts'), where('likedBy', 'array-contains', user.uid));
-  getDocs(likedPostsQuery).then((likedPostsSnapshot) => {
-    profileLikes.textContent = likedPostsSnapshot.size;
-  });
-}
-
-uploadPicture.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const storageRef = ref(storage, 'profile_pictures/' + auth.currentUser.uid);
-    
-    // Show loading state
-    profilePicture.style.opacity = '0.5';
-    
-    uploadBytes(storageRef, file).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((downloadURL) => {
-        auth.currentUser.updateProfile({
-          photoURL: downloadURL
-        }).then(() => {
-          profilePicture.src = downloadURL;
-          postFormAvatar.src = downloadURL;
-          profilePicture.style.opacity = '1';
-          showToast('Profile picture updated successfully');
-        });
-      });
-    }).catch(error => {
-      profilePicture.style.opacity = '1';
-      showToast('Error uploading image: ' + error.message);
-    });
-  }
-});
-
-// User Stats
-async function loadUserStats(userId) {
-  try {
-    // Count posts
-    const postsQuery = query(collection(db, 'posts'), where('userId', '==', userId));
-    const postsSnapshot = await getDocs(postsQuery);
-    const postsCount = postsSnapshot.size;
-    
-    // Initialize counters
-    let commentsTotal = 0;
-    let likesGiven = 0;
-    let likesReceived = 0;
-    
-    // Count comments
-    const commentPromises = postsSnapshot.docs.map(async (postDoc) => {
-      const commentsQuery = query(collection(db, 'posts', postDoc.id, 'comments'), where('userId', '==', userId));
-      const commentsSnapshot = await getDocs(commentsQuery);
-      return commentsSnapshot.size;
-    });
-    
-    const commentCounts = await Promise.all(commentPromises);
-    commentsTotal = commentCounts.reduce((total, count) => total + count, 0);
-    
-    // Count likes given
-    const likedPostsQuery = query(collection(db, 'posts'), where('likedBy', 'array-contains', userId));
-    const likedPostsSnapshot = await getDocs(likedPostsQuery);
-    likesGiven = likedPostsSnapshot.size;
-    
-    // Count likes received
-    postsSnapshot.forEach(doc => {
-      const post = doc.data();
-      likesReceived += post.likes || 0;
-    });
-    
-    // Update UI
-    document.getElementById('posts-count').textContent = postsCount;
-    document.getElementById('comments-count').textContent = commentsTotal;
-    document.getElementById('likes-count').textContent = likesGiven;
-    document.getElementById('received-likes-count').textContent = likesReceived;
-    
-  } catch (error) {
-    console.error('Error loading user stats:', error);
-  }
-}
-
-// Top Contributors
-async function loadTopContributors() {
-  try {
-    // Get all posts
-    const postsQuery = query(collection(db, 'posts'));
-    const postsSnapshot = await getDocs(postsQuery);
-    
-    // Count posts by user
-    const userPostCounts = {};
-    
-    postsSnapshot.forEach(doc => {
-      const post = doc.data();
-      const userId = post.userId;
-      const userName = post.userName;
-      
-      if (!userPostCounts[userId]) {
-        userPostCounts[userId] = {
-          userId,
-          userName,
-          posts: 0,
-          likes: 0
-        };
-      }
-      
-      userPostCounts[userId].posts += 1;
-      userPostCounts[userId].likes += post.likes || 0;
-    });
-    
-    // Convert to array and sort by post count
-    const sortedContributors = Object.values(userPostCounts)
-      .sort((a, b) => b.posts - a.posts || b.likes - a.likes)
-      .slice(0, 5);
-    
-    // Update UI
-    topContributorsList.innerHTML = '';
-    
-    if (sortedContributors.length === 0) {
-      topContributorsList.innerHTML = '<p>No contributors yet.</p>';
-      return;
-    }
-    
-    sortedContributors.forEach((contributor, index) => {
-      const contributorElement = document.createElement('div');
-      contributorElement.className = 'top-contributor';
-      
-      // Randomly determine if user is online (for demo purposes)
-      const isOnline = Math.random() > 0.5;
-      
-      // Check if contributor is admin
-      const isContributorAdmin = Object.values(adminUsers).includes(contributor.userName);
-      const adminBadgeHtml = isContributorAdmin ? 
-        `<span class="admin-badge">Admin</span>` : '';
-      
-      contributorElement.innerHTML = `
-        <div class="contributor-rank">${index + 1}</div>
-        <img src="${generateAvatarUrl(contributor.userId)}" alt="Profile Picture" class="contributor-avatar" />
-        <div class="contributor-info">
-          <h4 class="contributor-name">${contributor.userName}</h4>
-          <p class="contributor-stats">${contributor.posts} posts, ${contributor.likes} likes</p>
-          ${adminBadgeHtml}
-        </div>
-        ${isOnline ? '<div class="online-indicator"></div>' : ''}
-      `;
-      
-      contributorElement.addEventListener('click', () => {
-        profileSection.style.display = 'block';
-        userStats.style.display = 'block';
-        postForm.style.display = 'none';
-        loadPosts(contributor.userId);
-        loadUserStats(contributor.userId);
-        
-        // Update active states
-        document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-        document.querySelectorAll('.mobile-nav-link').forEach(link => link.classList.remove('active'));
-        profileLink.classList.add('active');
-        mobileProfile.classList.add('active');
-      });
-      
-      topContributorsList.appendChild(contributorElement);
-    });
-    
-    // Set online users count (random for demo)
-    onlineCount.textContent = Math.floor(Math.random() * 10) + sortedContributors.length;
-    
-  } catch (error) {
-    console.error('Error loading top contributors:', error);
-    topContributorsList.innerHTML = '<p>Error loading top contributors.</p>';
-  }
-}
-
-// Community Stats
-async function loadCommunityStats() {
-  try {
-    // Count total posts
-    const postsQuery = query(collection(db, 'posts'));
-    const postsSnapshot = await getDocs(postsQuery);
-    const postsCount = postsSnapshot.size;
-    
-    // Count unique users
-    const uniqueUsers = new Set();
-    postsSnapshot.forEach(doc => {
-      const post = doc.data();
-      uniqueUsers.add(post.userId);
-    });
-    
-    // Count total comments
-    let commentsTotal = 0;
-    for (const postDoc of postsSnapshot.docs) {
-      const commentsQuery = query(collection(db, 'posts', postDoc.id, 'comments'));
-      const commentsSnapshot = await getDocs(commentsQuery);
-      commentsTotal += commentsSnapshot.size;
-    }
-    
-    // Count total likes
-    let likesTotal = 0;
-    postsSnapshot.forEach(doc => {
-      const post = doc.data();
-      likesTotal += post.likes || 0;
-    });
-    
-    // Update UI
-    totalPosts.textContent = postsCount;
-    totalUsers.textContent = uniqueUsers.size;
-    totalComments.textContent = commentsTotal;
-    totalLikes.textContent = likesTotal;
-    
-  } catch (error) {
-    console.error('Error loading community stats:', error);
-  }
-}
-
-// Trending Topics
-async function loadTrendingTopics() {
-  try {
-    // Get posts from the last 7 days
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    
-    const postsQuery = query(
-      collection(db, 'posts'),
-      where('timestamp', '>=', oneWeekAgo),
-      orderBy('timestamp', 'desc')
-    );
-    
-    const postsSnapshot = await getDocs(postsQuery);
-    
-    // Calculate trending score based on likes, comments, and recency
-    const topics = new Map();
-    
-    for (const postDoc of postsSnapshot.docs) {
-      const post = postDoc.data();
-      
-      // Get comment count
-      const commentsQuery = query(collection(db, 'posts', postDoc.id, 'comments'));
-      const commentsSnapshot = await getDocs(commentsQuery);
-      const commentCount = commentsSnapshot.size;
-      
-      // Calculate recency score (newer posts get higher score)
-      const postDate = post.timestamp.toDate();
-      const now = new Date();
-      const ageInHours = (now - postDate) / (1000 * 60 * 60);
-      const recencyScore = Math.max(0, 1 - (ageInHours / (7 * 24))); // 0-1 score, 1 being newest
-      
-      // Calculate trending score
-      const trendingScore = (post.likes || 0) * 2 + commentCount * 3 + recencyScore * 10;
-      
-      // Add to topics map
-      if (!topics.has(post.title)) {
-        topics.set(post.title, {
-          title: post.title,
-          category: post.category,
-          score: trendingScore,
-          postId: postDoc.id
-        });
-      } else {
-        // If topic already exists, update score if this post has higher score
-        const existingTopic = topics.get(post.title);
-        if (trendingScore > existingTopic.score) {
-          existingTopic.score = trendingScore;
-          existingTopic.postId = postDoc.id;
-        }
+        console.error('Error loading post:', error);
+        showToast('Error loading post');
       }
     }
-    
-    // Sort topics by score and take top 5
-    const sortedTopics = Array.from(topics.values())
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
-    
-    // Update UI
-    trendingTopicsList.innerHTML = '';
-    
-    if (sortedTopics.length === 0) {
-      trendingTopicsList.innerHTML = '<p>No trending topics yet.</p>';
-      return;
-    }
-    
-    sortedTopics.forEach((topic, index) => {
-      const topicElement = document.createElement('div');
-      topicElement.className = 'trending-topic';
-      topicElement.innerHTML = `
-        <div class="trending-topic-number">${index + 1}</div>
-        <div class="trending-topic-content">
-          <h4>${topic.title}</h4>
-          <p>Category: ${topic.category}</p>
-        </div>
-      `;
-      
-      topicElement.addEventListener('click', () => {
-        // Load the post
-        loadPosts();
-        
-        // Scroll to the post after a short delay
-        setTimeout(() => {
-          const postElement = document.querySelector(`[data-post-id="${topic.postId}"]`)?.closest('.post');
-          if (postElement) {
-            postElement.scrollIntoView({ behavior: 'smooth' });
-            postElement.style.animation = 'highlight 2s';
+
+    // Search Functionality
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    function performSearch() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      if (searchTerm) {
+        Promise.resolve().then(async () => {
+          try {
+            // Search in posts (title)
+            const postsTitleQuery = query(
+              collection(db, 'posts'),
+              orderBy('title'),
+              where('title', '>=', searchTerm),
+              where('title', '<=', searchTerm + '\uf8ff')
+            );
+            
+            // Search in posts (content)
+            const postsContentQuery = query(
+                            collection(db, 'posts'),
+              orderBy('content'),
+              where('content', '>=', searchTerm),
+              where('content', '<=', searchTerm + '\uf8ff')
+            );
+            
+            // Search in posts (tags)
+            const postsTagsQuery = query(
+              collection(db, 'posts'),
+              where('tags', 'array-contains', searchTerm)
+            );
+
+            const [postsTitleSnapshot, postsContentSnapshot, postsTagsSnapshot] = await Promise.all([
+              getDocs(postsTitleQuery),
+              getDocs(postsContentQuery),
+              getDocs(postsTagsQuery)
+            ]);
+
+            // Combine post results and remove duplicates
+            const postResults = new Map();
+            
+            function addPostToResults(doc) {
+              if (!postResults.has(doc.id)) {
+                postResults.set(doc.id, doc.data());
+              }
+            }
+            
+            postsTitleSnapshot.forEach(addPostToResults);
+            postsContentSnapshot.forEach(addPostToResults);
+            postsTagsSnapshot.forEach(addPostToResults);
+
+            // Display results
+            tweetsContainer.innerHTML = '';
+            
+            pageTitle.textContent = `Search: ${searchTerm}`;
+            
+            if (postResults.size === 0) {
+              tweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">No results found. Try a different search term.</p></div>';
+              return;
+            }
+            
+            // Convert Map to Array and sort by timestamp
+            const sortedResults = Array.from(postResults.entries())
+              .map(([id, post]) => ({ id, ...post }))
+              .sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
+            
+            sortedResults.forEach(post => {
+              const tweetElement = document.createElement('div');
+              tweetElement.className = 'tweet';
+              tweetElement.dataset.postId = post.id;
+              
+              // Format date
+              const postDate = post.timestamp?.toDate();
+              const formattedDate = postDate ? formatDate(postDate) : '';
+              
+              // Check if user is admin to add badge
+              const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
+                return adminUsers[adminEmail] === post.userName;
+              });
+              
+              const adminBadgeHtml = isUserAdmin ? 
+                `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
+              
+              // Create tags HTML
+              const tagsHtml = post.tags && post.tags.length > 0 ? 
+                post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
+              
+              tweetElement.innerHTML = `
+                <div class="tweet-header">
+                  <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+                  <div class="tweet-user-info">
+                    <div>
+                      <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
+                      ${adminBadgeHtml}
+                      <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
+                    </div>
+                    <p class="tweet-time">${formattedDate}</p>
+                  </div>
+                </div>
+                <div class="tweet-content">
+                  <h3 class="tweet-title">${post.title}</h3>
+                  <p class="tweet-text">${post.content}</p>
+                  <div style="margin-top: 0.8rem;">
+                    <span class="tweet-category">${post.category}</span>
+                    ${tagsHtml}
+                  </div>
+                </div>
+                <div class="tweet-actions">
+                  <button class="tweet-action comment-btn">
+                    <i class="far fa-comment"></i>
+                    <span class="comment-count">0</span>
+                  </button>
+                  <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
+                    <i class="far fa-heart"></i>
+                    <span class="like-count">${post.likes || 0}</span>
+                  </button>
+                  <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
+                    <i class="far fa-thumbs-down"></i>
+                    <span class="dislike-count">${post.dislikes || 0}</span>
+                  </button>
+                  <button class="tweet-action share-btn">
+                    <i class="far fa-share-square"></i>
+                  </button>
+                </div>
+              `;
+              
+              tweetsContainer.appendChild(tweetElement);
+              
+              // Add event listeners
+              const tweetAvatar = tweetElement.querySelector('.tweet-avatar');
+              const tweetUserName = tweetElement.querySelector('.tweet-user-name');
+              
+              tweetAvatar.addEventListener('click', () => {
+                loadUserProfile(tweetAvatar.dataset.userId);
+              });
+              
+              tweetUserName.addEventListener('click', () => {
+                loadUserProfile(tweetUserName.dataset.userId);
+              });
+              
+              // Get comments count
+              getCommentsCount(post.id).then(count => {
+                const commentCount = tweetElement.querySelector('.comment-count');
+                if (commentCount) {
+                  commentCount.textContent = count;
+                }
+              });
+            });
+            
+          } catch (error) {
+            console.error('Search error:', error);
+            showToast('Search error: ' + error.message);
           }
-        }, 500);
-      });
-      
-      trendingTopicsList.appendChild(topicElement);
-    });
-    
-  } catch (error) {
-    console.error('Error loading trending topics:', error);
-    trendingTopicsList.innerHTML = '<p>Error loading trending topics.</p>';
-  }
-}
-
-// Category Filter
-categoryFilterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const category = btn.dataset.category;
-    
-    // Update active state
-    categoryFilterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    // Load posts with selected category
-    loadPosts(null, category);
-  });
-});
-
-// Category links in sidebar
-categoryLinks.forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const category = link.dataset.category;
-    
-    // Update active state in category filter
-    categoryFilterBtns.forEach(btn => {
-      if (btn.dataset.category === category) {
-        btn.classList.add('active');
+        });
       } else {
-        btn.classList.remove('active');
+        showToast('Please enter a search term');
+      }
+    }
+
+    // Load User Profile
+    async function loadUserProfile(userId) {
+      try {
+        // Update UI to show profile view
+        pageTitle.textContent = 'Profile';
+        setActiveNavItem('profile');
+        showPage('profile-page');
+        
+        // Get user data
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        
+        if (!userDoc.exists()) {
+          showToast('User not found');
+          return;
+        }
+        
+        const userData = userDoc.data();
+        
+        // Update profile UI
+        profileAvatar.src = userData.photoURL || generateAvatarUrl(userId);
+        profileName.textContent = userData.displayName;
+        profileHandle.textContent = `@${userData.displayName.toLowerCase().replace(/\s+/g, '')}`;
+        profileBio.textContent = userData.bio || 'No bio yet.';
+        
+        // Get post count
+        const postsQuery = query(collection(db, 'posts'), where('userId', '==', userId));
+        const postsSnapshot = await getDocs(postsQuery);
+        profilePostsCount.textContent = postsSnapshot.size;
+        
+        // Get followers and following counts
+        profileFollowersCount.textContent = userData.followers?.length || 0;
+        profileFollowingCount.textContent = userData.following?.length || 0;
+        
+        // Update profile actions
+        if (userId === auth.currentUser.uid) {
+          // Own profile
+          profileActions.innerHTML = `
+            <button class="profile-action-btn profile-action-primary" id="edit-profile-btn">Edit Profile</button>
+          `;
+          
+          const editProfileBtn = document.getElementById('edit-profile-btn');
+          editProfileBtn.addEventListener('click', () => {
+            // Navigate to settings
+            setActiveNavItem('settings');
+            showPage('settings-page');
+            
+            // Load current settings
+            loadUserSettings();
+          });
+        } else {
+          // Other user's profile
+          const isFollowing = userData.followers?.includes(auth.currentUser.uid) || false;
+          
+          profileActions.innerHTML = `
+            <button class="profile-action-btn profile-action-primary" id="follow-btn">${isFollowing ? 'Following' : 'Follow'}</button>
+            <button class="profile-action-btn profile-action-secondary" id="report-user-btn">
+              <i class="fas fa-flag"></i> Report
+            </button>
+          `;
+          
+          const followBtn = document.getElementById('follow-btn');
+          followBtn.addEventListener('click', () => {
+            toggleFollow(userId, isFollowing);
+          });
+          
+          const reportUserBtn = document.getElementById('report-user-btn');
+          reportUserBtn.addEventListener('click', () => {
+            showReportModal('user', userId);
+          });
+        }
+        
+        // Set up profile tabs
+        profileTabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            profileTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            const tabName = tab.dataset.tab;
+            
+            if (tabName === 'posts') {
+              // Load user's posts
+              loadPosts(userId);
+            } else if (tabName === 'likes') {
+              // Load user's liked posts
+              loadLikedPosts(userId);
+            } else if (tabName === 'media') {
+              // Load user's media posts (posts with images)
+              loadMediaPosts(userId);
+            }
+          });
+        });
+        
+        // Set up followers/following click events
+        const followersStats = document.querySelector('.followers-stat');
+        followersStats.addEventListener('click', () => {
+          showFollowersModal(userId);
+        });
+        
+        const followingStats = document.querySelector('.following-stat');
+        followingStats.addEventListener('click', () => {
+          showFollowingModal(userId);
+        });
+        
+        // Load user's posts by default
+        loadPosts(userId);
+        
+      } catch (error) {
+        console.error('Error loading user profile:', error);
+        showToast('Error loading user profile');
+      }
+    }
+    
+    // Toggle Follow
+    async function toggleFollow(userId, isCurrentlyFollowing) {
+      try {
+        const currentUserId = auth.currentUser.uid;
+        const batch = writeBatch(db);
+        
+        // Update target user's followers
+        const targetUserRef = doc(db, 'users', userId);
+        
+        // Update current user's following
+        const currentUserRef = doc(db, 'users', currentUserId);
+        
+        if (isCurrentlyFollowing) {
+          // Unfollow
+          batch.update(targetUserRef, {
+            followers: arrayRemove(currentUserId)
+          });
+          
+          batch.update(currentUserRef, {
+            following: arrayRemove(userId)
+          });
+          
+          await batch.commit();
+          
+          // Update UI
+          const followBtn = document.getElementById('follow-btn');
+          followBtn.textContent = 'Follow';
+          
+          // Update follower count
+          const currentCount = parseInt(profileFollowersCount.textContent);
+          profileFollowersCount.textContent = currentCount - 1;
+          
+          showToast('Unfollowed successfully');
+        } else {
+          // Follow
+          batch.update(targetUserRef, {
+            followers: arrayUnion(currentUserId)
+          });
+          
+          batch.update(currentUserRef, {
+            following: arrayUnion(userId)
+          });
+          
+          await batch.commit();
+          
+          // Add notification
+          addNotification(userId, `${auth.currentUser.displayName || auth.currentUser.email} started following you.`, 'follow', currentUserId);
+          
+          // Update UI
+          const followBtn = document.getElementById('follow-btn');
+          followBtn.textContent = 'Following';
+          
+          // Update follower count
+          const currentCount = parseInt(profileFollowersCount.textContent);
+          profileFollowersCount.textContent = currentCount + 1;
+          
+          showToast('Following successfully');
+        }
+      } catch (error) {
+        console.error('Error toggling follow:', error);
+        showToast('Error updating follow status');
+      }
+    }
+    
+    // Load Liked Posts
+    async function loadLikedPosts(userId) {
+      try {
+        profileTweetsContainer.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading liked posts...</div>';
+        
+        // Get all posts
+        const postsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+        const postsSnapshot = await getDocs(postsQuery);
+        
+        // Filter posts liked by the user
+        const likedPosts = postsSnapshot.docs.filter(doc => {
+          const post = doc.data();
+          return post.likedBy && post.likedBy.includes(userId);
+        });
+        
+        if (likedPosts.length === 0) {
+          profileTweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">No liked posts found.</p></div>';
+          return;
+        }
+        
+        profileTweetsContainer.innerHTML = '';
+        
+        // Render liked posts
+        likedPosts.forEach(doc => {
+          const post = doc.data();
+          const tweetElement = document.createElement('div');
+          tweetElement.className = 'tweet';
+          tweetElement.dataset.postId = doc.id;
+          
+          // Format date
+          const postDate = post.timestamp?.toDate();
+          const formattedDate = postDate ? formatDate(postDate) : '';
+          
+          // Check if user is admin to add badge
+          const isUserAdmin = Object.keys(adminUsers).some(adminEmail => {
+            return adminUsers[adminEmail] === post.userName;
+          });
+          
+          const adminBadgeHtml = isUserAdmin ? 
+            `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
+          
+          // Create tags HTML
+          const tagsHtml = post.tags && post.tags.length > 0 ? 
+            post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
+          
+          tweetElement.innerHTML = `
+            <div class="tweet-header">
+              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="tweet-user-info">
+                <div>
+                  <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
+                  ${adminBadgeHtml}
+                  <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
+                </div>
+                <p class="tweet-time">${formattedDate}</p>
+              </div>
+            </div>
+            <div class="tweet-content">
+              <h3 class="tweet-title">${post.title}</h3>
+              <p class="tweet-text">${post.content}</p>
+              <div style="margin-top: 0.8rem;">
+                <span class="tweet-category">${post.category}</span>
+                ${tagsHtml}
+              </div>
+            </div>
+            <div class="tweet-actions">
+              <button class="tweet-action comment-btn">
+                <i class="far fa-comment"></i>
+                <span class="comment-count">0</span>
+              </button>
+              <button class="tweet-action like-btn liked">
+                <i class="far fa-heart"></i>
+                <span class="like-count">${post.likes || 0}</span>
+              </button>
+              <button class="tweet-action dislike-btn">
+                <i class="far fa-thumbs-down"></i>
+                <span class="dislike-count">${post.dislikes || 0}</span>
+              </button>
+              <button class="tweet-action share-btn">
+                <i class="far fa-share-square"></i>
+              </button>
+            </div>
+          `;
+          
+          profileTweetsContainer.appendChild(tweetElement);
+          
+          // Add event listeners
+          const tweetAvatar = tweetElement.querySelector('.tweet-avatar');
+          const tweetUserName = tweetElement.querySelector('.tweet-user-name');
+          
+          tweetAvatar.addEventListener('click', () => {
+            loadUserProfile(tweetAvatar.dataset.userId);
+          });
+          
+          tweetUserName.addEventListener('click', () => {
+            loadUserProfile(tweetUserName.dataset.userId);
+          });
+          
+          // Get comments count
+          getCommentsCount(doc.id).then(count => {
+            const commentCount = tweetElement.querySelector('.comment-count');
+            if (commentCount) {
+              commentCount.textContent = count;
+            }
+          });
+        });
+        
+      } catch (error) {
+        console.error('Error loading liked posts:', error);
+        profileTweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">Error loading liked posts.</p></div>';
+      }
+    }
+    
+    // Load Media Posts
+    async function loadMediaPosts(userId) {
+      // For now, just show a message that this feature is coming soon
+      profileTweetsContainer.innerHTML = '<div class="tweet"><p style="text-align: center; padding: 2rem;">Media posts feature coming soon!</p></div>';
+    }
+    
+    // Show Followers Modal
+    async function showFollowersModal(userId) {
+      try {
+        // Get user data
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        
+        if (!userDoc.exists()) {
+          showToast('User not found');
+          return;
+        }
+        
+        const userData = userDoc.data();
+        const followers = userData.followers || [];
+        
+        followersList.innerHTML = '';
+        
+        if (followers.length === 0) {
+          followersList.innerHTML = '<div style="text-align: center; padding: 2rem;">No followers yet.</div>';
+        } else {
+          // Get follower user data
+          for (const followerId of followers) {
+            const followerDoc = await getDoc(doc(db, 'users', followerId));
+            
+            if (followerDoc.exists()) {
+              const followerData = followerDoc.data();
+              
+              const followerElement = document.createElement('div');
+              followerElement.className = 'user-list-item';
+              
+              // Check if current user is following this follower
+              const isFollowing = followerData.followers?.includes(auth.currentUser.uid) || false;
+              
+              followerElement.innerHTML = `
+                <img src="${followerData.photoURL || generateAvatarUrl(followerId)}" alt="Profile Picture" class="user-list-avatar" data-user-id="${followerId}">
+                <div class="user-list-info">
+                  <div class="user-list-name">${followerData.displayName}</div>
+                  <div class="user-list-handle">@${followerData.displayName.toLowerCase().replace(/\s+/g, '')}</div>
+                </div>
+                ${followerId !== auth.currentUser.uid ? `
+                  <button class="follow-btn follower-follow-btn" data-user-id="${followerId}" data-following="${isFollowing}">
+                    ${isFollowing ? 'Following' : 'Follow'}
+                  </button>
+                ` : ''}
+              `;
+              
+              followersList.appendChild(followerElement);
+              
+              // Add event listeners
+              const followerAvatar = followerElement.querySelector('.user-list-avatar');
+              followerAvatar.addEventListener('click', () => {
+                loadUserProfile(followerId);
+                closeFollowersModal();
+              });
+              
+              const followerFollowBtn = followerElement.querySelector('.follower-follow-btn');
+              if (followerFollowBtn) {
+                followerFollowBtn.addEventListener('click', () => {
+                  const isCurrentlyFollowing = followerFollowBtn.dataset.following === 'true';
+                  toggleFollow(followerId, isCurrentlyFollowing);
+                  
+                  // Update button
+                  followerFollowBtn.textContent = isCurrentlyFollowing ? 'Follow' : 'Following';
+                  followerFollowBtn.dataset.following = isCurrentlyFollowing ? 'false' : 'true';
+                });
+              }
+            }
+          }
+        }
+        
+        // Show modal
+        followersModal.style.display = 'block';
+        followersModalOverlay.style.display = 'block';
+        
+      } catch (error) {
+        console.error('Error showing followers:', error);
+        showToast('Error loading followers');
+      }
+    }
+    
+    function closeFollowersModal() {
+      followersModal.style.display = 'none';
+      followersModalOverlay.style.display = 'none';
+    }
+    
+    followersModalClose.addEventListener('click', closeFollowersModal);
+    followersModalOverlay.addEventListener('click', closeFollowersModal);
+    
+    // Show Following Modal
+    async function showFollowingModal(userId) {
+      try {
+        // Get user data
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        
+        if (!userDoc.exists()) {
+          showToast('User not found');
+          return;
+        }
+        
+        const userData = userDoc.data();
+        const following = userData.following || [];
+        
+        followingList.innerHTML = '';
+        
+        if (following.length === 0) {
+          followingList.innerHTML = '<div style="text-align: center; padding: 2rem;">Not following anyone yet.</div>';
+        } else {
+          // Get following user data
+          for (const followingId of following) {
+            const followingDoc = await getDoc(doc(db, 'users', followingId));
+            
+            if (followingDoc.exists()) {
+              const followingData = followingDoc.data();
+              
+              const followingElement = document.createElement('div');
+              followingElement.className = 'user-list-item';
+              
+              // Current user is already following this user
+              const isFollowing = true;
+              
+              followingElement.innerHTML = `
+                <img src="${followingData.photoURL || generateAvatarUrl(followingId)}" alt="Profile Picture" class="user-list-avatar" data-user-id="${followingId}">
+                <div class="user-list-info">
+                  <div class="user-list-name">${followingData.displayName}</div>
+                  <div class="user-list-handle">@${followingData.displayName.toLowerCase().replace(/\s+/g, '')}</div>
+                </div>
+                ${userId === auth.currentUser.uid ? `
+                  <button class="follow-btn following-follow-btn" data-user-id="${followingId}" data-following="${isFollowing}">
+                    ${isFollowing ? 'Following' : 'Follow'}
+                  </button>
+                ` : ''}
+              `;
+              
+              followingList.appendChild(followingElement);
+              
+              // Add event listeners
+              const followingAvatar = followingElement.querySelector('.user-list-avatar');
+              followingAvatar.addEventListener('click', () => {
+                loadUserProfile(followingId);
+                closeFollowingModal();
+              });
+              
+              const followingFollowBtn = followingElement.querySelector('.following-follow-btn');
+              if (followingFollowBtn) {
+                followingFollowBtn.addEventListener('click', () => {
+                  const isCurrentlyFollowing = followingFollowBtn.dataset.following === 'true';
+                  toggleFollow(followingId, isCurrentlyFollowing);
+                  
+                  // Update button
+                  followingFollowBtn.textContent = isCurrentlyFollowing ? 'Follow' : 'Following';
+                  followingFollowBtn.dataset.following = isCurrentlyFollowing ? 'false' : 'true';
+                  
+                  // Remove from list if unfollowed
+                  if (isCurrentlyFollowing) {
+                    followingElement.remove();
+                    
+                    // Check if list is empty
+                    if (followingList.children.length === 0) {
+                      followingList.innerHTML = '<div style="text-align: center; padding: 2rem;">Not following anyone yet.</div>';
+                    }
+                  }
+                });
+              }
+            }
+          }
+        }
+        
+        // Show modal
+        followingModal.style.display = 'block';
+        followingModalOverlay.style.display = 'block';
+        
+      } catch (error) {
+        console.error('Error showing following:', error);
+        showToast('Error loading following');
+      }
+    }
+    
+    function closeFollowingModal() {
+      followingModal.style.display = 'none';
+      followingModalOverlay.style.display = 'none';
+    }
+    
+    followingModalClose.addEventListener('click', closeFollowingModal);
+    followingModalOverlay.addEventListener('click', closeFollowingModal);
+    
+    // Load User Settings
+    async function loadUserSettings() {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        
+        if (!userDoc.exists()) {
+          return;
+        }
+        
+        const userData = userDoc.data();
+        
+        // Update settings form
+        settingsUsername.value = userData.displayName || '';
+        settingsBio.value = userData.bio || '';
+        
+        // Update settings toggles
+        const settings = userData.settings || {};
+        emailNotifications.checked = settings.emailNotifications || false;
+        pushNotifications.checked = settings.pushNotifications || true;
+        privateAccount.checked = settings.privateAccount || false;
+        activityStatus.checked = settings.activityStatus || true;
+        
+      } catch (error) {
+        console.error('Error loading user settings:', error);
+        showToast('Error loading settings');
+      }
+    }
+    
+    // Save User Settings
+    saveSettings.addEventListener('click', async () => {
+      try {
+        const username = settingsUsername.value.trim();
+        const bio = settingsBio.value.trim();
+        
+        if (!username) {
+          showToast('Username cannot be empty');
+          return;
+        }
+        
+        // Update user document
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+          displayName: username,
+          bio: bio,
+          settings: {
+            emailNotifications: emailNotifications.checked,
+            pushNotifications: pushNotifications.checked,
+            privateAccount: privateAccount.checked,
+            activityStatus: activityStatus.checked
+          }
+        });
+        
+        // Update sidebar user info
+        sidebarName.textContent = username;
+        sidebarHandle.textContent = '@' + username.toLowerCase().replace(/\s+/g, '');
+        
+        showToast('Settings saved successfully');
+        
+      } catch (error) {
+        console.error('Error saving settings:', error);
+        showToast('Error saving settings');
       }
     });
-    
-    // Load posts with selected category
-    loadPosts(null, category);
-    
-    // Close sidebar on mobile
-    if (window.innerWidth <= 992) {
-      sidebar.classList.remove('show');
+
+    // Trending Topics
+    async function loadTrendingTopics() {
+      try {
+        // Get posts from the last 7 days
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        const postsQuery = query(
+          collection(db, 'posts'),
+          where('timestamp', '>=', oneWeekAgo),
+          orderBy('timestamp', 'desc')
+        );
+        
+        const postsSnapshot = await getDocs(postsQuery);
+        
+        // Calculate trending score based on likes, comments, and recency
+        const topics = new Map();
+        
+        for (const postDoc of postsSnapshot.docs) {
+          const post = postDoc.data();
+          
+          // Get comment count
+          const commentsQuery = query(collection(db, 'posts', postDoc.id, 'comments'));
+          const commentsSnapshot = await getDocs(commentsQuery);
+          const commentCount = commentsSnapshot.size;
+          
+          // Calculate recency score (newer posts get higher score)
+          const postDate = post.timestamp.toDate();
+          const now = new Date();
+          const ageInHours = (now - postDate) / (1000 * 60 * 60);
+          const recencyScore = Math.max(0, 1 - (ageInHours / (7 * 24))); // 0-1 score, 1 being newest
+          
+          // Calculate trending score
+          const trendingScore = (post.likes || 0) * 2 + commentCount * 3 + recencyScore * 10;
+          
+          // Add to topics map
+          if (!topics.has(post.title)) {
+            topics.set(post.title, {
+              title: post.title,
+              category: post.category,
+              score: trendingScore,
+              postId: postDoc.id
+            });
+          } else {
+            // If topic already exists, update score if this post has higher score
+            const existingTopic = topics.get(post.title);
+            if (trendingScore > existingTopic.score) {
+              existingTopic.score = trendingScore;
+              existingTopic.postId = postDoc.id;
+            }
+          }
+        }
+        
+        // Sort topics by score and take top 5
+        const sortedTopics = Array.from(topics.values())
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5);
+        
+        // Update UI
+        trendingTopicsList.innerHTML = '';
+        
+        if (sortedTopics.length === 0) {
+          trendingTopicsList.innerHTML = '<div style="padding: 1rem; text-align: center;">No trending topics yet.</div>';
+          return;
+        }
+        
+        sortedTopics.forEach((topic, index) => {
+          const topicElement = document.createElement('div');
+          topicElement.className = 'trending-item';
+          topicElement.innerHTML = `
+            <div class="trending-category">${topic.category}</div>
+            <div class="trending-title">${topic.title}</div>
+            <div class="trending-stats">${index + 1} · Trending</div>
+          `;
+          
+          topicElement.addEventListener('click', () => {
+            // Load the post
+            loadSinglePost(topic.postId);
+          });
+          
+          trendingTopicsList.appendChild(topicElement);
+        });
+        
+      } catch (error) {
+        console.error('Error loading trending topics:', error);
+        trendingTopicsList.innerHTML = '<div style="padding: 1rem; text-align: center;">Error loading trending topics.</div>';
+      }
     }
-  });
-});
 
-// Navigation
-function setActiveNavItem(id) {
-  // Desktop navigation
-  document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  
-  // Mobile navigation
-  document.querySelectorAll('.mobile-nav-link').forEach(link => link.classList.remove('active'));
-  document.getElementById('mobile-' + id.replace('-link', '')).classList.add('active');
-  
-  // Close sidebar on mobile
-  if (window.innerWidth <= 992) {
-    sidebar.classList.remove('show');
-  }
-}
-
-homeLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  profileSection.style.display = 'none';
-  userStats.style.display = 'none';
-  postForm.style.display = window.innerWidth > 992 ? 'block' : 'none';
-  postsSection.style.display = 'block';
-  loadPosts();
-  setActiveNavItem('home-link');
-});
-
-profileLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  profileSection.style.display = 'block';
-  userStats.style.display = 'block';
-  postForm.style.display = 'none';
-  postsSection.style.display = 'block';
-  loadPosts(auth.currentUser.uid);
-  loadUserStats(auth.currentUser.uid);
-  setActiveNavItem('profile-link');
-});
-
-profileBtn.addEventListener('click', (e) => {
-  profileSection.style.display = 'block';
-  userStats.style.display = 'block';
-  postForm.style.display = 'none';
-  postsSection.style.display = 'block';
-  loadPosts(auth.currentUser.uid);
-  loadUserStats(auth.currentUser.uid);
-  setActiveNavItem('profile-link');
-});
-
-notificationsLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  notificationsPanel.classList.add('show');
-  setActiveNavItem('notifications-link');
-});
-
-notificationsBtn.addEventListener('click', (e) => {
-  notificationsPanel.classList.add('show');
-  setActiveNavItem('notifications-link');
-});
-
-closeNotificationsBtn.addEventListener('click', () => {
-  notificationsPanel.classList.remove('show');
-});
-
-// Mobile Navigation
-mobileHome.addEventListener('click', (e) => {
-  e.preventDefault();
-  profileSection.style.display = 'none';
-  userStats.style.display = 'none';
-  postForm.style.display = 'none'; // Hide on mobile
-  postsSection.style.display = 'block';
-  loadPosts();
-  setActiveNavItem('home-link');
-});
-
-mobileProfile.addEventListener('click', (e) => {
-  e.preventDefault();
-  profileSection.style.display = 'block';
-  userStats.style.display = 'block';
-  postForm.style.display = 'none';
-  postsSection.style.display = 'block';
-  loadPosts(auth.currentUser.uid);
-  loadUserStats(auth.currentUser.uid);
-  setActiveNavItem('profile-link');
-});
-
-mobileNotifications.addEventListener('click', (e) => {
-  e.preventDefault();
-  notificationsPanel.classList.add('show');
-  setActiveNavItem('notifications-link');
-});
-
-// Edit Popup
-cancelEditBtn.addEventListener('click', closeEditPopup);
-overlay.addEventListener('click', closeEditPopup);
-
-// Close notifications panel when clicking outside
-document.addEventListener('click', (e) => {
-  if (notificationsPanel.classList.contains('show') && 
-      !notificationsPanel.contains(e.target) && 
-      !notificationsLink.contains(e.target) &&
-      !notificationsBtn.contains(e.target) &&
-      !mobileNotifications.contains(e.target)) {
-    notificationsPanel.classList.remove('show');
-  }
-});
-
-// Window resize handler
-window.addEventListener('resize', () => {
-  if (window.innerWidth > 992) {
-    if (homeLink.classList.contains('active')) {
-      postForm.style.display = 'block';
+    // Top Contributors
+    async function loadTopContributors() {
+      try {
+        // Get all posts
+        const postsQuery = query(collection(db, 'posts'));
+        const postsSnapshot = await getDocs(postsQuery);
+        
+        // Count posts by user
+        const userPostCounts = {};
+        
+        postsSnapshot.forEach(doc => {
+          const post = doc.data();
+          const userId = post.userId;
+          const userName = post.userName;
+          
+          if (!userPostCounts[userId]) {
+            userPostCounts[userId] = {
+              userId,
+              userName,
+              posts: 0,
+              likes: 0
+            };
+          }
+          
+          userPostCounts[userId].posts += 1;
+          userPostCounts[userId].likes += post.likes || 0;
+        });
+        
+        // Convert to array and sort by post count
+        const sortedContributors = Object.values(userPostCounts)
+          .sort((a, b) => b.posts - a.posts || b.likes - a.likes)
+          .slice(0, 3);
+        
+        // Update UI
+        topContributorsList.innerHTML = '';
+        
+        if (sortedContributors.length === 0) {
+          topContributorsList.innerHTML = '<div style="padding: 1rem; text-align: center;">No contributors yet.</div>';
+          return;
+        }
+        
+        sortedContributors.forEach((contributor) => {
+          const contributorElement = document.createElement('div');
+          contributorElement.className = 'who-to-follow-item';
+          
+          // Check if contributor is admin
+          const isContributorAdmin = Object.values(adminUsers).includes(contributor.userName);
+          
+          // Check if current user is following this contributor
+          const isFollowing = false; // This will be updated when we implement following
+          
+          contributorElement.innerHTML = `
+            <img src="${generateAvatarUrl(contributor.userId)}" alt="Profile Picture" class="who-to-follow-avatar">
+            <div class="who-to-follow-info">
+              <div class="who-to-follow-name">
+                ${contributor.userName}
+                ${isContributorAdmin ? `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : ''}
+              </div>
+              <div class="who-to-follow-handle">@${contributor.userName.toLowerCase().replace(/\s+/g, '')}</div>
+            </div>
+            ${contributor.userId !== auth.currentUser.uid ? `
+              <button class="follow-btn contributor-follow-btn" data-user-id="${contributor.userId}" data-following="${isFollowing}">
+                ${isFollowing ? 'Following' : 'Follow'}
+              </button>
+            ` : ''}
+          `;
+          
+          contributorElement.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('follow-btn')) {
+              loadUserProfile(contributor.userId);
+            }
+          });
+          
+          const followBtn = contributorElement.querySelector('.contributor-follow-btn');
+          if (followBtn) {
+            followBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const isCurrentlyFollowing = followBtn.dataset.following === 'true';
+              toggleFollow(contributor.userId, isCurrentlyFollowing);
+              
+              // Update button
+              followBtn.textContent = isCurrentlyFollowing ? 'Follow' : 'Following';
+              followBtn.dataset.following = isCurrentlyFollowing ? 'false' : 'true';
+            });
+          }
+          
+          topContributorsList.appendChild(contributorElement);
+        });
+        
+      } catch (error) {
+        console.error('Error loading top contributors:', error);
+        topContributorsList.innerHTML = '<div style="padding: 1rem; text-align: center;">Error loading top contributors.</div>';
+      }
     }
-  } else {
-    postForm.style.display = 'none';
-  }
-});
+    
+    // Explore Page
+    exploreTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        exploreTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        const category = tab.dataset.category;
+        loadExplorePosts(category);
+      });
+    });
+    
+    function loadExplorePosts(category) {
+      // Use the existing loadPosts function with the category filter
+      loadPosts(null, category);
+    }
 
-// Initialize UI based on screen size
-if (window.innerWidth <= 992) {
-  postForm.style.display = 'none';
-}
+    // Navigation
+    function setActiveNavItem(item) {
+      // Desktop navigation
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      document.querySelectorAll('.mobile-nav-link').forEach(link => link.classList.remove('active'));
+      
+      switch (item) {
+        case 'home':
+          homeLink.classList.add('active');
+          mobileHome.classList.add('active');
+          break;
+        case 'explore':
+          exploreLink.classList.add('active');
+          mobileExplore.classList.add('active');
+          break;
+        case 'notifications':
+          notificationsLink.classList.add('active');
+          mobileNotifications.classList.add('active');
+          break;
+        case 'profile':
+          profileLink.classList.add('active');
+          mobileProfile.classList.add('active');
+          break;
+        case 'settings':
+          settingsLink.classList.add('active');
+          break;
+      }
+    }
+    
+    function showPage(pageId) {
+      // Hide all pages
+      homePage.style.display = 'none';
+      notificationsPage.style.display = 'none';
+      profilePage.style.display = 'none';
+      explorePage.style.display = 'none';
+      settingsPage.style.display = 'none';
+      
+      // Show selected page
+      document.getElementById(pageId).style.display = 'block';
+    }
+
+    homeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Home';
+      setActiveNavItem('home');
+      showPage('home-page');
+      loadPosts();
+    });
+
+    exploreLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Explore';
+      setActiveNavItem('explore');
+      showPage('explore-page');
+      loadExplorePosts('all');
+    });
+
+    notificationsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Notifications';
+      setActiveNavItem('notifications');
+      showPage('notifications-page');
+      loadNotifications();
+    });
+
+    profileLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      loadUserProfile(auth.currentUser.uid);
+    });
+    
+    settingsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Settings';
+      setActiveNavItem('settings');
+      showPage('settings-page');
+      loadUserSettings();
+    });
+
+    // Mobile Navigation
+    mobileHome.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Home';
+      setActiveNavItem('home');
+      showPage('home-page');
+      loadPosts();
+    });
+
+    mobileExplore.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Explore';
+      setActiveNavItem('explore');
+      showPage('explore-page');
+      loadExplorePosts('all');
+    });
+
+    mobileNotifications.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTitle.textContent = 'Notifications';
+      setActiveNavItem('notifications');
+      showPage('notifications-page');
+      loadNotifications();
+    });
+
+    mobileProfile.addEventListener('click', (e) => {
+      e.preventDefault();
+      loadUserProfile(auth.currentUser.uid);
+    });
+
+    // Compose Tweet Button
+    composeBtn.addEventListener('click', () => {
+      // Scroll to compose area
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Focus on title input
+      setTimeout(() => {
+        tweetTitle.focus();
+      }, 500);
+    });
+
+    floatTweetBtn.addEventListener('click', () => {
+      // Scroll to compose area
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Focus on title input
+      setTimeout(() => {
+        tweetTitle.focus();
+      }, 500);
+    });
+    
+    // Initialize the app
+    setActiveNavItem('home');
+    showPage('home-page');
