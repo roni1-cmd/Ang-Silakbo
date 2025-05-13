@@ -7,6 +7,8 @@
   <link rel="icon" href="SILAKBO.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Cloudinary Upload Widget Script -->
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
   <style>
     :root {
       --primary-color: #E65100;
@@ -1454,6 +1456,142 @@
       color: var(--text-secondary);
     }
     
+    /* Image Upload Styles */
+    .image-upload-container {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    
+    .image-upload-container:hover {
+      border-color: var(--primary-color);
+      background-color: rgba(230, 81, 0, 0.05);
+    }
+    
+    .image-upload-icon {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .image-upload-text {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .image-upload-subtext {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .image-preview-container {
+      margin-top: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .image-remove-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-full);
+      background-color: var(--error-color);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    
+    .image-remove-btn:hover {
+      background-color: #c01e4e;
+      transform: scale(1.1);
+    }
+    
+    .tweet-image {
+      max-width: 100%;
+      border-radius: var(--radius-md);
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .tweet-image:hover {
+      opacity: 0.9;
+    }
+    
+    /* Image Lightbox */
+    .lightbox-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .lightbox-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+    
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+    
+    .lightbox-close:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.1);
+    }
+    
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -1629,9 +1767,27 @@
             <input type="text" id="tweet-title" placeholder="Title" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Merriweather', serif;">
             <textarea class="compose-input" id="tweet-content" placeholder="What's happening?"></textarea>
             <input type="text" id="tweet-tags" placeholder="Add tags (comma-separated)" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Source Sans Pro', sans-serif;">
+            
+            <!-- Image Upload Container -->
+            <div class="image-upload-container" id="image-upload-container">
+              <div class="image-upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </div>
+              <div class="image-upload-text">Click to upload an image</div>
+              <div class="image-upload-subtext">JPG, PNG, GIF up to 10MB</div>
+            </div>
+            
+            <!-- Image Preview Container -->
+            <div class="image-preview-container" id="image-preview-container" style="display: none;">
+              <img src="/placeholder.svg" alt="Preview" class="image-preview" id="image-preview">
+              <button class="image-remove-btn" id="image-remove-btn">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            
             <div class="compose-actions">
               <div class="compose-tools">
-                <button class="compose-tool">
+                <button class="compose-tool" id="upload-image-btn">
                   <i class="far fa-image"></i>
                 </button>
                 <button class="compose-tool">
@@ -1733,6 +1889,19 @@
               </div>
               <p class="settings-item-description">Tell others about yourself</p>
               <textarea class="settings-input" id="settings-bio" placeholder="Enter your bio" style="min-height: 100px; resize: vertical;"></textarea>
+            </div>
+            <div class="settings-item">
+              <div class="settings-item-header">
+                <h3 class="settings-item-title">Profile Picture</h3>
+              </div>
+              <p class="settings-item-description">Upload a new profile picture</p>
+              <div class="image-upload-container" id="profile-image-upload">
+                <div class="image-upload-icon">
+                  <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="image-upload-text">Click to upload a profile picture</div>
+                <div class="image-upload-subtext">JPG, PNG up to 5MB</div>
+              </div>
             </div>
           </div>
           
@@ -1856,10 +2025,23 @@
         <input type="text" id="edit-title" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Merriweather', serif;" placeholder="Title">
       </div>
       <div>
-          font-family: 'Merriweather', serif;" placeholder="Title">
-      </div>
-      <div>
         <textarea id="edit-content" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Source Sans Pro', sans-serif; min-height: 120px; resize: vertical;" placeholder="Content"></textarea>
+      </div>
+      <!-- Edit Image Upload -->
+      <div class="image-upload-container" id="edit-image-upload-container" style="margin-top: 1rem;">
+        <div class="image-upload-icon">
+          <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+        <div class="image-upload-text">Click to upload or change image</div>
+        <div class="image-upload-subtext">JPG, PNG, GIF up to 10MB</div>
+      </div>
+      
+      <!-- Edit Image Preview Container -->
+      <div class="image-preview-container" id="edit-image-preview-container" style="display: none; margin-top: 1rem;">
+        <img src="/placeholder.svg" alt="Preview" class="image-preview" id="edit-image-preview">
+        <button class="image-remove-btn" id="edit-image-remove-btn">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
     <div class="modal-footer">
@@ -1939,6 +2121,30 @@
       </div>
     </div>
   </div>
+  
+  <!-- Image Lightbox -->
+  <div class="lightbox-overlay" id="lightbox-overlay">
+    <div class="lightbox-content">
+      <img src="/placeholder.svg" alt="Full size image" class="lightbox-image" id="lightbox-image">
+      <button class="lightbox-close" id="lightbox-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
 <script type="module" src="Thoughts.js"></script>
+<script>
+  // Initialize Cloudinary Upload Widget
+  const myWidget = cloudinary.createUploadWidget({
+    cloudName: 'your-cloud-name', // Replace with your Cloudinary cloud name
+    uploadPreset: 'your-upload-preset', // Replace with your upload preset
+    maxFiles: 1,
+    maxFileSize: 10000000 // 10MB
+  }, (error, result) => {
+    if (!error && result && result.event === "success") {
+      console.log('Upload success:', result.info);
+      // Handle successful upload
+    }
+  });
+</script>
 </body>
 </html>
