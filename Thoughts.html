@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANG SILAKBO - Forums</title>
+  <title>Forums</title>
   <link rel="icon" href="SILAKBO.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -32,6 +32,22 @@
       --header-height: 60px;
       --sidebar-width: 275px;
       --right-sidebar-width: 350px;
+      --online-color: #4CAF50;
+    }
+    
+    /* Dark mode variables */
+    .dark-mode {
+      --primary-color: #FF8C61;
+      --primary-light: #FF9E7A;
+      --primary-dark: #E65100;
+      --secondary-color: #1E1E1E;
+      --background-color: #121212;
+      --text-color: #F5F5F5;
+      --text-secondary: #AAAAAA;
+      --border-color: #333333;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
     
     * {
@@ -48,6 +64,7 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     /* Layout */
@@ -59,6 +76,11 @@
         "sidebar main right-sidebar"
         "sidebar main right-sidebar";
       min-height: 100vh;
+      transition: grid-template-columns 0.3s ease;
+    }
+    
+    .app-container.hide-right-sidebar {
+      grid-template-columns: var(--sidebar-width) 1fr 0;
     }
     
     /* Sidebar */
@@ -221,15 +243,63 @@
       border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
-      background-color: rgba(255, 255, 255, 0.95);
+      background-color: var(--secondary-color);
       backdrop-filter: blur(5px);
       z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     
     .main-header h1 {
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem;
       font-weight: 700;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .toggle-sidebar-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 1.2rem;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .toggle-sidebar-btn:hover {
+      background-color: rgba(230, 81, 0, 0.1);
+      color: var(--primary-color);
+    }
+    
+    .toggle-dark-mode {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 1.2rem;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .toggle-dark-mode:hover {
+      background-color: rgba(230, 81, 0, 0.1);
+      color: var(--primary-color);
     }
     
     /* Compose Tweet */
@@ -261,6 +331,8 @@
       padding: 0.5rem 0;
       outline: none;
       min-height: 80px;
+      background-color: transparent;
+      color: var(--text-color);
     }
     
     .compose-input::placeholder {
@@ -331,17 +403,36 @@
       background-color: rgba(0, 0, 0, 0.02);
     }
     
+    .dark-mode .tweet:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    
     .tweet-header {
       display: flex;
       margin-bottom: 0.5rem;
+    }
+    
+    .tweet-avatar-container {
+      position: relative;
+      margin-right: 1rem;
     }
     
     .tweet-avatar {
       width: 48px;
       height: 48px;
       border-radius: var(--radius-full);
-      margin-right: 1rem;
       object-fit: cover;
+    }
+    
+    .online-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--online-color);
+      border: 2px solid var(--secondary-color);
     }
     
     .tweet-user-info {
@@ -366,6 +457,12 @@
       font-size: 0.9rem;
       color: var(--text-secondary);
       margin-left: 0.3rem;
+    }
+    
+    .last-active {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
     }
     
     .tweet-more {
@@ -485,12 +582,27 @@
       border-top: 1px solid var(--border-color);
     }
     
+    .comment-avatar-container {
+      position: relative;
+      margin-right: 0.8rem;
+    }
+    
     .comment-avatar {
       width: 36px;
       height: 36px;
       border-radius: var(--radius-full);
-      margin-right: 0.8rem;
       object-fit: cover;
+    }
+    
+    .comment-online-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--online-color);
+      border: 2px solid var(--secondary-color);
     }
     
     .comment-content {
@@ -552,6 +664,8 @@
       font-size: 0.95rem;
       outline: none;
       transition: var(--transition);
+      background-color: var(--secondary-color);
+      color: var(--text-color);
     }
     
     .comment-input:focus {
@@ -587,6 +701,15 @@
       height: 100vh;
       overflow-y: auto;
       scrollbar-width: thin;
+      background-color: var(--secondary-color);
+      transition: transform 0.3s ease, width 0.3s ease;
+    }
+    
+    .app-container.hide-right-sidebar .right-sidebar {
+      transform: translateX(100%);
+      width: 0;
+      padding: 0;
+      overflow: hidden;
     }
     
     .search-container {
@@ -604,6 +727,11 @@
       font-size: 0.95rem;
       outline: none;
       transition: var(--transition);
+      color: var(--text-color);
+    }
+    
+    .dark-mode .search-input {
+      background-color: #2A2A2A;
     }
     
     .search-input:focus {
@@ -621,7 +749,7 @@
     }
     
     .trending-section {
-      background-color: #F7F9FA;
+      background-color: var(--background-color);
       border-radius: var(--radius-md);
       margin-bottom: 1.5rem;
       overflow: hidden;
@@ -633,6 +761,28 @@
       font-size: 1.2rem;
       font-weight: 700;
       border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .trending-header-toggle {
+      color: var(--primary-color);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .trending-header-toggle:hover {
+      background-color: rgba(230, 81, 0, 0.1);
     }
     
     .trending-item {
@@ -648,6 +798,10 @@
     
     .trending-item:hover {
       background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    .dark-mode .trending-item:hover {
+      background-color: rgba(255, 255, 255, 0.03);
     }
     
     .trending-category {
@@ -668,7 +822,7 @@
     }
     
     .who-to-follow {
-      background-color: #F7F9FA;
+      background-color: var(--background-color);
       border-radius: var(--radius-md);
       margin-bottom: 1.5rem;
       overflow: hidden;
@@ -693,12 +847,27 @@
       border-bottom: none;
     }
     
+    .who-to-follow-avatar-container {
+      position: relative;
+      margin-right: 0.8rem;
+    }
+    
     .who-to-follow-avatar {
       width: 48px;
       height: 48px;
       border-radius: var(--radius-full);
-      margin-right: 0.8rem;
       object-fit: cover;
+    }
+    
+    .who-to-follow-online-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--online-color);
+      border: 2px solid var(--background-color);
     }
     
     .who-to-follow-info {
@@ -716,9 +885,15 @@
       color: var(--text-secondary);
     }
     
+    .who-to-follow-last-active {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+    
     .follow-btn {
       background-color: var(--text-color);
-      color: white;
+      color: var(--secondary-color);
       border: none;
       border-radius: var(--radius-full);
       padding: 0.5rem 1rem;
@@ -730,7 +905,7 @@
     }
     
     .follow-btn:hover {
-      background-color: #000;
+      opacity: 0.9;
     }
     
     /* Profile Dropdown */
@@ -763,6 +938,10 @@
     
     .dropdown-item:hover {
       background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    .dark-mode .dropdown-item:hover {
+      background-color: rgba(255, 255, 255, 0.03);
     }
     
     .dropdown-item i {
@@ -822,6 +1001,30 @@
     
     .mobile-nav-link:hover i {
       color: var(--primary-color);
+    }
+    
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+      position: relative;
+    }
+    
+    .mobile-menu-dropdown {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      background-color: var(--secondary-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+    
+    .mobile-menu-dropdown.show {
+      display: block;
     }
     
     /* Floating Tweet Button */
@@ -942,6 +1145,10 @@
       color: var(--primary-color);
     }
     
+    .dark-mode .modal-close:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
     .modal-body {
       padding: 1rem;
     }
@@ -974,6 +1181,10 @@
       background-color: rgba(0, 0, 0, 0.05);
     }
     
+    .dark-mode .modal-btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
     .modal-btn-primary {
       background-color: var(--primary-color);
       border: none;
@@ -999,6 +1210,10 @@
     
     .notification-item:hover {
       background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .dark-mode .notification-item:hover {
+      background-color: rgba(255, 255, 255, 0.02);
     }
     
     .notification-item.unread {
@@ -1076,9 +1291,20 @@
       width: 100px;
       height: 100px;
       border-radius: var(--radius-full);
-      border: 4px solid white;
-      background-color: white;
+      border: 4px solid var(--secondary-color);
+      background-color: var(--secondary-color);
       object-fit: cover;
+    }
+    
+    .profile-online-indicator {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: var(--online-color);
+      border: 3px solid var(--secondary-color);
     }
     
     .profile-info {
@@ -1102,6 +1328,12 @@
       font-size: 0.95rem;
       margin-bottom: 0.8rem;
       line-height: 1.5;
+    }
+    
+    .profile-last-active {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.8rem;
     }
     
     .profile-stats {
@@ -1165,6 +1397,10 @@
       background-color: rgba(0, 0, 0, 0.05);
     }
     
+    .dark-mode .profile-action-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
     .profile-tabs {
       display: flex;
       border-bottom: 1px solid var(--border-color);
@@ -1201,50 +1437,8 @@
       color: var(--primary-color);
     }
     
-    /* Explore Page */
-    .explore-tabs {
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
-      border-bottom: 1px solid var(--border-color);
-      padding: 0 1rem;
-    }
-    
-    .explore-tabs::-webkit-scrollbar {
-      display: none;
-    }
-    
-    .explore-tab {
-      padding: 1rem 1.5rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: var(--transition);
-      position: relative;
-      white-space: nowrap;
-    }
-    
-    .explore-tab.active {
-      color: var(--primary-color);
-    }
-    
-    .explore-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background-color: var(--primary-color);
-      border-radius: var(--radius-full);
-    }
-    
-    .explore-tab:hover {
-      color: var(--primary-color);
-    }
-    
-    .explore-content {
-      padding: 1rem 0;
+    .dark-mode .profile-tab:hover {
+      background-color: rgba(255, 255, 255, 0.02);
     }
     
     /* Settings Page */
@@ -1296,6 +1490,8 @@
       font-size: 0.95rem;
       outline: none;
       transition: var(--transition);
+      background-color: var(--secondary-color);
+      color: var(--text-color);
     }
     
     .settings-input:focus {
@@ -1384,6 +1580,10 @@
       background-color: rgba(0, 0, 0, 0.02);
     }
     
+    .dark-mode .report-option:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    
     .report-option.selected {
       border-color: var(--primary-color);
       background-color: rgba(230, 81, 0, 0.05);
@@ -1408,6 +1608,8 @@
       transition: var(--transition);
       resize: vertical;
       min-height: 100px;
+      background-color: var(--secondary-color);
+      color: var(--text-color);
     }
     
     .report-textarea:focus {
@@ -1433,12 +1635,31 @@
       background-color: rgba(0, 0, 0, 0.02);
     }
     
+    .dark-mode .user-list-item:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    
+    .user-list-avatar-container {
+      position: relative;
+      margin-right: 1rem;
+    }
+    
     .user-list-avatar {
       width: 48px;
       height: 48px;
       border-radius: var(--radius-full);
-      margin-right: 1rem;
       object-fit: cover;
+    }
+    
+    .user-list-online-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--online-color);
+      border: 2px solid var(--secondary-color);
     }
     
     .user-list-info {
@@ -1454,6 +1675,12 @@
     .user-list-handle {
       font-size: 0.85rem;
       color: var(--text-secondary);
+    }
+    
+    .user-list-last-active {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
     }
     
     /* Image Upload Styles */
@@ -1492,13 +1719,19 @@
     
     .image-preview-container {
       margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .image-preview-item {
       position: relative;
       display: inline-block;
     }
     
     .image-preview {
       max-width: 100%;
-      max-height: 300px;
+      max-height: 150px;
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-sm);
     }
@@ -1526,11 +1759,18 @@
       transform: scale(1.1);
     }
     
-    .tweet-image {
-      max-width: 100%;
-      border-radius: var(--radius-md);
+    .tweet-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 0.5rem;
       margin-bottom: 0.5rem;
+    }
+    
+    .tweet-image {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: var(--radius-md);
       cursor: pointer;
       transition: var(--transition);
     }
@@ -1592,6 +1832,92 @@
       transform: scale(1.1);
     }
     
+    /* Login Modal */
+    .login-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+      display: none;
+    }
+    
+    .login-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--secondary-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 400px;
+      z-index: 2001;
+      display: none;
+      overflow: hidden;
+    }
+    
+    .login-modal-header {
+      text-align: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .login-modal-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-full);
+      margin: 0 auto 1rem;
+      display: block;
+    }
+    
+    .login-modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .login-modal-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    
+    .login-modal-body {
+      padding: 1.5rem;
+    }
+    
+    .login-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: var(--radius-full);
+      background-color: #4285F4;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      margin-bottom: 1rem;
+    }
+    
+    .login-btn:hover {
+      opacity: 0.9;
+    }
+    
+    .login-btn i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+    }
+    
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -1611,16 +1937,20 @@
     /* Responsive Styles */
     @media (max-width: 1200px) {
       .app-container {
-        grid-template-columns: var(--sidebar-width) 1fr 0;
+        grid-template-columns: var(--sidebar-width) 1fr var(--right-sidebar-width);
       }
       
-      .right-sidebar {
-        display: none;
+      .app-container.hide-right-sidebar {
+        grid-template-columns: var(--sidebar-width) 1fr 0;
       }
     }
     
     @media (max-width: 992px) {
       .app-container {
+        grid-template-columns: 0 1fr var(--right-sidebar-width);
+      }
+      
+      .app-container.hide-right-sidebar {
         grid-template-columns: 0 1fr 0;
       }
       
@@ -1689,7 +2019,7 @@
   </style>
 </head>
 <body>
-  <div class="app-container">
+  <div class="app-container" id="app-container">
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <div class="logo-container">
@@ -1701,10 +2031,6 @@
         <a href="#" class="nav-link active" id="home-link">
           <i class="fas fa-home"></i>
           <span>Home</span>
-        </a>
-        <a href="#" class="nav-link" id="explore-link">
-          <i class="fas fa-hashtag"></i>
-          <span>Explore</span>
         </a>
         <a href="#" class="nav-link" id="notifications-link">
           <i class="fas fa-bell"></i>
@@ -1749,6 +2075,14 @@
     <div class="main-content">
       <div class="main-header">
         <h1 id="page-title">Home</h1>
+        <div class="header-actions">
+          <button class="toggle-dark-mode" id="toggle-dark-mode">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button class="toggle-sidebar-btn" id="toggle-sidebar-btn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
       
       <!-- Home Page -->
@@ -1757,32 +2091,20 @@
         <div class="compose-tweet" id="compose-tweet">
           <img src="/placeholder.svg?height=48&width=48" alt="Profile Picture" class="compose-avatar" id="compose-avatar">
           <div class="compose-form">
-            <select id="category-select" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Source Sans Pro', sans-serif;">
+            <select id="category-select" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Source Sans Pro', sans-serif; background-color: var(--secondary-color); color: var(--text-color);">
               <option value="">Select a category</option>
               <option value="general">General</option>
               <option value="technology">Technology</option>
               <option value="sports">Sports</option>
               <option value="entertainment">Entertainment</option>
             </select>
-            <input type="text" id="tweet-title" placeholder="Title" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Merriweather', serif;">
+            <input type="text" id="tweet-title" placeholder="Title" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Merriweather', serif; background-color: var(--secondary-color); color: var(--text-color);">
             <textarea class="compose-input" id="tweet-content" placeholder="What's happening?"></textarea>
-            <input type="text" id="tweet-tags" placeholder="Add tags (comma-separated)" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Source Sans Pro', sans-serif;">
-            
-            <!-- Image Upload Container -->
-            <div class="image-upload-container" id="image-upload-container">
-              <div class="image-upload-icon">
-                <i class="fas fa-cloud-upload-alt"></i>
-              </div>
-              <div class="image-upload-text">Click to upload an image</div>
-              <div class="image-upload-subtext">JPG, PNG, GIF up to 10MB</div>
-            </div>
+            <input type="text" id="tweet-tags" placeholder="Add tags (comma-separated)" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); margin-bottom: 0.5rem; font-family: 'Source Sans Pro', sans-serif; background-color: var(--secondary-color); color: var(--text-color);">
             
             <!-- Image Preview Container -->
             <div class="image-preview-container" id="image-preview-container" style="display: none;">
-              <img src="/placeholder.svg" alt="Preview" class="image-preview" id="image-preview">
-              <button class="image-remove-btn" id="image-remove-btn">
-                <i class="fas fa-times"></i>
-              </button>
+              <!-- Image previews will be added here dynamically -->
             </div>
             
             <div class="compose-actions">
@@ -1819,10 +2141,12 @@
           <div class="profile-cover"></div>
           <div class="profile-avatar-container">
             <img src="/placeholder.svg?height=100&width=100" alt="Profile Picture" class="profile-avatar" id="profile-avatar">
+            <div class="profile-online-indicator" id="profile-online-indicator"></div>
           </div>
           <div class="profile-info">
             <h2 class="profile-name" id="profile-name">User Name</h2>
             <p class="profile-handle" id="profile-handle">@username</p>
+            <p class="profile-last-active" id="profile-last-active">Last active: Just now</p>
             <p class="profile-bio" id="profile-bio">No bio yet.</p>
             <div class="profile-stats">
               <div class="profile-stat" id="profile-posts">
@@ -1851,22 +2175,6 @@
         <div class="profile-content">
           <div class="tweets-container" id="profile-tweets-container">
             <!-- Profile tweets will be dynamically inserted here -->
-          </div>
-        </div>
-      </div>
-      
-      <!-- Explore Page -->
-      <div id="explore-page" style="display: none;">
-        <div class="explore-tabs">
-          <div class="explore-tab active" data-category="all">For you</div>
-          <div class="explore-tab" data-category="general">General</div>
-          <div class="explore-tab" data-category="technology">Technology</div>
-          <div class="explore-tab" data-category="sports">Sports</div>
-          <div class="explore-tab" data-category="entertainment">Entertainment</div>
-        </div>
-        <div class="explore-content">
-          <div class="tweets-container" id="explore-tweets-container">
-            <!-- Explore tweets will be dynamically inserted here -->
           </div>
         </div>
       </div>
@@ -1953,6 +2261,20 @@
             </div>
           </div>
           
+          <div class="settings-section">
+            <h2 class="settings-section-title">Appearance</h2>
+            <div class="settings-item">
+              <div class="settings-item-header">
+                <h3 class="settings-item-title">Dark Mode</h3>
+                <label class="settings-toggle">
+                  <input type="checkbox" id="dark-mode-toggle">
+                  <span class="settings-toggle-slider"></span>
+                </label>
+              </div>
+              <p class="settings-item-description">Switch between light and dark mode</p>
+            </div>
+          </div>
+          
           <button class="settings-btn" id="save-settings">Save Changes</button>
         </div>
       </div>
@@ -1965,8 +2287,13 @@
         <i class="fas fa-search search-icon"></i>
       </div>
       
-      <div class="trending-section">
-        <div class="trending-header">Trending Topics</div>
+      <div class="trending-section" id="trending-section">
+        <div class="trending-header">
+          <span>Trending Topics</span>
+          <button class="trending-header-toggle" id="trending-toggle">
+            <i class="fas fa-chevron-up"></i>
+          </button>
+        </div>
         <div id="trending-topics-list">
           <!-- Trending topics will be dynamically inserted here -->
         </div>
@@ -1987,17 +2314,27 @@
       <i class="fas fa-home"></i>
       <span>Home</span>
     </a>
-    <a href="#" class="mobile-nav-link" id="mobile-explore">
-      <i class="fas fa-hashtag"></i>
-      <span>Explore</span>
-    </a>
     <a href="#" class="mobile-nav-link" id="mobile-notifications">
       <i class="fas fa-bell"></i>
       <span>Notifications</span>
     </a>
-    <a href="#" class="mobile-nav-link" id="mobile-profile">
-      <i class="fas fa-user"></i>
-      <span>Profile</span>
+    <a href="#" class="mobile-nav-link mobile-menu-btn" id="mobile-menu">
+      <i class="fas fa-bars"></i>
+      <span>Menu</span>
+      <div class="mobile-menu-dropdown" id="mobile-menu-dropdown">
+        <a href="#" class="dropdown-item" id="mobile-profile-link">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </a>
+        <a href="#" class="dropdown-item" id="mobile-settings-link">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <a href="#" class="dropdown-item logout" id="mobile-logout-link">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Log out</span>
+        </a>
+      </div>
     </a>
   </div>
   
@@ -2022,25 +2359,20 @@
     </div>
     <div class="modal-body">
       <div style="margin-bottom: 1rem;">
-        <input type="text" id="edit-title" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Merriweather', serif;" placeholder="Title">
+        <input type="text" id="edit-title" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Merriweather', serif; background-color: var(--secondary-color); color: var(--text-color);" placeholder="Title">
       </div>
       <div>
-        <textarea id="edit-content" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Source Sans Pro', sans-serif; min-height: 120px; resize: vertical;" placeholder="Content"></textarea>
-      </div>
-      <!-- Edit Image Upload -->
-      <div class="image-upload-container" id="edit-image-upload-container" style="margin-top: 1rem;">
-        <div class="image-upload-icon">
-          <i class="fas fa-cloud-upload-alt"></i>
-        </div>
-        <div class="image-upload-text">Click to upload or change image</div>
-        <div class="image-upload-subtext">JPG, PNG, GIF up to 10MB</div>
+        <textarea id="edit-content" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Source Sans Pro', sans-serif; min-height: 120px; resize: vertical; background-color: var(--secondary-color); color: var(--text-color);" placeholder="Content"></textarea>
       </div>
       
       <!-- Edit Image Preview Container -->
-      <div class="image-preview-container" id="edit-image-preview-container" style="display: none; margin-top: 1rem;">
-        <img src="/placeholder.svg" alt="Preview" class="image-preview" id="edit-image-preview">
-        <button class="image-remove-btn" id="edit-image-remove-btn">
-          <i class="fas fa-times"></i>
+      <div class="image-preview-container" id="edit-image-preview-container">
+        <!-- Edit image previews will be added here dynamically -->
+      </div>
+      
+      <div class="compose-tools" style="margin-top: 1rem;">
+        <button class="compose-tool" id="edit-upload-image-btn">
+          <i class="far fa-image"></i>
         </button>
       </div>
     </div>
@@ -2132,24 +2464,41 @@
     </div>
   </div>
   
+  <!-- Login Modal -->
+  <div class="login-modal-overlay" id="login-modal-overlay"></div>
+  <div class="login-modal" id="login-modal">
+    <div class="login-modal-header">
+      <img src="SILAKBO.png" alt="Logo" class="login-modal-logo">
+      <h2 class="login-modal-title">Log in to Forums</h2>
+      <p class="login-modal-subtitle">Join the conversation</p>
+    </div>
+    <div class="login-modal-body">
+      <button class="login-btn" id="google-login-btn">
+        <i class="fab fa-google"></i> Sign in with Google
+      </button>
+    </div>
+  </div>
+  
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
     import { 
       getAuth, 
       signOut, 
-      onAuthStateChanged 
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      signInWithPopup
     } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
     import { 
-      getFirestore, 
-      collection, 
-      addDoc, 
-      query, 
-      orderBy, 
+      getFirestore,
+      collection,
+      doc,
+      addDoc,
+      query,
+      orderBy,
       onSnapshot,
       where,
       getDocs,
       getDoc,
-      doc,
       deleteDoc,
       updateDoc,
       increment,
@@ -2158,7 +2507,8 @@
       writeBatch,
       limit,
       Timestamp,
-      setDoc
+      setDoc,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
     import { 
       getStorage, 
@@ -2182,6 +2532,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const storage = getStorage(app);
+    const provider = new GoogleAuthProvider();
 
     // Cloudinary configuration
     const cloudName = "dz3sdis2x";
@@ -2225,28 +2576,36 @@
     const sidebarHandle = document.getElementById('sidebar-handle');
     const composeAvatar = document.getElementById('compose-avatar');
     const homeLink = document.getElementById('home-link');
-    const exploreLink = document.getElementById('explore-link');
     const notificationsLink = document.getElementById('notifications-link');
     const profileLink = document.getElementById('profile-link');
     const settingsLink = document.getElementById('settings-link');
     const mobileHome = document.getElementById('mobile-home');
-    const mobileExplore = document.getElementById('mobile-explore');
     const mobileNotifications = document.getElementById('mobile-notifications');
-    const mobileProfile = document.getElementById('mobile-profile');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+    const mobileProfileLink = document.getElementById('mobile-profile-link');
+    const mobileSettingsLink = document.getElementById('mobile-settings-link');
+    const mobileLogoutLink = document.getElementById('mobile-logout-link');
     const pageTitle = document.getElementById('page-title');
+    const trendingSection = document.getElementById('trending-section');
+    const trendingToggle = document.getElementById('trending-toggle');
+    const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
+    const appContainer = document.getElementById('app-container');
+    const toggleDarkMode = document.getElementById('toggle-dark-mode');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    
+    // Login Modal Elements
+    const loginModalOverlay = document.getElementById('login-modal-overlay');
+    const loginModal = document.getElementById('login-modal');
+    const googleLoginBtn = document.getElementById('google-login-btn');
     
     // Image Upload Elements
-    const imageUploadContainer = document.getElementById('image-upload-container');
     const imagePreviewContainer = document.getElementById('image-preview-container');
-    const imagePreview = document.getElementById('image-preview');
-    const imageRemoveBtn = document.getElementById('image-remove-btn');
     const uploadImageBtn = document.getElementById('upload-image-btn');
     
     // Edit Image Upload Elements
-    const editImageUploadContainer = document.getElementById('edit-image-upload-container');
     const editImagePreviewContainer = document.getElementById('edit-image-preview-container');
-    const editImagePreview = document.getElementById('edit-image-preview');
-    const editImageRemoveBtn = document.getElementById('edit-image-remove-btn');
+    const editUploadImageBtn = document.getElementById('edit-upload-image-btn');
     
     // Profile Image Upload
     const profileImageUpload = document.getElementById('profile-image-upload');
@@ -2260,7 +2619,6 @@
     const homePage = document.getElementById('home-page');
     const notificationsPage = document.getElementById('notifications-page');
     const profilePage = document.getElementById('profile-page');
-    const explorePage = document.getElementById('explore-page');
     const settingsPage = document.getElementById('settings-page');
     
     // Modals
@@ -2295,6 +2653,8 @@
     const profileName = document.getElementById('profile-name');
     const profileHandle = document.getElementById('profile-handle');
     const profileBio = document.getElementById('profile-bio');
+    const profileLastActive = document.getElementById('profile-last-active');
+    const profileOnlineIndicator = document.getElementById('profile-online-indicator');
     const profilePostsCount = document.getElementById('profile-posts').querySelector('.profile-stat-value');
     const profileFollowersCount = document.getElementById('profile-followers').querySelector('.profile-stat-value');
     const profileFollowingCount = document.getElementById('profile-following').querySelector('.profile-stat-value');
@@ -2303,10 +2663,6 @@
     const reportUserBtn = document.getElementById('report-user-btn');
     const profileTabs = document.querySelectorAll('.profile-tab');
     const profileTweetsContainer = document.getElementById('profile-tweets-container');
-    
-    // Explore Elements
-    const exploreTabs = document.querySelectorAll('.explore-tab');
-    const exploreTweetsContainer = document.getElementById('explore-tweets-container');
     
     // Settings Elements
     const settingsUsername = document.getElementById('settings-username');
@@ -2318,9 +2674,13 @@
     const saveSettings = document.getElementById('save-settings');
 
     // Variables for image upload
-    let currentUploadedImageUrl = null;
-    let editImageUrl = null;
+    let uploadedImages = [];
+    let editImages = [];
     let profileImageUrl = null;
+    
+    // Online users tracking
+    const onlineUsers = new Map();
+    const lastActiveTimestamps = new Map();
 
     // Helper Functions
     function generateAvatarUrl(seed) {
@@ -2338,6 +2698,45 @@
         toast.remove();
       }, 5000);
     }
+    
+    // Toggle Dark Mode
+    function toggleDarkModeFunc() {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      
+      // Update toggle button icon
+      toggleDarkMode.innerHTML = isDarkMode ? 
+        '<i class="fas fa-sun"></i>' : 
+        '<i class="fas fa-moon"></i>';
+      
+      // Update settings toggle
+      darkModeToggle.checked = isDarkMode;
+      
+      // Save preference to localStorage
+      localStorage.setItem('darkMode', isDarkMode);
+    }
+    
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      toggleDarkMode.innerHTML = '<i class="fas fa-sun"></i>';
+      darkModeToggle.checked = true;
+    }
+    
+    // Dark mode toggle event listeners
+    toggleDarkMode.addEventListener('click', toggleDarkModeFunc);
+    darkModeToggle.addEventListener('change', toggleDarkModeFunc);
+    
+    // Toggle Right Sidebar
+    toggleSidebarBtn.addEventListener('click', () => {
+      appContainer.classList.toggle('hide-right-sidebar');
+      
+      // Update toggle button icon
+      const isHidden = appContainer.classList.contains('hide-right-sidebar');
+      toggleSidebarBtn.innerHTML = isHidden ? 
+        '<i class="fas fa-chevron-left"></i>' : 
+        '<i class="fas fa-chevron-right"></i>';
+    });
 
     // Cloudinary Upload Widget
     function initCloudinaryUploadWidget(callback) {
@@ -2345,8 +2744,8 @@
         cloudName: cloudName,
         uploadPreset: uploadPreset,
         sources: ['local', 'url', 'camera'],
-        multiple: false,
-        maxFiles: 1,
+        multiple: true,
+        maxFiles: 5,
         maxFileSize: 10000000, // 10MB
         resourceType: 'image',
         cropping: false,
@@ -2384,18 +2783,20 @@
 
     // Initialize Cloudinary Upload Widgets
     const uploadWidget = initCloudinaryUploadWidget((imageUrl) => {
-      currentUploadedImageUrl = imageUrl;
-      imagePreview.src = imageUrl;
-      imagePreviewContainer.style.display = 'block';
-      imageUploadContainer.style.display = 'none';
+      uploadedImages.push(imageUrl);
+      updateImagePreview(imagePreviewContainer, uploadedImages, (index) => {
+        uploadedImages.splice(index, 1);
+        updateImagePreview(imagePreviewContainer, uploadedImages);
+      });
       showToast('Image uploaded successfully!');
     });
     
     const editUploadWidget = initCloudinaryUploadWidget((imageUrl) => {
-      editImageUrl = imageUrl;
-      editImagePreview.src = imageUrl;
-      editImagePreviewContainer.style.display = 'block';
-      editImageUploadContainer.style.display = 'none';
+      editImages.push(imageUrl);
+      updateImagePreview(editImagePreviewContainer, editImages, (index) => {
+        editImages.splice(index, 1);
+        updateImagePreview(editImagePreviewContainer, editImages);
+      });
       showToast('Image uploaded successfully!');
     });
     
@@ -2417,33 +2818,48 @@
       });
     });
 
+    // Update Image Preview
+    function updateImagePreview(container, images, removeCallback) {
+      container.innerHTML = '';
+      
+      if (images.length > 0) {
+        container.style.display = 'flex';
+        
+        images.forEach((imageUrl, index) => {
+          const previewItem = document.createElement('div');
+          previewItem.className = 'image-preview-item';
+          
+          const previewImage = document.createElement('img');
+          previewImage.className = 'image-preview';
+          previewImage.src = imageUrl;
+          previewImage.alt = 'Preview';
+          
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'image-remove-btn';
+          removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+          removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (removeCallback) {
+              removeCallback(index);
+            }
+          });
+          
+          previewItem.appendChild(previewImage);
+          previewItem.appendChild(removeBtn);
+          container.appendChild(previewItem);
+        });
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
     // Image Upload Event Listeners
-    imageUploadContainer.addEventListener('click', () => {
-      uploadWidget.open();
-    });
-    
     uploadImageBtn.addEventListener('click', () => {
       uploadWidget.open();
     });
     
-    imageRemoveBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      currentUploadedImageUrl = null;
-      imagePreview.src = '';
-      imagePreviewContainer.style.display = 'none';
-      imageUploadContainer.style.display = 'block';
-    });
-    
-    editImageUploadContainer.addEventListener('click', () => {
+    editUploadImageBtn.addEventListener('click', () => {
       editUploadWidget.open();
-    });
-    
-    editImageRemoveBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      editImageUrl = null;
-      editImagePreview.src = '';
-      editImagePreviewContainer.style.display = 'none';
-      editImageUploadContainer.style.display = 'block';
     });
     
     profileImageUpload.addEventListener('click', () => {
@@ -2466,10 +2882,21 @@
       profileDropdown.classList.toggle('show');
     });
 
-    // Close dropdown when clicking outside
+    // Toggle Mobile Menu Dropdown
+    mobileMenu.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      mobileMenuDropdown.classList.toggle('show');
+    });
+
+    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
       if (!userProfileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
         profileDropdown.classList.remove('show');
+      }
+      
+      if (!mobileMenu.contains(e.target) && !mobileMenuDropdown.contains(e.target)) {
+        mobileMenuDropdown.classList.remove('show');
       }
     });
 
@@ -2484,17 +2911,111 @@
     dropdownLogout.addEventListener('click', (e) => {
       e.preventDefault();
       if (confirm('Are you sure you want to log out?')) {
-        signOut(auth)
-          .then(() => {
-            window.location.href = 'Silakbo Freedom Wall.html';
-          })
-          .catch((error) => showToast(error.message));
+        // Update user's online status to offline
+        if (auth.currentUser) {
+          updateDoc(doc(db, 'users', auth.currentUser.uid), {
+            online: false,
+            lastActive: serverTimestamp()
+          }).then(() => {
+            signOut(auth)
+              .then(() => {
+                showLoginModal();
+              })
+              .catch((error) => showToast(error.message));
+          }).catch((error) => {
+            console.error('Error updating online status:', error);
+            signOut(auth)
+              .then(() => {
+                showLoginModal();
+              })
+              .catch((error) => showToast(error.message));
+          });
+        }
       }
+    });
+
+    // Mobile Menu Actions
+    mobileProfileLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      mobileMenuDropdown.classList.remove('show');
+      loadUserProfile(auth.currentUser.uid);
+    });
+
+    mobileSettingsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      mobileMenuDropdown.classList.remove('show');
+      pageTitle.textContent = 'Settings';
+      setActiveNavItem('settings');
+      showPage('settings-page');
+      loadUserSettings();
+    });
+
+    mobileLogoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Are you sure you want to log out?')) {
+        // Update user's online status to offline
+        if (auth.currentUser) {
+          updateDoc(doc(db, 'users', auth.currentUser.uid), {
+            online: false,
+            lastActive: serverTimestamp()
+          }).then(() => {
+            signOut(auth)
+              .then(() => {
+                showLoginModal();
+              })
+              .catch((error) => showToast(error.message));
+          }).catch((error) => {
+            console.error('Error updating online status:', error);
+            signOut(auth)
+              .then(() => {
+                showLoginModal();
+              })
+              .catch((error) => showToast(error.message));
+          });
+        }
+      }
+    });
+
+    // Toggle Trending Section
+    trendingToggle.addEventListener('click', () => {
+      const trendingList = document.getElementById('trending-topics-list');
+      if (trendingList.style.display === 'none') {
+        trendingList.style.display = 'block';
+        trendingToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
+      } else {
+        trendingList.style.display = 'none';
+        trendingToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+      }
+    });
+    
+    // Login Modal
+    function showLoginModal() {
+      loginModalOverlay.style.display = 'block';
+      loginModal.style.display = 'block';
+    }
+    
+    function hideLoginModal() {
+      loginModalOverlay.style.display = 'none';
+      loginModal.style.display = 'none';
+    }
+    
+    // Google Login
+    googleLoginBtn.addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          hideLoginModal();
+        })
+        .catch((error) => {
+          console.error('Login error:', error);
+          showToast('Login failed. Please try again.');
+        });
     });
 
     // Auth State Change
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        hideLoginModal();
+        
         // Update user info in sidebar
         let displayName = user.displayName || user.email.split('@')[0];
         let userHandle = '@' + (user.displayName || user.email.split('@')[0]).toLowerCase().replace(/\s+/g, '');
@@ -2513,14 +3034,208 @@
         // Initialize user data if it doesn't exist
         initializeUserData(user);
         
+        // Update user's online status
+        updateDoc(doc(db, 'users', user.uid), {
+          online: true,
+          lastActive: serverTimestamp()
+        });
+        
+        // Track online users
+        const onlineUsersRef = collection(db, 'users');
+        const onlineQuery = query(onlineUsersRef, where('online', '==', true));
+        
+        onSnapshot(onlineQuery, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const userData = change.doc.data();
+            const userId = change.doc.id;
+            
+            if (change.type === 'added' || change.type === 'modified') {
+              onlineUsers.set(userId, userData.online);
+              if (userData.lastActive) {
+                lastActiveTimestamps.set(userId, userData.lastActive.toDate());
+              }
+            }
+            
+            if (change.type === 'removed') {
+              onlineUsers.delete(userId);
+            }
+          });
+          
+          // Update UI for any visible users
+          updateOnlineIndicators();
+        });
+        
+        // Track last active timestamps
+        const lastActiveQuery = query(onlineUsersRef);
+        
+        onSnapshot(lastActiveQuery, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const userData = change.doc.data();
+            const userId = change.doc.id;
+            
+            if (userData.lastActive && (change.type === 'added' || change.type === 'modified')) {
+              lastActiveTimestamps.set(userId, userData.lastActive.toDate());
+            }
+          });
+          
+          // Update UI for any visible users
+          updateLastActiveTimestamps();
+        });
+        
         loadPosts();
         loadTrendingTopics();
         loadTopContributors();
         loadNotifications();
       } else {
-        window.location.href = 'Silakbo Freedom Wall.html';
+        showLoginModal();
       }
     });
+    
+    // Update online indicators in the UI
+    function updateOnlineIndicators() {
+      // Update online indicators for tweets
+      document.querySelectorAll('.tweet-avatar-container').forEach(container => {
+        const userId = container.querySelector('.tweet-avatar').dataset.userId;
+        const indicator = container.querySelector('.online-indicator');
+        
+        if (indicator) {
+          if (onlineUsers.get(userId)) {
+            indicator.style.display = 'block';
+          } else {
+            indicator.style.display = 'none';
+          }
+        }
+      });
+      
+      // Update online indicators for comments
+      document.querySelectorAll('.comment-avatar-container').forEach(container => {
+        const userId = container.querySelector('.comment-avatar').dataset.userId;
+        const indicator = container.querySelector('.comment-online-indicator');
+        
+        if (indicator) {
+          if (onlineUsers.get(userId)) {
+            indicator.style.display = 'block';
+          } else {
+            indicator.style.display = 'none';
+          }
+        }
+      });
+      
+      // Update online indicators for profile
+      if (profileOnlineIndicator) {
+        const userId = profileAvatar.dataset.userId;
+        
+        if (userId && onlineUsers.get(userId)) {
+          profileOnlineIndicator.style.display = 'block';
+        } else {
+          profileOnlineIndicator.style.display = 'none';
+        }
+      }
+      
+      // Update online indicators for who to follow
+      document.querySelectorAll('.who-to-follow-avatar-container').forEach(container => {
+        const userId = container.querySelector('.who-to-follow-avatar').dataset.userId;
+        const indicator = container.querySelector('.who-to-follow-online-indicator');
+        
+        if (indicator) {
+          if (onlineUsers.get(userId)) {
+            indicator.style.display = 'block';
+          } else {
+            indicator.style.display = 'none';
+          }
+        }
+      });
+      
+      // Update online indicators for user lists (followers/following)
+      document.querySelectorAll('.user-list-avatar-container').forEach(container => {
+        const userId = container.querySelector('.user-list-avatar').dataset.userId;
+        const indicator = container.querySelector('.user-list-online-indicator');
+        
+        if (indicator) {
+          if (onlineUsers.get(userId)) {
+            indicator.style.display = 'block';
+          } else {
+            indicator.style.display = 'none';
+          }
+        }
+      });
+    }
+    
+    // Update last active timestamps in the UI
+    function updateLastActiveTimestamps() {
+      // Update last active for tweets
+      document.querySelectorAll('.last-active').forEach(element => {
+        const userId = element.dataset.userId;
+        
+        if (userId && lastActiveTimestamps.has(userId)) {
+          const lastActive = lastActiveTimestamps.get(userId);
+          element.textContent = `Last active: ${formatLastActive(lastActive)}`;
+        }
+      });
+      
+      // Update last active for profile
+      if (profileLastActive) {
+        const userId = profileAvatar.dataset.userId;
+        
+        if (userId) {
+          if (onlineUsers.get(userId)) {
+            profileLastActive.textContent = 'Online now';
+          } else if (lastActiveTimestamps.has(userId)) {
+            const lastActive = lastActiveTimestamps.get(userId);
+            profileLastActive.textContent = `Last active: ${formatLastActive(lastActive)}`;
+          }
+        }
+      }
+      
+      // Update last active for who to follow
+      document.querySelectorAll('.who-to-follow-last-active').forEach(element => {
+        const userId = element.dataset.userId;
+        
+        if (userId) {
+          if (onlineUsers.get(userId)) {
+            element.textContent = 'Online now';
+          } else if (lastActiveTimestamps.has(userId)) {
+            const lastActive = lastActiveTimestamps.get(userId);
+            element.textContent = `Last active: ${formatLastActive(lastActive)}`;
+          }
+        }
+      });
+      
+      // Update last active for user lists (followers/following)
+      document.querySelectorAll('.user-list-last-active').forEach(element => {
+        const userId = element.dataset.userId;
+        
+        if (userId) {
+          if (onlineUsers.get(userId)) {
+            element.textContent = 'Online now';
+          } else if (lastActiveTimestamps.has(userId)) {
+            const lastActive = lastActiveTimestamps.get(userId);
+            element.textContent = `Last active: ${formatLastActive(lastActive)}`;
+          }
+        }
+      });
+    }
+    
+    // Format last active time
+    function formatLastActive(date) {
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000); // seconds
+      
+      if (diff < 60) {
+        return 'Just now';
+      } else if (diff < 3600) {
+        const minutes = Math.floor(diff / 60);
+        return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+      } else if (diff < 86400) {
+        const hours = Math.floor(diff / 3600);
+        return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+      } else if (diff < 604800) {
+        const days = Math.floor(diff / 86400);
+        return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+      } else {
+        return date.toLocaleDateString();
+      }
+    }
 
     // Initialize user data
     async function initializeUserData(user) {
@@ -2538,12 +3253,20 @@
           following: [],
           createdAt: new Date(),
           isAdmin: isAdmin(user.email),
+          online: true,
+          lastActive: serverTimestamp(),
           settings: {
             emailNotifications: false,
             pushNotifications: true,
             privateAccount: false,
             activityStatus: true
           }
+        });
+      } else {
+        // Update online status and last active
+        await updateDoc(userRef, {
+          online: true,
+          lastActive: serverTimestamp()
         });
       }
     }
@@ -2576,9 +3299,9 @@
           dislikedBy: []
         };
         
-        // Add image URL if uploaded
-        if (currentUploadedImageUrl) {
-          postData.imageUrl = currentUploadedImageUrl;
+        // Add image URLs if uploaded
+        if (uploadedImages.length > 0) {
+          postData.imageUrls = uploadedImages;
         }
         
         addDoc(collection(db, 'posts'), postData)
@@ -2588,10 +3311,9 @@
           tweetContent.value = '';
           categorySelect.value = '';
           tweetTags.value = '';
-          currentUploadedImageUrl = null;
-          imagePreview.src = '';
+          uploadedImages = [];
+          imagePreviewContainer.innerHTML = '';
           imagePreviewContainer.style.display = 'none';
-          imageUploadContainer.style.display = 'block';
           
           showToast('Scrib posted successfully!');
           tweetSubmit.disabled = false;
@@ -2698,13 +3420,35 @@
           const tagsHtml = post.tags && post.tags.length > 0 ? 
             post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
           
-          // Create image HTML if post has an image
-          const imageHtml = post.imageUrl ? 
-            `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+          // Create images HTML if post has images
+          let imagesHtml = '';
+          if (post.imageUrls && post.imageUrls.length > 0) {
+            imagesHtml = '<div class="tweet-images">';
+            post.imageUrls.forEach(imageUrl => {
+              imagesHtml += `<img src="${imageUrl}" alt="Post image" class="tweet-image" data-full-image="${imageUrl}">`;
+            });
+            imagesHtml += '</div>';
+          } else if (post.imageUrl) {
+            // For backward compatibility with old posts
+            imagesHtml = `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">`;
+          }
+          
+          // Check if user is online
+          const isUserOnline = onlineUsers.get(post.userId) || false;
+          
+          // Get last active time
+          let lastActiveHtml = '';
+          if (!isUserOnline && lastActiveTimestamps.has(post.userId)) {
+            const lastActive = lastActiveTimestamps.get(post.userId);
+            lastActiveHtml = `<div class="last-active" data-user-id="${post.userId}">Last active: ${formatLastActive(lastActive)}</div>`;
+          }
           
           tweetElement.innerHTML = `
             <div class="tweet-header">
-              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="tweet-avatar-container">
+                <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+                <div class="online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+              </div>
               <div class="tweet-user-info">
                 <div>
                   <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
@@ -2712,13 +3456,14 @@
                   <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
                 </div>
                 <p class="tweet-time">${formattedDate}</p>
+                ${lastActiveHtml}
               </div>
               ${showDeleteButton || showEditButton ? `
                 <div class="tweet-more-container" style="position: relative;">
                   <button class="tweet-more">
                     <i class="fas fa-ellipsis-h"></i>
                   </button>
-                  <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                  <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: var(--secondary-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
                     ${showEditButton ? `
                       <div class="dropdown-item edit-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
                         <i class="fas fa-edit" style="margin-right: 0.8rem;"></i> Edit
@@ -2739,7 +3484,7 @@
                   <button class="tweet-more">
                     <i class="fas fa-ellipsis-h"></i>
                   </button>
-                  <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                  <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: var(--secondary-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
                     <div class="dropdown-item report-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
                       <i class="fas fa-flag" style="margin-right: 0.8rem;"></i> Report
                     </div>
@@ -2750,7 +3495,7 @@
             <div class="tweet-content">
               <h3 class="tweet-title">${post.title}</h3>
               <p class="tweet-text">${post.content}</p>
-              ${imageHtml}
+              ${imagesHtml}
               <div style="margin-top: 0.8rem;">
                 <span class="tweet-category">${post.category}</span>
                 ${tagsHtml}
@@ -2762,11 +3507,11 @@
                 <span class="comment-count">0</span>
               </button>
               <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
-                <i class="far fa-heart"></i>
+                <i class="${post.likedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-heart"></i>
                 <span class="like-count">${post.likes || 0}</span>
               </button>
               <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
-                <i class="far fa-thumbs-down"></i>
+                <i class="${post.dislikedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-thumbs-down"></i>
                 <span class="dislike-count">${post.dislikes || 0}</span>
               </button>
               <button class="tweet-action share-btn">
@@ -2807,11 +3552,13 @@
           });
 
           // Image click event for lightbox
-          const tweetImage = tweetElement.querySelector('.tweet-image');
-          if (tweetImage) {
-            tweetImage.addEventListener('click', () => {
-              lightboxImage.src = tweetImage.dataset.fullImage;
-              lightboxOverlay.style.display = 'flex';
+          const tweetImages = tweetElement.querySelectorAll('.tweet-image');
+          if (tweetImages.length > 0) {
+            tweetImages.forEach(img => {
+              img.addEventListener('click', () => {
+                lightboxImage.src = img.dataset.fullImage;
+                lightboxOverlay.style.display = 'flex';
+              });
             });
           }
 
@@ -2857,7 +3604,7 @@
             if (deleteBtn) {
               deleteBtn.addEventListener('click', () => {
                 if (confirm('Are you sure you want to delete this scrib?')) {
-                  deletePost(doc.id, post.imageUrl);
+                  deletePost(doc.id, post.imageUrls || (post.imageUrl ? [post.imageUrl] : []));
                 }
               });
             }
@@ -2865,7 +3612,7 @@
             const editBtn = tweetElement.querySelector('.edit-tweet-btn');
             if (editBtn) {
               editBtn.addEventListener('click', () => {
-                showEditModal(doc.id, post.title, post.content, post.imageUrl);
+                showEditModal(doc.id, post.title, post.content, post.imageUrls || (post.imageUrl ? [post.imageUrl] : []));
               });
             }
             
@@ -2887,6 +3634,31 @@
             
             try {
               await handleLike(doc.id);
+              
+              // Update UI immediately for better user experience
+              const likeIcon = likeBtn.querySelector('i');
+              const likeCount = likeBtn.querySelector('.like-count');
+              const dislikeIcon = dislikeBtn.querySelector('i');
+              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+              
+              if (likeBtn.classList.contains('liked')) {
+                // Unlike
+                likeBtn.classList.remove('liked');
+                likeIcon.className = 'far fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+              } else {
+                // Like
+                likeBtn.classList.add('liked');
+                likeIcon.className = 'fas fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                
+                // If was disliked, remove dislike
+                if (dislikeBtn.classList.contains('disliked')) {
+                  dislikeBtn.classList.remove('disliked');
+                  dislikeIcon.className = 'far fa-thumbs-down';
+                  dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+                }
+              }
             } catch (error) {
               console.error('Error updating like:', error);
               showToast('Failed to update like. Please try again.');
@@ -2903,6 +3675,31 @@
             
             try {
               await handleDislike(doc.id);
+              
+              // Update UI immediately for better user experience
+              const dislikeIcon = dislikeBtn.querySelector('i');
+              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+              const likeIcon = likeBtn.querySelector('i');
+              const likeCount = likeBtn.querySelector('.like-count');
+              
+              if (dislikeBtn.classList.contains('disliked')) {
+                // Undislike
+                dislikeBtn.classList.remove('disliked');
+                dislikeIcon.className = 'far fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+              } else {
+                // Dislike
+                dislikeBtn.classList.add('disliked');
+                dislikeIcon.className = 'fas fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+                
+                // If was liked, remove like
+                if (likeBtn.classList.contains('liked')) {
+                  likeBtn.classList.remove('liked');
+                  likeIcon.className = 'far fa-heart';
+                  likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                }
+              }
             } catch (error) {
               console.error('Error updating dislike:', error);
               showToast('Failed to update dislike. Please try again.');
@@ -2921,6 +3718,10 @@
             });
           });
         });
+        
+        // Update online indicators and last active timestamps
+        updateOnlineIndicators();
+        updateLastActiveTimestamps();
       });
     }
 
@@ -2962,7 +3763,7 @@
       const userId = auth.currentUser.uid;
       const batch = writeBatch(db);
 
-      if (post.likedBy.includes(userId)) {
+      if (post.likedBy && post.likedBy.includes(userId)) {
         // User has already liked, remove the like
         batch.update(postRef, {
           likes: increment(-1),
@@ -2976,7 +3777,7 @@
         });
 
         // If the user had previously disliked, remove the dislike
-        if (post.dislikedBy.includes(userId)) {
+        if (post.dislikedBy && post.dislikedBy.includes(userId)) {
           batch.update(postRef, {
             dislikes: increment(-1),
             dislikedBy: arrayRemove(userId)
@@ -2999,7 +3800,7 @@
       const userId = auth.currentUser.uid;
       const batch = writeBatch(db);
 
-      if (post.dislikedBy.includes(userId)) {
+      if (post.dislikedBy && post.dislikedBy.includes(userId)) {
         // User has already disliked, remove the dislike
         batch.update(postRef, {
           dislikes: increment(-1),
@@ -3013,7 +3814,7 @@
         });
 
         // If the user had previously liked, remove the like
-        if (post.likedBy.includes(userId)) {
+        if (post.likedBy && post.likedBy.includes(userId)) {
           batch.update(postRef, {
             likes: increment(-1),
             likedBy: arrayRemove(userId)
@@ -3025,29 +3826,22 @@
     }
 
     // Edit Modal
-    function showEditModal(postId, title, content, imageUrl = null) {
+    function showEditModal(postId, title, content, imageUrls = []) {
       editTitle.value = title;
       editContent.value = content;
       
       // Reset image preview
-      editImageUrl = null;
-      editImagePreview.src = '';
-      editImagePreviewContainer.style.display = 'none';
-      editImageUploadContainer.style.display = 'block';
-      
-      // If post has an image, show it in the preview
-      if (imageUrl) {
-        editImageUrl = imageUrl;
-        editImagePreview.src = imageUrl;
-        editImagePreviewContainer.style.display = 'block';
-        editImageUploadContainer.style.display = 'none';
-      }
+      editImages = [...imageUrls];
+      updateImagePreview(editImagePreviewContainer, editImages, (index) => {
+        editImages.splice(index, 1);
+        updateImagePreview(editImagePreviewContainer, editImages);
+      });
       
       editModal.style.display = 'block';
       editModalOverlay.style.display = 'block';
 
       editSave.onclick = () => {
-        updatePost(postId, editTitle.value, editContent.value, editImageUrl);
+        updatePost(postId, editTitle.value, editContent.value, editImages);
         closeEditModal();
       };
     }
@@ -3211,11 +4005,11 @@
     }
 
     // Post CRUD Operations
-    async function deletePost(postId, imageUrl = null) {
+    async function deletePost(postId, imageUrls = []) {
       try {
         await deleteDoc(doc(db, 'posts', postId));
         
-        // If post has an image, delete it from Cloudinary
+        // If post has images, delete them from Cloudinary
         // Note: Cloudinary doesn't provide a direct way to delete images via client-side JavaScript
         // You would typically need a server-side function to handle this securely
         // For now, we'll just show a success message
@@ -3229,7 +4023,7 @@
       }
     }
 
-    async function updatePost(postId, newTitle, newContent, newImageUrl = null) {
+    async function updatePost(postId, newTitle, newContent, newImageUrls = []) {
       try {
         const postRef = doc(db, 'posts', postId);
         const postDoc = await getDoc(postRef);
@@ -3238,25 +4032,23 @@
           throw new Error('Post does not exist!');
         }
         
-        const postData = postDoc.data();
         const updateData = {
           title: newTitle,
           content: newContent
         };
         
         // Handle image update
-        if (newImageUrl !== postData.imageUrl) {
-          // If there's a new image URL, update it
-          if (newImageUrl) {
-            updateData.imageUrl = newImageUrl;
-          } else {
-            // If the image was removed, remove the imageUrl field
-            // Note: In Firestore, you can't directly set a field to undefined to remove it
-            // We'll use a server-side function or update the entire document without the field
-            const { imageUrl, ...restData } = postData;
-            await setDoc(postRef, { ...restData, title: newTitle, content: newContent });
-            showToast('Scrib updated successfully');
-            return;
+        if (newImageUrls.length > 0) {
+          updateData.imageUrls = newImageUrls;
+          // Remove old imageUrl field if it exists (for backward compatibility)
+          if (postDoc.data().imageUrl) {
+            updateData.imageUrl = null;
+          }
+        } else {
+          // If all images were removed
+          updateData.imageUrls = [];
+          if (postDoc.data().imageUrl) {
+            updateData.imageUrl = null;
           }
         }
         
@@ -3348,8 +4140,14 @@
           const adminBadgeHtml = isUserAdmin ? 
             `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : '';
           
+          // Check if user is online
+          const isUserOnline = onlineUsers.get(comment.userId) || false;
+          
           commentElement.innerHTML = `
-            <img src="${generateAvatarUrl(comment.userId)}" alt="Profile Picture" class="comment-avatar" data-user-id="${comment.userId}">
+            <div class="comment-avatar-container">
+              <img src="${generateAvatarUrl(comment.userId)}" alt="Profile Picture" class="comment-avatar" data-user-id="${comment.userId}">
+              <div class="comment-online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+            </div>
             <div class="comment-content">
               <div>
                 <span class="comment-user-name" data-user-id="${comment.userId}">${comment.userName}</span>
@@ -3409,10 +4207,10 @@
               
               // Inline edit
               commentText.innerHTML = `
-                <input type="text" value="${currentContent}" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 0.5rem;">
+                <input type="text" value="${currentContent}" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 0.5rem; background-color: var(--secondary-color); color: var(--text-color);">
                 <div style="display: flex; gap: 0.5rem;">
                   <button class="save-edit-btn" style="background-color: var(--primary-color); color: white; border: none; border-radius: var(--radius-full); padding: 0.3rem 0.8rem; cursor: pointer;">Save</button>
-                  <button class="cancel-edit-btn" style="background-color: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 0.3rem 0.8rem; cursor: pointer;">Cancel</button>
+                  <button class="cancel-edit-btn" style="background-color: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 0.3rem 0.8rem; cursor: pointer; color: var(--text-color);">Cancel</button>
                 </div>
               `;
               
@@ -3435,9 +4233,12 @@
           if (reportCommentBtn) {
             reportCommentBtn.addEventListener('click', () => {
               showReportModal('comment', doc.id);
-                          });
+            });
           }
         });
+        
+        // Update online indicators
+        updateOnlineIndicators();
       });
       
       unsubscribeMap.set(postId, unsubscribe);
@@ -3496,6 +4297,7 @@
     
     // Load Notifications
     let unsubscribeNotifications = null;
+    let notificationsOpened = false;
     
     function loadNotifications() {
       if (unsubscribeNotifications) {
@@ -3539,7 +4341,7 @@
               <p class="notification-text">${notification.message}</p>
               <p class="notification-time">${formatDate(notification.timestamp.toDate())}</p>
               <div class="notification-actions">
-                <button class="notification-action view-btn">View</button>
+                <button class="notification-action view-btn" data-reference-id="${notification.referenceId}" data-type="${notification.type}">View</button>
                 <button class="notification-action mark-read-btn">${notification.read ? 'Mark as unread' : 'Mark as read'}</button>
               </div>
             </div>
@@ -3562,27 +4364,7 @@
               showPage('home-page');
               
               // Find and highlight the post
-              setTimeout(() => {
-                const postElement = document.querySelector(`[data-post-id="${notification.referenceId}"]`);
-                if (postElement) {
-                  postElement.scrollIntoView({ behavior: 'smooth' });
-                  postElement.style.backgroundColor = 'rgba(230, 81, 0, 0.05)';
-                  setTimeout(() => {
-                    postElement.style.backgroundColor = '';
-                  }, 2000);
-                  
-                  // If it's a comment notification, open the comments section
-                  if (notification.type === 'comment') {
-                    const commentBtn = postElement.querySelector('.comment-btn');
-                    if (commentBtn) {
-                      commentBtn.click();
-                    }
-                  }
-                } else {
-                  // Post not found in current view, load it directly
-                  loadSinglePost(notification.referenceId);
-                }
-              }, 300);
+              loadSinglePost(notification.referenceId);
             } else if (notification.type === 'follow') {
               // Navigate to the user's profile
               loadUserProfile(notification.referenceId);
@@ -3598,39 +4380,62 @@
         });
         
         // Update notification badge
-        updateNotificationBadge(querySnapshot.docs.filter(doc => !doc.data().read).length);
+        const unreadCount = querySnapshot.docs.filter(doc => !doc.data().read).length;
+        updateNotificationBadge(unreadCount);
+        
+        // If notifications page is open, mark all as read
+        if (notificationsOpened) {
+          markAllNotificationsAsRead();
+        }
+      });
+    }
+    
+    // Mark all notifications as read when notifications page is opened
+    function markAllNotificationsAsRead() {
+      const batch = writeBatch(db);
+      
+      getDocs(query(
+        collection(db, 'notifications'),
+        where('userId', '==', auth.currentUser.uid),
+        where('read', '==', false)
+      )).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          batch.update(doc.ref, { read: true });
+        });
+        
+        batch.commit().then(() => {
+          updateNotificationBadge(0);
+        });
       });
     }
     
     // Update notification badge
     function updateNotificationBadge(count) {
-      const notificationBadge = document.createElement('span');
-      notificationBadge.className = 'notification-badge';
-      notificationBadge.style.cssText = `
-        position: absolute;
-        top: 0;
-        right: 0;
-        background-color: var(--error-color);
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 600;
-        padding: 0.1rem 0.4rem;
-        border-radius: var(--radius-full);
-        transform: translate(50%, -50%);
-      `;
-      
       // Remove existing badges
       const existingBadges = document.querySelectorAll('.notification-badge');
       existingBadges.forEach(badge => badge.remove());
       
-      if (count > 0) {
+      if (count > 0 && !notificationsOpened) {
         // Add badge to notification links
         const notificationLinks = [notificationsLink, mobileNotifications];
         notificationLinks.forEach(link => {
           const iconContainer = link.querySelector('i').parentElement;
           iconContainer.style.position = 'relative';
           
-          const badge = notificationBadge.cloneNode(true);
+          const badge = document.createElement('span');
+          badge.className = 'notification-badge';
+          badge.style.cssText = `
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--error-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.1rem 0.4rem;
+            border-radius: var(--radius-full);
+            transform: translate(50%, -50%);
+          `;
           badge.textContent = count > 9 ? '9+' : count;
           iconContainer.appendChild(badge);
         });
@@ -3681,13 +4486,35 @@
         const tagsHtml = post.tags && post.tags.length > 0 ? 
           post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
         
-        // Create image HTML if post has an image
-        const imageHtml = post.imageUrl ? 
-          `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+        // Create images HTML if post has images
+        let imagesHtml = '';
+        if (post.imageUrls && post.imageUrls.length > 0) {
+          imagesHtml = '<div class="tweet-images">';
+          post.imageUrls.forEach(imageUrl => {
+            imagesHtml += `<img src="${imageUrl}" alt="Post image" class="tweet-image" data-full-image="${imageUrl}">`;
+          });
+          imagesHtml += '</div>';
+        } else if (post.imageUrl) {
+          // For backward compatibility with old posts
+          imagesHtml = `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">`;
+        }
+        
+        // Check if user is online
+        const isUserOnline = onlineUsers.get(post.userId) || false;
+        
+        // Get last active time
+        let lastActiveHtml = '';
+        if (!isUserOnline && lastActiveTimestamps.has(post.userId)) {
+          const lastActive = lastActiveTimestamps.get(post.userId);
+          lastActiveHtml = `<div class="last-active" data-user-id="${post.userId}">Last active: ${formatLastActive(lastActive)}</div>`;
+        }
         
         tweetElement.innerHTML = `
           <div class="tweet-header">
-            <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+            <div class="tweet-avatar-container">
+              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+            </div>
             <div class="tweet-user-info">
               <div>
                 <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
@@ -3695,13 +4522,14 @@
                 <span class="tweet-user-handle">@${post.userName.toLowerCase().replace(/\s+/g, '')}</span>
               </div>
               <p class="tweet-time">${formattedDate}</p>
+              ${lastActiveHtml}
             </div>
             ${showDeleteButton || showEditButton ? `
               <div class="tweet-more-container" style="position: relative;">
                 <button class="tweet-more">
                   <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: var(--secondary-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
                   ${showEditButton ? `
                     <div class="dropdown-item edit-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
                       <i class="fas fa-edit" style="margin-right: 0.8rem;"></i> Edit
@@ -3722,7 +4550,7 @@
                 <button class="tweet-more">
                   <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
+                <div class="tweet-dropdown" style="position: absolute; right: 0; top: 30px; background: var(--secondary-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 150px; z-index: 10; display: none;">
                   <div class="dropdown-item report-tweet-btn" style="padding: 0.8rem 1rem; display: flex; align-items: center; cursor: pointer;">
                     <i class="fas fa-flag" style="margin-right: 0.8rem;"></i> Report
                   </div>
@@ -3733,7 +4561,7 @@
           <div class="tweet-content">
             <h3 class="tweet-title">${post.title}</h3>
             <p class="tweet-text">${post.content}</p>
-            ${imageHtml}
+            ${imagesHtml}
             <div style="margin-top: 0.8rem;">
               <span class="tweet-category">${post.category}</span>
               ${tagsHtml}
@@ -3745,11 +4573,11 @@
               <span class="comment-count">0</span>
             </button>
             <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
-              <i class="far fa-heart"></i>
+              <i class="${post.likedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-heart"></i>
               <span class="like-count">${post.likes || 0}</span>
             </button>
             <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
-              <i class="far fa-thumbs-down"></i>
+              <i class="${post.dislikedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-thumbs-down"></i>
               <span class="dislike-count">${post.dislikes || 0}</span>
             </button>
             <button class="tweet-action share-btn">
@@ -3790,11 +4618,13 @@
         });
         
         // Image click event for lightbox
-        const tweetImage = tweetElement.querySelector('.tweet-image');
-        if (tweetImage) {
-          tweetImage.addEventListener('click', () => {
-            lightboxImage.src = tweetImage.dataset.fullImage;
-            lightboxOverlay.style.display = 'flex';
+        const tweetImages = tweetElement.querySelectorAll('.tweet-image');
+        if (tweetImages.length > 0) {
+          tweetImages.forEach(img => {
+            img.addEventListener('click', () => {
+              lightboxImage.src = img.dataset.fullImage;
+              lightboxOverlay.style.display = 'flex';
+            });
           });
         }
         
@@ -3840,7 +4670,7 @@
           if (deleteBtn) {
             deleteBtn.addEventListener('click', () => {
               if (confirm('Are you sure you want to delete this scrib?')) {
-                deletePost(postDoc.id, post.imageUrl);
+                deletePost(postDoc.id, post.imageUrls || (post.imageUrl ? [post.imageUrl] : []));
               }
             });
           }
@@ -3848,7 +4678,7 @@
           const editBtn = tweetElement.querySelector('.edit-tweet-btn');
           if (editBtn) {
             editBtn.addEventListener('click', () => {
-              showEditModal(postDoc.id, post.title, post.content, post.imageUrl);
+              showEditModal(postDoc.id, post.title, post.content, post.imageUrls || (post.imageUrl ? [post.imageUrl] : []));
             });
           }
           
@@ -3870,6 +4700,31 @@
           
           try {
             await handleLike(postDoc.id);
+            
+            // Update UI immediately for better user experience
+            const likeIcon = likeBtn.querySelector('i');
+            const likeCount = likeBtn.querySelector('.like-count');
+            const dislikeIcon = dislikeBtn.querySelector('i');
+            const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+            
+            if (likeBtn.classList.contains('liked')) {
+              // Unlike
+              likeBtn.classList.remove('liked');
+              likeIcon.className = 'far fa-heart';
+              likeCount.textContent = parseInt(likeCount.textContent) - 1;
+            } else {
+              // Like
+              likeBtn.classList.add('liked');
+              likeIcon.className = 'fas fa-heart';
+              likeCount.textContent = parseInt(likeCount.textContent) + 1;
+              
+              // If was disliked, remove dislike
+              if (dislikeBtn.classList.contains('disliked')) {
+                dislikeBtn.classList.remove('disliked');
+                dislikeIcon.className = 'far fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+              }
+            }
           } catch (error) {
             console.error('Error updating like:', error);
             showToast('Failed to update like. Please try again.');
@@ -3886,6 +4741,31 @@
           
           try {
             await handleDislike(postDoc.id);
+            
+            // Update UI immediately for better user experience
+            const dislikeIcon = dislikeBtn.querySelector('i');
+            const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+            const likeIcon = likeBtn.querySelector('i');
+            const likeCount = likeBtn.querySelector('.like-count');
+            
+            if (dislikeBtn.classList.contains('disliked')) {
+              // Undislike
+              dislikeBtn.classList.remove('disliked');
+              dislikeIcon.className = 'far fa-thumbs-down';
+              dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+            } else {
+              // Dislike
+              dislikeBtn.classList.add('disliked');
+              dislikeIcon.className = 'fas fa-thumbs-down';
+              dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+              
+              // If was liked, remove like
+              if (likeBtn.classList.contains('liked')) {
+                likeBtn.classList.remove('liked');
+                likeIcon.className = 'far fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+              }
+            }
           } catch (error) {
             console.error('Error updating dislike:', error);
             showToast('Failed to update dislike. Please try again.');
@@ -3909,6 +4789,13 @@
         setTimeout(() => {
           tweetElement.style.backgroundColor = '';
         }, 2000);
+        
+        // Automatically open comments section
+        commentBtn.click();
+        
+        // Update online indicators and last active timestamps
+        updateOnlineIndicators();
+        updateLastActiveTimestamps();
         
       } catch (error) {
         console.error('Error loading post:', error);
@@ -4004,13 +4891,28 @@
               const tagsHtml = post.tags && post.tags.length > 0 ? 
                 post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
               
-              // Create image HTML if post has an image
-              const imageHtml = post.imageUrl ? 
-                `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+              // Create images HTML if post has images
+              let imagesHtml = '';
+              if (post.imageUrls && post.imageUrls.length > 0) {
+                imagesHtml = '<div class="tweet-images">';
+                post.imageUrls.forEach(imageUrl => {
+                  imagesHtml += `<img src="${imageUrl}" alt="Post image" class="tweet-image" data-full-image="${imageUrl}">`;
+                });
+                imagesHtml += '</div>';
+              } else if (post.imageUrl) {
+                // For backward compatibility with old posts
+                imagesHtml = `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">`;
+              }
+              
+              // Check if user is online
+              const isUserOnline = onlineUsers.get(post.userId) || false;
               
               tweetElement.innerHTML = `
                 <div class="tweet-header">
-                  <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+                  <div class="tweet-avatar-container">
+                    <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+                    <div class="online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+                  </div>
                   <div class="tweet-user-info">
                     <div>
                       <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
@@ -4023,7 +4925,7 @@
                 <div class="tweet-content">
                   <h3 class="tweet-title">${post.title}</h3>
                   <p class="tweet-text">${post.content}</p>
-                  ${imageHtml}
+                  ${imagesHtml}
                   <div style="margin-top: 0.8rem;">
                     <span class="tweet-category">${post.category}</span>
                     ${tagsHtml}
@@ -4035,11 +4937,11 @@
                     <span class="comment-count">0</span>
                   </button>
                   <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
-                    <i class="far fa-heart"></i>
+                    <i class="${post.likedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-heart"></i>
                     <span class="like-count">${post.likes || 0}</span>
                   </button>
                   <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
-                    <i class="far fa-thumbs-down"></i>
+                    <i class="${post.dislikedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-thumbs-down"></i>
                     <span class="dislike-count">${post.dislikes || 0}</span>
                   </button>
                   <button class="tweet-action share-btn">
@@ -4063,11 +4965,13 @@
               });
               
               // Image click event for lightbox
-              const tweetImage = tweetElement.querySelector('.tweet-image');
-              if (tweetImage) {
-                tweetImage.addEventListener('click', () => {
-                  lightboxImage.src = tweetImage.dataset.fullImage;
-                  lightboxOverlay.style.display = 'flex';
+              const tweetImages = tweetElement.querySelectorAll('.tweet-image');
+              if (tweetImages.length > 0) {
+                tweetImages.forEach(img => {
+                  img.addEventListener('click', () => {
+                    lightboxImage.src = img.dataset.fullImage;
+                    lightboxOverlay.style.display = 'flex';
+                  });
                 });
               }
               
@@ -4076,6 +4980,102 @@
                 const commentCount = tweetElement.querySelector('.comment-count');
                 if (commentCount) {
                   commentCount.textContent = count;
+                }
+              });
+              
+              // Add like/dislike event listeners
+              const likeBtn = tweetElement.querySelector('.like-btn');
+              const dislikeBtn = tweetElement.querySelector('.dislike-btn');
+              
+              likeBtn.addEventListener('click', async () => {
+                if (likeBtn.disabled) return;
+                likeBtn.disabled = true;
+                dislikeBtn.disabled = true;
+                
+                try {
+                  await handleLike(post.id);
+                  
+                  // Update UI immediately
+                  const likeIcon = likeBtn.querySelector('i');
+                  const likeCount = likeBtn.querySelector('.like-count');
+                  const dislikeIcon = dislikeBtn.querySelector('i');
+                  const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+                  
+                  if (likeBtn.classList.contains('liked')) {
+                    // Unlike
+                    likeBtn.classList.remove('liked');
+                    likeIcon.className = 'far fa-heart';
+                    likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                  } else {
+                    // Like
+                    likeBtn.classList.add('liked');
+                    likeIcon.className = 'fas fa-heart';
+                    likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                    
+                    // If was disliked, remove dislike
+                    if (dislikeBtn.classList.contains('disliked')) {
+                      dislikeBtn.classList.remove('disliked');
+                      dislikeIcon.className = 'far fa-thumbs-down';
+                      dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error updating like:', error);
+                  showToast('Failed to update like. Please try again.');
+                } finally {
+                  likeBtn.disabled = false;
+                  dislikeBtn.disabled = false;
+                }
+              });
+              
+              dislikeBtn.addEventListener('click', async () => {
+                if (dislikeBtn.disabled) return;
+                dislikeBtn.disabled = true;
+                likeBtn.disabled = true;
+                
+                try {
+                  await handleDislike(post.id);
+                  
+                  // Update UI immediately
+                  const dislikeIcon = dislikeBtn.querySelector('i');
+                  const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+                  const likeIcon = likeBtn.querySelector('i');
+                  const likeCount = likeBtn.querySelector('.like-count');
+                  
+                  if (dislikeBtn.classList.contains('disliked')) {
+                    // Undislike
+                    dislikeBtn.classList.remove('disliked');
+                    dislikeIcon.className = 'far fa-thumbs-down';
+                    dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+                  } else {
+                    // Dislike
+                    dislikeBtn.classList.add('disliked');
+                    dislikeIcon.className = 'fas fa-thumbs-down';
+                    dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+                    
+                    // If was liked, remove like
+                    if (likeBtn.classList.contains('liked')) {
+                      likeBtn.classList.remove('liked');
+                      likeIcon.className = 'far fa-heart';
+                      likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error updating dislike:', error);
+                  showToast('Failed to update dislike. Please try again.');
+                } finally {
+                  dislikeBtn.disabled = false;
+                  likeBtn.disabled = false;
+                }
+              });
+              
+              // Add comment button event listener
+              const commentsSection = tweetElement.querySelector('.comments-section');
+              const commentBtn = tweetElement.querySelector('.comment-btn');
+              commentBtn.addEventListener('click', () => {
+                commentsSection.classList.toggle('show');
+                if (commentsSection.classList.contains('show')) {
+                  loadComments(post.id, commentsSection);
                 }
               });
             });
@@ -4110,9 +5110,24 @@
         
         // Update profile UI
         profileAvatar.src = userData.photoURL || generateAvatarUrl(userId);
+        profileAvatar.dataset.userId = userId;
         profileName.textContent = userData.displayName;
         profileHandle.textContent = `@${userData.displayName.toLowerCase().replace(/\s+/g, '')}`;
         profileBio.textContent = userData.bio || 'No bio yet.';
+        
+        // Update online status
+        const isUserOnline = onlineUsers.get(userId) || false;
+        profileOnlineIndicator.style.display = isUserOnline ? 'block' : 'none';
+        
+        // Update last active
+        if (isUserOnline) {
+          profileLastActive.textContent = 'Online now';
+        } else if (lastActiveTimestamps.has(userId)) {
+          const lastActive = lastActiveTimestamps.get(userId);
+          profileLastActive.textContent = `Last active: ${formatLastActive(lastActive)}`;
+        } else {
+          profileLastActive.textContent = '';
+        }
         
         // Get post count
         const postsQuery = query(collection(db, 'posts'), where('userId', '==', userId));
@@ -4206,6 +5221,13 @@
     async function toggleFollow(userId, isCurrentlyFollowing) {
       try {
         const currentUserId = auth.currentUser.uid;
+        
+        // Prevent multiple clicks
+        const followBtn = document.getElementById('follow-btn');
+        if (followBtn) {
+          followBtn.disabled = true;
+        }
+        
         const batch = writeBatch(db);
         
         // Update target user's followers
@@ -4227,8 +5249,10 @@
           await batch.commit();
           
           // Update UI
-          const followBtn = document.getElementById('follow-btn');
-          followBtn.textContent = 'Follow';
+          if (followBtn) {
+            followBtn.textContent = 'Follow';
+            followBtn.disabled = false;
+          }
           
           // Update follower count
           const currentCount = parseInt(profileFollowersCount.textContent);
@@ -4251,8 +5275,10 @@
           addNotification(userId, `${auth.currentUser.displayName || auth.currentUser.email} started following you.`, 'follow', currentUserId);
           
           // Update UI
-          const followBtn = document.getElementById('follow-btn');
-          followBtn.textContent = 'Following';
+          if (followBtn) {
+            followBtn.textContent = 'Following';
+            followBtn.disabled = false;
+          }
           
           // Update follower count
           const currentCount = parseInt(profileFollowersCount.textContent);
@@ -4263,6 +5289,12 @@
       } catch (error) {
         console.error('Error toggling follow:', error);
         showToast('Error updating follow status');
+        
+        // Re-enable button on error
+        const followBtn = document.getElementById('follow-btn');
+        if (followBtn) {
+          followBtn.disabled = false;
+        }
       }
     }
     
@@ -4311,13 +5343,28 @@
           const tagsHtml = post.tags && post.tags.length > 0 ? 
             post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
           
-          // Create image HTML if post has an image
-          const imageHtml = post.imageUrl ? 
-            `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">` : '';
+          // Create images HTML if post has images
+          let imagesHtml = '';
+          if (post.imageUrls && post.imageUrls.length > 0) {
+            imagesHtml = '<div class="tweet-images">';
+            post.imageUrls.forEach(imageUrl => {
+              imagesHtml += `<img src="${imageUrl}" alt="Post image" class="tweet-image" data-full-image="${imageUrl}">`;
+            });
+            imagesHtml += '</div>';
+          } else if (post.imageUrl) {
+            // For backward compatibility with old posts
+            imagesHtml = `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">`;
+          }
+          
+          // Check if user is online
+          const isUserOnline = onlineUsers.get(post.userId) || false;
           
           tweetElement.innerHTML = `
             <div class="tweet-header">
-              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="tweet-avatar-container">
+                <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+                <div class="online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+              </div>
               <div class="tweet-user-info">
                 <div>
                   <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
@@ -4330,7 +5377,7 @@
             <div class="tweet-content">
               <h3 class="tweet-title">${post.title}</h3>
               <p class="tweet-text">${post.content}</p>
-              ${imageHtml}
+              ${imagesHtml}
               <div style="margin-top: 0.8rem;">
                 <span class="tweet-category">${post.category}</span>
                 ${tagsHtml}
@@ -4342,7 +5389,7 @@
                 <span class="comment-count">0</span>
               </button>
               <button class="tweet-action like-btn liked">
-                <i class="far fa-heart"></i>
+                <i class="fas fa-heart"></i>
                 <span class="like-count">${post.likes || 0}</span>
               </button>
               <button class="tweet-action dislike-btn">
@@ -4370,11 +5417,13 @@
           });
           
           // Image click event for lightbox
-          const tweetImage = tweetElement.querySelector('.tweet-image');
-          if (tweetImage) {
-            tweetImage.addEventListener('click', () => {
-              lightboxImage.src = tweetImage.dataset.fullImage;
-              lightboxOverlay.style.display = 'flex';
+          const tweetImages = tweetElement.querySelectorAll('.tweet-image');
+          if (tweetImages.length > 0) {
+            tweetImages.forEach(img => {
+              img.addEventListener('click', () => {
+                lightboxImage.src = img.dataset.fullImage;
+                lightboxOverlay.style.display = 'flex';
+              });
             });
           }
           
@@ -4385,7 +5434,97 @@
               commentCount.textContent = count;
             }
           });
+          
+          // Add like/dislike event listeners
+          const likeBtn = tweetElement.querySelector('.like-btn');
+          const dislikeBtn = tweetElement.querySelector('.dislike-btn');
+          
+          likeBtn.addEventListener('click', async () => {
+            if (likeBtn.disabled) return;
+            likeBtn.disabled = true;
+            dislikeBtn.disabled = true;
+            
+            try {
+              await handleLike(doc.id);
+              
+              // Update UI immediately
+              const likeIcon = likeBtn.querySelector('i');
+              const likeCount = likeBtn.querySelector('.like-count');
+              
+              if (likeBtn.classList.contains('liked')) {
+                // Unlike
+                likeBtn.classList.remove('liked');
+                likeIcon.className = 'far fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+              } else {
+                // Like
+                likeBtn.classList.add('liked');
+                likeIcon.className = 'fas fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+              }
+            } catch (error) {
+              console.error('Error updating like:', error);
+              showToast('Failed to update like. Please try again.');
+            } finally {
+              likeBtn.disabled = false;
+              dislikeBtn.disabled = false;
+            }
+          });
+          
+          dislikeBtn.addEventListener('click', async () => {
+            if (dislikeBtn.disabled) return;
+            dislikeBtn.disabled = true;
+            likeBtn.disabled = true;
+            
+            try {
+              await handleDislike(doc.id);
+              
+              // Update UI immediately
+              const dislikeIcon = dislikeBtn.querySelector('i');
+              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+              const likeIcon = likeBtn.querySelector('i');
+              const likeCount = likeBtn.querySelector('.like-count');
+              
+              if (dislikeBtn.classList.contains('disliked')) {
+                // Undislike
+                dislikeBtn.classList.remove('disliked');
+                dislikeIcon.className = 'far fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+              } else {
+                // Dislike
+                dislikeBtn.classList.add('disliked');
+                dislikeIcon.className = 'fas fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+                
+                // If was liked, remove like
+                if (likeBtn.classList.contains('liked')) {
+                  likeBtn.classList.remove('liked');
+                  likeIcon.className = 'far fa-heart';
+                  likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                }
+              }
+            } catch (error) {
+              console.error('Error updating dislike:', error);
+              showToast('Failed to update dislike. Please try again.');
+            } finally {
+              dislikeBtn.disabled = false;
+              likeBtn.disabled = false;
+            }
+          });
+          
+          // Add comment button event listener
+          const commentsSection = tweetElement.querySelector('.comments-section');
+          const commentBtn = tweetElement.querySelector('.comment-btn');
+          commentBtn.addEventListener('click', () => {
+            commentsSection.classList.toggle('show');
+            if (commentsSection.classList.contains('show')) {
+              loadComments(doc.id, commentsSection);
+            }
+          });
         });
+        
+        // Update online indicators
+        updateOnlineIndicators();
         
       } catch (error) {
         console.error('Error loading liked posts:', error);
@@ -4410,7 +5549,7 @@
         // Filter posts with images
         const mediaPosts = postsSnapshot.docs.filter(doc => {
           const post = doc.data();
-          return post.imageUrl;
+          return post.imageUrls?.length > 0 || post.imageUrl;
         });
         
         if (mediaPosts.length === 0) {
@@ -4443,9 +5582,28 @@
           const tagsHtml = post.tags && post.tags.length > 0 ? 
             post.tags.map(tag => `<span class="tweet-tag">${tag}</span>`).join('') : '';
           
+          // Create images HTML if post has images
+          let imagesHtml = '';
+          if (post.imageUrls && post.imageUrls.length > 0) {
+            imagesHtml = '<div class="tweet-images">';
+            post.imageUrls.forEach(imageUrl => {
+              imagesHtml += `<img src="${imageUrl}" alt="Post image" class="tweet-image" data-full-image="${imageUrl}">`;
+            });
+            imagesHtml += '</div>';
+          } else if (post.imageUrl) {
+            // For backward compatibility with old posts
+            imagesHtml = `<img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">`;
+          }
+          
+          // Check if user is online
+          const isUserOnline = onlineUsers.get(post.userId) || false;
+          
           tweetElement.innerHTML = `
             <div class="tweet-header">
-              <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+              <div class="tweet-avatar-container">
+                <img src="${generateAvatarUrl(post.userId)}" alt="Profile Picture" class="tweet-avatar" data-user-id="${post.userId}">
+                <div class="online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+              </div>
               <div class="tweet-user-info">
                 <div>
                   <p class="tweet-user-name" data-user-id="${post.userId}">${post.userName}</p>
@@ -4458,7 +5616,7 @@
             <div class="tweet-content">
               <h3 class="tweet-title">${post.title}</h3>
               <p class="tweet-text">${post.content}</p>
-              <img src="${post.imageUrl}" alt="Post image" class="tweet-image" data-full-image="${post.imageUrl}">
+              ${imagesHtml}
               <div style="margin-top: 0.8rem;">
                 <span class="tweet-category">${post.category}</span>
                 ${tagsHtml}
@@ -4470,11 +5628,11 @@
                 <span class="comment-count">0</span>
               </button>
               <button class="tweet-action like-btn ${post.likedBy?.includes(auth.currentUser.uid) ? 'liked' : ''}">
-                <i class="far fa-heart"></i>
+                <i class="${post.likedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-heart"></i>
                 <span class="like-count">${post.likes || 0}</span>
               </button>
               <button class="tweet-action dislike-btn ${post.dislikedBy?.includes(auth.currentUser.uid) ? 'disliked' : ''}">
-                <i class="far fa-thumbs-down"></i>
+                <i class="${post.dislikedBy?.includes(auth.currentUser.uid) ? 'fas' : 'far'} fa-thumbs-down"></i>
                 <span class="dislike-count">${post.dislikes || 0}</span>
               </button>
               <button class="tweet-action share-btn">
@@ -4498,11 +5656,13 @@
           });
           
           // Image click event for lightbox
-          const tweetImage = tweetElement.querySelector('.tweet-image');
-          if (tweetImage) {
-            tweetImage.addEventListener('click', () => {
-              lightboxImage.src = tweetImage.dataset.fullImage;
-              lightboxOverlay.style.display = 'flex';
+          const tweetImages = tweetElement.querySelectorAll('.tweet-image');
+          if (tweetImages.length > 0) {
+            tweetImages.forEach(img => {
+              img.addEventListener('click', () => {
+                lightboxImage.src = img.dataset.fullImage;
+                lightboxOverlay.style.display = 'flex';
+              });
             });
           }
           
@@ -4513,7 +5673,106 @@
               commentCount.textContent = count;
             }
           });
+          
+          // Add like/dislike event listeners
+          const likeBtn = tweetElement.querySelector('.like-btn');
+          const dislikeBtn = tweetElement.querySelector('.dislike-btn');
+          
+          likeBtn.addEventListener('click', async () => {
+            if (likeBtn.disabled) return;
+            likeBtn.disabled = true;
+            dislikeBtn.disabled = true;
+            
+            try {
+              await handleLike(doc.id);
+              
+              // Update UI immediately
+              const likeIcon = likeBtn.querySelector('i');
+              const likeCount = likeBtn.querySelector('.like-count');
+              const dislikeIcon = dislikeBtn.querySelector('i');
+              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+              
+              if (likeBtn.classList.contains('liked')) {
+                // Unlike
+                likeBtn.classList.remove('liked');
+                likeIcon.className = 'far fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+              } else {
+                // Like
+                likeBtn.classList.add('liked');
+                likeIcon.className = 'fas fa-heart';
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                
+                // If was disliked, remove dislike
+                if (dislikeBtn.classList.contains('disliked')) {
+                  dislikeBtn.classList.remove('disliked');
+                  dislikeIcon.className = 'far fa-thumbs-down';
+                  dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+                }
+              }
+            } catch (error) {
+              console.error('Error updating like:', error);
+              showToast('Failed to update like. Please try again.');
+            } finally {
+              likeBtn.disabled = false;
+              dislikeBtn.disabled = false;
+            }
+          });
+          
+          dislikeBtn.addEventListener('click', async () => {
+            if (dislikeBtn.disabled) return;
+            dislikeBtn.disabled = true;
+            likeBtn.disabled = true;
+            
+            try {
+              await handleDislike(doc.id);
+              
+              // Update UI immediately
+              const dislikeIcon = dislikeBtn.querySelector('i');
+              const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+              const likeIcon = likeBtn.querySelector('i');
+              const likeCount = likeBtn.querySelector('.like-count');
+              
+              if (dislikeBtn.classList.contains('disliked')) {
+                // Undislike
+                dislikeBtn.classList.remove('disliked');
+                dislikeIcon.className = 'far fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+              } else {
+                // Dislike
+                dislikeBtn.classList.add('disliked');
+                dislikeIcon.className = 'fas fa-thumbs-down';
+                dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+                
+                // If was liked, remove like
+                if (likeBtn.classList.contains('liked')) {
+                  likeBtn.classList.remove('liked');
+                  likeIcon.className = 'far fa-heart';
+                  likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                }
+              }
+            } catch (error) {
+              console.error('Error updating dislike:', error);
+              showToast('Failed to update dislike. Please try again.');
+            } finally {
+              dislikeBtn.disabled = false;
+              likeBtn.disabled = false;
+            }
+          });
+          
+          // Add comment button event listener
+          const commentsSection = tweetElement.querySelector('.comments-section');
+          const commentBtn = tweetElement.querySelector('.comment-btn');
+          commentBtn.addEventListener('click', () => {
+            commentsSection.classList.toggle('show');
+            if (commentsSection.classList.contains('show')) {
+              loadComments(doc.id, commentsSection);
+            }
+          });
         });
+        
+        // Update online indicators
+        updateOnlineIndicators();
         
       } catch (error) {
         console.error('Error loading media posts:', error);
@@ -4540,12 +5799,27 @@
         if (followers.length === 0) {
           followersList.innerHTML = '<div style="text-align: center; padding: 2rem;">No followers yet.</div>';
         } else {
+          // Create a Set to track unique followers
+          const uniqueFollowers = new Set(followers);
+          
           // Get follower user data
-          for (const followerId of followers) {
+          for (const followerId of uniqueFollowers) {
             const followerDoc = await getDoc(doc(db, 'users', followerId));
             
             if (followerDoc.exists()) {
               const followerData = followerDoc.data();
+              
+              // Check if user is online
+              const isUserOnline = onlineUsers.get(followerId) || false;
+              
+              // Get last active time
+              let lastActiveText = '';
+              if (!isUserOnline && lastActiveTimestamps.has(followerId)) {
+                const lastActive = lastActiveTimestamps.get(followerId);
+                lastActiveText = `Last active: ${formatLastActive(lastActive)}`;
+              } else if (isUserOnline) {
+                lastActiveText = 'Online now';
+              }
               
               const followerElement = document.createElement('div');
               followerElement.className = 'user-list-item';
@@ -4554,10 +5828,14 @@
               const isFollowing = followerData.followers?.includes(auth.currentUser.uid) || false;
               
               followerElement.innerHTML = `
-                <img src="${followerData.photoURL || generateAvatarUrl(followerId)}" alt="Profile Picture" class="user-list-avatar" data-user-id="${followerId}">
+                <div class="user-list-avatar-container">
+                  <img src="${followerData.photoURL || generateAvatarUrl(followerId)}" alt="Profile Picture" class="user-list-avatar" data-user-id="${followerId}">
+                  <div class="user-list-online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+                </div>
                 <div class="user-list-info">
                   <div class="user-list-name">${followerData.displayName}</div>
                   <div class="user-list-handle">@${followerData.displayName.toLowerCase().replace(/\s+/g, '')}</div>
+                  <div class="user-list-last-active" data-user-id="${followerId}">${lastActiveText}</div>
                 </div>
                 ${followerId !== auth.currentUser.uid ? `
                   <button class="follow-btn follower-follow-btn" data-user-id="${followerId}" data-following="${isFollowing}">
@@ -4627,12 +5905,27 @@
         if (following.length === 0) {
           followingList.innerHTML = '<div style="text-align: center; padding: 2rem;">Not following anyone yet.</div>';
         } else {
+          // Create a Set to track unique following
+          const uniqueFollowing = new Set(following);
+          
           // Get following user data
-          for (const followingId of following) {
+          for (const followingId of uniqueFollowing) {
             const followingDoc = await getDoc(doc(db, 'users', followingId));
             
             if (followingDoc.exists()) {
               const followingData = followingDoc.data();
+              
+              // Check if user is online
+              const isUserOnline = onlineUsers.get(followingId) || false;
+              
+              // Get last active time
+              let lastActiveText = '';
+              if (!isUserOnline && lastActiveTimestamps.has(followingId)) {
+                const lastActive = lastActiveTimestamps.get(followingId);
+                lastActiveText = `Last active: ${formatLastActive(lastActive)}`;
+              } else if (isUserOnline) {
+                lastActiveText = 'Online now';
+              }
               
               const followingElement = document.createElement('div');
               followingElement.className = 'user-list-item';
@@ -4641,10 +5934,14 @@
               const isFollowing = true;
               
               followingElement.innerHTML = `
-                <img src="${followingData.photoURL || generateAvatarUrl(followingId)}" alt="Profile Picture" class="user-list-avatar" data-user-id="${followingId}">
+                <div class="user-list-avatar-container">
+                  <img src="${followingData.photoURL || generateAvatarUrl(followingId)}" alt="Profile Picture" class="user-list-avatar" data-user-id="${followingId}">
+                  <div class="user-list-online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+                </div>
                 <div class="user-list-info">
                   <div class="user-list-name">${followingData.displayName}</div>
                   <div class="user-list-handle">@${followingData.displayName.toLowerCase().replace(/\s+/g, '')}</div>
+                  <div class="user-list-last-active" data-user-id="${followingId}">${lastActiveText}</div>
                 </div>
                 ${userId === auth.currentUser.uid ? `
                   <button class="follow-btn following-follow-btn" data-user-id="${followingId}" data-following="${isFollowing}">
@@ -4744,6 +6041,9 @@
           return;
         }
         
+        const oldUsername = auth.currentUser.displayName || auth.currentUser.email.split('@')[0];
+        const newUsername = username;
+        
         // Update user document
         await updateDoc(doc(db, 'users', auth.currentUser.uid), {
           displayName: username,
@@ -4759,6 +6059,41 @@
         // Update sidebar user info
         sidebarName.textContent = username;
         sidebarHandle.textContent = '@' + username.toLowerCase().replace(/\s+/g, '');
+        
+        // Update username in posts if changed
+        if (oldUsername !== newUsername) {
+          // Get all posts by this user
+          const postsQuery = query(collection(db, 'posts'), where('userId', '==', auth.currentUser.uid));
+          const postsSnapshot = await getDocs(postsQuery);
+          
+          const batch = writeBatch(db);
+          postsSnapshot.forEach(postDoc => {
+            batch.update(postDoc.ref, {
+              userName: newUsername
+            });
+          });
+          
+          // Get all comments by this user
+          const commentsPromises = [];
+          postsSnapshot.forEach(postDoc => {
+            const commentsQuery = query(
+              collection(db, 'posts', postDoc.id, 'comments'),
+              where('userId', '==', auth.currentUser.uid)
+            );
+            commentsPromises.push(getDocs(commentsQuery));
+          });
+          
+          const commentsSnapshots = await Promise.all(commentsPromises);
+          commentsSnapshots.forEach(commentsSnapshot => {
+            commentsSnapshot.forEach(commentDoc => {
+              batch.update(commentDoc.ref, {
+                userName: newUsername
+              });
+            });
+          });
+          
+          await batch.commit();
+        }
         
         showToast('Settings saved successfully');
         
@@ -4908,14 +6243,30 @@
           // Check if current user is following this contributor
           const isFollowing = false; // This will be updated when we implement following
           
+          // Check if user is online
+          const isUserOnline = onlineUsers.get(contributor.userId) || false;
+          
+          // Get last active time
+          let lastActiveText = '';
+          if (!isUserOnline && lastActiveTimestamps.has(contributor.userId)) {
+            const lastActive = lastActiveTimestamps.get(contributor.userId);
+            lastActiveText = `Last active: ${formatLastActive(lastActive)}`;
+          } else if (isUserOnline) {
+            lastActiveText = 'Online now';
+          }
+          
           contributorElement.innerHTML = `
-            <img src="${generateAvatarUrl(contributor.userId)}" alt="Profile Picture" class="who-to-follow-avatar">
+            <div class="who-to-follow-avatar-container">
+              <img src="${generateAvatarUrl(contributor.userId)}" alt="Profile Picture" class="who-to-follow-avatar" data-user-id="${contributor.userId}">
+              <div class="who-to-follow-online-indicator" style="display: ${isUserOnline ? 'block' : 'none'}"></div>
+            </div>
             <div class="who-to-follow-info">
               <div class="who-to-follow-name">
                 ${contributor.userName}
                 ${isContributorAdmin ? `<span style="background-color: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); margin-left: 0.3rem;">Admin</span>` : ''}
               </div>
               <div class="who-to-follow-handle">@${contributor.userName.toLowerCase().replace(/\s+/g, '')}</div>
+              <div class="who-to-follow-last-active" data-user-id="${contributor.userId}">${lastActiveText}</div>
             </div>
             ${contributor.userId !== auth.currentUser.uid ? `
               <button class="follow-btn contributor-follow-btn" data-user-id="${contributor.userId}" data-following="${isFollowing}">
@@ -4946,26 +6297,13 @@
           topContributorsList.appendChild(contributorElement);
         });
         
+        // Update online indicators
+        updateOnlineIndicators();
+        
       } catch (error) {
         console.error('Error loading top contributors:', error);
         topContributorsList.innerHTML = '<div style="padding: 1rem; text-align: center;">Error loading top contributors.</div>';
       }
-    }
-    
-    // Explore Page
-    exploreTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        exploreTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        
-        const category = tab.dataset.category;
-        loadExplorePosts(category);
-      });
-    });
-    
-    function loadExplorePosts(category) {
-      // Use the existing loadPosts function with the category filter
-      loadPosts(null, category);
     }
 
     // Navigation
@@ -4979,21 +6317,22 @@
           homeLink.classList.add('active');
           mobileHome.classList.add('active');
           break;
-        case 'explore':
-          exploreLink.classList.add('active');
-          mobileExplore.classList.add('active');
-          break;
         case 'notifications':
           notificationsLink.classList.add('active');
           mobileNotifications.classList.add('active');
+          notificationsOpened = true;
           break;
         case 'profile':
           profileLink.classList.add('active');
-          mobileProfile.classList.add('active');
           break;
         case 'settings':
           settingsLink.classList.add('active');
           break;
+      }
+      
+      // Reset notifications opened flag when navigating away
+      if (item !== 'notifications') {
+        notificationsOpened = false;
       }
     }
     
@@ -5002,7 +6341,6 @@
       homePage.style.display = 'none';
       notificationsPage.style.display = 'none';
       profilePage.style.display = 'none';
-      explorePage.style.display = 'none';
       settingsPage.style.display = 'none';
       
       // Show selected page
@@ -5015,14 +6353,6 @@
       setActiveNavItem('home');
       showPage('home-page');
       loadPosts();
-    });
-
-    exploreLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      pageTitle.textContent = 'Explore';
-      setActiveNavItem('explore');
-      showPage('explore-page');
-      loadExplorePosts('all');
     });
 
     notificationsLink.addEventListener('click', (e) => {
@@ -5055,25 +6385,12 @@
       loadPosts();
     });
 
-    mobileExplore.addEventListener('click', (e) => {
-      e.preventDefault();
-      pageTitle.textContent = 'Explore';
-      setActiveNavItem('explore');
-      showPage('explore-page');
-      loadExplorePosts('all');
-    });
-
     mobileNotifications.addEventListener('click', (e) => {
       e.preventDefault();
       pageTitle.textContent = 'Notifications';
       setActiveNavItem('notifications');
       showPage('notifications-page');
       loadNotifications();
-    });
-
-    mobileProfile.addEventListener('click', (e) => {
-      e.preventDefault();
-      loadUserProfile(auth.currentUser.uid);
     });
 
     // Compose Tweet Button
@@ -5095,9 +6412,35 @@
       }, 500);
     });
     
+    // Check for URL parameters
+    function checkUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('post');
+      
+      if (postId) {
+        loadSinglePost(postId);
+      }
+    }
+    
     // Initialize the app
     setActiveNavItem('home');
     showPage('home-page');
+    checkUrlParams();
+    
+    // Set up beforeunload event to update user's online status when leaving
+    window.addEventListener('beforeunload', () => {
+      if (auth.currentUser) {
+        // Use a synchronous request to update the user's online status
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update-status', false); // false makes it synchronous
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+          userId: auth.currentUser.uid,
+          online: false,
+          lastActive: new Date().toISOString()
+        }));
+      }
+    });
   </script>
 </body>
 </html>
