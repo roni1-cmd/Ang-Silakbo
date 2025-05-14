@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
          :root {
-                    --primary-color: #e65100;    /* Kept original color */
-                    --primary-hover: #F57C00;    
-                    --primary-light: #FFE0B2;    
-                    --primary-dark: #222222;  
+            --primary-color: #e65100;    /* Kept original color */
+            --primary-hover: #F57C00;    
+            --primary-light: #FFE0B2;    
+            --primary-dark: #222222;  
             --text-color: #333333;
             --dark-gray: #555555;
             --light-gray: #AAAAAA;
@@ -569,8 +569,8 @@
             transform: translateY(-2px);
         }
 
-        /* Loading Screen */
-        .loading-screen {
+        /* Facebook-style Splash Screen */
+        .splash-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -584,67 +584,30 @@
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .loading-screen.show {
+        .splash-screen.show {
             opacity: 1;
             visibility: visible;
         }
 
-        .loading-logo {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 50px;
-            animation: pulse 2s infinite;
+        .splash-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 20px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .loading-bar-container {
-            width: 300px;
-            height: 6px;
-            background-color: var(--extra-light-gray);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-
-        .loading-bar {
-            height: 100%;
-            width: 0;
-            background-color: var(--primary-color);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-
-        .loading-text {
-            font-size: 16px;
-            color: var(--dark-gray);
-            margin-top: 20px;
-            font-weight: 400;
-            font-family: 'Source Sans Pro', sans-serif;
-        }
-
-        .loading-message {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-top: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+        .splash-footer {
+            position: absolute;
+            bottom: 40px;
             text-align: center;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .loading-message.show {
-            opacity: 1;
-            transform: translateY(0);
+            font-size: 14px;
+            color: var(--dark-gray);
+            font-family: 'Source Sans Pro', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         /* Success Animation */
@@ -697,18 +660,24 @@
                 padding: 30px 20px;
                 width: 95%;
             }
+            
+            .splash-logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .splash-footer {
+                bottom: 30px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loading-screen">
-        <img src="SILAKBO.PNG" alt="Silakbo Logo" class="loading-logo">
-        <div class="loading-bar-container">
-            <div class="loading-bar" id="loading-bar"></div>
-        </div>
-        <div class="loading-text" id="loading-text">Preparing your experience...</div>
-        <div class="loading-message" id="loading-message">Welcome to Ang Silakbo Forums!</div>
+    <!-- Facebook-style Splash Screen -->
+    <div class="splash-screen" id="splash-screen">
+        <img src="SILAKBO.PNG" alt="Silakbo Logo" class="splash-logo">
+        <div class="splash-footer">FORUMS BY ANG SILAKBO</div>
     </div>
 
     <!-- Main Content -->
@@ -874,34 +843,16 @@
                 'login_hint': 'user@example.com'
             });
             
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                const loadingScreen = document.getElementById('loading-screen');
-                loadingScreen.classList.add('show');
-                
-                signInWithPopup(auth, provider)
-                    .then((result) => {
-                        loadingScreen.classList.remove('show');
-                        document.getElementById('tos-popup').classList.add('show');
-                        document.getElementById('tos-popup-overlay').classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                    }).catch((error) => {
-                        loadingScreen.classList.remove('show');
-                        console.error("Error during sign in:", error);
-                        alert("An error occurred during sign in. Please try again.");
-                    });
-            } else {
-                signInWithPopup(auth, provider)
-                    .then((result) => {
-                        document.getElementById('tos-popup').classList.add('show');
-                        document.getElementById('tos-popup-overlay').classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                    }).catch((error) => {
-                        console.error("Error during sign in:", error);
-                        alert("An error occurred during sign in. Please try again.");
-                    });
-            }
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // Show Terms of Service after successful login
+                    document.getElementById('tos-popup').classList.add('show');
+                    document.getElementById('tos-popup-overlay').classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }).catch((error) => {
+                    console.error("Error during sign in:", error);
+                    alert("An error occurred during sign in. Please try again.");
+                });
         }
 
         // Admin login functionality
@@ -937,11 +888,7 @@
                     
                     setTimeout(() => {
                         closeAdminPopup();
-                        showLoadingScreen();
-                        
-                        setTimeout(() => {
-                            window.location.href = "Thoughts.html";
-                        }, 2000);
+                        showSplashScreen();
                     }, 1000);
                 })
                 .catch((error) => {
@@ -968,7 +915,7 @@
         document.getElementById('admin-form').addEventListener('submit', handleAdminLogin);
         document.getElementById('accept-tos').addEventListener('click', () => {
             closeTosPopup();
-            showLoadingScreen();
+            showSplashScreen();
         });
         document.getElementById('close-tos').addEventListener('click', closeTosPopup);
         document.getElementById('tos-popup-overlay').addEventListener('click', closeTosPopup);
@@ -1047,44 +994,17 @@
             document.body.style.overflow = '';
         }
 
-        // Loading screen functionality
-        function showLoadingScreen() {
-            const loadingScreen = document.getElementById('loading-screen');
-            const loadingBar = document.getElementById('loading-bar');
-            const loadingText = document.getElementById('loading-text');
-            const loadingMessage = document.getElementById('loading-message');
+        // Facebook-style splash screen functionality
+        function showSplashScreen() {
+            const splashScreen = document.getElementById('splash-screen');
             
-            loadingScreen.classList.add('show');
+            splashScreen.classList.add('show');
             document.body.style.overflow = 'hidden';
             
-            let progress = 0;
-            const messages = [
-                "Loading posts...",
-                "Setting up your profile...",
-                "Connecting to the forums...",
-                "Almost there..."
-            ];
-            
-            const interval = setInterval(() => {
-                progress += Math.random() * 8 + 2; // More natural progression
-                if (progress > 100) progress = 100;
-                
-                loadingBar.style.width = `${progress}%`;
-                
-                const messageIndex = Math.floor((progress / 100) * messages.length);
-                if (messageIndex < messages.length) {
-                    loadingText.textContent = messages[messageIndex];
-                }
-                
-                if (progress === 100) {
-                    clearInterval(interval);
-                    loadingMessage.classList.add('show');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'Thoughts.html';
-                    }, 1800);
-                }
-            }, 400);
+            // Simple timeout to redirect after showing splash screen
+            setTimeout(() => {
+                window.location.href = 'Thoughts.html';
+            }, 2000);
         }
     </script>
 </body>
