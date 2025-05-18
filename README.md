@@ -42,7 +42,7 @@ For inquiries or collaboration, reach out to us:
 We welcome contributions! If you have suggestions or improvements, feel free to fork this repository and submit a pull request.
 
 ## 📜 License
-This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 UCLM-SHS SSC License (CC BY-NC 4.0)**. See the `LICENSE` file for details.
+This project is licensed under the **Creative Commons Attribution-NonCommercial Accredited UCLM-SHS SSC License (CC BY-NC 4.0)**. See the `LICENSE` file for details.
 
 ---
 
