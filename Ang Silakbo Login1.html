@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANG SILAKBO - Log In</title>
-    <link rel="icon" href="SILAKBO (1).png">
+    <link rel="icon" href="SILAKBO.png">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +34,12 @@
             --text-light: #777777;
             --white: #FFFFFF;
             --black: #000000;
+            --dark-bg: #15202B;
+            --darker-bg: #0D1117;
+            --dark-card: #192734;
+            --dark-border: #38444d;
+            --dark-text: #E7E9EA;
+            --dark-text-secondary: #8899A6;
             --gray-100: #f8f9fa;
             --gray-200: #e9ecef;
             --gray-300: #dee2e6;
@@ -49,73 +55,67 @@
             --border-radius-lg: 20px;
             --border-radius-xl: 24px;
             --transition: all 0.3s ease;
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
         body {
             font-family: 'Source Sans Pro', sans-serif;
-            color: var(--text-dark);
-            background-color: var(--white);
+            color: var(--dark-text);
+            background-color: var(--darker-bg);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         /* Layout */
         .app-container {
             display: flex;
-            flex-direction: column;
             min-height: 100vh;
             position: relative;
         }
 
-        /* Header */
-        .header {
+        /* Left Side */
+        .left-side {
+            flex: 1;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 20px 40px;
-            background-color: var(--white);
-            box-shadow: var(--shadow-sm);
-            border-bottom: 2px solid var(--primary-transparent);
             position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0f14, #1a2634);
         }
 
-        .header::after {
+        .left-side::before {
             content: '';
             position: absolute;
-            bottom: -2px;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-light), var(--primary), var(--primary-light));
-            opacity: 0.7;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(230, 81, 0, 0.15), transparent 70%);
+            z-index: 1;
+        }
+
+        .left-side::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(230, 81, 0, 0.1), transparent 70%);
+            z-index: 0;
         }
 
         .logo-container {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 2;
             display: flex;
             align-items: center;
             gap: 15px;
-            position: relative;
-        }
-
-        .logo-container::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-container:hover::after {
-            transform: scaleX(1);
         }
 
         .logo {
@@ -125,10 +125,6 @@
             transition: transform 0.3s ease;
         }
 
-        .logo-container:hover .logo {
-            transform: scale(1.05);
-        }
-
         .logo-text {
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
@@ -136,179 +132,98 @@
             color: var(--primary);
             letter-spacing: 0.5px;
             text-shadow: 0 1px 2px rgba(230, 81, 0, 0.1);
-            position: relative;
-            padding: 0 5px;
         }
 
-        .logo-text::before {
-            content: '';
+        .background-image {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--primary-transparent), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .logo-container:hover .logo-text::before {
-            transform: translateX(100%);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .datetime-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            padding: 8px 16px;
-            background-color: var(--secondary-light);
-            border-radius: var(--border-radius-md);
-            font-family: 'Source Sans Pro', sans-serif;
-            border: 1px solid var(--primary-transparent);
-            transition: var(--transition);
-        }
-
-        .datetime-display:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.1);
-        }
-
-        .datetime-display i {
-            color: var(--primary);
-        }
-
-        .language-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            padding: 8px 16px;
-            background-color: var(--secondary-light);
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            font-family: 'Source Sans Pro', sans-serif;
-            border: 1px solid var(--primary-transparent);
-            transition: var(--transition);
-        }
-
-        .language-selector:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(230, 81, 0, 0.1);
-        }
-
-        .language-selector i {
-            color: var(--primary);
-        }
-
-        .language-selector select {
-            border: none;
-            background: transparent;
-            color: var(--text-dark);
-            font-family: 'Source Sans Pro', sans-serif;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .language-selector select:focus {
-            outline: none;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            background-color: var(--white);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, var(--primary-transparent), transparent 70%);
-            opacity: 0.4;
-            z-index: 0;
-        }
-
-        /* Login Container */
-        .login-container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            height: 600px;
-            background-color: var(--white);
-            border-radius: var(--border-radius-xl);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(230, 81, 0, 0.1);
-            border: 1px solid var(--gray-200);
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .login-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(230, 81, 0, 0.15);
-        }
-
-        .login-image-container {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            border-radius: var(--border-radius-xl) 0 0 var(--border-radius-xl);
-        }
-
-        .login-image-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(230, 81, 0, 0.3), transparent);
-            z-index: 1;
-        }
-
-        .login-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
-            transition: transform 0.5s ease;
+            opacity: 0.2;
+            z-index: 0;
         }
 
-        .login-container:hover .login-image {
-            transform: scale(1.03);
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
         }
 
-        .login-form-container {
-            width: 500px;
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            opacity: 0.1;
+            filter: blur(10px);
+        }
+
+        .element-1 {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            left: 30%;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .element-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 25%;
+            right: 20%;
+            animation: float 18s ease-in-out infinite 2s;
+        }
+
+        .element-3 {
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            left: 15%;
+            animation: float 12s ease-in-out infinite 1s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-20px, 20px) rotate(5deg); }
+            50% { transform: translate(10px, -15px) rotate(-5deg); }
+            75% { transform: translate(-15px, -25px) rotate(3deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 500px;
+            padding: 0 40px;
+        }
+
+        .left-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--white), var(--dark-text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        /* Right Side */
+        .right-side {
+            width: 550px;
+            background-color: var(--dark-bg);
             padding: 60px;
             display: flex;
             flex-direction: column;
-            background-color: var(--white);
-            border-left: 1px solid var(--gray-200);
-            border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
+            justify-content: center;
             position: relative;
+            overflow: hidden;
         }
 
-        .login-form-container::before {
+        .right-side::before {
             content: '';
             position: absolute;
             top: 0;
@@ -319,48 +234,41 @@
             opacity: 0.8;
         }
 
-        /* Orange accent elements */
-        .orange-accent {
+        .right-side::after {
+            content: '';
             position: absolute;
-            background-color: var(--primary);
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-dark), var(--primary), var(--primary-light));
+            opacity: 0.8;
+        }
+
+        .glow-effect {
+            position: absolute;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
+            background: radial-gradient(circle, rgba(230, 81, 0, 0.1), transparent 70%);
+            top: -150px;
+            right: -150px;
             z-index: 0;
-            opacity: 0.05;
-        }
-
-        .accent-1 {
-            width: 150px;
-            height: 150px;
-            top: -50px;
-            right: -50px;
-        }
-
-        .accent-2 {
-            width: 100px;
-            height: 100px;
-            bottom: 50px;
-            right: 30px;
-        }
-
-        .accent-3 {
-            width: 70px;
-            height: 70px;
-            top: 100px;
-            left: 30px;
         }
 
         /* Form Styles */
         .login-header {
             margin-bottom: 40px;
             position: relative;
+            z-index: 1;
         }
 
         .login-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 10px;
+            color: var(--dark-text);
+            margin-bottom: 20px;
             position: relative;
             display: inline-block;
         }
@@ -382,29 +290,32 @@
         }
 
         .login-subtitle {
-            font-family: 'Merriweather', serif;
-            font-size: 1rem;
-            color: var(--text-light);
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 1.1rem;
+            color: var(--dark-text-secondary);
             line-height: 1.6;
+            margin-bottom: 30px;
         }
 
         .form-group {
             margin-bottom: 24px;
             position: relative;
+            z-index: 1;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 500;
-            color: var(--text-dark);
-            font-size: 0.95rem;
+            color: var(--dark-text);
+            font-size: 1rem;
             font-family: 'Source Sans Pro', sans-serif;
             transition: var(--transition);
         }
 
         .form-group:focus-within .form-label {
             color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .form-control-wrapper {
@@ -413,19 +324,21 @@
 
         .form-control {
             width: 100%;
-            padding: 14px 16px 14px 48px;
-            border: 1px solid var(--gray-300);
+            padding: 18px 16px 18px 48px;
+            border: 1px solid var(--dark-border);
             border-radius: var(--border-radius-md);
             font-family: 'Source Sans Pro', sans-serif;
             font-size: 1rem;
             transition: var(--transition);
-            background-color: var(--white);
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
         }
 
@@ -434,7 +347,7 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-light);
+            color: var(--dark-text-secondary);
             transition: var(--transition);
         }
 
@@ -448,7 +361,7 @@
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-light);
+            color: var(--dark-text-secondary);
             cursor: pointer;
             transition: var(--transition);
             background: none;
@@ -466,13 +379,13 @@
             gap: 8px;
             margin-top: 8px;
             font-size: 0.8rem;
-            color: var(--text-light);
+            color: var(--dark-text-secondary);
             font-family: 'Source Sans Pro', sans-serif;
             transition: var(--transition);
         }
 
         .form-group:hover .form-info {
-            color: var(--primary-dark);
+            color: var(--primary);
         }
 
         .form-info i {
@@ -490,7 +403,7 @@
         .strength-segment {
             flex: 1;
             height: 100%;
-            background-color: var(--gray-200);
+            background-color: var(--dark-border);
             border-radius: 2px;
             transition: var(--transition);
             position: relative;
@@ -521,6 +434,8 @@
             display: flex;
             align-items: center;
             margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
         }
 
         .form-check-input {
@@ -530,15 +445,13 @@
             accent-color: var(--primary);
             cursor: pointer;
             transition: var(--transition);
-        }
-
-        .form-check-input:checked {
-            transform: scale(1.1);
+            background-color: var(--dark-card);
+            border: 1px solid var(--dark-border);
         }
 
         .form-check-label {
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: var(--dark-text-secondary);
             cursor: pointer;
             font-family: 'Source Sans Pro', sans-serif;
             transition: var(--transition);
@@ -580,7 +493,7 @@
         .error-message {
             color: var(--error);
             font-size: 0.9rem;
-            margin-top: -15px;
+            margin-top: 20px;
             margin-bottom: 20px;
             display: none;
             padding: 12px 16px;
@@ -589,6 +502,8 @@
             border-left: 3px solid var(--error);
             font-family: 'Source Sans Pro', sans-serif;
             animation: slideIn 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         @keyframes slideIn {
@@ -597,17 +512,11 @@
         }
 
         /* Button Styles */
-        .btn-container {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 24px;
+            padding: 18px 24px;
             border: none;
             border-radius: var(--border-radius-md);
             font-family: 'Source Sans Pro', sans-serif;
@@ -615,12 +524,13 @@
             font-size: 1rem;
             cursor: pointer;
             transition: var(--transition);
-            flex: 1;
+            width: 100%;
             text-align: center;
             text-decoration: none;
             position: relative;
             overflow: hidden;
             z-index: 1;
+            margin-bottom: 16px;
         }
 
         .btn::before {
@@ -656,23 +566,6 @@
             transform: translateY(-1px);
         }
 
-        .btn-secondary {
-            background-color: var(--white);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-secondary:active {
-            transform: translateY(-1px);
-        }
-
         .btn-icon {
             margin-right: 8px;
             transition: var(--transition);
@@ -682,71 +575,24 @@
             transform: translateX(-3px);
         }
 
-        /* Additional Elements */
-        .security-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 12px 16px;
-            background-color: rgba(46, 204, 113, 0.1);
-            border-radius: var(--border-radius-md);
-            color: var(--text-light);
-            font-size: 0.85rem;
-            font-family: 'Source Sans Pro', sans-serif;
-            border: 1px solid rgba(46, 204, 113, 0.2);
-            transition: var(--transition);
-        }
-
-        .security-badge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.1);
-        }
-
-        .security-badge i {
-            color: var(--success);
-        }
-
-        .status-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 24px;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* Footer */
+        .footer {
+            margin-top: 40px;
             font-size: 0.8rem;
-            color: var(--text-light);
-            font-family: 'Source Sans Pro', sans-serif;
+            color: var(--dark-text-secondary);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
             transition: var(--transition);
         }
 
-        .status-indicator:hover {
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--success);
-            position: relative;
-        }
-
-        .status-dot::after {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background-color: rgba(46, 204, 113, 0.3);
-            animation: pulse 2s infinite;
+        .footer a:hover {
+            text-decoration: underline;
         }
 
         /* Loading indicator */
@@ -757,7 +603,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(21, 32, 43, 0.9);
             z-index: 100;
             justify-content: center;
             align-items: center;
@@ -810,7 +656,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(13, 17, 23, 0.95);
             z-index: 1000;
             display: flex;
             justify-content: center;
@@ -872,199 +718,132 @@
         }
 
         /* Animations */
-        @keyframes pulse {
-            0% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.2); }
-            100% { opacity: 0.6; transform: scale(1); }
-        }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
         /* Responsive Styles */
         @media (max-width: 1200px) {
-            .login-container {
-                max-width: 900px;
+            .right-side {
+                width: 500px;
+                padding: 50px;
             }
         }
 
         @media (max-width: 992px) {
-            .login-container {
-                max-width: 700px;
-                height: auto;
-            }
-            .login-form-container {
-                width: 400px;
+            .right-side {
+                width: 450px;
                 padding: 40px;
+            }
+            .left-title {
+                font-size: 2.5rem;
             }
         }
 
         @media (max-width: 768px) {
-            .login-container {
+            .app-container {
                 flex-direction: column;
-                height: auto;
-                max-width: 500px;
             }
-            .login-image-container {
-                height: 300px;
-                border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
-            }
-            .login-form-container {
-                width: 100%;
-                padding: 30px;
-                border-radius: 0 0 var(--border-radius-xl) var(--border-radius-xl);
-                border-left: none;
-                border-top: 1px solid var(--gray-200);
-            }
-            .login-form-container::before {
-                width: 100%;
-                height: 5px;
-                top: 0;
-                left: 0;
-                background: linear-gradient(to right, var(--primary-light), var(--primary), var(--primary-dark));
-            }
-            .header {
-                padding: 15px 20px;
-            }
-            .datetime-display {
+            .left-side {
                 display: none;
+            }
+            .right-side {
+                width: 100%;
+                min-height: 100vh;
+                padding: 40px 20px;
+            }
+            .login-title {
+                font-size: 2rem;
             }
         }
 
         @media (max-width: 576px) {
-            .login-container {
-                max-width: 100%;
-                border-radius: var(--border-radius-lg);
-            }
-            .login-image-container {
-                border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-            }
-            .login-form-container {
-                padding: 20px;
-                border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            .right-side {
+                padding: 30px 15px;
             }
             .login-title {
                 font-size: 1.8rem;
-            }
-            .btn-container {
-                flex-direction: column;
-            }
-            .main-content {
-                padding: 10px;
             }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="header">
+        <!-- Left Side with Background -->
+        <div class="left-side">
             <div class="logo-container">
                 <img src="SILAKBO.png" alt="Ang Silakbo Logo" class="logo">
-                <div class="logo-text"><strong>ANG SILAKBO</strong></div>
+                <div class="logo-text"><strong></strong></div>
             </div>
-            <div class="header-right">
-                <div class="datetime-display">
-                    <i class="far fa-clock"></i>
-                    <span id="current-datetime">Loading...</span>
-                </div>
-                <div class="language-selector">
-                    <i class="fas fa-globe"></i>
-                    <select id="language">
-                        <option value="en">English</option>
-                        <option value="tl">Filipino</option>
-                        <option value="es">Español</option>
-                        <option value="fr">Français</option>
-                    </select>
-                </div>
+            
+            <img src="Crest.png" alt="Background" class="background-image">
+            
+            <div class="floating-elements">
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+                <div class="floating-element element-3"></div>
             </div>
-        </header>
+            
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="login-container">
-                <!-- Orange accent elements -->
-                <div class="orange-accent accent-1"></div>
-                <div class="orange-accent accent-2"></div>
-                <div class="orange-accent accent-3"></div>
-                
-                <!-- Loading indicator -->
-                <div class="loading-indicator" id="loadingIndicator">
-                    <div class="spinner"></div>
-                </div>
+        <!-- Right Side with Form -->
+        <div class="right-side">
+            <!-- Loading indicator -->
+            <div class="loading-indicator" id="loadingIndicator">
+                <div class="spinner"></div>
+            </div>
+            
+            <div class="glow-effect"></div>
 
-                <!-- Image Side -->
-                <div class="login-image-container">
-                    <img src="Login.png" alt="Ang Silakbo Login" class="login-image">
-                </div>
-
-                <!-- Form Side -->
-                <div class="login-form-container">
-                    <div class="login-header">
-                        <h2 class="login-title">Welcome Back</h2>
-                        <p class="login-subtitle">Sign in to access your Ang Silakbo admin dashboard</p>
+            <div class="login-header">
+                <h1 class="login-title">Access Your Dashboard</h1>
+                <p class="login-subtitle">Sign in to access your Ang Silakbo admin dashboard</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="form-control-wrapper">
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        <i class="fas fa-envelope form-icon"></i>
                     </div>
-                    
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email Address</label>
-                            <div class="form-control-wrapper">
-                                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-                                <i class="fas fa-envelope form-icon"></i>
-                            </div>
-                            <div class="form-info">
-                                <i class="fas fa-info-circle"></i>
-                                <span>Use your registered email address</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="form-control-wrapper">
-                                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-                                <i class="fas fa-lock form-icon"></i>
-                                <button type="button" class="toggle-password" id="togglePassword">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <div class="password-strength">
-                                <div class="strength-segment"></div>
-                                <div class="strength-segment"></div>
-                                <div class="strength-segment"></div>
-                                <div class="strength-segment"></div>
-                            </div>
-                        </div>
-                        <div id="errorMessage" class="error-message"></div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="remember">
-                            <label class="form-check-label" for="remember">Remember me</label>
-                            <a href="mailto:asnahonron@gmail.com?subject=Forgot%20Password%20Request" class="forgot-password">Forgot Password?</a>
-                        </div>
-                        <div class="btn-container">
-                            <button type="submit" class="btn btn-primary" id="loginBtn">
-                                <i class="fas fa-sign-in-alt btn-icon"></i>
-                                <span>Sign In</span>
-                            </button>
-                            <a href="Project Repository.html" class="btn btn-secondary">
-                                <i class="fas fa-folder-open btn-icon"></i>
-                                <span>Repository</span>
-                            </a>
-                        </div>
-     
-                        <div class="status-container">
-                            <div class="status-indicator">
-                                <div class="status-dot"></div>
-                                <span>Systems Up and Running</span>
-                            </div>
-                            <div class="status-indicator">
-                                <i class="fas fa-code-branch"></i>
-                                <span>Version 2.6.0</span>
-                            </div>
-                        </div>
-                    </form>
+                    <div class="form-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Use your registered email address</span>
+                    </div>
                 </div>
-            </div>
-        </main>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="form-control-wrapper">
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        <i class="fas fa-lock form-icon"></i>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-segment"></div>
+                        <div class="strength-segment"></div>
+                        <div class="strength-segment"></div>
+                        <div class="strength-segment"></div>
+                    </div>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                    <a href="Dev's Note" class="forgot-password">Notes</a>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt btn-icon"></i>
+                    <span>Sign In</span>
+                </button>
+                
+                <div class="footer">
+                    By signing in, you agree to our <a href="ToS">Terms of Service</a> and <a href="Privacy">Privacy Policy</a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Success message -->
@@ -1103,8 +882,24 @@
             "Uhm I see you're in struggle logging in, do you have your credentials with you?",
             "Hmmm is this really your account?",
             "You are suspicious!",
-            "Maybe contact Roni for support, you are really struggling:(("
+            "Maybe contact support for help, you are really struggling:("
         ];
+        
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
         
         // Create confetti elements
         function createConfetti() {
@@ -1145,22 +940,6 @@
             }
         }
         
-        // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
-        
         // Form submission handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1195,7 +974,7 @@
                     
                     // Redirect after animation completes
                     setTimeout(() => {
-                        window.location.href = "Ang Silakbo Admin Panel.html";
+                        window.location.href = "Ang Silakbo Admin Panel";
                     }, 2000);
                 })
                 .catch((error) => {
@@ -1217,7 +996,7 @@
                     errorMessageElement.style.display = 'block';
                     
                     // Shake the form on error
-                    const loginForm = document.querySelector('.login-form-container');
+                    const loginForm = document.querySelector('.right-side');
                     loginForm.animate([
                         { transform: 'translateX(0)' },
                         { transform: 'translateX(-10px)' },
@@ -1252,130 +1031,6 @@
                 }
             });
         });
-
-        // Language selector functionality
-        document.getElementById('language').addEventListener('change', function() {
-            const language = this.value;
-            
-            // Translation object
-            const translations = {
-                en: {
-                    title: "Welcome Back",
-                    subtitle: "Sign in to access your Ang Silakbo admin dashboard",
-                    email: "Email Address",
-                    emailPlaceholder: "Enter your email",
-                    emailInfo: "Use your registered email address",
-                    password: "Password",
-                    passwordPlaceholder: "Enter your password",
-                    remember: "Remember me",
-                    signin: "Sign In",
-                    repository: "Repository",
-                    system: "Systems Online",
-                    version: "Version 1.9.0",
-                    secure: "Your connection is secure and encrypted",
-                    success: "Login successful!",
-                    forgot: "Forgot Password?"
-                },
-                tl: {
-                    title: "Maligayang Pagbabalik",
-                    subtitle: "Mag-sign in upang ma-access ang iyong Ang Silakbo admin dashboard",
-                    email: "Email Address",
-                    emailPlaceholder: "Ilagay ang iyong email",
-                    emailInfo: "Gamitin ang iyong nakarehistrong email address",
-                    password: "Password",
-                    passwordPlaceholder: "Ilagay ang iyong password",
-                    remember: "Tandaan ako",
-                    signin: "Mag-sign In",
-                    repository: "Repository",
-                    system: "System Online",
-                    version: "Bersyon 1.9.0",
-                    secure: "Ang iyong koneksyon ay ligtas at naka-encrypt",
-                    success: "Matagumpay na pag-login!",
-                    forgot: "Nakalimutan ang Password?"
-                },
-                es: {
-                    title: "Bienvenido de Nuevo",
-                    subtitle: "Inicie sesión para acceder a su panel de administración de Ang Silakbo",
-                    email: "Correo Electrónico",
-                    emailPlaceholder: "Ingrese su correo electrónico",
-                    emailInfo: "Utilice su dirección de correo electrónico registrada",
-                    password: "Contraseña",
-                    passwordPlaceholder: "Ingrese su contraseña",
-                    remember: "Recuérdame",
-                    signin: "Iniciar Sesión",
-                    repository: "Repositorio",
-                    system: "Sistema en Línea",
-                    version: "Versión 1.9.0",
-                    secure: "Su conexión es segura y está cifrada",
-                    success: "¡Inicio de sesión exitoso!",
-                    forgot: "¿Olvidó su Contraseña?"
-                },
-                fr: {
-                    title: "Bon Retour",
-                    subtitle: "Connectez-vous pour accéder à votre tableau de bord administrateur Ang Silakbo",
-                    email: "Adresse Email",
-                    emailPlaceholder: "Entrez votre email",
-                    emailInfo: "Utilisez votre adresse e-mail enregistrée",
-                    password: "Mot de Passe",
-                    passwordPlaceholder: "Entrez votre mot de passe",
-                    remember: "Se souvenir de moi",
-                    signin: "Se Connecter",
-                    repository: "Dépôt",
-                    system: "Système en Ligne",
-                    version: "Version 1.9.0",
-                    secure: "Votre connexion est sécurisée et cryptée",
-                    success: "Connexion réussie!",
-                    forgot: "Mot de Passe Oublié?"
-                }
-            };
-            
-            // Apply translations
-            const trans = translations[language];
-            document.querySelector('.login-title').textContent = trans.title;
-            document.querySelector('.login-subtitle').textContent = trans.subtitle;
-            
-            // Update form labels and placeholders
-            const emailLabel = document.querySelector('label[for="email"]');
-            const passwordLabel = document.querySelector('label[for="password"]');
-            emailLabel.textContent = trans.email;
-            passwordLabel.textContent = trans.password;
-            
-            document.querySelector('#email').placeholder = trans.emailPlaceholder;
-            document.querySelector('#password').placeholder = trans.passwordPlaceholder;
-            
-            document.querySelector('.form-check-label').textContent = trans.remember;
-            document.querySelector('#loginBtn span').textContent = trans.signin;
-            document.querySelector('.btn-secondary span').textContent = trans.repository;
-            document.querySelector('.forgot-password').textContent = trans.forgot;
-            
-            // Update form info
-            document.querySelector('.form-info span').textContent = trans.emailInfo;
-            document.querySelector('.security-badge span').textContent = trans.secure;
-            
-            // Update status indicators
-            document.querySelector('.status-container .status-indicator:first-child span').textContent = trans.system;
-            document.querySelector('.status-container .status-indicator:last-child span').textContent = trans.version;
-            
-            // Update success message
-            document.querySelector('#successMessage span').textContent = trans.success;
-        });
-
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            document.getElementById('current-datetime').textContent = now.toLocaleDateString(undefined, options);
-        }
-        
-        updateDateTime();
-        setInterval(updateDateTime, 60000); // Update every minute
         
         // Add hover effects to form elements
         const formControls = document.querySelectorAll('.form-control');
