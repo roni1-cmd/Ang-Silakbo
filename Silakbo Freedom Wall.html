@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Light mode variables */
             --bg-color: #ffffff;
             --text-color: #0f1419;
             --secondary-text: #536471;
@@ -27,7 +26,6 @@
         }
 
         [data-theme="dark"] {
-            /* Dark mode variables */
             --bg-color: #000000;
             --text-color: #e7e9ea;
             --secondary-text: #71767b;
@@ -56,12 +54,14 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
             display: flex;
-            min-height: 100vh;
+            flex: 1;
         }
 
         .left-side {
@@ -75,14 +75,24 @@
 
         .right-side {
             flex: 1;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('SILAKBO SILHOUETTE.PNG');
-            background-size: cover;
-            background-position: center;
+            background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+        }
+
+        .typing-text {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-transform: lowercase;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 4px solid var(--accent-color);
+            display: inline-block;
+            min-width: 1ch;
         }
 
         .logo-container {
@@ -92,11 +102,11 @@
             z-index: 10;
         }
 
-       .logo {
-    width: 40px;
-    height: 40px;
-    filter: var(--logo-filter); /* This will now do nothing in dark mode */
-}
+        .logo {
+            width: 40px;
+            height: 40px;
+            filter: var(--logo-filter);
+        }
 
         .theme-toggle {
             position: absolute;
@@ -210,7 +220,6 @@
             text-decoration: underline;
         }
 
-        /* Modal styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -342,7 +351,6 @@
             background-color: var(--button-hover);
         }
 
-        /* Loading animation */
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -357,7 +365,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Success animation */
         .success-icon {
             color: #4CAF50;
             animation: fadeIn 0.5s ease forwards;
@@ -368,7 +375,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Splash screen */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -391,12 +397,11 @@
             visibility: visible;
         }
 
-      .splash-logo {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 20px;
-    /* Remove the filter property here completely */
-}
+        .splash-logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
 
         .splash-text {
             font-size: 16px;
@@ -407,7 +412,6 @@
             bottom: 40px;
         }
 
-        /* Terms of Service styles */
         .tos-content {
             max-height: 300px;
             overflow-y: auto;
@@ -450,7 +454,6 @@
             text-decoration: underline;
         }
 
-        /* Responsive styles */
         @media (max-width: 992px) {
             .container {
                 flex-direction: column;
@@ -474,15 +477,21 @@
                 width: 90%;
                 padding: 24px;
             }
+
+            .typing-text {
+                font-size: 48px;
+            }
         }
 
-        /* Footer */
         .footer {
             padding: 20px;
             text-align: center;
             border-top: 1px solid var(--border-color);
             background-color: var(--bg-color);
-            margin-top: auto;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
         }
 
         .footer-links {
@@ -510,17 +519,14 @@
     </style>
 </head>
 <body>
-    <!-- Splash Screen -->
     <div class="splash-screen" id="splash-screen">
         <img src="SILAKBO.PNG" alt="Logo" class="splash-logo" id="splash-logo">
         <div class="splash-text">FORUMS BY ANG SILAKBO</div>
     </div>
 
     <div class="container">
-        <!-- Left Side - Login Form -->
         <div class="left-side">
-            <div class="logo-container">
-            </div>
+            <div class="logo-container"></div>
             
             <button class="theme-toggle" id="theme-toggle">
                 <i class="fas fa-moon"></i>
@@ -564,13 +570,11 @@
             </div>
         </div>
         
-        <!-- Right Side - Background Image -->
         <div class="right-side">
-            <div class="brand-overlay"></div>
+            <div class="typing-text" id="typing-text"></div>
         </div>
     </div>
     
-    <!-- Admin Login Modal -->
     <div class="modal-overlay" id="admin-modal">
         <div class="modal">
             <button class="modal-close" id="close-admin-modal">
@@ -604,7 +608,6 @@
         </div>
     </div>
     
-    <!-- Email Signup Modal -->
     <div class="modal-overlay" id="email-modal">
         <div class="modal">
             <button class="modal-close" id="close-email-modal">
@@ -634,7 +637,6 @@
         </div>
     </div>
     
-    <!-- Sign In Modal -->
     <div class="modal-overlay" id="signin-modal">
         <div class="modal">
             <button class="modal-close" id="close-signin-modal">
@@ -668,7 +670,6 @@
         </div>
     </div>
 
-    <!-- Terms of Service Modal -->
     <div class="modal-overlay" id="tos-modal">
         <div class="modal">
             <button class="modal-close" id="close-tos-modal">
@@ -698,7 +699,6 @@
         </div>
     </div>
     
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-links">
             <a href="About Us" class="footer-link">About</a>
@@ -710,12 +710,11 @@
             <a href="Chat Request" class="footer-link">Support</a>
         </div>
         <div class="copyright">
-            &copy; 2025 ANG SILAKBO FORUMS | ALL RIGHTS RESERVED.
+            © 2025 ANG SILAKBO FORUMS | ALL RIGHTS RESERVED.
         </div>
     </footer>
 
     <script type="module">
-        // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
         import { 
             getAuth, 
@@ -725,7 +724,6 @@
             createUserWithEmailAndPassword
         } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
             authDomain: "ang-silakbo.firebaseapp.com",
@@ -736,12 +734,10 @@
             measurementId: "G-TSDTG2YJ94"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
 
-        // DOM Elements
         const themeToggle = document.getElementById('theme-toggle');
         const adminAuthBtn = document.getElementById('admin-auth');
         const googleAuthBtn = document.getElementById('google-auth');
@@ -768,32 +764,60 @@
         const signinSubmit = document.getElementById('signin-submit');
         
         const splashScreen = document.getElementById('splash-screen');
+        const typingText = document.getElementById('typing-text');
 
-        // Theme Toggle
+        const socialWords = [
+            'scrib.', 'connect.', 'share.', 'post.', 'like.', 'follow.', 'chat.', 'trend.', 'hashtag.',
+            'engage.', 'comment.', 'message.', 'stream.', 'network.', 'viral.', 'story.', 'update.'
+        ];
+        let currentWordIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+
+        function typeWord() {
+            const currentWord = socialWords[currentWordIndex];
+            
+            if (!isDeleting) {
+                typingText.textContent = currentWord.substring(0, currentCharIndex);
+                currentCharIndex++;
+                
+                if (currentCharIndex > currentWord.length) {
+                    isDeleting = true;
+                    setTimeout(typeWord, 1000);
+                    return;
+                }
+            } else {
+                typingText.textContent = currentWord.substring(0, currentCharIndex);
+                currentCharIndex--;
+                
+                if (currentCharIndex < 0) {
+                    isDeleting = false;
+                    currentWordIndex = (currentWordIndex + 1) % socialWords.length;
+                    setTimeout(typeWord, 500);
+                    return;
+                }
+            }
+            
+            setTimeout(typeWord, isDeleting ? 50 : 100);
+        }
+
+        typeWord();
+
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-            
-            if (theme === 'dark') {
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-            }
+            themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
-        // Check for saved theme preference or use preferred color scheme
         const savedTheme = localStorage.getItem('theme') || 
             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         setTheme(savedTheme);
 
-        // Theme toggle event listener
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            setTheme(newTheme);
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
         });
 
-        // Modal Functions
         function openModal(modal) {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -804,17 +828,14 @@
             document.body.style.overflow = '';
         }
 
-        // Show splash screen and redirect
         function showSplashScreen() {
             splashScreen.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
             setTimeout(() => {
                 window.location.href = 'Thoughts';
             }, 2000);
         }
 
-        // Authentication Functions
         function signInWithGoogle() {
             googleProvider.setCustomParameters({
                 'prompt': 'select_account'
@@ -837,7 +858,6 @@
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
             
-            // List of authorized admin emails
             const authorizedAdmins = [
                 'angsilakbo1@uclm.com',
                 'angsilakbo2@uclm.com',
@@ -849,7 +869,6 @@
                 return;
             }
             
-            // Update button state
             const originalBtnText = adminSubmit.innerHTML;
             adminSubmit.innerHTML = '<span class="loading-spinner"></span>';
             adminSubmit.disabled = true;
@@ -857,11 +876,8 @@
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log("Admin logged in:", userCredential.user.email);
-                    
-                    // Success animation
                     adminSubmit.innerHTML = '<span class="success-icon"><i class="fas fa-check"></i> Success!</span>';
                     adminSubmit.style.backgroundColor = '#4CAF50';
-                    
                     setTimeout(() => {
                         closeModal(adminModal);
                         showSplashScreen();
@@ -871,7 +887,6 @@
                     console.error("Admin login error:", error);
                     adminSubmit.innerHTML = '<i class="fas fa-times"></i> Failed';
                     adminSubmit.style.backgroundColor = '#F44336';
-                    
                     setTimeout(() => {
                         adminSubmit.innerHTML = originalBtnText;
                         adminSubmit.style.backgroundColor = '';
@@ -888,7 +903,6 @@
             const email = document.getElementById('user-email').value;
             const password = document.getElementById('user-password').value;
             
-            // Update button state
             const originalBtnText = emailSubmit.innerHTML;
             emailSubmit.innerHTML = '<span class="loading-spinner"></span>';
             emailSubmit.disabled = true;
@@ -896,11 +910,8 @@
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log("User signed up:", userCredential.user.email);
-                    
-                    // Success animation
                     emailSubmit.innerHTML = '<span class="success-icon"><i class="fas fa-check"></i> Success!</span>';
                     emailSubmit.style.backgroundColor = '#4CAF50';
-                    
                     setTimeout(() => {
                         closeModal(emailModal);
                         openModal(tosModal);
@@ -910,7 +921,6 @@
                     console.error("Email signup error:", error);
                     emailSubmit.innerHTML = '<i class="fas fa-times"></i> Failed';
                     emailSubmit.style.backgroundColor = '#F44336';
-                    
                     setTimeout(() => {
                         emailSubmit.innerHTML = originalBtnText;
                         emailSubmit.style.backgroundColor = '';
@@ -926,7 +936,6 @@
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
             
-            // Update button state
             const originalBtnText = signinSubmit.innerHTML;
             signinSubmit.innerHTML = '<span class="loading-spinner"></span>';
             signinSubmit.disabled = true;
@@ -934,11 +943,8 @@
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log("User signed in:", userCredential.user.email);
-                    
-                    // Success animation
                     signinSubmit.innerHTML = '<span class="success-icon"><i class="fas fa-check"></i> Success!</span>';
                     signinSubmit.style.backgroundColor = '#4CAF50';
-                    
                     setTimeout(() => {
                         closeModal(signinModal);
                         showSplashScreen();
@@ -948,7 +954,6 @@
                     console.error("Sign in error:", error);
                     signinSubmit.innerHTML = '<i class="fas fa-times"></i> Failed';
                     signinSubmit.style.backgroundColor = '#F44336';
-                    
                     setTimeout(() => {
                         signinSubmit.innerHTML = originalBtnText;
                         signinSubmit.style.backgroundColor = '';
@@ -958,10 +963,8 @@
                 });
         }
 
-        // Event Listeners
         adminAuthBtn.addEventListener('click', () => openModal(adminModal));
         signinLink.addEventListener('click', () => openModal(signinModal));
-        
         closeAdminModal.addEventListener('click', () => closeModal(adminModal));
         closeSigninModal.addEventListener('click', () => closeModal(signinModal));
         closeTosModal.addEventListener('click', () => closeModal(tosModal));
@@ -992,7 +995,6 @@
             window.location.href = 'Bot';
         });
 
-        // Close modals when clicking outside content
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
                 closeModal(e.target);
