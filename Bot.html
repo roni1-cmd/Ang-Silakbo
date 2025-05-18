@@ -10,7 +10,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary-color: #e65100;
@@ -26,6 +26,42 @@
       --glass-bg: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(255, 255, 255, 0.2);
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      
+      /* Dark mode variables */
+      --dark-bg: #121212;
+      --dark-surface: #1e1e1e;
+      --dark-surface-light: #2d2d2d;
+      --dark-text: #e0e0e0;
+      --dark-text-secondary: #a0a0a0;
+      --dark-border: #333333;
+      
+      /* Rich text editor colors */
+      --editor-bg: #ffffff;
+      --editor-border: #e0e0e0;
+      --editor-toolbar-bg: #f5f5f5;
+      
+      /* Terminal colors */
+      --terminal-bg: #1e1e1e;
+      --terminal-text: #f8f8f8;
+      --terminal-prompt: #50fa7b;
+      --terminal-border: #333333;
+    }
+
+    /* Dark mode class */
+    .dark-mode {
+      --light-gray: #1e1e1e;
+      --medium-gray: #333333;
+      --dark-gray: #e0e0e0;
+      --white: #121212;
+      --glass-bg: rgba(30, 30, 30, 0.85);
+      --glass-border: rgba(60, 60, 60, 0.2);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      color: var(--dark-text);
+      
+      /* Dark mode editor colors */
+      --editor-bg: #2d2d2d;
+      --editor-border: #444444;
+      --editor-toolbar-bg: #333333;
     }
 
     * {
@@ -42,6 +78,11 @@
       overflow: hidden;
       font-family: 'Source Sans Pro', sans-serif;
       background: linear-gradient(135deg, #f5f7fa, #e4e7eb);
+      transition: background-color 0.3s ease;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(135deg, #121212, #1a1a1a);
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -87,6 +128,10 @@
       border-right: 1px solid rgba(255, 255, 255, 0.5);
     }
 
+    .dark-mode .sidebar {
+      border-right: 1px solid var(--dark-border);
+    }
+
     .sidebar.active {
       left: 0;
     }
@@ -115,7 +160,6 @@
       margin-right: 12px;
       border-radius: 10px;
       object-fit: cover;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .logo-text {
@@ -203,6 +247,10 @@
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
+    .dark-mode .chat-history-header {
+      border-bottom: 1px solid var(--dark-border);
+    }
+
     .chat-history-title {
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
@@ -269,10 +317,19 @@
       color: var(--dark-gray);
     }
 
+    .dark-mode .chat-item {
+      background-color: rgba(45, 45, 45, 0.5);
+      border: 1px solid var(--dark-border);
+    }
+
     .chat-item:hover {
       background-color: rgba(255, 255, 255, 0.8);
       transform: translateX(2px);
       border-color: rgba(230, 81, 0, 0.1);
+    }
+
+    .dark-mode .chat-item:hover {
+      background-color: rgba(60, 60, 60, 0.8);
     }
 
     .chat-item.active {
@@ -280,6 +337,10 @@
       border-color: rgba(230, 81, 0, 0.2);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       color: var(--primary-color);
+    }
+
+    .dark-mode .chat-item.active {
+      background-color: rgba(230, 81, 0, 0.2);
     }
 
     .chat-item-icon {
@@ -334,9 +395,18 @@
       backdrop-filter: blur(10px);
     }
 
+    .dark-mode .user-profile {
+      background-color: rgba(45, 45, 45, 0.5);
+      border: 1px solid var(--dark-border);
+    }
+
     .user-profile:hover {
       background-color: rgba(255, 255, 255, 0.8);
       border-color: rgba(230, 81, 0, 0.1);
+    }
+
+    .dark-mode .user-profile:hover {
+      background-color: rgba(60, 60, 60, 0.8);
     }
 
     .user-avatar {
@@ -368,9 +438,6 @@
       position: relative;
       height: 100vh;
       overflow: hidden;
-      background-color: var(--white);
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.85);
       margin-left: 0; /* No margin since sidebar is hidden by default */
       width: 100%;
       transition: margin-left 0.3s ease;
@@ -383,13 +450,15 @@
 
     .mobile-header {
       display: flex;
-      background-color: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
       padding: 14px 18px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       align-items: center;
       z-index: 10;
       border-bottom: 1px solid rgba(224, 224, 224, 0.5);
+      transition: background-color 0.3s ease;
+    }
+
+    .dark-mode .mobile-header {
+      border-bottom: 1px solid var(--dark-border);
     }
 
     .menu-toggle {
@@ -504,6 +573,8 @@
       gap: 24px;
       width: 100%;
       animation: fadeIn 0.5s ease-out;
+      margin-bottom: 140px; /* Increased to make message container lower */
+      margin-top: 40px; /* Added to push content down a bit */
     }
 
     .message {
@@ -580,6 +651,11 @@
       border: 1px solid rgba(224, 224, 224, 0.5);
     }
 
+    .dark-mode .bot-message .message-content {
+      background: rgba(45, 45, 45, 0.7);
+      border: 1px solid var(--dark-border);
+    }
+
     .bot-message .message-sender {
       color: var(--primary-dark);
     }
@@ -588,6 +664,157 @@
       font-family: 'Merriweather', serif;
       font-size: 15px;
       line-height: 1.8;
+    }
+
+    /* NEW: Rich Text Editor for essay/grammar content */
+    .rich-text-editor {
+      background-color: var(--editor-bg);
+      border: 1px solid var(--editor-border);
+      border-radius: 8px;
+      margin-top: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 10px;
+      background-color: var(--editor-toolbar-bg);
+      border-bottom: 1px solid var(--editor-border);
+    }
+
+    .toolbar-btn {
+      background: none;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--dark-gray);
+      transition: var(--transition);
+    }
+
+    .toolbar-btn:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .dark-mode .toolbar-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .toolbar-btn.active {
+      background-color: rgba(230, 81, 0, 0.1);
+      color: var(--primary-color);
+    }
+
+    .toolbar-separator {
+      width: 1px;
+      height: 20px;
+      background-color: var(--editor-border);
+      margin: 0 5px;
+    }
+
+    .editor-content {
+      padding: 15px;
+      min-height: 150px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Merriweather', serif;
+      line-height: 1.8;
+      color: var(--dark-gray);
+    }
+
+    .dark-mode .editor-content {
+      color: var(--dark-text);
+    }
+
+    .editor-statusbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 15px;
+      font-size: 12px;
+      color: var(--dark-gray);
+      background-color: var(--editor-toolbar-bg);
+      border-top: 1px solid var(--editor-border);
+    }
+
+    /* NEW: Terminal for code content */
+    .terminal {
+      background-color: var(--terminal-bg);
+      border: 1px solid var(--terminal-border);
+      border-radius: 8px;
+      margin-top: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 15px;
+      background-color: #333333;
+      border-bottom: 1px solid #444444;
+    }
+
+    .terminal-title {
+      color: #f8f8f8;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .terminal-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .terminal-action {
+      background: none;
+      border: none;
+      color: #cccccc;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition);
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .terminal-action:hover {
+      opacity: 1;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .terminal-content {
+      padding: 15px;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--terminal-text);
+    }
+
+    .terminal-line {
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    .terminal-prompt {
+      color: var(--terminal-prompt);
+      margin-right: 10px;
+      user-select: none;
+    }
+
+    .terminal-output {
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     /* Message actions */
@@ -613,6 +840,10 @@
       transition: var(--transition);
     }
 
+    .dark-mode .message-action-btn {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
     .user-message .message-action-btn {
       color: rgba(255, 255, 255, 0.7);
     }
@@ -627,7 +858,7 @@
       color: var(--white);
     }
 
-    /* Chat actions */
+    /* Chat actions - Removed refresh and down arrow buttons */
     .chat-actions {
       position: absolute;
       bottom: 90px;
@@ -636,59 +867,6 @@
       flex-direction: column;
       gap: 10px;
       z-index: 10;
-    }
-
-    .chat-action-btn {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      color: var(--white);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(230, 81, 0, 0.2);
-      transition: var(--transition);
-      opacity: 0.9;
-    }
-
-    .chat-action-btn:hover {
-      transform: scale(1.1);
-      opacity: 1;
-      box-shadow: 0 6px 20px rgba(230, 81, 0, 0.3);
-    }
-
-    .chat-action-btn i {
-      font-size: 20px;
-    }
-
-    /* Reset button */
-    .reset-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(230, 81, 0, 0.1);
-      color: var(--primary-color);
-      border: 1px solid rgba(230, 81, 0, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-      opacity: 0.8;
-      backdrop-filter: blur(5px);
-    }
-
-    .reset-btn:hover {
-      transform: scale(1.1);
-      opacity: 1;
-      background: rgba(230, 81, 0, 0.2);
-    }
-
-    .reset-btn i {
-      font-size: 16px;
     }
 
     /* Input Area - Updated to be centered initially and fixed positioning issue */
@@ -707,9 +885,6 @@
 
     .input-container.with-messages {
       position: relative;
-      background-color: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(224, 224, 224, 0.5);
       bottom: 0; /* Reset bottom position when in message view */
       margin-bottom: 60px; /* Add margin to prevent footer overlap */
     }
@@ -727,6 +902,11 @@
       width: 100%;
     }
 
+    .dark-mode .input-wrapper {
+      border: 1px solid var(--dark-border);
+      background-color: rgba(45, 45, 45, 0.7);
+    }
+
     .welcome-screen .input-wrapper {
       width: 70%;
       max-width: 700px;
@@ -736,6 +916,10 @@
       box-shadow: 0 4px 20px rgba(230, 81, 0, 0.15);
       border-color: var(--primary-light);
       background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .dark-mode .input-wrapper:focus-within {
+      background-color: rgba(45, 45, 45, 0.9);
     }
 
     #userInput {
@@ -750,6 +934,7 @@
       min-height: 56px;
       background: transparent;
       border-radius: 30px; /* Match parent's border-radius */
+      color: var(--dark-gray);
     }
 
     .send-btn {
@@ -828,6 +1013,10 @@
       z-index: 50;
     }
 
+    .dark-mode .about-btn {
+      background: rgba(45, 45, 45, 0.8);
+    }
+
     .about-btn:hover {
       background: rgba(230, 81, 0, 0.1);
       transform: translateY(-2px);
@@ -838,16 +1027,49 @@
       margin-right: 6px;
     }
 
-    /* Footer */
+    /* Dark mode toggle button */
+    .dark-mode-toggle {
+      position: absolute;
+      top: 20px;
+      right: 150px;
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--primary-color);
+      border: 1px solid rgba(230, 81, 0, 0.2);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 50;
+    }
+
+    .dark-mode .dark-mode-toggle {
+      background: rgba(45, 45, 45, 0.8);
+    }
+
+    .dark-mode-toggle:hover {
+      background: rgba(230, 81, 0, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode-toggle i {
+      margin-right: 6px;
+    }
+
+    /* Footer - Removed background container */
     .footer {
       padding: 14px;
       text-align: center;
       font-family: 'Source Sans Pro', sans-serif;
       font-size: 13px;
       color: var(--dark-gray);
-      background-color: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(224, 224, 224, 0.5);
       position: absolute; /* Changed to absolute positioning */
       bottom: 0;
       left: 0;
@@ -882,6 +1104,11 @@
       max-width: 400px;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
       animation: modalFadeIn 0.3s ease-out;
+    }
+
+    .dark-mode .auth-content {
+      background-color: var(--dark-surface);
+      color: var(--dark-text);
     }
 
     @keyframes modalFadeIn {
@@ -932,10 +1159,20 @@
       font-family: 'Source Sans Pro', sans-serif;
     }
 
+    .dark-mode .auth-btn {
+      background-color: var(--dark-surface-light);
+      border: 1px solid var(--dark-border);
+      color: var(--dark-text);
+    }
+
     .auth-btn:hover {
       background-color: var(--light-gray);
       transform: translateY(-3px);
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode .auth-btn:hover {
+      background-color: var(--dark-surface);
     }
 
     .auth-btn img {
@@ -994,6 +1231,11 @@
       overflow-y: auto;
     }
 
+    .dark-mode .about-content {
+      background-color: var(--dark-surface);
+      color: var(--dark-text);
+    }
+
     .about-close {
       position: absolute;
       top: 20px;
@@ -1025,6 +1267,10 @@
       border-bottom: 1px solid var(--medium-gray);
     }
 
+    .dark-mode .about-header {
+      border-bottom: 1px solid var(--dark-border);
+    }
+
     .about-title {
       font-family: 'Poppins', sans-serif;
       font-size: 28px;
@@ -1048,6 +1294,10 @@
       margin-bottom: 28px;
       padding-bottom: 20px;
       border-bottom: 1px dashed var(--medium-gray);
+    }
+
+    .dark-mode .about-section {
+      border-bottom: 1px dashed var(--dark-border);
     }
 
     .about-section:last-child {
@@ -1170,6 +1420,11 @@
       transition: var(--transition);
     }
 
+    .dark-mode .stat-item {
+      background-color: rgba(45, 45, 45, 0.7);
+      border: 1px solid var(--dark-border);
+    }
+
     .stat-item:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
@@ -1278,6 +1533,11 @@
       border: 1px solid rgba(224, 224, 224, 0.7);
     }
 
+    .dark-mode .language-selector {
+      background-color: rgba(45, 45, 45, 0.8);
+      border: 1px solid var(--dark-border);
+    }
+
     .language-selector:hover {
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
       transform: translateY(-2px);
@@ -1311,6 +1571,11 @@
       animation: fadeInUp 0.3s ease-out forwards;
     }
 
+    .dark-mode .language-dropdown {
+      background-color: rgba(45, 45, 45, 0.9);
+      border: 1px solid var(--dark-border);
+    }
+
     .language-option {
       padding: 8px 16px;
       font-family: 'Source Sans Pro', sans-serif;
@@ -1323,6 +1588,10 @@
 
     .language-option:hover {
       background-color: rgba(248, 249, 250, 0.7);
+    }
+
+    .dark-mode .language-option:hover {
+      background-color: rgba(60, 60, 60, 0.7);
     }
 
     .language-option.active {
@@ -1514,19 +1783,23 @@
         max-width: 90%;
       }
       
-      .about-btn {
+      .about-btn, .dark-mode-toggle {
         padding: 8px;
         right: 10px;
         border-radius: 50%;
         width: 40px;
         height: 40px;
       }
+      
+      .dark-mode .about-btn, .dark-mode .dark-mode-toggle {
+        background: rgba(45, 45, 45, 0.8);
+      }
 
-      .about-btn i {
+      .about-btn i, .dark-mode-toggle i {
         margin-right: 0;
       }
 
-      .about-btn span {
+      .about-btn span, .dark-mode-toggle span {
         display: none;
       }
       
@@ -1541,6 +1814,26 @@
       
       .input-container.with-messages {
         margin-bottom: 50px; /* Reduced for mobile */
+      }
+      
+      .version-badge {
+        right: 110px;
+      }
+      
+      /* Adjust rich text editor for mobile */
+      .editor-toolbar {
+        flex-wrap: wrap;
+        gap: 2px;
+        padding: 8px;
+      }
+      
+      .toolbar-btn {
+        padding: 4px 6px;
+        font-size: 12px;
+      }
+      
+      .terminal-header {
+        padding: 6px 10px;
       }
     }
 
@@ -1565,10 +1858,14 @@
         bottom: 80px;
         right: 10px;
       }
-
-      .chat-action-btn {
-        width: 45px;
-        height: 45px;
+      
+      .rich-text-editor, .terminal {
+        margin-top: 8px;
+      }
+      
+      .editor-content, .terminal-content {
+        padding: 10px;
+        min-height: 120px;
       }
     }
 
@@ -1655,6 +1952,21 @@
     .copy-tooltip.show {
       opacity: 1;
     }
+    
+    /* Cursor animation for terminal */
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background-color: var(--terminal-prompt);
+      margin-left: 2px;
+      animation: cursor-blink 1s infinite;
+    }
+    
+    @keyframes cursor-blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -1715,6 +2027,12 @@
     <button class="about-btn" id="aboutBtn">
       <i class="fas fa-info-circle"></i> <span>About</span>
     </button>
+    
+    <!-- Dark mode toggle button -->
+    <button class="dark-mode-toggle" id="darkModeToggle">
+      <i class="fas fa-moon"></i> <span>Dark Mode</span>
+    </button>
+    
     <div class="version-badge">v1.6.0</div>
 
     <div class="chat-container" id="chatContainer">
@@ -1778,7 +2096,6 @@
         <h1 class="welcome-title animate-fade-in-up" id="welcomeTitle">
             <span class="typing-text" id="greetingText"></span>
           </h1>
-          <p class="welcome-subtitle">The Official Publication Page of University of Cebu Lapu-Lapu and Mandaue</p>
       </div>
 
       <!-- Messages will be displayed here -->
@@ -1791,16 +2108,6 @@
         <p class="empty-state-text">Select a conversation from the sidebar or start a new chat to begin.</p>
         <button class="empty-state-btn" id="emptyStateNewChatBtn">
           <i class="fas fa-plus"></i> Start New Chat
-        </button>
-      </div>
-      
-      <!-- Chat actions -->
-      <div class="chat-actions" id="chatActions" style="display: none;">
-        <button class="chat-action-btn" id="scrollToBottomBtn" title="Scroll to Bottom">
-          <i class="fas fa-arrow-down"></i>
-        </button>
-        <button class="reset-btn" id="refreshChatBtn" title="Reset Chat">
-          <i class="fas fa-sync-alt"></i>
         </button>
       </div>
     </div>
@@ -2004,10 +2311,7 @@
     const languageSelector = document.getElementById('languageSelector');
     const languageDropdown = document.getElementById('languageDropdown');
     const languageOptions = document.querySelectorAll('.language-option');
-    const chatActions = document.getElementById('chatActions');
-    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
-    const refreshChatBtn = document.getElementById('refreshChatBtn');
-    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    const darkModeToggle = document.getElementById('darkModeToggle');
     const inputContainer = document.getElementById('inputContainer');
 
     // Variables for controlling response generation
@@ -2015,6 +2319,7 @@
     let shouldStopResponse = false;
     let currentTypingInterval = null;
     let sidebarVisible = false;
+    let isDarkMode = false;
 
     // Multilingual greetings
     const greetings = [
@@ -2038,6 +2343,38 @@
     let chatMessages = [];
     let currentGreetingIndex = Math.floor(Math.random() * greetings.length);
     let conversations = {};
+
+    // Dark mode toggle
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      isDarkMode = document.body.classList.contains('dark-mode');
+      
+      // Update icon and text
+      const icon = darkModeToggle.querySelector('i');
+      const text = darkModeToggle.querySelector('span');
+      
+      if (isDarkMode) {
+        icon.className = 'fas fa-sun';
+        text.textContent = 'Light Mode';
+      } else {
+        icon.className = 'fas fa-moon';
+        text.textContent = 'Dark Mode';
+      }
+      
+      // Save preference to localStorage
+      localStorage.setItem('darkMode', isDarkMode);
+    });
+    
+    // Check for saved dark mode preference
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+      document.body.classList.add('dark-mode');
+      isDarkMode = true;
+      const icon = darkModeToggle.querySelector('i');
+      const text = darkModeToggle.querySelector('span');
+      icon.className = 'fas fa-sun';
+      text.textContent = 'Light Mode';
+    }
 
     // Display greeting with typing animation
     function displayGreeting() {
@@ -2406,14 +2743,11 @@
       }
       
       // Update UI
-        {
-        console.error("Chat not found:", chatId);
-        return;
-      }
-      
-      // Update UI
       currentChatId = chatId;
       chatMessages = [...conversations[chatId].messages];
+      
+      // Update page title with chat title
+      document.title = conversations[chatId].title;
       
       // Mark the active chat in sidebar
       document.querySelectorAll('.chat-item').forEach(item => {
@@ -2427,7 +2761,6 @@
       welcomeScreen.style.display = 'none';
       emptyState.style.display = 'none';
       messageContainer.style.display = 'flex';
-      chatActions.style.display = 'flex';
       
       // Update input container class for positioning
       inputContainer.classList.add('with-messages');
@@ -2468,8 +2801,8 @@
           messageContainer.style.display = 'none';
           welcomeScreen.style.display = 'none';
           emptyState.style.display = 'flex';
-          chatActions.style.display = 'none';
           inputContainer.classList.remove('with-messages');
+          document.title = "CoralVIA"; // Reset title
         }
       }
     }
@@ -2484,8 +2817,8 @@
         messageContainer.style.display = 'none';
         welcomeScreen.style.display = 'flex';
         emptyState.style.display = 'none';
-        chatActions.style.display = 'none';
         inputContainer.classList.remove('with-messages');
+        document.title = "CoralVIA"; // Reset title
       }
     });
 
@@ -2501,20 +2834,50 @@
       messageContainer.style.display = 'none';
       emptyState.style.display = 'none';
       welcomeScreen.style.display = 'flex';
-      chatActions.style.display = 'none';
       inputContainer.classList.remove('with-messages');
+      document.title = "CoralVIA"; // Reset title
     }
 
-    // Chat action buttons
-    scrollToBottomBtn.addEventListener('click', () => {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    });
-
-    refreshChatBtn.addEventListener('click', () => {
-      if (currentChatId) {
-        loadChat(currentChatId);
+    // Helper function to detect content type
+    function detectContentType(text) {
+      // Check for essay, grammar, plagiarism related content
+      const essayKeywords = [
+        'essay', 'grammar', 'plagiarism', 'writing', 'proofread', 'edit', 
+        'thesis', 'dissertation', 'paper', 'academic', 'research', 'literature',
+        'review', 'summary', 'analyze', 'critique', 'paragraph', 'composition'
+      ];
+      
+      // Check for code/programming related content
+      const codeKeywords = [
+        'code', 'program', 'function', 'variable', 'class', 'method', 
+        'algorithm', 'javascript', 'python', 'java', 'c++', 'html', 
+        'css', 'sql', 'database', 'api', 'framework', 'library', 
+        'debugging', 'compiler', 'syntax', 'programming'
+      ];
+      
+      const lowerText = text.toLowerCase();
+      
+      // Check if any essay keywords are in the text
+      const isEssayRelated = essayKeywords.some(keyword => 
+        lowerText.includes(keyword)
+      );
+      
+      // Check if any code keywords are in the text
+      const isCodeRelated = codeKeywords.some(keyword => 
+        lowerText.includes(keyword)
+      );
+      
+      // Also check for code patterns like brackets, indentation, etc.
+      const hasCodePatterns = /\{\s*\n|\s{2,}if\s*\(|\s{2,}for\s*\(|function\s+\w+\s*\(|class\s+\w+|import\s+|from\s+\w+\s+import|console\.log|print\(/.test(text);
+      
+      if (isCodeRelated || hasCodePatterns) {
+        return 'code';
+      } else if (isEssayRelated) {
+        return 'essay';
+      } else {
+        return 'normal';
       }
-    });
+    }
 
     // Send message function
     async function sendMessage() {
@@ -2572,9 +2935,21 @@
         
         // Only proceed if response wasn't stopped
         if (!shouldStopResponse) {
-          // Implement typing animation for AI response
+          // Get response text
           const responseText = data.text || "Sorry, I couldn't generate a response.";
-          typeText(botMessageElement, responseText);
+          
+          // Detect content type to determine display format
+          const contentType = detectContentType(userText + " " + responseText);
+          
+          // Create appropriate interface based on content type
+          if (contentType === 'essay') {
+            createRichTextEditor(botMessageElement, responseText);
+          } else if (contentType === 'code') {
+            createTerminal(botMessageElement, responseText);
+          } else {
+            // Regular typing animation for normal content
+            typeText(botMessageElement, responseText);
+          }
           
           // Save message to chat history
           chatMessages.push(
@@ -2594,6 +2969,9 @@
               messages: [...chatMessages]
             };
             
+            // Update page title with initial prompt
+            document.title = chatTitle;
+            
             // Add to sidebar and mark as active
             addChatToHistory(chatTitle, Date.now(), currentChatId);
             document.querySelectorAll('.chat-item').forEach(item => {
@@ -2610,9 +2988,6 @@
           // If response was stopped, add a note
           botMessageElement.textContent = "Response stopped.";
         }
-        
-        // Show chat actions
-        chatActions.style.display = 'flex';
       } catch (err) {
         console.error("API Error:", err);
         botMessageElement.removeChild(typingIndicator);
@@ -2628,6 +3003,179 @@
       
       // Scroll to bottom
       chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Create rich text editor for essay/grammar content
+    function createRichTextEditor(element, text) {
+      const editorContainer = document.createElement('div');
+      editorContainer.className = 'rich-text-editor';
+      
+      // Create toolbar
+      const toolbar = document.createElement('div');
+      toolbar.className = 'editor-toolbar';
+      toolbar.innerHTML = `
+        <button class="toolbar-btn" title="Bold"><i class="fas fa-bold"></i></button>
+        <button class="toolbar-btn" title="Italic"><i class="fas fa-italic"></i></button>
+        <button class="toolbar-btn" title="Underline"><i class="fas fa-underline"></i></button>
+        <div class="toolbar-separator"></div>
+        <button class="toolbar-btn" title="Heading 1"><i class="fas fa-heading"></i>1</button>
+        <button class="toolbar-btn" title="Heading 2"><i class="fas fa-heading"></i>2</button>
+        <button class="toolbar-btn" title="Heading 3"><i class="fas fa-heading"></i>3</button>
+        <div class="toolbar-separator"></div>
+        <button class="toolbar-btn" title="Bulleted List"><i class="fas fa-list-ul"></i></button>
+        <button class="toolbar-btn" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+        <div class="toolbar-separator"></div>
+        <button class="toolbar-btn" title="Quote"><i class="fas fa-quote-right"></i></button>
+        <button class="toolbar-btn" title="Code"><i class="fas fa-code"></i></button>
+        <div class="toolbar-separator"></div>
+        <button class="toolbar-btn" title="Copy All"><i class="fas fa-copy"></i></button>
+        <button class="toolbar-btn" title="Download as Text"><i class="fas fa-download"></i></button>
+      `;
+      
+      // Create content area
+      const content = document.createElement('div');
+      content.className = 'editor-content';
+      content.textContent = text;
+      
+      // Create status bar
+      const statusBar = document.createElement('div');
+      statusBar.className = 'editor-statusbar';
+      statusBar.innerHTML = `
+        <div>Essay/Writing Content</div>
+        <div>${text.split(/\s+/).length} words</div>
+      `;
+      
+      // Assemble editor
+      editorContainer.appendChild(toolbar);
+      editorContainer.appendChild(content);
+      editorContainer.appendChild(statusBar);
+      element.appendChild(editorContainer);
+      
+      // Add functionality to toolbar buttons
+      const copyBtn = toolbar.querySelector('.toolbar-btn[title="Copy All"]');
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(text);
+        
+        // Show copied tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'copy-tooltip show';
+        tooltip.textContent = 'Copied!';
+        copyBtn.appendChild(tooltip);
+        
+        setTimeout(() => {
+          tooltip.classList.remove('show');
+          setTimeout(() => tooltip.remove(), 300);
+        }, 2000);
+      });
+      
+      // Add download functionality
+      const downloadBtn = toolbar.querySelector('.toolbar-btn[title="Download as Text"]');
+      downloadBtn.addEventListener('click', () => {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'essay-content.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+      
+      // Add styling functionality to other buttons
+      const styleButtons = toolbar.querySelectorAll('.toolbar-btn:not([title="Copy All"]):not([title="Download as Text"])');
+      styleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('active');
+          // In a real implementation, this would apply the style to selected text
+        });
+      });
+    }
+    
+    // Create terminal for code content
+    function createTerminal(element, text) {
+      const terminalContainer = document.createElement('div');
+      terminalContainer.className = 'terminal';
+      
+      // Create terminal header
+      const header = document.createElement('div');
+      header.className = 'terminal-header';
+      header.innerHTML = `
+        <div class="terminal-title">Terminal</div>
+        <div class="terminal-actions">
+          <button class="terminal-action" title="Copy Code"><i class="fas fa-copy"></i></button>
+          <button class="terminal-action" title="Download"><i class="fas fa-download"></i></button>
+        </div>
+      `;
+      
+      // Create terminal content
+      const content = document.createElement('div');
+      content.className = 'terminal-content';
+      
+      // Format code with prompt
+      const lines = text.split('\n');
+      
+      // Add initial prompt line
+      const promptLine = document.createElement('div');
+      promptLine.className = 'terminal-line';
+      promptLine.innerHTML = `
+        <span class="terminal-prompt">$</span>
+        <span class="terminal-output">echo "Code Output:"</span>
+      `;
+      content.appendChild(promptLine);
+      
+      // Add code output
+      lines.forEach(line => {
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'terminal-line';
+        lineDiv.innerHTML = `<span class="terminal-output">${line || ' '}</span>`;
+        content.appendChild(lineDiv);
+      });
+      
+      // Add blinking cursor at the end
+      const cursorLine = document.createElement('div');
+      cursorLine.className = 'terminal-line';
+      cursorLine.innerHTML = `
+        <span class="terminal-prompt">$</span>
+        <span class="terminal-cursor"></span>
+      `;
+      content.appendChild(cursorLine);
+      
+      // Assemble terminal
+      terminalContainer.appendChild(header);
+      terminalContainer.appendChild(content);
+      element.appendChild(terminalContainer);
+      
+      // Add copy functionality
+      const copyBtn = header.querySelector('.terminal-action[title="Copy Code"]');
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(text);
+        
+        // Show copied tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'copy-tooltip show';
+        tooltip.textContent = 'Copied!';
+        copyBtn.appendChild(tooltip);
+        
+        setTimeout(() => {
+          tooltip.classList.remove('show');
+          setTimeout(() => tooltip.remove(), 300);
+        }, 2000);
+      });
+      
+      // Add download functionality
+      const downloadBtn = header.querySelector('.terminal-action[title="Download"]');
+      downloadBtn.addEventListener('click', () => {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'code-snippet.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
     }
     
     // Function to animate text typing for AI responses
@@ -2680,7 +3228,23 @@
       messageElement.appendChild(messageActions);
       
       copyButton.addEventListener('click', () => {
-        const textContent = messageElement.querySelector('.message-text').textContent;
+        // Check if message has a rich text editor or terminal
+        const richTextEditor = messageElement.querySelector('.rich-text-editor');
+        const terminal = messageElement.querySelector('.terminal');
+        let textContent;
+        
+        if (richTextEditor) {
+          // If it has a rich text editor, get text from editor content
+          textContent = richTextEditor.querySelector('.editor-content').textContent;
+        } else if (terminal) {
+          // If it has a terminal, get text from terminal content (excluding prompts)
+          const outputs = terminal.querySelectorAll('.terminal-output');
+          textContent = Array.from(outputs).map(output => output.textContent).join('\n');
+        } else {
+          // Otherwise get from message text
+          textContent = messageElement.querySelector('.message-text').textContent;
+        }
+        
         navigator.clipboard.writeText(textContent).then(() => {
           tooltip.classList.add('show');
           setTimeout(() => {
@@ -2709,7 +3273,6 @@
       inputContainer.classList.add('with-messages');
       
       messageContainer.innerHTML = '';
-      chatActions.style.display = 'none';
       
       if (window.innerWidth <= 768) {
         sidebar.classList.remove('active');
