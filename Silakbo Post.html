@@ -3199,6 +3199,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+     // Handle form submission
+    document.getElementById('postForm').addEventListener('submit', handleFormSubmit);
+    
     // Load AI conversation from localStorage
     loadAIConversation();
     
@@ -4076,6 +4079,84 @@ document.querySelectorAll('.alert-close').forEach(button => {
 if (localStorage.getItem('darkMode') === 'true') {
     toggleDarkMode();
 }
+
+// Handle form submission
+async function handleFormSubmit(e) {
+    e.preventDefault();
+
+    // Show spinner
+    const submitSpinner = document.getElementById('submitSpinner');
+    const saveBtn = document.getElementById('saveBtn');
+    const publishBtn = document.getElementById('publishBtn');
+    submitSpinner.style.display = 'inline-block';
+    saveBtn.disabled = true;
+    publishBtn.disabled = true;
+
+    try {
+        const category = document.getElementById('category').value;
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const role = document.getElementById('additionalField').value;
+
+        // Get content based on category
+        let content = '';
+        let partOfSpeech = '';
+        let meaning = '';
+        let example = '';
+
+        if (category === 'silak') {
+            partOfSpeech = document.querySelector('input[name="partOfSpeech"]:checked').value;
+            meaning = document.getElementById('meaning').value;
+            example = document.getElementById('example').value;
+
+            // For silak-salitaan, store the data in a structured format
+            content = JSON.stringify({
+                partOfSpeech,
+                meaning,
+                example
+            });
+        } else {
+            content = tinymce.get('content').getContent();
+        }
+
+        const { data, error } = await supabase
+            .from("posts")
+            .insert([{
+                category,
+                title,
+                author,
+                role,
+                content
+            }]);
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        // Show success message
+        showAlert('success', 'Post saved successfully!');
+
+        // Reset form
+        document.getElementById('postForm').reset();
+        tinymce.get('content').setContent('');
+        selectedImage = null;
+        document.getElementById('silakFields').classList.remove('active');
+        document.getElementById('contentContainer').style.display = 'block';
+        updateWordCount('');
+        updateCharacterCount('');
+
+        // Refresh posts if on manage tab
+        if (document.getElementById('manageTab').classList.contains('active')) {
+            loadPosts(currentCategoryFilter);
+        }
+    } catch (error) {
+        console.error("Error saving post:", error);
+        showAlert('error', error.message || 'Error saving post. Please try again.');
+    } finally {
+        // Hide spinner
+    }
+}
     </script>
 </body>
 </html>
+    
