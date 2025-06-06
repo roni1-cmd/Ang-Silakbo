@@ -117,7 +117,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1001;
+  z-index: 1002;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
@@ -216,7 +216,7 @@ body {
   background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(15px);
   transition: right 0.4s ease;
-  z-index: 999;
+  z-index: 1001;
   padding: 6rem 2rem 2rem;
   overflow-y: auto;
   border-left: 1px solid rgba(255, 255, 255, 0.1);
@@ -270,6 +270,8 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
+  z-index: 1002;
 }
 
 .dropdown-menu a:hover {
@@ -396,7 +398,7 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
-  z-index: 998;
+  z-index: 1000;
 }
 
 .menu-overlay.active {
@@ -905,14 +907,28 @@ body {
     // Toggle videos every 10 seconds
     setInterval(toggleVideos, 10000);
 
-    // Prevent all scrolling on mobile
+    // Improved touch event handling - allow clicks in dropdown menu
     document.addEventListener('touchmove', function(e) {
-      if (!dropdownMenu.contains(e.target)) {
+      // Only prevent scrolling if menu is closed AND touch is not in dropdown area
+      if (!dropdownMenu.classList.contains('active') && !dropdownMenu.contains(e.target)) {
         e.preventDefault();
       }
     }, { passive: false });
 
-    // Prevent wheel scrolling
+    // Allow clicks and touches within dropdown menu
+    dropdownMenu.addEventListener('touchstart', function(e) {
+      e.stopPropagation();
+    }, { passive: true });
+
+    dropdownMenu.addEventListener('touchend', function(e) {
+      e.stopPropagation();
+    }, { passive: true });
+
+    dropdownMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    // Prevent wheel scrolling only when menu is closed
     document.addEventListener('wheel', function(e) {
       if (window.innerWidth <= 768 && !dropdownMenu.classList.contains('active')) {
         e.preventDefault();
@@ -933,7 +949,7 @@ body {
       console.log('ANG SILAKBO website loaded successfully');
     });
 
-    // Enforce strict layout on mobile
+    // Enforce strict layout on mobile (modified to not interfere with dropdown)
     function enforceLayout() {
       if (window.innerWidth <= 768) {
         const pageContainer = document.querySelector('.page-container');
@@ -941,7 +957,7 @@ body {
         const mainContent = document.querySelector('.main-content');
         const footer = document.querySelector('.footer');
         
-        // Force exact heights
+        // Force exact heights but don't use fixed positioning
         pageContainer.style.height = '100vh';
         pageContainer.style.maxHeight = '100vh';
         pageContainer.style.overflow = 'hidden';
@@ -959,11 +975,9 @@ body {
         // Prevent any scrolling
         document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
-        pageContainer.style.position = 'fixed';
-        pageContainer.style.top = '0';
-        pageContainer.style.left = '0';
-        pageContainer.style.right = '0';
-        pageContainer.style.bottom = '0';
+        
+        // Don't use fixed positioning as it interferes with dropdown
+        pageContainer.style.position = 'relative';
       }
     }
 
@@ -980,17 +994,83 @@ body {
 
     // Prevent context menu on mobile to avoid scrolling issues
     document.addEventListener('contextmenu', function(e) {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 768 && !dropdownMenu.contains(e.target)) {
         e.preventDefault();
       }
     });
 
-    // Additional scroll prevention
+    // Additional scroll prevention (but allow dropdown interaction)
     window.addEventListener('scroll', function(e) {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 768 && !dropdownMenu.classList.contains('active')) {
         window.scrollTo(0, 0);
       }
     });
+
+    // Add click event listeners to navigation items for better mobile support
+    document.addEventListener('DOMContentLoaded', function() {
+      const navLinks = dropdownMenu.querySelectorAll('a');
+      
+      // Add close button to dropdown menu
+      const closeButton = document.createElement('div');
+      closeButton.className = 'close-button';
+      closeButton.innerHTML = '<span class="material-icons">close</span>';
+      closeButton.style.cssText = `
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(15px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 50%;
+          transition: all 0.3s ease;
+          color: white;
+      `;
+
+      closeButton.addEventListener('mouseover', function() {
+          this.style.background = 'rgba(230, 81, 0, 0.2)';
+          this.style.borderColor = 'rgba(230, 81, 0, 0.4)';
+          this.style.transform = 'scale(1.1)';
+      });
+
+      closeButton.addEventListener('mouseout', function() {
+          this.style.background = 'rgba(255, 255, 255, 0.1)';
+          this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+          this.style.transform = 'scale(1)';
+      });
+
+      closeButton.addEventListener('click', closeMenu);
+      dropdownMenu.appendChild(closeButton);
+
+      // Add event listeners to navigation links
+      navLinks.forEach(link => {
+          // Add touch-friendly click handling
+          link.addEventListener('touchend', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              // Get the onclick attribute and execute it
+              const onclickAttr = this.getAttribute('onclick');
+              if (onclickAttr) {
+                  // Extract the function call and execute it
+                  const match = onclickAttr.match(/navigateTo'([^']+)'$/);
+                  if (match) {
+                      navigateTo(match[1]);
+                  }
+              }
+          });
+          
+      // Also handle regular clicks
+          link.addEventListener('click', function(e) {
+              e.stopPropagation();
+          });
+      });
+    }); // Close DOMContentLoaded event listener
   </script>
 </body>
 </html>
