@@ -1049,26 +1049,21 @@ body {
 
       // Add event listeners to navigation links
       navLinks.forEach(link => {
-          // Add touch-friendly click handling
-          link.addEventListener('touchend', function(e) {
+          // Remove onclick attributes and handle clicks directly
+          const section = link.getAttribute('onclick')?.match(/navigateTo\('([^']+)'\)/)?.[1];
+          link.removeAttribute('onclick');
+          
+          // Handle both touch and click events
+          const handleNavigation = function(e) {
               e.preventDefault();
               e.stopPropagation();
-              
-              // Get the onclick attribute and execute it
-              const onclickAttr = this.getAttribute('onclick');
-              if (onclickAttr) {
-                  // Extract the function call and execute it
-                  const match = onclickAttr.match(/navigateTo'([^']+)'$/);
-                  if (match) {
-                      navigateTo(match[1]);
-                  }
+              if (section) {
+                  navigateTo(section);
               }
-          });
-          
-      // Also handle regular clicks
-          link.addEventListener('click', function(e) {
-              e.stopPropagation();
-          });
+          };
+
+          link.addEventListener('touchend', handleNavigation);
+          link.addEventListener('click', handleNavigation);
       });
     }); // Close DOMContentLoaded event listener
   </script>
