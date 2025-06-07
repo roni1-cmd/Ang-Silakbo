@@ -45,7 +45,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.9;
+  opacity: 1;
   transition: opacity 1s ease-in-out;
 }
 
@@ -63,7 +63,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   z-index: -1;
 }
 
@@ -111,8 +111,6 @@ body {
 }
 
 .menu-toggle {
-  width: 50px;
-  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,11 +118,13 @@ body {
   z-index: 1002;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
 }
 
 .menu-toggle::before {
@@ -143,68 +143,28 @@ body {
 }
 
 .menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
   transform: scale(1.05);
   box-shadow: 0 8px 25px rgba(230, 81, 0, 0.3);
 }
 
-.menu-icon {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.menu-icon span {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background: white;
-  border-radius: 2px;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform-origin: center;
-}
-
-.menu-icon span:nth-child(1) {
-  top: 3px;
-  left: 0;
-}
-
-.menu-icon span:nth-child(2) {
-  top: 11px;
-  left: 0;
-}
-
-.menu-icon span:nth-child(3) {
-  top: 19px;
-  left: 0;
-}
-
-.menu-toggle.active .menu-icon {
-  transform: rotate(180deg);
-}
-
-.menu-toggle.active .menu-icon span:nth-child(1) {
-  top: 11px;
-  transform: rotate(45deg);
-  background: #e65100;
-}
-
-.menu-toggle.active .menu-icon span:nth-child(2) {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.menu-toggle.active .menu-icon span:nth-child(3) {
-  top: 11px;
-  transform: rotate(-45deg);
-  background: #e65100;
+.menu-toggle-text {
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .menu-toggle.active {
   background: rgba(230, 81, 0, 0.2);
   border-color: rgba(230, 81, 0, 0.4);
-  transform: scale(1.1) rotate(90deg);
+  transform: scale(1.05);
+}
+
+.menu-toggle.active .material-icons,
+.menu-toggle.active .menu-toggle-text {
+  color: #e65100;
 }
 
 .dropdown-menu {
@@ -352,6 +312,26 @@ body {
   z-index: 1;
 }
 
+/* Desktop footer layout */
+@media (min-width: 769px) {
+  .footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+  }
+  
+  .footer-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .footer-right {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .social-icons {
   display: flex;
   gap: 1rem;
@@ -454,8 +434,11 @@ body {
   }
 
   .menu-toggle {
-    width: 40px;
-    height: 40px;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .menu-toggle-text {
+    font-size: 0.8rem;
   }
 
   .dropdown-menu {
@@ -562,8 +545,11 @@ body {
   }
 
   .menu-toggle {
-    width: 36px;
-    height: 36px;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .menu-toggle-text {
+    font-size: 0.75rem;
   }
 
   .social-icon {
@@ -698,6 +684,23 @@ body {
     font-size: 0.6rem;
   }
 }
+
+/* Pulse animation for menu button */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 81, 0, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(230, 81, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 81, 0, 0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
   </style>
 </head>
 <body>
@@ -727,20 +730,20 @@ body {
     <!-- Dropdown Menu -->
     <nav class="dropdown-menu" id="dropdownMenu">
       <ul>
-        <li><a onclick="navigateTo('about')"><span class="material-icons">info</span>ABOUT US</a></li>
-        <li><a onclick="navigateTo('concepts')"><span class="material-icons">lightbulb</span>CONCEPTS</a></li>
-        <li><a onclick="navigateTo('roles')"><span class="material-icons">group</span>ROLES AND DUTIES</a></li>
-        <li><a onclick="navigateTo('journalist\'s Guidebook')"><span class="material-icons">book</span>JOURNALIST'S GUIDEBOOK</a></li>
-        <li><a onclick="navigateTo('ai-tools')"><span class="material-icons">smart_toy</span>DEFINITIVE TOOLS</a></li>
-        <li><a onclick="navigateTo('forums')"><span class="material-icons">forum</span>FORUMS</a></li>
-        <li><a onclick="navigateTo('policies')"><span class="material-icons">policy</span>POLICIES CENTER</a></li>
-        <li><a onclick="navigateTo('news')"><span class="material-icons">article</span>NEWS AND ARTICLES</a></li>
-        <li><a onclick="navigateTo('connect')"><span class="material-icons">connect_without_contact</span>CONNECT WITH US</a></li>
-        <li><a onclick="navigateTo('submit')"><span class="material-icons">upload</span>SUBMIT YOUR WORK</a></li>
-        <li><a onclick="navigateTo('join')"><span class="material-icons">person_add</span>JOIN ANG SILAKBO</a></li>
-        <li><a onclick="navigateTo('developer-notes')"><span class="material-icons">code</span>DEVELOPER'S NOTES</a></li>
-        <li><a onclick="navigateTo('sitemap')"><span class="material-icons">map</span>SITEMAP</a></li>
-        <li><a onclick="navigateTo('report')"><span class="material-icons">report</span>REPORT AN ISSUE</a></li>
+        <li><a data-section="about"><span class="material-icons">info</span>ABOUT US</a></li>
+        <li><a data-section="concepts"><span class="material-icons">lightbulb</span>CONCEPTS</a></li>
+        <li><a data-section="roles"><span class="material-icons">group</span>ROLES AND DUTIES</a></li>
+        <li><a data-section="journalists-guidebook"><span class="material-icons">book</span>JOURNALIST'S GUIDEBOOK</a></li>
+        <li><a data-section="ai-tools"><span class="material-icons">smart_toy</span>DEFINITIVE TOOLS</a></li>
+        <li><a data-section="forums"><span class="material-icons">forum</span>FORUMS</a></li>
+        <li><a data-section="policies"><span class="material-icons">policy</span>POLICIES CENTER</a></li>
+        <li><a data-section="news"><span class="material-icons">article</span>NEWS AND ARTICLES</a></li>
+        <li><a data-section="connect"><span class="material-icons">connect_without_contact</span>CONNECT WITH US</a></li>
+        <li><a data-section="submit"><span class="material-icons">upload</span>SUBMIT YOUR WORK</a></li>
+        <li><a data-section="join"><span class="material-icons">person_add</span>JOIN ANG SILAKBO</a></li>
+        <li><a data-section="developer-notes"><span class="material-icons">code</span>DEVELOPER'S NOTES</a></li>
+        <li><a data-section="sitemap"><span class="material-icons">map</span>SITEMAP</a></li>
+        <li><a data-section="report"><span class="material-icons">report</span>REPORT AN ISSUE</a></li>
       </ul>
     </nav>
 
@@ -750,12 +753,9 @@ body {
         <img src="SILAKBO (1).png" alt="Logo" class="logo-image">
         <div class="logo">ANG SILAKBO</div>
       </div>
-      <div class="menu-toggle" id="menuToggle">
-        <div class="menu-icon">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+      <div class="menu-toggle pulse" id="menuToggle">
+        <span class="material-icons">menu</span>
+        <span class="menu-toggle-text">Menu</span>
       </div>
     </header>
 
@@ -769,38 +769,40 @@ body {
     </main>
 
     <footer class="footer">
-      <div class="social-icons">
-        <!-- Facebook -->
-        <svg class="social-icon" onclick="openSocialLink('facebook')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-        </svg>
-        
-        <!-- GitHub -->
-        <svg class="social-icon" onclick="openSocialLink('github')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-          <path d="M9 18c-4.51 2-5-2-7-2"></path>
-        </svg>
-        
-        <!-- Issuu -->
-       <svg class="social-icon" onclick="openSocialLink('issuu')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-  <!-- Outer circle -->
-  <circle cx="12" cy="12" r="11" fill="#e55a4e"/>
-  
-  <!-- Middle white ring -->
-  <circle cx="12" cy="12" r="7.5" fill="white"/>
-  
-  <!-- Inner circle -->
-  <circle cx="12" cy="12" r="4" fill="#e55a4e"/>
-  
-  <!-- Center white circle -->
-  <circle cx="12" cy="12" r="2" fill="white"/>
-</svg>
-        
-        <!-- Instagram -->
+      <div class="footer-left">
+        <div class="social-icons">
+          <!-- Facebook -->
+          <svg class="social-icon" onclick="openSocialLink('facebook')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+          </svg>
+          
+          <!-- GitHub -->
+          <svg class="social-icon" onclick="openSocialLink('github')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+            <path d="M9 18c-4.51 2-5-2-7-2"></path>
+          </svg>
+          
+          <!-- Issuu -->
+         <svg class="social-icon" onclick="openSocialLink('issuu')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <!-- Outer circle -->
+            <circle cx="12" cy="12" r="11" fill="#e55a4e"/>
+            
+            <!-- Middle white ring -->
+            <circle cx="12" cy="12" r="7.5" fill="white"/>
+            
+            <!-- Inner circle -->
+            <circle cx="12" cy="12" r="4" fill="#e55a4e"/>
+            
+            <!-- Center white circle -->
+            <circle cx="12" cy="12" r="2" fill="white"/>
+          </svg>
+        </div>
       </div>
       
-      <div class="copyright">
-        Copyright © <span class="brand-name">ANG SILAKBO</span> 2025 | UCLM-SHS. All rights reserved.
+      <div class="footer-right">
+        <div class="copyright">
+          Copyright © <span class="brand-name">ANG SILAKBO</span> 2025 | UCLM-SHS. All rights reserved.
+        </div>
       </div>
     </footer>
   </div>
@@ -816,10 +818,15 @@ body {
       dropdownMenu.classList.toggle('active');
       menuOverlay.classList.toggle('active');
       
-      // Prevent body scroll when menu is open
+      // Stop pulsing animation when menu is opened
       if (dropdownMenu.classList.contains('active')) {
+        menuToggle.classList.remove('pulse');
         document.body.style.overflow = 'hidden';
       } else {
+        // Restart pulsing after a delay when menu is closed
+        setTimeout(() => {
+          menuToggle.classList.add('pulse');
+        }, 1000);
         document.body.style.overflow = 'hidden'; // Keep hidden on mobile
       }
     }
@@ -828,6 +835,12 @@ body {
       menuToggle.classList.remove('active');
       dropdownMenu.classList.remove('active');
       menuOverlay.classList.remove('active');
+      
+      // Restart pulsing after a delay
+      setTimeout(() => {
+        menuToggle.classList.add('pulse');
+      }, 1000);
+      
       document.body.style.overflow = 'hidden'; // Keep hidden on mobile
     }
 
@@ -851,7 +864,7 @@ body {
         'about': '/About Us',
         'concepts': '/Concepts',
         'roles': '/Duties',
-        'journalist\'s Guidebook': '/Guides',
+        'journalists-guidebook': '/Guides',
         'ai-tools': '/Definitive Tools',
         'forums': '/Silakbo Freedom Wall',
         'policies': '/Policies Center',
@@ -890,16 +903,16 @@ body {
     const video2 = document.getElementById('video2');
     
     // Start with video1 visible with higher opacity
-    video1.style.opacity = '0.9'; // Increased opacity
+    video1.style.opacity = '1'; // Increased opacity for better visibility
     video2.style.opacity = '0';
     
     // Function to toggle between videos
     function toggleVideos() {
       if (parseFloat(video1.style.opacity) > 0) {
         video1.style.opacity = '0';
-        video2.style.opacity = '0.9'; // Increased opacity
+        video2.style.opacity = '1'; // Increased opacity for better visibility
       } else {
-        video1.style.opacity = '0.9'; // Increased opacity
+        video1.style.opacity = '1'; // Increased opacity for better visibility
         video2.style.opacity = '0';
       }
     }
@@ -946,8 +959,70 @@ body {
       // Force layout calculations
       enforceLayout();
       
+      // Setup navigation event listeners
+      setupNavigation();
+      
       console.log('ANG SILAKBO website loaded successfully');
     });
+
+    // Setup navigation with proper event handling
+    function setupNavigation() {
+      const navLinks = dropdownMenu.querySelectorAll('a[data-section]');
+      
+      // Add close button to dropdown menu
+      const closeButton = document.createElement('div');
+      closeButton.className = 'close-button';
+      closeButton.innerHTML = '<span class="material-icons">close</span>';
+      closeButton.style.cssText = `
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(15px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 50%;
+          transition: all 0.3s ease;
+          color: white;
+      `;
+
+      closeButton.addEventListener('mouseover', function() {
+          this.style.background = 'rgba(230, 81, 0, 0.2)';
+          this.style.borderColor = 'rgba(230, 81, 0, 0.4)';
+          this.style.transform = 'scale(1.1)';
+      });
+
+      closeButton.addEventListener('mouseout', function() {
+          this.style.background = 'rgba(255, 255, 255, 0.1)';
+          this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+          this.style.transform = 'scale(1)';
+      });
+
+      closeButton.addEventListener('click', closeMenu);
+      dropdownMenu.appendChild(closeButton);
+
+      // Add event listeners to navigation links
+      navLinks.forEach(link => {
+          const section = link.getAttribute('data-section');
+          
+          // Handle both touch and click events
+          const handleNavigation = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (section) {
+                  navigateTo(section);
+              }
+          };
+
+          link.addEventListener('touchend', handleNavigation);
+          link.addEventListener('click', handleNavigation);
+      });
+    }
 
     // Enforce strict layout on mobile (modified to not interfere with dropdown)
     function enforceLayout() {
@@ -1005,67 +1080,6 @@ body {
         window.scrollTo(0, 0);
       }
     });
-
-    // Add click event listeners to navigation items for better mobile support
-    document.addEventListener('DOMContentLoaded', function() {
-      const navLinks = dropdownMenu.querySelectorAll('a');
-      
-      // Add close button to dropdown menu
-      const closeButton = document.createElement('div');
-      closeButton.className = 'close-button';
-      closeButton.innerHTML = '<span class="material-icons">close</span>';
-      closeButton.style.cssText = `
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(15px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 50%;
-          transition: all 0.3s ease;
-          color: white;
-      `;
-
-      closeButton.addEventListener('mouseover', function() {
-          this.style.background = 'rgba(230, 81, 0, 0.2)';
-          this.style.borderColor = 'rgba(230, 81, 0, 0.4)';
-          this.style.transform = 'scale(1.1)';
-      });
-
-      closeButton.addEventListener('mouseout', function() {
-          this.style.background = 'rgba(255, 255, 255, 0.1)';
-          this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-          this.style.transform = 'scale(1)';
-      });
-
-      closeButton.addEventListener('click', closeMenu);
-      dropdownMenu.appendChild(closeButton);
-
-      // Add event listeners to navigation links
-      navLinks.forEach(link => {
-          // Remove onclick attributes and handle clicks directly
-          const section = link.getAttribute('onclick')?.match(/navigateTo\('([^']+)'\)/)?.[1];
-          link.removeAttribute('onclick');
-          
-          // Handle both touch and click events
-          const handleNavigation = function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              if (section) {
-                  navigateTo(section);
-              }
-          };
-
-          link.addEventListener('touchend', handleNavigation);
-          link.addEventListener('click', handleNavigation);
-      });
-    }); // Close DOMContentLoaded event listener
   </script>
 </body>
 </html>
