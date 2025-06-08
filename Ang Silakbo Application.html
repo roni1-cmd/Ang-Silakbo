@@ -2462,8 +2462,9 @@
           let currentStageIndex = -1;
           let isDisqualified = false;
           let disqualifiedStageIndex = -1;
+          let isAccepted = false;
           
-          // Determine current stage and disqualification status
+          // Fixed status determination logic
           if (application.status === 'Disqualified') {
             isDisqualified = true;
             disqualifiedStageIndex = 0; // Disqualified at screening
@@ -2473,11 +2474,22 @@
             if (parts.length > 1) {
               const stageName = parts[0].trim();
               disqualifiedStageIndex = stages.indexOf(stageName);
+              if (disqualifiedStageIndex === -1) disqualifiedStageIndex = 0;
             }
-          } else if (application.status === 'Confirmation: Congratulations') {
+          } else if (application.status === 'Confirmation: Accepted' || application.status === 'Confirmation: Congratulations') {
+            isAccepted = true;
             currentStageIndex = stages.length; // All stages completed successfully
           } else {
+            // Find the current stage index
             currentStageIndex = stages.indexOf(application.status);
+            if (currentStageIndex === -1) {
+              // Handle edge cases where status might not match exactly
+              if (application.status.includes('Screening')) currentStageIndex = 0;
+              else if (application.status.includes('Interview')) currentStageIndex = 1;
+              else if (application.status.includes('Technical')) currentStageIndex = 2;
+              else if (application.status.includes('Confirmation')) currentStageIndex = 3;
+              else currentStageIndex = 0; // Default to screening
+            }
           }
           
           let statusHtml = `
@@ -2513,6 +2525,11 @@
                 iconContent = 'block';
                 statusText = 'Cannot Proceed';
               }
+            } else if (isAccepted) {
+              // All stages completed successfully
+              iconClass = 'track-status-completed';
+              iconContent = 'check_circle';
+              statusText = 'Completed';
             } else {
               // Normal flow without disqualification
               if (index < currentStageIndex) {
@@ -2524,17 +2541,13 @@
                   iconClass = 'track-status-deciding';
                   iconContent = 'hourglass_empty';
                   statusText = 'We are still deciding';
-                } else if (application.status === 'Confirmation: Congratulations') {
-                  iconClass = 'track-status-completed';
-                  iconContent = 'celebration';
-                  statusText = 'Congratulations! You have been accepted';
                 } else {
                   iconClass = 'track-status-in-progress';
                   iconContent = 'pending';
                   statusText = 'In Progress';
                 }
               } else {
-                iconClass = 'track-status-pending';
+                iconClass = '';
                 iconContent = 'schedule';
                 statusText = 'Pending';
               }
@@ -2594,7 +2607,7 @@
           `;
 
           // Add congratulations message and reason if accepted
-          if (application.status === 'Confirmation: Congratulations') {
+          if (isAccepted) {
             statusHtml += `
               <div class="alert alert-success">
                 <span class="material-icons">celebration</span>
