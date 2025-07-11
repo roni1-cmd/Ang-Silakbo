@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Applicant's Portal</title>
+    <title>ANG SILAKBO -Applicant's Portal</title>
     <link rel="icon" href="SILAKBO (1).png">
-
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
     
@@ -1144,7 +1143,7 @@
                 </div>
             </div>
             <div class="header-actions">
-                <a href="Ang Silakbo Admin Panel.html" class="btn btn-ghost">
+                <a href="#" class="btn btn-ghost">
                     <span class="material-icons">arrow_back</span>
                     Back to Main
                 </a>
@@ -1306,7 +1305,7 @@
                 <div class="search-bar">
                     <div class="search-input-container">
                         <span class="material-icons search-icon">search</span>
-                        <input type="text" id="search-input" class="search-input" placeholder="Search by name, position, tracking ID..." onkeyup="searchApplications()">
+                        <input type="text" id="search-input" class="search-input" placeholder="Search by name, position, tracking ID, section..." onkeyup="searchApplications()">
                     </div>
                     <button class="btn btn-secondary" onclick="clearFilters()">
                         <span class="material-icons">clear</span>
@@ -1519,8 +1518,8 @@
                 
                 if (app.status.includes('Screening')) stats.screening++;
                 else if (app.status.includes('Interview')) stats.interview++;
-                else if (app.status.includes('Technical') || app.status.includes('Audition') || 
-                         app.status.includes('School Level') || app.status.includes('Division Schools')) stats.technical++;
+                else if (app.status.includes('Technical') || app.status.includes('Audition') ||
+                          app.status.includes('School Level') || app.status.includes('Division Schools')) stats.technical++;
                 else if (app.status.includes('Confirmation')) stats.confirmation++;
             });
 
@@ -1646,14 +1645,15 @@
             filteredApplications = Object.keys(applicationsData).filter(trackingId => {
                 const app = applicationsData[trackingId];
                 
-                const matchesSearch = searchTerm === '' || 
-                    app.fullName.toLowerCase().includes(searchTerm) ||
+                const matchesSearch = searchTerm === '' ||
+                     app.fullName.toLowerCase().includes(searchTerm) ||
                     app.position.toLowerCase().includes(searchTerm) ||
                     app.trackingId.toLowerCase().includes(searchTerm) ||
-                    app.subOrganization.toLowerCase().includes(searchTerm);
+                    app.subOrganization.toLowerCase().includes(searchTerm) ||
+                    (app.section && app.section.toLowerCase().includes(searchTerm));
                 
-                const matchesStatusFilter = currentFilter === 'all' || 
-                    app.status.includes(currentFilter);
+                const matchesStatusFilter = currentFilter === 'all' ||
+                     app.status.includes(currentFilter);
                 
                 const matchesTypeFilter = currentTypeFilter === 'all' ||
                     (app.applicationType || 'silakbo') === currentTypeFilter;
@@ -1786,6 +1786,10 @@
                                     ${app.position}
                                 </div>
                                 <div class="detail-item">
+                                    <span class="material-icons">class</span>
+                                    ${app.section || 'N/A'}
+                                </div>
+                                <div class="detail-item">
                                     <span class="material-icons">business</span>
                                     ${app.subOrganization}
                                 </div>
@@ -1831,6 +1835,14 @@
                     
                     <div id="details-${trackingId}" class="application-details">
                         <div class="details-grid">
+                            <div class="detail-card">
+                                <div class="detail-label">Full Name</div>
+                                <div class="detail-value">${app.fullName}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-label">Section</div>
+                                <div class="detail-value">${app.section || 'Not specified'}</div>
+                            </div>
                             <div class="detail-card">
                                 <div class="detail-label">Email Address</div>
                                 <div class="detail-value">${app.email}</div>
@@ -2027,7 +2039,7 @@
             }
 
             const headers = [
-                'Tracking ID', 'Full Name', 'Email', 'Phone', 'Position', 
+                'Tracking ID', 'Full Name', 'Section', 'Email', 'Phone', 'Position', 
                 'Sub-organization', 'Application Type', 'Status', 'Submitted At'
             ];
 
@@ -2036,6 +2048,7 @@
                 ...Object.values(applicationsData).map(app => [
                     app.trackingId,
                     `"${app.fullName}"`,
+                    `"${app.section || 'N/A'}"`,
                     app.email,
                     app.phone,
                     `"${app.position}"`,
