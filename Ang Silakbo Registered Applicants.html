@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO -Applicant's Portal</title>
+    <title>ANG SILAKBO - Applicant's Portal</title>
     <link rel="icon" href="SILAKBO (1).png">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
@@ -510,7 +510,7 @@
 
         .analytics-stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -626,15 +626,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .type-silakbo {
             background: var(--success);
-            color: var(--white);
-        }
-
-        .type-press-conference {
-            background: var(--info);
             color: var(--white);
         }
 
@@ -684,11 +676,9 @@
         /* Status colors for dropdown */
         .status-dropdown option[value*="Screening"] { background-color: #dbeafe; }
         .status-dropdown option[value*="Interview"] { background-color: #fef3c7; }
-        .status-dropdown option[value*="Technical"], 
+        .status-dropdown option[value*="Technical"],
         .status-dropdown option[value*="Audition"] { background-color: #f3e8ff; }
         .status-dropdown option[value*="Confirmation"] { background-color: #d1fae5; }
-        .status-dropdown option[value*="School Level"] { background-color: #fef3c7; }
-        .status-dropdown option[value*="Division Schools"] { background-color: #d1fae5; }
 
         .action-buttons {
             display: flex;
@@ -1136,7 +1126,7 @@
     <div class="header">
         <div class="header-container">
             <div class="brand">
-                <img src="SILAKBO (1).png" alt="Silakbo Logo">
+                <img src="SILAKBO.png" alt="Silakbo Logo">
                 <div class="brand-text">
                     <h1>ANG SILAKBO</h1>
                     <p>Admin Dashboard</p>
@@ -1193,10 +1183,6 @@
                         <div class="analytics-stat-value">42</div>
                         <div class="analytics-stat-label">This Week</div>
                     </div>
-                    <div class="analytics-stat">
-                        <div class="analytics-stat-value">18</div>
-                        <div class="analytics-stat-label">Press Conference</div>
-                    </div>
                 </div>
                 <div class="chart-container">
                     <canvas id="applicationsChart"></canvas>
@@ -1235,10 +1221,6 @@
                         <div class="stat-number" id="confirmation-count">0</div>
                         <div class="stat-label">Confirmation</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="press-conference-count">0</div>
-                        <div class="stat-label">Press Conf.</div>
-                    </div>
                 </div>
             </div>
 
@@ -1257,26 +1239,12 @@
 
             <div class="sidebar-section">
                 <div class="filter-section">
-                    <div class="filter-title">Application Type</div>
+                    <div class="filter-title">Status Filter</div>
                     <div class="filter-chips">
-                        <div class="filter-chip active" data-filter="all" onclick="filterByType('all')">
+                        <div class="filter-chip active" data-status="all" onclick="filterByStatus('all')">
                             <span class="material-icons">apps</span>
                             All Applications
                         </div>
-                        <div class="filter-chip" data-filter="silakbo" onclick="filterByType('silakbo')">
-                            <span class="material-icons">groups</span>
-                            Regular Silakbo
-                        </div>
-                        <div class="filter-chip" data-filter="press-conference" onclick="filterByType('press-conference')">
-                            <span class="material-icons">campaign</span>
-                            Press Conference
-                        </div>
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-title">Status Filter</div>
-                    <div class="filter-chips">
                         <div class="filter-chip" data-status="Screening" onclick="filterByStatus('Screening')">
                             <span class="material-icons">filter_list</span>
                             Screening
@@ -1414,7 +1382,6 @@
         let deleteTrackingId = null;
         let emailApplicantData = null;
         let currentFilter = 'all';
-        let currentTypeFilter = 'all';
         let expandedApplications = new Set();
         let applicationsChart = null;
         let emailJSInitialized = false;
@@ -1424,9 +1391,8 @@
         let currentPage = 1;
         let totalPages = 1;
 
-        // Stage definitions
+        // Stage definitions - simplified for regular Silakbo only
         const regularStages = ['Screening', 'Interview', 'Technical/Auditions', 'Confirmation'];
-        const pressConferenceStages = ['Screening', 'School Level Press Conference', 'Division Schools Press Conference', 'Interview', 'Confirmation'];
         const auditionPositions = ['Layout Artist', 'Video Editor', 'Videographer'];
 
         // Initialize EmailJS
@@ -1436,7 +1402,7 @@
                     console.warn('EmailJS not loaded yet, will retry...');
                     return false;
                 }
-                emailjs.init('9VJFt7y1guYetJ7is');
+                emailjs.init('NYNZK9TDyHu17M6G_');
                 emailJSInitialized = true;
                 return true;
             } catch (error) {
@@ -1464,7 +1430,7 @@
         function initializeFirebase() {
             try {
                 const firebaseConfig = {
-                     apiKey: "AIzSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
+                    apiKey: "AIzSyDSe2c9-8xqShoHEW-D7BXXAyD5N9uXWEs",
                     authDomain: "ang-silakbo.firebaseapp.com",
                     databaseURL: "https://ang-silakbo-default-rtdb.firebaseio.com",
                     projectId: "ang-silakbo",
@@ -1484,19 +1450,14 @@
         }
 
         function getStagesForApplication(app) {
-            const isPressConference = app.applicationType === 'press-conference';
-            if (isPressConference) {
-                return pressConferenceStages;
-            } else {
-                const stages = [...regularStages];
-                if (auditionPositions.includes(app.position)) {
-                    const techIndex = stages.indexOf('Technical/Auditions');
-                    if (techIndex !== -1) {
-                        stages[techIndex] = 'Audition';
-                    }
+            const stages = [...regularStages];
+            if (auditionPositions.includes(app.position)) {
+                const techIndex = stages.indexOf('Technical/Auditions');
+                if (techIndex !== -1) {
+                    stages[techIndex] = 'Audition';
                 }
-                return stages;
             }
+            return stages;
         }
 
         function updateStats() {
@@ -1505,21 +1466,15 @@
                 screening: 0,
                 interview: 0,
                 technical: 0,
-                confirmation: 0,
-                pressConference: 0
+                confirmation: 0
             };
 
             Object.values(applicationsData).forEach(app => {
                 stats.total++;
                 
-                if (app.applicationType === 'press-conference') {
-                    stats.pressConference++;
-                }
-                
                 if (app.status.includes('Screening')) stats.screening++;
                 else if (app.status.includes('Interview')) stats.interview++;
-                else if (app.status.includes('Technical') || app.status.includes('Audition') ||
-                          app.status.includes('School Level') || app.status.includes('Division Schools')) stats.technical++;
+                else if (app.status.includes('Technical') || app.status.includes('Audition')) stats.technical++;
                 else if (app.status.includes('Confirmation')) stats.confirmation++;
             });
 
@@ -1528,7 +1483,6 @@
             document.getElementById('interview-count').textContent = stats.interview;
             document.getElementById('technical-count').textContent = stats.technical;
             document.getElementById('confirmation-count').textContent = stats.confirmation;
-            document.getElementById('press-conference-count').textContent = stats.pressConference;
         }
 
         // Analytics functions
@@ -1646,19 +1600,16 @@
                 const app = applicationsData[trackingId];
                 
                 const matchesSearch = searchTerm === '' ||
-                     app.fullName.toLowerCase().includes(searchTerm) ||
+                    app.fullName.toLowerCase().includes(searchTerm) ||
                     app.position.toLowerCase().includes(searchTerm) ||
                     app.trackingId.toLowerCase().includes(searchTerm) ||
                     app.subOrganization.toLowerCase().includes(searchTerm) ||
                     (app.section && app.section.toLowerCase().includes(searchTerm));
                 
                 const matchesStatusFilter = currentFilter === 'all' ||
-                     app.status.includes(currentFilter);
+                    app.status.includes(currentFilter);
                 
-                const matchesTypeFilter = currentTypeFilter === 'all' ||
-                    (app.applicationType || 'silakbo') === currentTypeFilter;
-                
-                return matchesSearch && matchesStatusFilter && matchesTypeFilter;
+                return matchesSearch && matchesStatusFilter;
             });
             
             currentPage = 1;
@@ -1668,7 +1619,6 @@
 
         window.filterByStatus = function(status) {
             currentFilter = status;
-            currentTypeFilter = 'all';
             
             // Update UI
             document.querySelectorAll('.filter-chip[data-status]').forEach(chip => {
@@ -1676,43 +1626,18 @@
             });
             document.querySelector(`.filter-chip[data-status="${status}"]`)?.classList.add('active');
             
-            // Clear type filters
-            document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
-                chip.classList.remove('active');
-            });
-            document.querySelector('.filter-chip[data-filter="all"]').classList.add('active');
-            
-            searchApplications();
-        };
-
-        window.filterByType = function(type) {
-            currentTypeFilter = type;
-            currentFilter = 'all';
-            
-            // Update UI
-            document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
-                chip.classList.remove('active');
-            });
-            document.querySelector(`.filter-chip[data-filter="${type}"]`).classList.add('active');
-            
-            // Clear status filters
-            document.querySelectorAll('.filter-chip[data-status]').forEach(chip => {
-                chip.classList.remove('active');
-            });
-            
             searchApplications();
         };
 
         window.clearFilters = function() {
             currentFilter = 'all';
-            currentTypeFilter = 'all';
             document.getElementById('search-input').value = '';
             
             // Reset UI
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.classList.remove('active');
             });
-            document.querySelector('.filter-chip[data-filter="all"]').classList.add('active');
+            document.querySelector('.filter-chip[data-status="all"]').classList.add('active');
             
             searchApplications();
         };
@@ -1770,7 +1695,6 @@
             currentPageApplications.forEach(trackingId => {
                 const app = applicationsData[trackingId];
                 const stages = getStagesForApplication(app);
-                const isPressConference = app.applicationType === 'press-conference';
                 const initials = app.fullName ? app.fullName.split(' ').map(n => n[0]).join('').substring(0, 2) : '';
                 
                 const div = document.createElement('div');
@@ -1797,8 +1721,8 @@
                                     <span class="material-icons">badge</span>
                                     ${app.trackingId}
                                 </div>
-                                <div class="application-type ${isPressConference ? 'type-press-conference' : 'type-silakbo'}">
-                                    ${isPressConference ? 'Press Conference' : 'Regular Silakbo'}
+                                <div class="application-type">
+                                    Silakbo Member
                                 </div>
                             </div>
                         </div>
@@ -2022,7 +1946,7 @@
                     tracking_id: emailApplicantData.trackingId
                 };
                 
-                await emailjs.send('service_opd6z0r', 'template_ikakd6d', templateParams);
+                await emailjs.send('service_is88c5t', 'template_cbxlz4l', templateParams);
                 showSuccess(`Interview email sent to ${emailApplicantData.fullName}`);
                 closeModal('emailModal');
                 await updateStatus(emailApplicantData.trackingId, 'Interview');
@@ -2039,8 +1963,8 @@
             }
 
             const headers = [
-                'Tracking ID', 'Full Name', 'Section', 'Email', 'Phone', 'Position', 
-                'Sub-organization', 'Application Type', 'Status', 'Submitted At'
+                'Tracking ID', 'Full Name', 'Section', 'Email', 'Phone', 'Position',
+                'Sub-organization', 'Status', 'Submitted At'
             ];
 
             const csvContent = [
@@ -2053,7 +1977,6 @@
                     app.phone,
                     `"${app.position}"`,
                     `"${app.subOrganization}"`,
-                    `"${app.applicationType || 'silakbo'}"`,
                     `"${app.status}"`,
                     `"${new Date(app.submittedAt).toLocaleString()}"`
                 ].join(','))
