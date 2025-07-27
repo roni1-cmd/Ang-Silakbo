@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANG SILAKBO - Applicant's Portal</title>
+    <title>ANG SILAKBO - Application Portal</title>
     <link rel="icon" href="SILAKBO%20(1).png">
     
     <!-- Google Fonts -->
@@ -17,6 +17,9 @@
     
     <!-- EmailJS -->
     <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <!-- JSZip for multiple file downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     
     <style>
         :root {
@@ -805,23 +808,6 @@
             color: var(--primary-800);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .filters-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .search-input-container {
-                max-width: none;
-            }
-            
-            .filters-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-            }
-        }
-
         /* Applications Section */
         .applications-section {
             background: var(--white);
@@ -1313,52 +1299,210 @@
             line-height: 1.5;
         }
 
+        /* Export Modal Styles */
+        .export-options {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .export-option {
+            border: 2px solid var(--gray-200);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: var(--white);
+        }
+
+        .export-option:hover {
+            border-color: var(--primary-300);
+            background: var(--primary-25);
+        }
+
+        .export-option.selected {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .export-option-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .export-option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.15s ease;
+        }
+
+        .export-option.selected .export-option-radio {
+            border-color: var(--primary-500);
+        }
+
+        .export-option.selected .export-option-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--primary-500);
+            border-radius: 50%;
+        }
+
+        .export-option-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .export-option-description {
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        .export-filters {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .export-filters.show {
+            display: block;
+        }
+
+        .export-filter-group {
+            margin-bottom: 16px;
+        }
+
+        .export-filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .export-filter-select {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-size: 14px;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .export-filter-select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
+        }
+
+        .export-summary {
+            background: var(--info-50);
+            border: 1px solid var(--info-200);
+            border-radius: var(--border-radius-lg);
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .export-summary-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--info-700);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-summary-text {
+            font-size: 14px;
+            color: var(--info-700);
+            line-height: 1.5;
+        }
+
+        /* Progress Modal */
+        .progress-modal .modal-content {
+            max-width: 400px;
+        }
+
+        .progress-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .progress-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .progress-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .progress-subtext {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-
             .sidebar.show {
                 transform: translateX(0);
             }
-
             .main-content {
                 margin-left: 0;
             }
-
             .sidebar-toggle {
                 display: flex;
             }
-
             .stats-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
-
             .analytics-stats {
                 grid-template-columns: repeat(2, 1fr);
             }
-
             .details-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-
             .application-main {
                 grid-template-columns: auto 1fr;
                 gap: 16px;
             }
-
             .status-container {
                 grid-column: 1 / -1;
                 margin-top: 16px;
             }
-
             .action-buttons {
                 grid-column: 1 / -1;
                 justify-content: flex-end;
                 margin-top: 12px;
             }
-
             .filter-groups {
                 grid-template-columns: 1fr;
             }
@@ -1368,79 +1512,73 @@
             .header {
                 padding: 0 16px;
             }
-
             .content {
                 padding: 16px;
             }
-
             .filters-section {
                 padding: 16px 20px;
             }
-
             .search-bar {
                 flex-direction: column;
                 align-items: stretch;
             }
-
             .search-input-container {
                 max-width: none;
             }
-
             .application-main {
                 grid-template-columns: 1fr;
                 gap: 12px;
                 text-align: center;
             }
-
             .applicant-details {
                 flex-direction: column;
                 gap: 8px;
             }
-
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-
             .analytics-stats {
                 grid-template-columns: 1fr;
             }
-
             .details-grid {
                 grid-template-columns: 1fr;
             }
-
             .modal-content {
                 margin: 16px auto;
             }
-
             .modal-header,
             .modal-body {
                 padding: 20px;
             }
-
             .status-container {
                 min-width: auto;
             }
-
             .filter-options {
                 flex-direction: column;
             }
-
             .filter-chip {
                 justify-content: center;
             }
-
             .page-title {
                 font-size: 20px;
             }
-
             .header-actions {
                 gap: 8px;
             }
-
             .btn {
                 padding: 8px 12px;
                 font-size: 13px;
+            }
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+            .search-input-container {
+                max-width: none;
+            }
+            .filters-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
             }
         }
     </style>
@@ -1457,7 +1595,6 @@
                         <p>Applicant's Portal</p>
                     </div>
                 </div>
-
                 <div class="stats-section">
                     <div class="stats-title">Overview</div>
                     <div class="stats-grid">
@@ -1484,7 +1621,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="sidebar-content">
                 <div class="nav-section">
                     <div class="nav-title">Analytics</div>
@@ -1495,7 +1631,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="nav-section">
                     <div class="nav-title">Status Filter</div>
                     <div class="nav-item active" data-status="all" onclick="filterByStatus('all')">
@@ -1546,7 +1681,7 @@
                         <span class="material-icons-round">refresh</span>
                         Refresh
                     </button>
-                    <button class="btn btn-primary" onclick="downloadCSV()">
+                    <button class="btn btn-primary" onclick="showExportModal()">
                         <span class="material-icons-round">download</span>
                         Export CSV
                     </button>
@@ -1615,7 +1750,6 @@
                                 <input type="text" id="search-input" class="search-input" placeholder="Search applications..." onkeyup="searchApplications()">
                             </div>
                         </div>
-
                         <div class="filters-row">
                             <div class="filter-dropdown-group">
                                 <label class="filter-label">Status</label>
@@ -1627,21 +1761,18 @@
                                     <option value="Confirmation">Confirmation</option>
                                 </select>
                             </div>
-
                             <div class="filter-dropdown-group">
                                 <label class="filter-label">Position</label>
                                 <select class="filter-dropdown" id="position-filter" onchange="filterByPosition(this.value)">
                                     <option value="all">All Positions</option>
                                 </select>
                             </div>
-
                             <div class="filter-dropdown-group">
                                 <label class="filter-label">Organization</label>
                                 <select class="filter-dropdown" id="organization-filter" onchange="filterByOrganization(this.value)">
                                     <option value="all">All Organizations</option>
                                 </select>
                             </div>
-
                             <div class="filter-dropdown-group">
                                 <label class="filter-label">Date Range</label>
                                 <select class="filter-dropdown" id="date-filter" onchange="filterByDate(this.value)">
@@ -1653,7 +1784,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="active-filters" id="active-filters" style="display: none;">
                             <div class="active-filters-title">Active Filters:</div>
                             <div class="active-filters-list" id="active-filters-list"></div>
@@ -1670,16 +1800,13 @@
                         </div>
                         <div class="applications-count" id="applications-count">0 applications</div>
                     </div>
-
                     <!-- Loading -->
                     <div id="loading" class="loading">
                         <div class="spinner"></div>
                         <div style="font-weight: 600;">Loading applications...</div>
                     </div>
-
                     <!-- Applications List -->
                     <div id="applications" class="applications-container" style="display: none;"></div>
-
                     <!-- Load More -->
                     <div id="load-more-container" class="load-more" style="display: none;">
                         <button id="load-more-btn" class="btn btn-secondary" onclick="loadMoreApplications()">
@@ -1734,7 +1861,6 @@
                         <p>applicant@example.com</p>
                     </div>
                 </div>
-
                 <div class="info-box">
                     <h4>
                         <span class="material-icons-round">info</span>
@@ -1761,6 +1887,136 @@
         </div>
     </div>
 
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="material-icons-round">download</span>
+                    Export Applications
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <div class="export-option selected" onclick="selectExportOption('all')">
+                        <div class="export-option-header">
+                            <div class="export-option-radio"></div>
+                            <div class="export-option-title">Export All Applications</div>
+                        </div>
+                        <div class="export-option-description">
+                            Download a single CSV file containing all applications with their current status and details.
+                        </div>
+                    </div>
+
+                    <div class="export-option" onclick="selectExportOption('filtered')">
+                        <div class="export-option-header">
+                            <div class="export-option-radio"></div>
+                            <div class="export-option-title">Export Current Filtered Results</div>
+                        </div>
+                        <div class="export-option-description">
+                            Download only the applications currently visible based on your active filters and search criteria.
+                        </div>
+                    </div>
+
+                    <div class="export-option" onclick="selectExportOption('by-position')">
+                        <div class="export-option-header">
+                            <div class="export-option-radio"></div>
+                            <div class="export-option-title">Export Separated by Position</div>
+                        </div>
+                        <div class="export-option-description">
+                            Download multiple CSV files, one for each position (e.g., Layout Artist, Video Editor, etc.).
+                        </div>
+                    </div>
+
+                    <div class="export-option" onclick="selectExportOption('by-organization')">
+                        <div class="export-option-header">
+                            <div class="export-option-radio"></div>
+                            <div class="export-option-title">Export Separated by Organization</div>
+                        </div>
+                        <div class="export-option-description">
+                            Download multiple CSV files, one for each organization/department.
+                        </div>
+                    </div>
+
+                    <div class="export-option" onclick="selectExportOption('specific-position')">
+                        <div class="export-option-header">
+                            <div class="export-option-radio"></div>
+                            <div class="export-option-title">Export Specific Position Only</div>
+                        </div>
+                        <div class="export-option-description">
+                            Download applications for a specific position only.
+                        </div>
+                        <div class="export-filters" id="position-filters">
+                            <div class="export-filter-group">
+                                <label class="export-filter-label">Select Position</label>
+                                <select class="export-filter-select" id="export-position-select">
+                                    <option value="">Choose a position...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="export-option" onclick="selectExportOption('specific-organization')">
+                        <div class="export-option-header">
+                            <div class="export-option-radio"></div>
+                            <div class="export-option-title">Export Specific Organization Only</div>
+                        </div>
+                        <div class="export-option-description">
+                            Download applications for a specific organization/department only.
+                        </div>
+                        <div class="export-filters" id="organization-filters">
+                            <div class="export-filter-group">
+                                <label class="export-filter-label">Select Organization</label>
+                                <select class="export-filter-select" id="export-organization-select">
+                                    <option value="">Choose an organization...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-summary" id="export-summary">
+                    <div class="export-summary-title">
+                        <span class="material-icons-round">info</span>
+                        Export Summary
+                    </div>
+                    <div class="export-summary-text" id="export-summary-text">
+                        You will download 1 CSV file containing all applications.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('exportModal')">
+                    <span class="material-icons-round">close</span>
+                    Cancel
+                </button>
+                <button class="btn btn-primary" onclick="executeExport()" id="export-btn">
+                    <span class="material-icons-round">download</span>
+                    Download CSV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progressModal" class="modal progress-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="material-icons-round">download</span>
+                    Preparing Export
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="progress-container">
+                    <div class="progress-spinner"></div>
+                    <div class="progress-text" id="progress-text">Preparing your export...</div>
+                    <div class="progress-subtext" id="progress-subtext">This may take a few moments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
         import { getDatabase, ref, get, update, remove } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
@@ -1781,6 +2037,7 @@
         let expandedApplications = new Set();
         let applicationsChart = null;
         let emailJSInitialized = false;
+        let selectedExportOption = 'all';
 
         // Define searchApplications to update the search filter and re-apply filters
         window.searchApplications = function() {
@@ -1848,7 +2105,6 @@
                     appId: "1:1006400633782:web:ef4a93c1d445cb825b9f17",
                     measurementId: "G-TSDTG2YJ94"
                 };
-
                 const app = initializeApp(firebaseConfig);
                 getAnalytics(app);
                 return getDatabase(app);
@@ -1910,14 +2166,6 @@
             document.getElementById('nav-technical-count').textContent = stats.technical;
             document.getElementById('nav-confirmation-count').textContent = stats.confirmation;
 
-            // Update filter counts
-            // The following lines are removed because the elements do not exist in the HTML.
-            // document.getElementById('filter-all-count').textContent = stats.total;
-            // document.getElementById('filter-screening-count').textContent = stats.screening;
-            // document.getElementById('filter-interview-count').textContent = stats.interview;
-            // document.getElementById('filter-technical-count').textContent = stats.technical;
-            // document.getElementById('filter-confirmation-count').textContent = stats.confirmation;
-
             // Update position filters
             updatePositionFilters(positions);
             
@@ -1925,119 +2173,133 @@
             updateOrganizationFilters(organizations);
         }
 
-// Update the filter functions to work with clean dropdowns
-function updatePositionFilters(positions) {
-    const dropdown = document.getElementById('position-filter');
-    
-    // Clear existing options except "All"
-    dropdown.innerHTML = '<option value="all">All Positions</option>';
-    
-    // Add position options
-    positions.forEach((count, position) => {
-        const option = document.createElement('option');
-        option.value = position;
-        option.textContent = `${position} (${count})`;
-        dropdown.appendChild(option);
-    });
-}
+        // Update the filter functions to work with clean dropdowns
+        function updatePositionFilters(positions) {
+            const dropdown = document.getElementById('position-filter');
+            const exportDropdown = document.getElementById('export-position-select');
+            
+            // Clear existing options except "All"
+            dropdown.innerHTML = '<option value="all">All Positions</option>';
+            exportDropdown.innerHTML = '<option value="">Choose a position...</option>';
+            
+            // Add position options
+            positions.forEach((count, position) => {
+                const option = document.createElement('option');
+                option.value = position;
+                option.textContent = `${position} (${count})`;
+                dropdown.appendChild(option);
 
-function updateOrganizationFilters(organizations) {
-    const dropdown = document.getElementById('organization-filter');
-    
-    // Clear existing options except "All"
-    dropdown.innerHTML = '<option value="all">All Organizations</option>';
-    
-    // Add organization options
-    organizations.forEach((count, organization) => {
-        const option = document.createElement('option');
-        option.value = organization;
-        option.textContent = `${organization} (${count})`;
-        dropdown.appendChild(option);
-    });
-}
+                const exportOption = document.createElement('option');
+                exportOption.value = position;
+                exportOption.textContent = position;
+                exportDropdown.appendChild(exportOption);
+            });
+        }
 
-function updateActiveFilters() {
-    const activeFiltersContainer = document.getElementById('active-filters');
-    const activeFiltersList = document.getElementById('active-filters-list');
-    
-    const activeFilters = [];
-    
-    if (currentFilters.status !== 'all') {
-        activeFilters.push({ type: 'Status', value: currentFilters.status, key: 'status' });
-    }
-    if (currentFilters.position !== 'all') {
-        activeFilters.push({ type: 'Position', value: currentFilters.position, key: 'position' });
-    }
-    if (currentFilters.organization !== 'all') {
-        activeFilters.push({ type: 'Organization', value: currentFilters.organization, key: 'organization' });
-    }
-    if (currentFilters.search !== '') {
-        activeFilters.push({ type: 'Search', value: currentFilters.search, key: 'search' });
-    }
-    
-    if (activeFilters.length > 0) {
-        activeFiltersContainer.style.display = 'block';
-        activeFiltersList.innerHTML = activeFilters.map(filter => `
-            <div class="active-filter-tag">
-                ${filter.type}: ${filter.value}
-                <span class="material-icons-round remove-filter" onclick="removeFilter('${filter.key}')">close</span>
-            </div>
-        `).join('');
-    } else {
-        activeFiltersContainer.style.display = 'none';
-    }
-}
+        function updateOrganizationFilters(organizations) {
+            const dropdown = document.getElementById('organization-filter');
+            const exportDropdown = document.getElementById('export-organization-select');
+            
+            // Clear existing options except "All"
+            dropdown.innerHTML = '<option value="all">All Organizations</option>';
+            exportDropdown.innerHTML = '<option value="">Choose an organization...</option>';
+            
+            // Add organization options
+            organizations.forEach((count, organization) => {
+                const option = document.createElement('option');
+                option.value = organization;
+                option.textContent = `${organization} (${count})`;
+                dropdown.appendChild(option);
 
-window.removeFilter = function(filterKey) {
-    if (filterKey === 'search') {
-        currentFilters.search = '';
-        document.getElementById('search-input').value = '';
-    } else {
-        currentFilters[filterKey] = 'all';
-        document.getElementById(`${filterKey}-filter`).value = 'all';
-    }
-    applyFilters();
-}
+                const exportOption = document.createElement('option');
+                exportOption.value = organization;
+                exportOption.textContent = organization;
+                exportDropdown.appendChild(exportOption);
+            });
+        }
 
-// Update applyFilters to show active filters
-function applyFilters() {
-    filteredApplications = Object.keys(applicationsData).filter(trackingId => {
-        const app = applicationsData[trackingId];
-        
-        // Search filter
-        const matchesSearch = currentFilters.search === '' ||
-            app.fullName.toLowerCase().includes(currentFilters.search) ||
-            app.position.toLowerCase().includes(currentFilters.search) ||
-            app.trackingId.toLowerCase().includes(currentFilters.search) ||
-            app.subOrganization.toLowerCase().includes(currentFilters.search) ||
-            app.email.toLowerCase().includes(currentFilters.search) ||
-            (app.section && app.section.toLowerCase().includes(currentFilters.search));
-        
-        // Status filter
-        const matchesStatus = currentFilters.status === 'all' ||
-            app.status.includes(currentFilters.status);
-        
-        // Position filter
-        const matchesPosition = currentFilters.position === 'all' ||
-            app.position === currentFilters.position;
-        
-        // Organization filter
-        const matchesOrganization = currentFilters.organization === 'all' ||
-            app.subOrganization === currentFilters.organization;
-        
-        return matchesSearch && matchesStatus && matchesPosition && matchesOrganization;
-    });
-    
-    currentPage = 1;
-    totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
-    displayApplications();
-    
-    // Update applications count
-    document.getElementById('applications-count').textContent = 
-        `${filteredApplications.length} application${filteredApplications.length !== 1 ? 's' : ''}`;
-    
-    updateActiveFilters();
-}
+        function updateActiveFilters() {
+            const activeFiltersContainer = document.getElementById('active-filters');
+            const activeFiltersList = document.getElementById('active-filters-list');
+            
+            const activeFilters = [];
+            
+            if (currentFilters.status !== 'all') {
+                activeFilters.push({ type: 'Status', value: currentFilters.status, key: 'status' });
+            }
+            if (currentFilters.position !== 'all') {
+                activeFilters.push({ type: 'Position', value: currentFilters.position, key: 'position' });
+            }
+            if (currentFilters.organization !== 'all') {
+                activeFilters.push({ type: 'Organization', value: currentFilters.organization, key: 'organization' });
+            }
+            if (currentFilters.search !== '') {
+                activeFilters.push({ type: 'Search', value: currentFilters.search, key: 'search' });
+            }
+            
+            if (activeFilters.length > 0) {
+                activeFiltersContainer.style.display = 'block';
+                activeFiltersList.innerHTML = activeFilters.map(filter => `
+                    <div class="active-filter-tag">
+                        ${filter.type}: ${filter.value}
+                        <span class="material-icons-round remove-filter" onclick="removeFilter('${filter.key}')">close</span>
+                    </div>
+                `).join('');
+            } else {
+                activeFiltersContainer.style.display = 'none';
+            }
+        }
+
+        window.removeFilter = function(filterKey) {
+            if (filterKey === 'search') {
+                currentFilters.search = '';
+                document.getElementById('search-input').value = '';
+            } else {
+                currentFilters[filterKey] = 'all';
+                document.getElementById(`${filterKey}-filter`).value = 'all';
+            }
+            applyFilters();
+        }
+
+        // Update applyFilters to show active filters
+        function applyFilters() {
+            filteredApplications = Object.keys(applicationsData).filter(trackingId => {
+                const app = applicationsData[trackingId];
+                
+                // Search filter
+                const matchesSearch = currentFilters.search === '' ||
+                    app.fullName.toLowerCase().includes(currentFilters.search) ||
+                    app.position.toLowerCase().includes(currentFilters.search) ||
+                    app.trackingId.toLowerCase().includes(currentFilters.search) ||
+                    app.subOrganization.toLowerCase().includes(currentFilters.search) ||
+                    app.email.toLowerCase().includes(currentFilters.search) ||
+                    (app.section && app.section.toLowerCase().includes(currentFilters.search));
+                
+                // Status filter
+                const matchesStatus = currentFilters.status === 'all' ||
+                    app.status.includes(currentFilters.status);
+                
+                // Position filter
+                const matchesPosition = currentFilters.position === 'all' ||
+                    app.position === currentFilters.position;
+                
+                // Organization filter
+                const matchesOrganization = currentFilters.organization === 'all' ||
+                    app.subOrganization === currentFilters.organization;
+                
+                return matchesSearch && matchesStatus && matchesPosition && matchesOrganization;
+            });
+            
+            currentPage = 1;
+            totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
+            displayApplications();
+            
+            // Update applications count
+            document.getElementById('applications-count').textContent = 
+                `${filteredApplications.length} application${filteredApplications.length !== 1 ? 's' : ''}`;
+            
+            updateActiveFilters();
+        }
 
         window.filterByStatus = function(status) {
             currentFilters.status = status;
@@ -2267,7 +2529,7 @@ function applyFilters() {
                 updateStats();
                 
                 // Update applications count
-                document.getElementById('applications-count').textContent = 
+                document.getElementById('applications-count').textContent =
                     `${filteredApplications.length} application${filteredApplications.length !== 1 ? 's' : ''}`;
             } catch (error) {
                 showError('Error loading applications: ' + error.message);
@@ -2333,6 +2595,246 @@ function applyFilters() {
             document.getElementById('emailModal').style.display = 'block';
         };
 
+        // Export Modal Functions
+        window.showExportModal = function() {
+            updateExportSummary();
+            document.getElementById('exportModal').style.display = 'block';
+        };
+
+        window.selectExportOption = function(option) {
+            // Remove selected class from all options
+            document.querySelectorAll('.export-option').forEach(el => el.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            event.currentTarget.classList.add('selected');
+            
+            selectedExportOption = option;
+            
+            // Show/hide filters based on selection
+            document.querySelectorAll('.export-filters').forEach(el => el.classList.remove('show'));
+            
+            if (option === 'specific-position') {
+                document.getElementById('position-filters').classList.add('show');
+            } else if (option === 'specific-organization') {
+                document.getElementById('organization-filters').classList.add('show');
+            }
+            
+            updateExportSummary();
+        };
+
+        function updateExportSummary() {
+            const summaryText = document.getElementById('export-summary-text');
+            let text = '';
+            
+            switch (selectedExportOption) {
+                case 'all':
+                    text = `You will download 1 CSV file containing all ${Object.keys(applicationsData).length} applications.`;
+                    break;
+                case 'filtered':
+                    text = `You will download 1 CSV file containing ${filteredApplications.length} filtered applications.`;
+                    break;
+                case 'by-position':
+                    const positions = new Set(Object.values(applicationsData).map(app => app.position));
+                    text = `You will download ${positions.size} CSV files, one for each position.`;
+                    break;
+                case 'by-organization':
+                    const organizations = new Set(Object.values(applicationsData).map(app => app.subOrganization));
+                    text = `You will download ${organizations.size} CSV files, one for each organization.`;
+                    break;
+                case 'specific-position':
+                    const selectedPosition = document.getElementById('export-position-select').value;
+                    if (selectedPosition) {
+                        const count = Object.values(applicationsData).filter(app => app.position === selectedPosition).length;
+                        text = `You will download 1 CSV file containing ${count} applications for ${selectedPosition}.`;
+                    } else {
+                        text = 'Please select a position to export.';
+                    }
+                    break;
+                case 'specific-organization':
+                    const selectedOrg = document.getElementById('export-organization-select').value;
+                    if (selectedOrg) {
+                        const count = Object.values(applicationsData).filter(app => app.subOrganization === selectedOrg).length;
+                        text = `You will download 1 CSV file containing ${count} applications for ${selectedOrg}.`;
+                    } else {
+                        text = 'Please select an organization to export.';
+                    }
+                    break;
+            }
+            
+            summaryText.textContent = text;
+        }
+
+        // Update export summary when dropdowns change
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'export-position-select' || e.target.id === 'export-organization-select') {
+                updateExportSummary();
+            }
+        });
+
+        window.executeExport = async function() {
+            // Validate specific selections
+            if (selectedExportOption === 'specific-position') {
+                const selectedPosition = document.getElementById('export-position-select').value;
+                if (!selectedPosition) {
+                    showError('Please select a position to export.');
+                    return;
+                }
+            }
+            
+            if (selectedExportOption === 'specific-organization') {
+                const selectedOrg = document.getElementById('export-organization-select').value;
+                if (!selectedOrg) {
+                    showError('Please select an organization to export.');
+                    return;
+                }
+            }
+            
+            // Close export modal and show progress
+            closeModal('exportModal');
+            document.getElementById('progressModal').style.display = 'block';
+            
+            try {
+                await performExport();
+                closeModal('progressModal');
+                showSuccess('Export completed successfully!');
+            } catch (error) {
+                closeModal('progressModal');
+                showError('Export failed: ' + error.message);
+            }
+        };
+
+        async function performExport() {
+            const headers = [
+                'Tracking ID', 'Full Name', 'Section', 'Email', 'Phone', 'Position',
+                'Sub-organization', 'Status', 'Submitted At', 'Address', 'Portfolio Link',
+                'How They Heard', 'Experience', 'Additional Message'
+            ];
+            
+            function createCSVContent(applications) {
+                return [
+                    headers.join(','),
+                    ...applications.map(app => [
+                        app.trackingId,
+                        `"${app.fullName}"`,
+                        `"${app.section || 'N/A'}"`,
+                        app.email,
+                        app.phone,
+                        `"${app.position}"`,
+                        `"${app.subOrganization}"`,
+                        `"${app.status}"`,
+                        `"${new Date(app.submittedAt).toLocaleString()}"`,
+                        `"${app.address}"`,
+                        `"${app.portfolioLink}"`,
+                        `"${app.hearAbout}"`,
+                        `"${app.experience.replace(/"/g, '""')}"`,
+                        `"${(app.additionalMessage || '').replace(/"/g, '""')}"`
+                    ].join(','))
+                ].join('\n');
+            }
+            
+            function downloadCSV(content, filename) {
+                const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            
+            switch (selectedExportOption) {
+                case 'all':
+                    const allApps = Object.values(applicationsData);
+                    const csvContent = createCSVContent(allApps);
+                    downloadCSV(csvContent, `silakbo-applications-all-${today}.csv`);
+                    break;
+                    
+                case 'filtered':
+                    const filteredApps = filteredApplications.map(id => applicationsData[id]);
+                    const filteredContent = createCSVContent(filteredApps);
+                    downloadCSV(filteredContent, `silakbo-applications-filtered-${today}.csv`);
+                    break;
+                    
+                case 'by-position':
+                    const positionGroups = {};
+                    Object.values(applicationsData).forEach(app => {
+                        if (!positionGroups[app.position]) {
+                            positionGroups[app.position] = [];
+                        }
+                        positionGroups[app.position].push(app);
+                    });
+                    
+                    if (typeof JSZip !== 'undefined') {
+                        const zip = new JSZip();
+                        Object.entries(positionGroups).forEach(([position, apps]) => {
+                            const content = createCSVContent(apps);
+                            const filename = `${position.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${today}.csv`;
+                            zip.file(filename, content);
+                        });
+                        
+                        const zipContent = await zip.generateAsync({type: 'blob'});
+                        downloadCSV(zipContent, `silakbo-applications-by-position-${today}.zip`);
+                    } else {
+                        // Fallback: download files individually
+                        Object.entries(positionGroups).forEach(([position, apps]) => {
+                            const content = createCSVContent(apps);
+                            const filename = `silakbo-${position.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${today}.csv`;
+                            setTimeout(() => downloadCSV(content, filename), 100);
+                        });
+                    }
+                    break;
+                    
+                case 'by-organization':
+                    const orgGroups = {};
+                    Object.values(applicationsData).forEach(app => {
+                        if (!orgGroups[app.subOrganization]) {
+                            orgGroups[app.subOrganization] = [];
+                        }
+                        orgGroups[app.subOrganization].push(app);
+                    });
+                    
+                    if (typeof JSZip !== 'undefined') {
+                        const zip = new JSZip();
+                        Object.entries(orgGroups).forEach(([org, apps]) => {
+                            const content = createCSVContent(apps);
+                            const filename = `${org.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${today}.csv`;
+                            zip.file(filename, content);
+                        });
+                        
+                        const zipContent = await zip.generateAsync({type: 'blob'});
+                        downloadCSV(zipContent, `silakbo-applications-by-organization-${today}.zip`);
+                    } else {
+                        // Fallback: download files individually
+                        Object.entries(orgGroups).forEach(([org, apps]) => {
+                            const content = createCSVContent(apps);
+                            const filename = `silakbo-${org.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${today}.csv`;
+                            setTimeout(() => downloadCSV(content, filename), 100);
+                        });
+                    }
+                    break;
+                    
+                case 'specific-position':
+                    const selectedPosition = document.getElementById('export-position-select').value;
+                    const positionApps = Object.values(applicationsData).filter(app => app.position === selectedPosition);
+                    const positionContent = createCSVContent(positionApps);
+                    const positionFilename = `silakbo-${selectedPosition.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${today}.csv`;
+                    downloadCSV(positionContent, positionFilename);
+                    break;
+                    
+                case 'specific-organization':
+                    const selectedOrg = document.getElementById('export-organization-select').value;
+                    const orgApps = Object.values(applicationsData).filter(app => app.subOrganization === selectedOrg);
+                    const orgContent = createCSVContent(orgApps);
+                    const orgFilename = `silakbo-${selectedOrg.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${today}.csv`;
+                    downloadCSV(orgContent, orgFilename);
+                    break;
+            }
+        }
+
         window.closeModal = function(modalId) {
             document.getElementById(modalId).style.display = 'none';
             if (modalId === 'deleteModal') deleteTrackingId = null;
@@ -2387,53 +2889,21 @@ function applyFilters() {
             }
         };
 
-        // Export CSV
-        window.downloadCSV = function() {
-            if (Object.keys(applicationsData).length === 0) {
-                showError('No applications to export.');
-                return;
-            }
-
-            const headers = [
-                'Tracking ID', 'Full Name', 'Section', 'Email', 'Phone', 'Position',
-                'Sub-organization', 'Status', 'Submitted At'
-            ];
-
-            const csvContent = [
-                headers.join(','),
-                ...Object.values(applicationsData).map(app => [
-                    app.trackingId,
-                    `"${app.fullName}"`,
-                    `"${app.section || 'N/A'}"`,
-                    app.email,
-                    app.phone,
-                    `"${app.position}"`,
-                    `"${app.subOrganization}"`,
-                    `"${app.status}"`,
-                    `"${new Date(app.submittedAt).toLocaleString()}"`
-                ].join(','))
-            ].join('\n');
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `silakbo-applications-${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
         // Close modal when clicking outside
         window.onclick = function(event) {
             const deleteModal = document.getElementById('deleteModal');
             const emailModal = document.getElementById('emailModal');
+            const exportModal = document.getElementById('exportModal');
+            const progressModal = document.getElementById('progressModal');
             
             if (event.target === deleteModal) {
                 closeModal('deleteModal');
             } else if (event.target === emailModal) {
                 closeModal('emailModal');
+            } else if (event.target === exportModal) {
+                closeModal('exportModal');
+            } else if (event.target === progressModal) {
+                closeModal('progressModal');
             }
         };
 
