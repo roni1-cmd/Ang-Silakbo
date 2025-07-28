@@ -1,1433 +1,1512 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ANG SILAKBO • The Official Publication of UCLM-SHS</title>
-<link rel="icon" href="SILAKBO (1).png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Typography -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<!-- Google Material Icons -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<style>
-    :root {
-        /* Light theme colors */
-        --primary: #121212;
-        --primary-light: #2A2A2A;
-        --secondary: #FF6B00;
-        --secondary-light: #FF8A3D;
-        --secondary-dark: #E05A00;
-        --text-dark: #121212;
-        --text-light: #5F5F5F;
-        --text-muted: #9E9E9E;
-        --background: #FFFFFF;
-        --surface: #FFFFFF;
-        --surface-elevated: #F8F9FA;
-        --border: #E5E7EB;
-        --border-light: #F3F4F6;
-        --shadow: rgba(0, 0, 0, 0.06);
-        --shadow-hover: rgba(0, 0, 0, 0.1);
-        --shadow-strong: rgba(0, 0, 0, 0.12);
-        
-        /* Typography */
-        --headline-font: 'Playfair Display', serif;
-        --body-font: 'Source Sans Pro', sans-serif;
-        --article-font: 'Merriweather', serif;
-        
-        /* Spacing and sizing */
-        --radius-sm: 8px;
-        --radius-md: 12px;
-        --radius-lg: 16px;
-        --radius-xl: 24px;
-        --radius-2xl: 32px;
-        --spacing-xs: 0.5rem;
-        --spacing-sm: 1rem;
-        --spacing-md: 1.5rem;
-        --spacing-lg: 2rem;
-        --spacing-xl: 3rem;
-        --spacing-2xl: 4rem;
-        
-        /* Transitions */
-        --transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-        --transition-fast: all 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
-    }
-
-    [data-theme="dark"] {
-        --primary: #FFFFFF;
-        --primary-light: #F5F5F5;
-        --text-dark: #FFFFFF;
-        --text-light: #B0B0B0;
-        --text-muted: #6B7280;
-        --background: #0F172A;
-        --surface: #1E293B;
-        --surface-elevated: #334155;
-        --border: #374151;
-        --border-light: #4B5563;
-        --shadow: rgba(0, 0, 0, 0.3);
-        --shadow-hover: rgba(0, 0, 0, 0.4);
-        --shadow-strong: rgba(0, 0, 0, 0.5);
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: var(--body-font);
-        background-color: var(--background);
-        color: var(--text-dark);
-        line-height: 1.6;
-        transition: var(--transition);
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: var(--surface);
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: var(--radius-sm);
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--text-muted);
-    }
-
-    /* Header */
-    .header {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        transition: var(--transition);
-    }
-
-    [data-theme="dark"] .header {
-        background: rgba(15, 23, 42, 0.95);
-    }
-
-    .header-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: var(--spacing-md) var(--spacing-lg);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-        text-decoration: none;
-        color: var(--text-dark);
-    }
-
-    .logo-img {
-        width: 40px;
-        height: 40px;
-        border-radius: var(--radius-md);
-        object-fit: cover;
-    }
-
-    .logo-text {
-        font-family: var(--headline-font);
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--secondary);
-    }
-
-    .nav {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-lg);
-    }
-
-    .nav-links {
-        display: flex;
-        gap: var(--spacing-lg);
-        list-style: none;
-    }
-
-    .nav-link {
-        color: var(--text-light);
-        text-decoration: none;
-        font-weight: 500;
-        padding: var(--spacing-xs) var(--spacing-sm);
-        border-radius: var(--radius-md);
-        transition: var(--transition);
-        position: relative;
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-        color: var(--secondary);
-        background: rgba(255, 107, 0, 0.1);
-    }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        color: var(--text-light);
-        cursor: pointer;
-        padding: var(--spacing-xs);
-        border-radius: var(--radius-md);
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .icon-btn:hover {
-        color: var(--secondary);
-        background: var(--surface-elevated);
-    }
-
-    .theme-toggle {
-        background: var(--surface-elevated);
-        border: 1px solid var(--border);
-        color: var(--text-dark);
-        padding: var(--spacing-xs);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .theme-toggle:hover {
-        background: var(--secondary);
-        color: white;
-        border-color: var(--secondary);
-    }
-
-    .mobile-menu-btn {
-        display: none;
-    }
-
-    /* Main Content */
-    .main {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 var(--spacing-lg);
-    }
-
-    /* Hero Section - Magazine Style */
-    .hero-section {
-        padding: var(--spacing-2xl) 0;
-        margin-bottom: var(--spacing-2xl);
-    }
-
-    .hero-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-2xl);
-        height: 600px;
-    }
-
-    .hero-main {
-        position: relative;
-        border-radius: var(--radius-2xl);
-        overflow: hidden;
-        cursor: pointer;
-        transition: var(--transition);
-        background: linear-gradient(135deg, var(--surface) 0%, var(--surface-elevated) 100%);
-        box-shadow: 0 8px 32px var(--shadow);
-    }
-
-    .hero-main:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 16px 48px var(--shadow-hover);
-    }
-
-    .hero-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: var(--transition);
-    }
-
-    .hero-main:hover .hero-image {
-        transform: scale(1.05);
-    }
-
-    .hero-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-        padding: var(--spacing-2xl);
-        color: white;
-    }
-
-    .hero-category {
-        display: inline-block;
-        background: var(--secondary);
-        color: white;
-        padding: var(--spacing-xs) var(--spacing-md);
-        border-radius: var(--radius-lg);
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .hero-title {
-        font-family: var(--headline-font);
-        font-size: 2.5rem;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .hero-excerpt {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        opacity: 0.9;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .hero-meta {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-md);
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-xs);
-    }
-
-    .meta-item .material-icons {
-        font-size: 16px;
-    }
-
-    .hero-secondary {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-lg);
-    }
-
-    .secondary-story {
-        display: flex;
-        gap: var(--spacing-md);
-        background: var(--surface);
-        border-radius: var(--radius-xl);
-        padding: var(--spacing-md);
-        cursor: pointer;
-        transition: var(--transition);
-        border: 1px solid var(--border-light);
-        box-shadow: 0 4px 16px var(--shadow);
-    }
-
-    .secondary-story:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px var(--shadow-hover);
-    }
-
-    .secondary-image {
-        width: 120px;
-        height: 120px;
-        border-radius: var(--radius-lg);
-        object-fit: cover;
-        flex-shrink: 0;
-    }
-
-    .secondary-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .secondary-category {
-        color: var(--secondary);
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: var(--spacing-xs);
-    }
-
-    .secondary-title {
-        font-family: var(--headline-font);
-        font-size: 1.1rem;
-        font-weight: 600;
-        line-height: 1.3;
-        color: var(--text-dark);
-        margin-bottom: var(--spacing-xs);
-    }
-
-    .secondary-meta {
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-    }
-
-    /* Featured Stories Section */
-    .featured-section {
-        margin-bottom: var(--spacing-2xl);
-    }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: var(--spacing-xl);
-    }
-
-    .section-title {
-        font-family: var(--headline-font);
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--text-dark);
-        position: relative;
-    }
-
-    .section-title::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background: var(--secondary);
-        border-radius: var(--radius-sm);
-    }
-
-    .view-all-btn {
-        color: var(--secondary);
-        text-decoration: none;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-xs);
-        transition: var(--transition);
-    }
-
-    .view-all-btn:hover {
-        transform: translateX(4px);
-    }
-
-    /* Magazine Grid Layout */
-    .magazine-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
-        gap: var(--spacing-lg);
-        height: 500px;
-        margin-bottom: var(--spacing-2xl);
-    }
-
-    .magazine-card {
-        position: relative;
-        border-radius: var(--radius-xl);
-        overflow: hidden;
-        cursor: pointer;
-        transition: var(--transition);
-        background: var(--surface);
-        box-shadow: 0 4px 20px var(--shadow);
-    }
-
-    .magazine-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 32px var(--shadow-hover);
-    }
-
-    .magazine-card.large {
-        grid-row: 1 / 3;
-    }
-
-    .magazine-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: var(--transition);
-    }
-
-    .magazine-card:hover .magazine-image {
-        transform: scale(1.05);
-    }
-
-    .magazine-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-        padding: var(--spacing-lg);
-        color: white;
-    }
-
-    .magazine-card.large .magazine-overlay {
-        padding: var(--spacing-xl);
-    }
-
-    .magazine-category {
-        display: inline-block;
-        background: var(--secondary);
-        color: white;
-        padding: var(--spacing-xs) var(--spacing-sm);
-        border-radius: var(--radius-md);
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: var(--spacing-sm);
-    }
-
-    .magazine-title {
-        font-family: var(--headline-font);
-        font-weight: 600;
-        line-height: 1.3;
-        margin-bottom: var(--spacing-xs);
-    }
-
-    .magazine-card.large .magazine-title {
-        font-size: 1.8rem;
-        margin-bottom: var(--spacing-sm);
-    }
-
-    .magazine-card:not(.large) .magazine-title {
-        font-size: 1rem;
-    }
-
-    .magazine-meta {
-        font-size: 0.8rem;
-        opacity: 0.8;
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-    }
-
-    /* Latest Stories - Modern Layout */
-    .latest-section {
-        margin-bottom: var(--spacing-2xl);
-    }
-
-    .stories-masonry {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--spacing-xl);
-        margin-bottom: var(--spacing-xl);
-    }
-
-    .story-card {
-        background: var(--surface);
-        border-radius: var(--radius-xl);
-        overflow: hidden;
-        cursor: pointer;
-        transition: var(--transition);
-        border: 1px solid var(--border-light);
-        box-shadow: 0 4px 20px var(--shadow);
-        height: fit-content;
-    }
-
-    .story-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 32px var(--shadow-hover);
-    }
-
-    .story-image-container {
-        position: relative;
-        overflow: hidden;
-        height: 240px;
-    }
-
-    .story-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: var(--transition);
-    }
-
-    .story-card:hover .story-image {
-        transform: scale(1.05);
-    }
-
-    .story-content {
-        padding: var(--spacing-xl);
-    }
-
-    .story-category {
-        display: inline-block;
-        background: var(--secondary);
-        color: white;
-        padding: var(--spacing-xs) var(--spacing-md);
-        border-radius: var(--radius-lg);
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .story-title {
-        font-family: var(--headline-font);
-        font-size: 1.4rem;
-        font-weight: 600;
-        line-height: 1.3;
-        color: var(--text-dark);
-        margin-bottom: var(--spacing-md);
-    }
-
-    .story-excerpt {
-        color: var(--text-light);
-        line-height: 1.6;
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .story-meta {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: var(--spacing-md);
-        border-top: 1px solid var(--border-light);
-        color: var(--text-muted);
-        font-size: 0.9rem;
-    }
-
-    .story-author {
-        font-weight: 600;
-        color: var(--text-dark);
-    }
-
-    .story-date {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-xs);
-    }
-
-    /* Load More */
-    .load-more {
-        text-align: center;
-        margin: var(--spacing-2xl) 0;
-    }
-
-    .load-more-btn {
-        background: var(--surface);
-        color: var(--secondary);
-        border: 2px solid var(--secondary);
-        padding: var(--spacing-md) var(--spacing-xl);
-        border-radius: var(--radius-xl);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-        font-size: 1rem;
-    }
-
-    .load-more-btn:hover {
-        background: var(--secondary);
-        color: white;
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(255, 107, 0, 0.3);
-    }
-
-    /* Footer */
-    .footer {
-        background: var(--surface);
-        border-top: 1px solid var(--border);
-        padding: var(--spacing-xl) 0;
-        margin-top: var(--spacing-2xl);
-    }
-
-    .footer-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 var(--spacing-lg);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .footer-logo {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-    }
-
-    .footer-logo-img {
-        width: 32px;
-        height: 32px;
-        border-radius: var(--radius-md);
-    }
-
-    .footer-logo-text {
-        font-family: var(--headline-font);
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: var(--secondary);
-    }
-
-    .footer-links {
-        display: flex;
-        gap: var(--spacing-lg);
-    }
-
-    .footer-link {
-        color: var(--text-light);
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: var(--transition);
-    }
-
-    .footer-link:hover {
-        color: var(--secondary);
-    }
-
-    .footer-social {
-        display: flex;
-        gap: var(--spacing-sm);
-    }
-
-    .social-link {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: var(--surface-elevated);
-        border: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-light);
-        transition: var(--transition);
-    }
-
-    .social-link:hover {
-        background: var(--secondary);
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    /* Search Overlay */
-    .search-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
-        z-index: 1000;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: var(--transition);
-    }
-
-    .search-overlay.active {
-        display: flex;
-        opacity: 1;
-    }
-
-    .search-container {
-        background: var(--surface);
-        border-radius: var(--radius-2xl);
-        padding: var(--spacing-2xl);
-        width: 90%;
-        max-width: 600px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .search-input {
-        width: 100%;
-        padding: var(--spacing-lg);
-        border: 2px solid var(--border);
-        border-radius: var(--radius-xl);
-        background: var(--surface-elevated);
-        color: var(--text-dark);
-        font-size: 1.2rem;
-        font-family: var(--body-font);
-        transition: var(--transition);
-    }
-
-    .search-input:focus {
-        outline: none;
-        border-color: var(--secondary);
-        box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
-    }
-
-    .search-close {
-        position: absolute;
-        top: var(--spacing-lg);
-        right: var(--spacing-lg);
-        background: var(--surface);
-        border: none;
-        color: var(--text-dark);
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 16px var(--shadow);
-    }
-
-    .search-close:hover {
-        background: var(--secondary);
-        color: white;
-        transform: rotate(90deg);
-    }
-
-    /* Article Modal */
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        backdrop-filter: blur(10px);
-        z-index: 2000;
-        display: none;
-        opacity: 0;
-        transition: var(--transition);
-    }
-
-    .modal.active {
-        display: block;
-        opacity: 1;
-    }
-
-    .modal-content {
-        background: var(--background);
-        width: 100%;
-        height: 100%;
-        overflow-y: auto;
-        position: relative;
-    }
-
-    .modal-header {
-        background: var(--surface);
-        border-bottom: 1px solid var(--border);
-        padding: var(--spacing-md) var(--spacing-lg);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        backdrop-filter: blur(10px);
-    }
-
-    .modal-close {
-        position: fixed;
-        top: var(--spacing-lg);
-        right: var(--spacing-lg);
-        background: var(--surface);
-        border: none;
-        color: var(--text-dark);
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2001;
-        box-shadow: 0 4px 20px var(--shadow);
-    }
-
-    .modal-close:hover {
-        background: var(--secondary);
-        color: white;
-        transform: rotate(90deg);
-    }
-
-    .article-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: var(--spacing-2xl);
-    }
-
-    .article-header {
-        margin-bottom: var(--spacing-2xl);
-        text-align: center;
-    }
-
-    .article-title {
-        font-family: var(--headline-font);
-        font-size: 3rem;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-bottom: var(--spacing-md);
-        color: var(--text-dark);
-    }
-
-    .article-meta {
-        display: flex;
-        justify-content: center;
-        gap: var(--spacing-lg);
-        color: var(--text-muted);
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .article-cover {
-        width: 100%;
-        max-height: 500px;
-        object-fit: cover;
-        border-radius: var(--radius-2xl);
-        margin-bottom: var(--spacing-2xl);
-    }
-
-    .article-content {
-        font-family: var(--article-font);
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: var(--text-dark);
-    }
-
-    .article-content p {
-        margin-bottom: var(--spacing-md);
-    }
-
-    .article-content h2 {
-        font-family: var(--headline-font);
-        font-size: 2rem;
-        font-weight: 600;
-        margin: var(--spacing-2xl) 0 var(--spacing-md);
-        color: var(--text-dark);
-    }
-
-    .article-content h3 {
-        font-family: var(--headline-font);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: var(--spacing-xl) 0 var(--spacing-sm);
-        color: var(--text-dark);
-    }
-
-    /* Drop cap for first paragraph */
-    .article-content > p:first-of-type::first-letter {
-        font-family: var(--headline-font);
-        float: left;
-        font-size: 4rem;
-        line-height: 0.8;
-        padding-right: var(--spacing-sm);
-        margin-top: 0.2rem;
-        color: var(--secondary);
-        font-weight: 700;
-    }
-
-    /* Share Actions */
-    .article-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: var(--spacing-2xl);
-        padding-top: var(--spacing-lg);
-        border-top: 1px solid var(--border);
-    }
-
-    .share-options {
-        display: flex;
-        gap: var(--spacing-sm);
-    }
-
-    .share-btn {
-        background: var(--surface-elevated);
-        border: 1px solid var(--border);
-        color: var(--text-light);
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .share-btn:hover {
-        background: var(--secondary);
-        color: white;
-        border-color: var(--secondary);
-        transform: translateY(-2px);
-    }
-
-    /* Toast */
-    .toast {
-        position: fixed;
-        bottom: var(--spacing-lg);
-        left: 50%;
-        transform: translateX(-50%) translateY(100px);
-        background: var(--text-dark);
-        color: var(--background);
-        padding: var(--spacing-sm) var(--spacing-lg);
-        border-radius: var(--radius-xl);
-        font-weight: 500;
-        z-index: 3000;
-        opacity: 0;
-        transition: var(--transition);
-        box-shadow: 0 8px 32px var(--shadow-strong);
-    }
-
-    .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    /* Skeleton Loading */
-    .skeleton {
-        background: linear-gradient(90deg, var(--surface-elevated) 0%, var(--border-light) 50%, var(--surface-elevated) 100%);
-        background-size: 200% 100%;
-        animation: skeleton-loading 1.5s infinite;
-        border-radius: var(--radius-md);
-    }
-
-    @keyframes skeleton-loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    /* Reading Progress */
-    .reading-progress {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 0;
-        height: 3px;
-        background: var(--secondary);
-        z-index: 1001;
-        transition: width 0.1s ease;
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-        .hero-grid {
-            grid-template-columns: 1fr;
-            height: auto;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANG SILAKBO • The Official Publication of UCLM-SHS</title>
+    <link rel="icon" href="SILAKBO (1).png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            /* Light theme colors */
+            --primary: #121212;
+            --primary-light: #2A2A2A;
+            --secondary: #FF6B00;
+            --secondary-light: #FF8A3D;
+            --secondary-dark: #E05A00;
+            --text-dark: #121212;
+            --text-light: #5F5F5F;
+            --text-muted: #9E9E9E;
+            --background: #FFFFFF;
+            --surface: #FFFFFF;
+            --surface-elevated: #F8F9FA;
+            --border: #E5E7EB;
+            --border-light: #F3F4F6;
+            --shadow: rgba(0, 0, 0, 0.06);
+            --shadow-hover: rgba(0, 0, 0, 0.1);
+            --shadow-strong: rgba(0, 0, 0, 0.12);
+            
+            /* Typography */
+            --headline-font: 'Playfair Display', serif;
+            --body-font: 'Source Sans Pro', sans-serif;
+            --article-font: 'Merriweather', serif;
+            
+            /* Spacing and sizing */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Transitions */
+            --transition: all 0.2s ease;
         }
 
-        .hero-main {
-            height: 400px;
+        [data-theme="dark"] {
+            --primary: #FFFFFF;
+            --primary-light: #F5F5F5;
+            --text-dark: #FFFFFF;
+            --text-light: #B0B0B0;
+            --text-muted: #6B7280;
+            --background: #000000;
+            --surface: #111111;
+            --surface-elevated: #1A1A1A;
+            --border: #333333;
+            --border-light: #444444;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --shadow-hover: rgba(0, 0, 0, 0.7);
+            --shadow-strong: rgba(0, 0, 0, 0.8);
         }
 
-        .magazine-grid {
-            grid-template-columns: 1fr 1fr;
-            height: auto;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .magazine-card.large {
-            grid-column: 1 / -1;
-            height: 300px;
+        body {
+            font-family: var(--body-font);
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.5;
+            font-size: 14px;
         }
 
-        .stories-masonry {
-            grid-template-columns: repeat(2, 1fr);
+        /* Header */
+        .header {
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .footer-container {
-            flex-direction: column;
-            gap: var(--spacing-lg);
-            text-align: center;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
         }
 
-        .footer-logo {
-            justify-content: center;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-dark);
         }
 
-        .footer-social {
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .header-container {
-            padding: var(--spacing-sm) var(--spacing-md);
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
         }
 
-        .nav-links {
-            display: none;
+        .logo-text {
+            font-family: var(--headline-font);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            color: var(--text-dark);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--surface-elevated);
+            color: var(--text-dark);
         }
 
         .mobile-menu-btn {
-            display: block;
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 8px;
         }
 
-        .main {
-            padding: 0 var(--spacing-md);
-        }
-
-        .hero-section {
-            padding: var(--spacing-xl) 0;
-        }
-
-        .hero-secondary {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--spacing-md);
-        }
-
-        .secondary-story {
-            flex-direction: column;
-        }
-
-        .secondary-image {
-            width: 100%;
-            height: 200px;
-        }
-
-        .magazine-grid {
-            grid-template-columns: 1fr;
-            gap: var(--spacing-md);
-        }
-
-        .magazine-card.large {
-            grid-column: 1;
-            height: 250px;
-        }
-
-        .stories-masonry {
-            grid-template-columns: 1fr;
-        }
-
-        .section-title {
-            font-size: 2rem;
-        }
-
-        .hero-title {
-            font-size: 2rem;
-        }
-
-        .article-title {
-            font-size: 2rem;
-        }
-
-        .article-meta {
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-
-        .article-actions {
-            flex-direction: column;
-            gap: var(--spacing-md);
-            align-items: stretch;
-        }
-
-        .share-options {
+        /* Search Section */
+        .search-section {
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
             justify-content: center;
         }
 
-        .footer-links {
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 16px 8px 40px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            color: var(--text-dark);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            display: none;
+        }
+
+        .search-clear:hover {
+            background: var(--surface-elevated);
+            color: var(--text-dark);
+        }
+
+        .search-clear.visible {
+            display: block;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            padding: 32px 24px;
+            border-right: 1px solid var(--border);
+            background: var(--background);
+        }
+
+        .journal-badge {
+            background: var(--surface-elevated);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .sidebar-title {
+            font-family: var(--headline-font);
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .sidebar-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 32px;
+        }
+
+        .sidebar-nav {
+            display: flex;
             flex-direction: column;
-            gap: var(--spacing-md);
-        }
-    }
-
-    @media (max-width: 480px) {
-        .main {
-            padding: 0 var(--spacing-sm);
+            gap: 4px;
         }
 
-        .hero-overlay,
-        .magazine-overlay {
-            padding: var(--spacing-md);
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            cursor: pointer;
         }
 
-        .story-content {
-            padding: var(--spacing-md);
+        .nav-item:hover {
+            background: var(--surface-elevated);
+            color: var(--text-dark);
+        }
+
+        .nav-item.active {
+            background: var(--surface-elevated);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 32px 24px;
+        }
+
+        .content-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content-title {
+            font-family: var(--headline-font);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .content-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Search Results */
+        .search-results-header {
+            display: none;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--surface-elevated);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .search-results-header.visible {
+            display: block;
+        }
+
+        .search-results-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .search-results-count {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-light);
+        }
+
+        .no-results-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .no-results-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .no-results-text {
+            font-size: 14px;
+        }
+
+        /* Articles Layout */
+        .articles-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Featured Article */
+        .featured-article {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 32px;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .featured-article:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .featured-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-category {
+            color: var(--secondary);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .featured-title {
+            font-family: var(--headline-font);
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .featured-excerpt {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .featured-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .featured-image {
+            width: 320px;
+            height: 240px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+        }
+
+        /* Regular Articles Grid */
+        .regular-articles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .regular-article {
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .regular-article:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .regular-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .regular-content {
+            padding: 20px;
+        }
+
+        .regular-category {
+            color: var(--secondary);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .regular-title {
+            font-family: var(--headline-font);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .regular-excerpt {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .regular-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .view-count {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Social Share */
+        .social-share {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .featured-article:hover .social-share,
+        .regular-article:hover .social-share {
+            opacity: 1;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .share-btn.facebook:hover {
+            background: #1877F2;
+            color: white;
+        }
+
+        .share-btn.twitter:hover {
+            background: #1DA1F2;
+            color: white;
+        }
+
+        .share-btn.issuu:hover {
+            background: #F26F61;
+            color: white;
+        }
+
+        [data-theme="dark"] .share-btn {
+            background: rgba(17, 17, 17, 0.9);
+            color: var(--text-light);
+        }
+
+        [data-theme="dark"] .share-btn:hover {
+            background: rgba(17, 17, 17, 1);
+        }
+
+        /* Load More */
+        .load-more {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .load-more-btn {
+            background: var(--surface);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .load-more-btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Article Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .modal.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--background);
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--surface);
+            border: none;
+            color: var(--text-dark);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2001;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .modal-close:hover {
+            background: var(--secondary);
+            color: white;
         }
 
         .article-container {
-            padding: var(--spacing-md);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 24px;
         }
 
-        .search-container {
-            padding: var(--spacing-lg);
+        .article-header {
+            margin-bottom: 32px;
+            text-align: center;
         }
-    }
 
-    /* Mobile Menu */
-    .mobile-menu {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 280px;
-        height: 100%;
-        background: var(--surface);
-        z-index: 1500;
-        padding: var(--spacing-xl) var(--spacing-lg);
-        transition: var(--transition);
-        box-shadow: 0 0 30px var(--shadow);
-    }
+        .article-modal-title {
+            font-family: var(--headline-font);
+            font-size: 36px;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
 
-    .mobile-menu.active {
-        left: 0;
-    }
+        .article-modal-meta {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
 
-    .mobile-menu-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--spacing-xl);
-        padding-bottom: var(--spacing-lg);
-        border-bottom: 1px solid var(--border);
-    }
+        .article-cover {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 0;
+            margin-bottom: 32px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-    .mobile-nav-links {
-        list-style: none;
-    }
+        .article-cover:hover {
+            opacity: 0.9;
+        }
 
-    .mobile-nav-links li {
-        margin-bottom: var(--spacing-sm);
-    }
+        .article-body {
+            font-family: var(--article-font);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 48px;
+        }
 
-    .mobile-nav-links a {
-        color: var(--text-dark);
-        text-decoration: none;
-        font-weight: 500;
-        padding: var(--spacing-sm);
-        border-radius: var(--radius-md);
-        display: block;
-        transition: var(--transition);
-    }
+        .article-body p {
+            margin-bottom: 16px;
+        }
 
-    .mobile-nav-links a:hover,
-    .mobile-nav-links a.active {
-        background: rgba(255, 107, 0, 0.1);
-        color: var(--secondary);
-    }
+        .article-body h2 {
+            font-family: var(--headline-font);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 32px 0 16px;
+            color: var(--text-dark);
+        }
 
-    .mobile-menu-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1400;
-        opacity: 0;
-        visibility: hidden;
-        transition: var(--transition);
-    }
+        .article-body img {
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: var(--radius-md);
+        }
 
-    .mobile-menu-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
-</style>
+        .article-body img:hover {
+            opacity: 0.9;
+        }
+
+        /* Mobile Modal Styles */
+        .mobile-article-header {
+            display: none;
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .mobile-article-cover {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 0;
+            cursor: pointer;
+        }
+
+        .mobile-article-title-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 32px 20px 20px;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+
+        .mobile-article-title {
+            font-family: var(--headline-font);
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .mobile-article-category {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .mobile-article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .mobile-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .mobile-meta-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Modern Article Sharing Section */
+        .article-sharing {
+            margin: 48px 0 32px;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sharing-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .sharing-title {
+            font-family: var(--headline-font);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .sharing-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .sharing-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .modern-share-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-share-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .modern-share-btn:hover::before {
+            left: 100%;
+        }
+
+        .modern-share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modern-share-btn.facebook {
+            border-color: #1877F2;
+            color: #1877F2;
+        }
+
+        .modern-share-btn.facebook:hover {
+            background: #1877F2;
+            color: white;
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.3);
+        }
+
+        .modern-share-btn.twitter {
+            border-color: #1DA1F2;
+            color: #1DA1F2;
+        }
+
+        .modern-share-btn.twitter:hover {
+            background: #1DA1F2;
+            color: white;
+            box-shadow: 0 8px 25px rgba(29, 161, 242, 0.3);
+        }
+
+        .modern-share-btn.issuu {
+            border-color: #F26F61;
+            color: #F26F61;
+        }
+
+        .modern-share-btn.issuu:hover {
+            background: #F26F61;
+            color: white;
+            box-shadow: 0 8px 25px rgba(242, 111, 97, 0.3);
+        }
+
+        .modern-share-btn.copy {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .modern-share-btn.copy:hover {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.3);
+        }
+
+        .modern-share-btn.copy.success {
+            background: #10B981;
+            border-color: #10B981;
+            color: white;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .share-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-text {
+            flex: 1;
+        }
+
+        [data-theme="dark"] .modern-share-btn {
+            background: var(--surface-elevated);
+            border-color: var(--border-light);
+        }
+
+        [data-theme="dark"] .modern-share-btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Image Viewer Modal */
+        .image-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            display: none;
+            opacity: 0;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .image-viewer.active {
+            display: flex;
+            opacity: 1;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .image-viewer-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .image-viewer-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Reading Progress */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, var(--surface-elevated) 0%, var(--border-light) 50%, var(--surface-elevated) 100%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: var(--radius-md);
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 24px;
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .nav-item {
+                padding: 6px 12px;
+                background: var(--surface-elevated);
+                border-radius: 20px;
+                font-size: 13px;
+            }
+
+            .featured-article {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .featured-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .regular-articles {
+                grid-template-columns: 1fr;
+            }
+
+            .search-container {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 16px;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .search-section {
+                padding: 12px 16px;
+            }
+            
+            .search-container {
+                width: 200px;
+            }
+
+            .sidebar {
+                padding: 16px;
+            }
+
+            .sidebar-title {
+                font-size: 24px;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+
+            .featured-article {
+                padding: 16px;
+            }
+
+            .featured-title {
+                font-size: 20px;
+            }
+
+            .regular-content {
+                padding: 16px;
+            }
+
+            .regular-title {
+                font-size: 16px;
+            }
+            
+            .sidebar-nav {
+                display: none;
+            }
+
+            /* Mobile Modal */
+            .article-header {
+                display: none;
+            }
+
+            .mobile-article-header {
+                display: block;
+            }
+
+            .article-modal-title {
+                font-size: 24px;
+            }
+
+            .article-modal-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .article-container {
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .article-body {
+                padding: 0 20px 32px;
+            }
+
+            .article-cover {
+                display: none;
+            }
+
+            .sharing-buttons {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .modern-share-btn {
+                padding: 14px 16px;
+                font-size: 13px;
+            }
+
+            .article-sharing {
+                margin: 32px 0 24px;
+                padding: 24px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0 12px;
+            }
+
+            .logo-text {
+                font-size: 16px;
+            }
+
+            .search-container {
+                width: 150px;
+            }
+
+            .sidebar {
+                padding: 12px;
+            }
+
+            .content-area {
+                padding: 12px;
+            }
+
+            .featured-article {
+                padding: 12px;
+            }
+
+            .regular-content {
+                padding: 12px;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100%;
+            background: var(--surface);
+            z-index: 1500;
+            padding: 24px;
+            transition: var(--transition);
+            box-shadow: 0 0 20px var(--shadow);
+        }
+
+        .mobile-menu.active {
+            left: 0;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mobile-nav-links .nav-item {
+            padding: 12px;
+            border-radius: var(--radius-md);
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1400;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Desktop/Mobile visibility classes */
+        .desktop-only {
+            display: block;
+        }
+
+        .mobile-only {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-only {
+                display: none;
+            }
+            
+            .mobile-only {
+                display: block;
+            }
+            
+            .mobile-article-header.mobile-only {
+                display: block;
+            }
+            
+            .mobile-article-meta.mobile-only {
+                display: flex;
+            }
+        }
+    </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="header-container">
+        <div class="header-left">
             <a href="#" class="logo">
-                <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=S'">
+                <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/32x32?text=S'">
                 <span class="logo-text">ANG SILAKBO</span>
             </a>
-
-            <nav class="nav">
-                <ul class="nav-links">
-                    <li><a href="#" class="nav-link active" data-filter="all">All Stories</a></li>
-                    <li><a href="#" class="nav-link" data-filter="article">Articles</a></li>
-                    <li><a href="#" class="nav-link" data-filter="literary">Literary</a></li>
-                    <li><a href="#" class="nav-link" data-filter="feature">Feature</a></li>
-                    <li><a href="#" class="nav-link" data-filter="silak">Silak-salitaan</a></li>
-                    <li><a href="#" class="nav-link" data-filter="photostory">Photostory</a></li>
-                </ul>
+            <nav class="header-nav">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#" class="nav-link">Articles</a>
+                <a href="#" class="nav-link">Literary</a>
+                <a href="#" class="nav-link">Features</a>
+                <a href="#" class="nav-link">About</a>
             </nav>
-
-            <div class="header-actions">
-                <button class="icon-btn" id="searchBtn">
-                    <i class="material-icons">search</i>
-                </button>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="material-icons">dark_mode</i>
-                </button>
-                <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="material-icons">menu</i>
-                </button>
-            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-ghost" id="themeToggle">
+                <i class="material-icons" style="font-size: 18px;">dark_mode</i>
+            </button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="material-icons">menu</i>
+            </button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-grid" id="heroGrid">
-                <!-- Hero Main Skeleton -->
-                <div class="hero-main">
-                    <div class="skeleton" style="width: 100%; height: 100%;"></div>
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-container">
+            <i class="material-icons search-icon" style="font-size: 18px;">search</i>
+            <input type="text" class="search-input" placeholder="Search articles..." id="searchInput">
+            <button class="search-clear" id="searchClear">
+                <i class="material-icons" style="font-size: 16px;">close</i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="journal-badge">Articles Archives</div>
+            <h1 class="sidebar-title">Inside Stories: Articles and interviews</h1>
+            <p class="sidebar-subtitle">Subscribe for the latest stories, articles, literary works, and exclusive interviews with student writers and faculty.</p>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-filter="all">
+                    <div class="nav-icon">
+                        <i class="material-icons" style="font-size: 18px;">view_list</i>
+                    </div>
+                    View all
+                </a>
+                <a href="#" class="nav-item" data-filter="article">
+                    <div class="nav-icon">
+                        <i class="material-icons" style="font-size: 18px;">article</i>
+                    </div>
+                    Articles
+                </a>
+                <a href="#" class="nav-item" data-filter="literary">
+                    <div class="nav-icon">
+                        <i class="material-icons" style="font-size: 18px;">auto_stories</i>
+                    </div>
+                    Literary
+                </a>
+                <a href="#" class="nav-item" data-filter="feature">
+                    <div class="nav-icon">
+                        <i class="material-icons" style="font-size: 18px;">star</i>
+                    </div>
+                    Feature
+                </a>
+                <a href="#" class="nav-item" data-filter="silak">
+                    <div class="nav-icon">
+                        <i class="material-icons" style="font-size: 18px;">translate</i>
+                    </div>
+                    Silak-salitaan
+                </a>
+                <a href="#" class="nav-item" data-filter="photostory">
+                    <div class="nav-icon">
+                        <i class="material-icons" style="font-size: 18px;">photo_library</i>
+                    </div>
+                    Photostory
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <div class="content-header">
+                <h2 class="content-title" id="contentTitle">Latest Stories</h2>
+                <p class="content-subtitle" id="contentSubtitle">Discover the latest articles, literary works, and stories from our student writers.</p>
+            </div>
+
+            <!-- Search Results Header -->
+            <div class="search-results-header" id="searchResultsHeader">
+                <div class="search-results-title" id="searchResultsTitle">Search Results</div>
+                <div class="search-results-count" id="searchResultsCount">0 articles found</div>
+            </div>
+
+            <div class="articles-container" id="articlesContainer">
+                <!-- Loading skeletons -->
+                <div class="featured-article">
+                    <div class="featured-content">
+                        <div class="skeleton" style="height: 16px; width: 80px; margin-bottom: 12px;"></div>
+                        <div class="skeleton" style="height: 32px; width: 100%; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 32px; width: 80%; margin-bottom: 16px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; margin-bottom: 20px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 200px;"></div>
+                    </div>
+                    <div class="skeleton featured-image"></div>
                 </div>
                 
-                <!-- Hero Secondary Skeleton -->
-                <div class="hero-secondary">
-                    <div class="secondary-story">
-                        <div class="skeleton secondary-image"></div>
-                        <div class="secondary-content">
-                            <div class="skeleton" style="height: 16px; width: 60px; margin-bottom: 8px;"></div>
-                            <div class="skeleton" style="height: 20px; width: 100%; margin-bottom: 8px;"></div>
-                            <div class="skeleton" style="height: 14px; width: 80px;"></div>
+                <div class="regular-articles">
+                    <div class="regular-article">
+                        <div class="skeleton regular-image"></div>
+                        <div class="regular-content">
+                            <div class="skeleton" style="height: 14px; width: 60px; margin-bottom: 8px;"></div>
+                            <div class="skeleton" style="height: 20px; width: 100%; margin-bottom: 4px;"></div>
+                            <div class="skeleton" style="height: 20px; width: 80%; margin-bottom: 12px;"></div>
+                            <div class="skeleton" style="height: 14px; width: 100%; margin-bottom: 4px;"></div>
+                            <div class="skeleton" style="height: 14px; width: 70%; margin-bottom: 16px;"></div>
+                            <div class="skeleton" style="height: 12px; width: 120px;"></div>
                         </div>
                     </div>
-                    <div class="secondary-story">
-                        <div class="skeleton secondary-image"></div>
-                        <div class="secondary-content">
-                            <div class="skeleton" style="height: 16px; width: 60px; margin-bottom: 8px;"></div>
-                            <div class="skeleton" style="height: 20px; width: 100%; margin-bottom: 8px;"></div>
-                            <div class="skeleton" style="height: 14px; width: 80px;"></div>
+                    
+                    <div class="regular-article">
+                        <div class="skeleton regular-image"></div>
+                        <div class="regular-content">
+                            <div class="skeleton" style="height: 14px; width: 60px; margin-bottom: 8px;"></div>
+                            <div class="skeleton" style="height: 20px; width: 100%; margin-bottom: 4px;"></div>
+                            <div class="skeleton" style="height: 20px; width: 80%; margin-bottom: 12px;"></div>
+                            <div class="skeleton" style="height: 14px; width: 100%; margin-bottom: 4px;"></div>
+                            <div class="skeleton" style="height: 14px; width: 70%; margin-bottom: 16px;"></div>
+                            <div class="skeleton" style="height: 12px; width: 120px;"></div>
                         </div>
-                    </div>
-                    <div class="secondary-story">
-                        <div class="skeleton secondary-image"></div>
-                        <div class="secondary-content">
-                            <div class="skeleton" style="height: 16px; width: 60px; margin-bottom: 8px;"></div>
-                            <div class="skeleton" style="height: 20px; width: 100%; margin-bottom: 8px;"></div>
-                            <div class="skeleton" style="height: 14px; width: 80px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Featured Stories Section -->
-        <section class="featured-section">
-            <div class="section-header">
-                <h2 class="section-title">Featured Stories</h2>
-                <a href="#" class="view-all-btn">
-                    View All
-                    <i class="material-icons">arrow_forward</i>
-                </a>
-            </div>
-            
-            <div class="magazine-grid" id="magazineGrid">
-                <!-- Magazine Grid Skeleton -->
-                <div class="magazine-card large">
-                    <div class="skeleton" style="width: 100%; height: 100%;"></div>
-                </div>
-                <div class="magazine-card">
-                    <div class="skeleton" style="width: 100%; height: 100%;"></div>
-                </div>
-                <div class="magazine-card">
-                    <div class="skeleton" style="width: 100%; height: 100%;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Latest Stories -->
-        <section class="latest-section">
-            <div class="section-header">
-                <h2 class="section-title">All Stories</h2>
-            </div>
-            
-            <div class="stories-masonry" id="storiesGrid">
-                <!-- Stories Skeleton -->
-                <div class="story-card">
-                    <div class="story-image-container">
-                        <div class="skeleton story-image"></div>
-                    </div>
-                    <div class="story-content">
-                        <div class="skeleton" style="height: 20px; width: 80px; margin-bottom: 1rem;"></div>
-                        <div class="skeleton" style="height: 28px; width: 100%; margin-bottom: 1rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 0.5rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 0.5rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 70%;"></div>
-                    </div>
-                </div>
-                <div class="story-card">
-                    <div class="story-image-container">
-                        <div class="skeleton story-image"></div>
-                    </div>
-                    <div class="story-content">
-                        <div class="skeleton" style="height: 20px; width: 80px; margin-bottom: 1rem;"></div>
-                        <div class="skeleton" style="height: 28px; width: 100%; margin-bottom: 1rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 0.5rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 0.5rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 70%;"></div>
-                    </div>
-                </div>
-                <div class="story-card">
-                    <div class="story-image-container">
-                        <div class="skeleton story-image"></div>
-                    </div>
-                    <div class="story-content">
-                        <div class="skeleton" style="height: 20px; width: 80px; margin-bottom: 1rem;"></div>
-                        <div class="skeleton" style="height: 28px; width: 100%; margin-bottom: 1rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 0.5rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 100%; margin-bottom: 0.5rem;"></div>
-                        <div class="skeleton" style="height: 16px; width: 70%;"></div>
                     </div>
                 </div>
             </div>
 
             <div class="load-more">
                 <button class="load-more-btn" id="loadMoreBtn">
-                    <i class="material-icons">expand_more</i>
+                    <i class="material-icons" style="font-size: 16px;">expand_more</i>
                     Load More Stories
                 </button>
             </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-logo">
-                <img src="SILAKBO.png" alt="Silakbo Logo" class="footer-logo-img" onerror="this.src='https://via.placeholder.com/32x32?text=S'">
-                <span class="footer-logo-text">ANG SILAKBO ARCHIVES</span>
-            </div>
-            <div class="footer-links">
-                <a href="About Us" class="footer-link">About Us</a>
-                <a href="Chat Request" class="footer-link">Contact</a>
-                <a href="Submissionposts" class="footer-link">Submit Work</a>
-                <a href="Ang Silakbo Application" class="footer-link">Join Our Team</a>
-                <a href="Privacy" class="footer-link">Privacy Policy</a>
-            </div>
-            <div class="footer-social">
-                <a href="https://www.facebook.com/AngSilakboUCLM" class="social-link">
-                    <i class="material-icons">facebook</i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="material-icons">share</i>
-                </a>
-                <a href="uclm@angsilakbo.edu.ph" class="social-link">
-                    <i class="material-icons">email</i>
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Search Overlay -->
-    <div class="search-overlay" id="searchOverlay">
-        <div class="search-container">
-            <form id="searchForm">
-                <input type="text" class="search-input" placeholder="Search stories, authors, topics..." id="searchInput">
-            </form>
-        </div>
-        <button class="search-close" id="searchClose">
-            <i class="material-icons">close</i>
-        </button>
+        </main>
     </div>
 
     <!-- Article Modal -->
@@ -1435,7 +1514,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="logo">
-                    <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=S'">
+                    <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/32x32?text=S'">
                     <span class="logo-text">ANG SILAKBO</span>
                 </div>
             </div>
@@ -1448,30 +1527,67 @@
         </button>
     </div>
 
+    <!-- Image Viewer Modal -->
+    <div class="image-viewer" id="imageViewer">
+        <div class="image-viewer-content">
+            <img id="imageViewerImg" src="/placeholder.svg" alt="">
+            <button class="image-viewer-close" id="imageViewerClose">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+    </div>
+
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <div class="logo">
-                <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=S'">
+                <img src="SILAKBO.png" alt="Silakbo Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/32x32?text=S'">
                 <span class="logo-text">ANG SILAKBO</span>
             </div>
-            <button class="icon-btn" id="mobileMenuClose">
+            <button class="btn btn-ghost" id="mobileMenuClose">
                 <i class="material-icons">close</i>
             </button>
         </div>
-        <ul class="mobile-nav-links">
-            <li><a href="#" class="active" data-filter="all">All Stories</a></li>
-            <li><a href="#" data-filter="article">Articles</a></li>
-            <li><a href="#" data-filter="literary">Literary</a></li>
-            <li><a href="#" data-filter="feature">Feature</a></li>
-            <li><a href="#" data-filter="silak">Silak-salitaan</a></li>
-            <li><a href="#" data-filter="photostory">Photostory</a></li>
-        </ul>
+        <div class="mobile-nav-links">
+            <a href="#" class="nav-item active" data-filter="all">
+                <div class="nav-icon">
+                    <i class="material-icons" style="font-size: 18px;">view_list</i>
+                </div>
+                View all
+            </a>
+            <a href="#" class="nav-item" data-filter="article">
+                <div class="nav-icon">
+                    <i class="material-icons" style="font-size: 18px;">article</i>
+                </div>
+                Articles
+            </a>
+            <a href="#" class="nav-item" data-filter="literary">
+                <div class="nav-icon">
+                    <i class="material-icons" style="font-size: 18px;">auto_stories</i>
+                </div>
+                Literary
+            </a>
+            <a href="#" class="nav-item" data-filter="feature">
+                <div class="nav-icon">
+                    <i class="material-icons" style="font-size: 18px;">star</i>
+                </div>
+                Feature
+            </a>
+            <a href="#" class="nav-item" data-filter="silak">
+                <div class="nav-icon">
+                    <i class="material-icons" style="font-size: 18px;">translate</i>
+                </div>
+                Silak-salitaan
+            </a>
+            <a href="#" class="nav-item" data-filter="photostory">
+                <div class="nav-icon">
+                    <i class="material-icons" style="font-size: 18px;">photo_library</i>
+                </div>
+                Photostory
+            </a>
+        </div>
     </div>
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">Link copied to clipboard!</div>
 
     <!-- Reading Progress -->
     <div class="reading-progress" id="readingProgress"></div>
@@ -1491,43 +1607,37 @@
 
         // Global Variables
         let allPosts = [];
+        let filteredPosts = [];
         let displayedPosts = 0;
         let postsPerPage = 6;
         let currentFilter = 'all';
+        let currentSearchQuery = '';
         let currentPostId = null;
-        let bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
         let viewCounts = JSON.parse(localStorage.getItem('viewCounts')) || {};
+        let scrollViewCounts = JSON.parse(localStorage.getItem('scrollViewCounts')) || {};
 
         // DOM Elements
-        const heroGrid = document.getElementById('heroGrid');
-        const magazineGrid = document.getElementById('magazineGrid');
-        const storiesGrid = document.getElementById('storiesGrid');
+        const articlesContainer = document.getElementById('articlesContainer');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
-        const searchBtn = document.getElementById('searchBtn');
-        const searchOverlay = document.getElementById('searchOverlay');
-        const searchClose = document.getElementById('searchClose');
-        const searchForm = document.getElementById('searchForm');
-        const searchInput = document.getElementById('searchInput');
         const themeToggle = document.getElementById('themeToggle');
+        const articleModal = document.getElementById('articleModal');
+        const modalClose = document.getElementById('modalClose');
+        const articleContainer = document.getElementById('articleContainer');
+        const readingProgress = document.getElementById('readingProgress');
+        const contentTitle = document.getElementById('contentTitle');
+        const contentSubtitle = document.getElementById('contentSubtitle');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileMenuClose = document.getElementById('mobileMenuClose');
         const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-        const articleModal = document.getElementById('articleModal');
-        const modalClose = document.getElementById('modalClose');
-        const articleContainer = document.getElementById('articleContainer');
-        const toast = document.getElementById('toast');
-        const readingProgress = document.getElementById('readingProgress');
-
-        // Initialize AOS
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                once: true,
-                offset: 50,
-                duration: 600,
-                easing: 'ease-out-cubic'
-            });
-        });
+        const searchInput = document.getElementById('searchInput');
+        const searchClear = document.getElementById('searchClear');
+        const searchResultsHeader = document.getElementById('searchResultsHeader');
+        const searchResultsTitle = document.getElementById('searchResultsTitle');
+        const searchResultsCount = document.getElementById('searchResultsCount');
+        const imageViewer = document.getElementById('imageViewer');
+        const imageViewerImg = document.getElementById('imageViewerImg');
+        const imageViewerClose = document.getElementById('imageViewerClose');
 
         // Theme Management
         function initTheme() {
@@ -1549,6 +1659,83 @@
             icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
         }
 
+        // Search Functionality
+        function performSearch(query) {
+            currentSearchQuery = query.toLowerCase().trim();
+            
+            if (currentSearchQuery === '') {
+                // Reset to normal view
+                searchResultsHeader.classList.remove('visible');
+                filteredPosts = currentFilter === 'all' ? allPosts : allPosts.filter(post => post.category.toLowerCase() === currentFilter);
+                updateContentHeader();
+            } else {
+                // Perform search
+                const baseFilter = currentFilter === 'all' ? allPosts : allPosts.filter(post => post.category.toLowerCase() === currentFilter);
+                
+                filteredPosts = baseFilter.filter(post => {
+                    const title = getPostTitle(post).toLowerCase();
+                    const content = stripHtml(post.content || '').toLowerCase();
+                    const author = (post.author || '').toLowerCase();
+                    const category = post.category.toLowerCase();
+                    
+                    return title.includes(currentSearchQuery) || 
+                           content.includes(currentSearchQuery) || 
+                           author.includes(currentSearchQuery) || 
+                           category.includes(currentSearchQuery);
+                });
+
+                // Show search results header
+                searchResultsHeader.classList.add('visible');
+                searchResultsTitle.textContent = `Search results for "${query}"`;
+                searchResultsCount.textContent = `${filteredPosts.length} article${filteredPosts.length !== 1 ? 's' : ''} found`;
+            }
+
+            displayedPosts = 0;
+            loadArticles();
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            searchClear.classList.remove('visible');
+            performSearch('');
+        }
+
+        function updateContentHeader() {
+            const filterTitles = {
+                'all': 'Latest Stories',
+                'article': 'Articles',
+                'literary': 'Literary Works',
+                'feature': 'Feature Stories',
+                'silak': 'Silak-salitaan',
+                'photostory': 'Photo Stories'
+            };
+
+            const filterSubtitles = {
+                'all': 'Discover the latest articles, literary works, and stories from our student writers.',
+                'article': 'In-depth articles and news from our student journalists.',
+                'literary': 'Poetry, short stories, and creative writing from our literary contributors.',
+                'feature': 'Featured stories and special reports from our editorial team.',
+                'silak': 'Exploring Filipino words and their cultural significance.',
+                'photostory': 'Visual storytelling through photography and captions.'
+            };
+
+            contentTitle.textContent = filterTitles[currentFilter] || 'Stories';
+            contentSubtitle.textContent = filterSubtitles[currentFilter] || 'Discover stories from our writers.';
+        }
+
+        // Image Viewer Functions
+        function openImageViewer(imageSrc, imageAlt) {
+            imageViewerImg.src = imageSrc;
+            imageViewerImg.alt = imageAlt || '';
+            imageViewer.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageViewer() {
+            imageViewer.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
         // Utility Functions
         function truncateText(text, wordCount) {
             if (!text) return '';
@@ -1560,10 +1747,10 @@
         function formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
         }
 
@@ -1573,19 +1760,13 @@
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
+            
             if (diffDays === 0) {
-                const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-                if (diffHours === 0) {
-                    const diffMinutes = Math.floor(diffTime / (1000 * 60));
-                    return diffMinutes === 0 ? 'Just now' : `${diffMinutes}m ago`;
-                }
-                return `${diffHours}h ago`;
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Yesterday';
             } else if (diffDays < 7) {
-                return `${diffDays}d ago`;
-            } else if (diffDays < 30) {
-                const diffWeeks = Math.floor(diffDays / 7);
-                return `${diffWeeks}w ago`;
+                return `${diffDays} days ago`;
             } else {
                 return formatDate(dateString);
             }
@@ -1602,65 +1783,102 @@
             return post.title || post.category.charAt(0).toUpperCase() + post.category.slice(1);
         }
 
-        function getReadingTime(text) {
-            const wordsPerMinute = 200;
-            const wordCount = text.split(/\s+/).length;
-            const readingTime = Math.ceil(wordCount / wordsPerMinute);
-            return readingTime < 1 ? 1 : readingTime;
+        function getAuthorInitials(author) {
+            if (!author) return 'U';
+            return author.split(' ').map(name => name.charAt(0)).join('').substring(0, 2).toUpperCase();
         }
 
-        function generateSlug(text) {
-            return text.toString().toLowerCase()
-                .replace(/\s+/g, '-')
-                .replace(/[^\w\-]+/g, '')
-                .replace(/\-\-+/g, '-')
-                .replace(/^-+/, '')
-                .replace(/-+$/, '');
+        function generatePostUrl(postId) {
+            return `${window.location.origin}${window.location.pathname}?post=${postId}`;
         }
 
-        function getPostUrl(post) {
+        // Social Sharing Functions
+        function shareToFacebook(postId, event) {
+            event.stopPropagation();
+            const post = allPosts.find(p => p.id == postId);
+            const url = generatePostUrl(postId);
             const title = getPostTitle(post);
-            const slug = generateSlug(title);
-            return `${window.location.origin}${window.location.pathname}?post=${post.id}&title=${slug}`;
+            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(title)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Link copied to clipboard!');
-            }).catch(err => {
-                console.error('Could not copy text: ', err);
-            });
+        function shareToTwitter(postId, event) {
+            event.stopPropagation();
+            const post = allPosts.find(p => p.id == postId);
+            const url = generatePostUrl(postId);
+            const title = getPostTitle(post);
+            const text = `${title} - ANG SILAKBO`;
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
         }
 
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        function shareToIssuu(postId, event) {
+            event.stopPropagation();
+            const post = allPosts.find(p => p.id == postId);
+            const url = generatePostUrl(postId);
+            const title = getPostTitle(post);
+            const shareUrl = `https://issuu.com/search?q=${encodeURIComponent(title)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
         }
 
-        // Post Management
-        function toggleBookmark(postId) {
-            const index = bookmarkedPosts.indexOf(postId);
-            if (index === -1) {
-                bookmarkedPosts.push(postId);
+        function copyPostLink(postId, event) {
+            event.stopPropagation();
+            const url = generatePostUrl(postId);
+            const button = event.currentTarget;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showCopySuccess(button);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(url, button);
+                });
             } else {
-                bookmarkedPosts.splice(index, 1);
+                fallbackCopyTextToClipboard(url, button);
             }
-            localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarkedPosts));
-            return bookmarkedPosts.includes(postId);
         }
 
-        function isPostBookmarked(postId) {
-            return bookmarkedPosts.includes(postId);
-        }
-
-        async function incrementViewCount(postId) {
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
             try {
-                if (!viewCounts[postId]) {
-                    viewCounts[postId] = true;
-                    localStorage.setItem('viewCounts', JSON.stringify(viewCounts));
+                document.execCommand('copy');
+                showCopySuccess(button);
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess(button) {
+            const originalText = button.innerHTML;
+            const originalClass = button.className;
+            
+            button.classList.add('success');
+            button.innerHTML = '<div class="share-icon"><i class="material-icons" style="font-size: 20px;">check</i></div><span class="share-text">Copied!</span>';
+            
+            setTimeout(() => {
+                button.className = originalClass;
+                button.innerHTML = originalText;
+            }, 2000);
+        }
+
+        // View Count Management
+        async function incrementViewCount(postId, isScrollView = false) {
+            try {
+                const storageKey = isScrollView ? 'scrollViewCounts' : 'viewCounts';
+                const counts = isScrollView ? scrollViewCounts : viewCounts;
+                
+                if (!counts[postId]) {
+                    counts[postId] = true;
+                    localStorage.setItem(storageKey, JSON.stringify(counts));
                     
                     const post = allPosts.find(p => p.id == postId);
                     if (post) {
@@ -1673,6 +1891,12 @@
                             .eq('id', postId);
                         
                         if (error) throw error;
+                        
+                        // Update view count in UI
+                        const viewElements = document.querySelectorAll(`[data-post-id="${postId}"] .view-count span`);
+                        viewElements.forEach(el => {
+                            el.textContent = `${newViews} views`;
+                        });
                     }
                 }
             } catch (error) {
@@ -1681,141 +1905,88 @@
         }
 
         // Content Creation Functions
-        function createHeroContent() {
-            if (allPosts.length === 0) return;
-
-            const filteredPosts = currentFilter === 'all' ? allPosts : allPosts.filter(post => post.category.toLowerCase() === currentFilter);
-            if (filteredPosts.length === 0) return;
-
-            const mainPost = filteredPosts[0];
-            const secondaryPosts = filteredPosts.slice(1, 4);
-
-            const title = getPostTitle(mainPost);
-            const plainTextContent = stripHtml(mainPost.content || '');
-            const excerpt = truncateText(plainTextContent, 25);
-            const hasImage = mainPost.image_url ? true : false;
-            const postDate = formatDate(mainPost.created_at || mainPost.date || mainPost.timestamp);
-            const readingTime = getReadingTime(plainTextContent);
-
-            let secondaryHtml = '';
-            secondaryPosts.forEach(post => {
-                const secTitle = getPostTitle(post);
-                const secHasImage = post.image_url ? true : false;
-                const secDate = getRelativeTime(post.created_at || post.date || post.timestamp);
-
-                secondaryHtml += `
-                    <div class="secondary-story" data-post-id="${post.id}" data-aos="fade-up" data-aos-delay="100">
-                        <img src="${secHasImage ? post.image_url : 'https://via.placeholder.com/120x120?text=' + post.category}" 
-                             alt="${secTitle}" class="secondary-image" 
-                             onerror="this.src='https://via.placeholder.com/120x120?text=${post.category}'">
-                        <div class="secondary-content">
-                            <div class="secondary-category">${post.category}</div>
-                            <h3 class="secondary-title">${secTitle}</h3>
-                            <div class="secondary-meta">
-                                <span>${post.author || 'Unknown'}</span>
-                                <span>•</span>
-                                <span>${secDate}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            heroGrid.innerHTML = `
-                <div class="hero-main" data-post-id="${mainPost.id}" data-aos="fade-up">
-                    <img src="${hasImage ? mainPost.image_url : 'https://via.placeholder.com/800x600?text=' + mainPost.category}" 
-                         alt="${title}" class="hero-image" 
-                         onerror="this.src='https://via.placeholder.com/800x600?text=${mainPost.category}'">
-                    <div class="hero-overlay">
-                        <div class="hero-category">${mainPost.category}</div>
-                        <h1 class="hero-title">${title}</h1>
-                        <p class="hero-excerpt">${excerpt}</p>
-                        <div class="hero-meta">
-                            <div class="meta-item">
-                                <i class="material-icons">person</i>
-                                <span>By ${mainPost.author || 'Unknown'}</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="material-icons">schedule</i>
-                                <span>${readingTime} min read</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="material-icons">event</i>
-                                <span>${postDate}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-secondary">
-                    ${secondaryHtml}
-                </div>
-            `;
-
-            addEventListeners();
-        }
-
-        function createMagazineGrid() {
-            if (allPosts.length < 3) return;
-
-            const filteredPosts = currentFilter === 'all' ? allPosts : allPosts.filter(post => post.category.toLowerCase() === currentFilter);
-            const magazinePosts = filteredPosts.slice(0, 3);
-
-            let magazineHtml = '';
-            magazinePosts.forEach((post, index) => {
-                const title = getPostTitle(post);
-                const hasImage = post.image_url ? true : false;
-                const postDate = getRelativeTime(post.created_at || post.date || post.timestamp);
-                const isLarge = index === 0;
-
-                magazineHtml += `
-                    <div class="magazine-card ${isLarge ? 'large' : ''}" data-post-id="${post.id}" data-aos="fade-up" data-aos-delay="${index * 100}">
-                        <img src="${hasImage ? post.image_url : 'https://via.placeholder.com/400x300?text=' + post.category}" 
-                             alt="${title}" class="magazine-image" 
-                             onerror="this.src='https://via.placeholder.com/400x300
-                             onerror="this.src='https://via.placeholder.com/400x300?text=${post.category}'">
-                        <div class="magazine-overlay">
-                            <div class="magazine-category">${post.category}</div>
-                            <h3 class="magazine-title">${title}</h3>
-                            <div class="magazine-meta">
-                                <span>${post.author || 'Unknown'}</span>
-                                <span>•</span>
-                                <span>${postDate}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            magazineGrid.innerHTML = magazineHtml;
-            addEventListeners();
-        }
-
-        function createStoryCard(post, index = 0) {
+        function createFeaturedArticle(post) {
             const title = getPostTitle(post);
             const plainTextContent = stripHtml(post.content || '');
-            const excerpt = truncateText(plainTextContent, 20);
+            const excerpt = truncateText(plainTextContent, 25);
             const hasImage = post.image_url ? true : false;
             const postDate = getRelativeTime(post.created_at || post.date || post.timestamp);
-            const readingTime = getReadingTime(plainTextContent);
+            const authorInitials = getAuthorInitials(post.author);
+            const viewCount = post.views || 0;
+            const imageUrl = hasImage ? post.image_url : `https://via.placeholder.com/320x240?text=${post.category}`;
 
             return `
-                <div class="story-card" data-post-id="${post.id}" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <div class="story-image-container">
-                        <img src="${hasImage ? post.image_url : 'https://via.placeholder.com/400x240?text=' + post.category}" 
-                             alt="${title}" class="story-image" 
-                             onerror="this.src='https://via.placeholder.com/400x240?text=${post.category}'">
+                <div class="featured-article" data-post-id="${post.id}">
+                    <div class="social-share">
+                        <button class="share-btn facebook" onclick="shareToFacebook(${post.id}, event)" title="Share on Facebook">
+                            <i class="material-icons" style="font-size: 14px;">facebook</i>
+                        </button>
+                        <button class="share-btn twitter" onclick="shareToTwitter(${post.id}, event)" title="Share on X">
+                            <span style="font-weight: bold; font-size: 12px;">𝕏</span>
+                        </button>
+                        <button class="share-btn issuu" onclick="shareToIssuu(${post.id}, event)" title="Share on Issuu">
+                            <i class="material-icons" style="font-size: 14px;">library_books</i>
+                        </button>
                     </div>
-                    <div class="story-content">
-                        <div class="story-category">${post.category}</div>
-                        <h3 class="story-title">${title}</h3>
-                        <p class="story-excerpt">${excerpt}</p>
-                        <div class="story-meta">
-                            <div>
-                                <span class="story-author">${post.author || 'Unknown'}</span>
+                    <div class="featured-content">
+                        <div class="featured-category">${post.category}</div>
+                        <h2 class="featured-title">${title}</h2>
+                        <p class="featured-excerpt">${excerpt}</p>
+                        <div class="featured-meta">
+                            <div class="author-info">
+                                <div class="author-avatar">${authorInitials}</div>
+                                <span>${post.author || 'Unknown'}</span>
                             </div>
-                            <div class="story-date">
-                                <i class="material-icons">schedule</i>
-                                <span>${readingTime} min read</span>
+                            <span>•</span>
+                            <span>${postDate}</span>
+                            <span>•</span>
+                            <div class="view-count">
+                                <i class="material-icons" style="font-size: 14px;">visibility</i>
+                                <span>${viewCount} views</span>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="${imageUrl}" alt="${title}" class="featured-image" onerror="this.src='https://via.placeholder.com/320x240?text=${post.category}'">
+                </div>
+            `;
+        }
+
+        function createRegularArticle(post) {
+            const title = getPostTitle(post);
+            const plainTextContent = stripHtml(post.content || '');
+            const excerpt = truncateText(plainTextContent, 15);
+            const hasImage = post.image_url ? true : false;
+            const postDate = getRelativeTime(post.created_at || post.date || post.timestamp);
+            const authorInitials = getAuthorInitials(post.author);
+            const viewCount = post.views || 0;
+            const imageUrl = hasImage ? post.image_url : `https://via.placeholder.com/400x200?text=${post.category}`;
+
+            return `
+                <div class="regular-article" data-post-id="${post.id}">
+                    <div class="social-share">
+                        <button class="share-btn facebook" onclick="shareToFacebook(${post.id}, event)" title="Share on Facebook">
+                            <i class="material-icons" style="font-size: 12px;">facebook</i>
+                        </button>
+                        <button class="share-btn twitter" onclick="shareToTwitter(${post.id}, event)" title="Share on X">
+                            <span style="font-weight: bold; font-size: 10px;">𝕏</span>
+                        </button>
+                        <button class="share-btn issuu" onclick="shareToIssuu(${post.id}, event)" title="Share on Issuu">
+                            <i class="material-icons" style="font-size: 12px;">library_books</i>
+                        </button>
+                    </div>
+                    <img src="${imageUrl}" alt="${title}" class="regular-image" onerror="this.src='https://via.placeholder.com/400x200?text=${post.category}'">
+                    <div class="regular-content">
+                        <div class="regular-category">${post.category}</div>
+                        <h3 class="regular-title">${title}</h3>
+                        <p class="regular-excerpt">${excerpt}</p>
+                        <div class="regular-meta">
+                            <div class="author-info">
+                                <div class="author-avatar">${authorInitials}</div>
+                                <span>${post.author || 'Unknown'}</span>
+                            </div>
+                            <div class="view-count">
+                                <i class="material-icons" style="font-size: 12px;">visibility</i>
+                                <span>${viewCount} views</span>
                             </div>
                         </div>
                     </div>
@@ -1824,22 +1995,63 @@
         }
 
         // Content Loading Functions
-        function loadStories() {
-            const filteredPosts = currentFilter === 'all' ? allPosts : allPosts.filter(post => post.category.toLowerCase() === currentFilter);
+        function loadArticles() {
+            if (filteredPosts.length === 0) {
+                if (currentSearchQuery) {
+                    articlesContainer.innerHTML = `
+                        <div class="no-results">
+                            <div class="no-results-icon">
+                                <i class="material-icons">search_off</i>
+                            </div>
+                            <div class="no-results-title">No articles found</div>
+                            <div class="no-results-text">Try adjusting your search terms or browse by category</div>
+                        </div>
+                    `;
+                } else {
+                    articlesContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No articles found for this category.</div>';
+                }
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
+
             const startIndex = displayedPosts;
             const endIndex = Math.min(startIndex + postsPerPage, filteredPosts.length);
             const postsToDisplay = filteredPosts.slice(startIndex, endIndex);
 
             if (startIndex === 0) {
-                storiesGrid.innerHTML = '';
+                articlesContainer.innerHTML = '';
+                
+                // Add featured article (first post)
+                if (postsToDisplay.length > 0) {
+                    articlesContainer.innerHTML += createFeaturedArticle(postsToDisplay[0]);
+                }
+                
+                // Add regular articles grid
+                if (postsToDisplay.length > 1) {
+                    const regularPosts = postsToDisplay.slice(1);
+                    let regularArticlesHtml = '<div class="regular-articles">';
+                    
+                    regularPosts.forEach(post => {
+                        regularArticlesHtml += createRegularArticle(post);
+                    });
+                    
+                    regularArticlesHtml += '</div>';
+                    articlesContainer.innerHTML += regularArticlesHtml;
+                }
+            } else {
+                // For load more, just add regular articles
+                let regularArticlesHtml = '<div class="regular-articles">';
+                
+                postsToDisplay.forEach(post => {
+                    regularArticlesHtml += createRegularArticle(post);
+                });
+                
+                regularArticlesHtml += '</div>';
+                articlesContainer.innerHTML += regularArticlesHtml;
             }
 
-            postsToDisplay.forEach((post, index) => {
-                storiesGrid.innerHTML += createStoryCard(post, startIndex + index);
-            });
-
             displayedPosts = endIndex;
-            
+
             if (displayedPosts >= filteredPosts.length) {
                 loadMoreBtn.style.display = 'none';
             } else {
@@ -1852,55 +2064,18 @@
         function filterPosts(filter) {
             currentFilter = filter;
             displayedPosts = 0;
-            
+
             // Update active nav link
-            document.querySelectorAll('.nav-link, .mobile-nav-links a').forEach(link => {
+            document.querySelectorAll('.nav-item').forEach(link => {
                 link.classList.remove('active');
                 if (link.dataset.filter === filter) {
                     link.classList.add('active');
                 }
             });
 
-            createHeroContent();
-            createMagazineGrid();
-            loadStories();
-        }
-
-        function searchPosts(query) {
-            if (!query.trim()) {
-                filterPosts(currentFilter);
-                return;
-            }
-
-            const results = allPosts.filter(post => {
-                const title = getPostTitle(post).toLowerCase();
-                const content = stripHtml(post.content || '').toLowerCase();
-                const author = (post.author || '').toLowerCase();
-                const category = (post.category || '').toLowerCase();
-                
-                query = query.toLowerCase();
-                
-                return title.includes(query) || 
-                    content.includes(query) || 
-                    author.includes(query) ||
-                    category.includes(query);
-            });
-
-            // Display search results
-            if (results.length === 0) {
-                heroGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light);">No results found for your search.</div>';
-                magazineGrid.innerHTML = '';
-                storiesGrid.innerHTML = '';
-                loadMoreBtn.style.display = 'none';
-                return;
-            }
-
-            // Show results in hero and magazine sections
-            allPosts = results;
-            displayedPosts = 0;
-            createHeroContent();
-            createMagazineGrid();
-            loadStories();
+            // Update content header and perform search if needed
+            updateContentHeader();
+            performSearch(currentSearchQuery);
         }
 
         // Article Modal Functions
@@ -1909,105 +2084,145 @@
             if (!post) return;
 
             currentPostId = postId;
-            const postUrl = getPostUrl(post);
-            window.history.pushState({ postId }, '', postUrl);
-
             const hasImage = post.image_url ? true : false;
             const title = getPostTitle(post);
             const plainTextContent = stripHtml(post.content);
             const postDate = formatDate(post.created_at || post.date || post.timestamp);
-            const readingTime = getReadingTime(plainTextContent);
             const viewCount = post.views || 0;
+            const authorInitials = getAuthorInitials(post.author);
 
             let specialContent = '';
             if (post.category.toLowerCase() === 'silak') {
                 specialContent = `
-                    <div style="background: rgba(106, 27, 154, 0.1); border-radius: var(--radius-xl); padding: var(--spacing-xl); margin: var(--spacing-xl) 0;">
-                        <h2 style="color: #6A1B9A; margin-bottom: var(--spacing-md); font-family: var(--headline-font);">Silak-salitaan</h2>
-                        <h3 style="font-size: 1.5rem; margin-bottom: var(--spacing-sm);">${post.title || 'Salitang Filipino'}</h3>
-                        <div style="font-style: italic; margin-bottom: var(--spacing-sm); color: var(--text-light);">${post.pronunciation || ''}</div>
-                        <div style="font-weight: 600; color: #6A1B9A; margin-bottom: var(--spacing-sm);">${post.part_of_speech || 'Pangngalan'}</div>
-                        <div style="margin-bottom: var(--spacing-md);">${post.definition || ''}</div>
-                        ${hasImage ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; border-radius: var(--radius-lg); margin: var(--spacing-md) 0;">` : ''}
-                        <div style="font-style: italic; color: var(--text-light); border-left: 3px solid #6A1B9A; padding-left: var(--spacing-sm); margin-top: var(--spacing-sm);">${post.example || ''}</div>
+                    <div style="background: rgba(106, 27, 154, 0.1); border-radius: var(--radius-lg); padding: 24px; margin: 24px 0;">
+                        <h2 style="color: #6A1B9A; margin-bottom: 16px; font-family: var(--headline-font);">Silak-salitaan</h2>
+                        <h3 style="font-size: 20px; margin-bottom: 8px;">${post.title || 'Salitang Filipino'}</h3>
+                        <div style="font-style: italic; margin-bottom: 8px; color: var(--text-light);">${post.pronunciation || ''}</div>
+                        <div style="font-weight: 600; color: #6A1B9A; margin-bottom: 8px;">${post.part_of_speech || 'Pangngalan'}</div>
+                        <div style="margin-bottom: 16px;">${post.definition || ''}</div>
+                        ${hasImage ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; border-radius: var(--radius-md); margin: 16px 0; cursor: pointer;" onclick="openImageViewer('${post.image_url}', '${title}')">` : ''}
+                        <div style="font-style: italic; color: var(--text-light); border-left: 3px solid #6A1B9A; padding-left: 12px; margin-top: 8px;">${post.example || ''}</div>
                     </div>
                 `;
             } else if (post.category.toLowerCase() === 'photostory') {
                 specialContent = `
-                    <div style="background: rgba(0, 121, 107, 0.1); border-radius: var(--radius-xl); padding: var(--spacing-xl); margin: var(--spacing-xl) 0;">
-                        <h2 style="color: #00796B; margin-bottom: var(--spacing-md); font-family: var(--headline-font);">${title}</h2>
-                        <div style="display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-md); color: var(--text-muted);">
+                    <div style="background: rgba(0, 121, 107, 0.1); border-radius: var(--radius-lg); padding: 24px; margin: 24px 0;">
+                        <h2 style="color: #00796B; margin-bottom: 16px; font-family: var(--headline-font);">${title}</h2>
+                        <div style="display: flex; gap: 16px; margin-bottom: 16px; color: var(--text-muted);">
                             <span>By: ${post.author || 'Unknown'}</span>
                             <span>${postDate}</span>
                         </div>
-                        ${hasImage ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm);">` : ''}
-                        <div style="font-style: italic; text-align: center; margin-bottom: var(--spacing-md); color: var(--text-light);">${post.caption || 'Larawan: ' + title}</div>
+                        ${hasImage ? `<img src="${post.image_url}" alt="${title}" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 8px; cursor: pointer;" onclick="openImageViewer('${post.image_url}', '${title}')">` : ''}
+                        <div style="font-style: italic; text-align: center; margin-bottom: 16px; color: var(--text-light);">${post.caption || 'Larawan: ' + title}</div>
                         <div>${plainTextContent}</div>
                     </div>
                 `;
             }
 
-            articleContainer.innerHTML = `
-                <div class="article-header">
-                    <div class="story-category">${post.category}</div>
-                    <h1 class="article-title">${title}</h1>
-                    <div class="article-meta">
-                        <div class="meta-item">
-                            <i class="material-icons">person</i>
-                            <span>By ${post.author || 'Unknown'}</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="material-icons">event</i>
-                            <span>${postDate}</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="material-icons">schedule</i>
-                            <span>${readingTime} min read</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="material-icons">visibility</i>
-                            <span>${viewCount} views</span>
-                        </div>
+            // Desktop and Mobile content with proper CSS classes
+            const articleContent = `
+                <div class="article-header desktop-only">
+                    <div class="featured-category">${post.category}</div>
+                    <h1 class="article-modal-title">${title}</h1>
+                    <div class="article-modal-meta">
+                        <div>By ${post.author || 'Unknown'}</div>
+                        <div>${postDate}</div>
+                        <div>${viewCount} views</div>
                     </div>
                 </div>
                 
-                ${hasImage && !specialContent ? `<img src="${post.image_url}" alt="${title}" class="article-cover">` : ''}
+                <div class="mobile-article-header mobile-only">
+                    <img src="${hasImage ? post.image_url : `https://via.placeholder.com/400x250?text=${post.category}`}" alt="${title}" class="mobile-article-cover" onclick="openImageViewer('${hasImage ? post.image_url : `https://via.placeholder.com/400x250?text=${post.category}`}', '${title}')">
+                    <div class="mobile-article-title-overlay">
+                        <div class="mobile-article-category">${post.category}</div>
+                        <h1 class="mobile-article-title">${title}</h1>
+                    </div>
+                </div>
                 
-                ${specialContent ? specialContent : `<div class="article-content">${post.content}</div>`}
+                <div class="mobile-article-meta mobile-only">
+                    <div class="mobile-meta-left">
+                        <div class="author-avatar">${authorInitials}</div>
+                        <span>By ${post.author || 'Unknown'}</span>
+                        <span>•</span>
+                        <span>${postDate}</span>
+                    </div>
+                    <div class="mobile-meta-right">
+                        <i class="material-icons" style="font-size: 14px;">visibility</i>
+                        <span>${viewCount} views</span>
+                    </div>
+                </div>
                 
-                <div class="article-actions">
-                    <div class="share-options">
-                        <button class="share-btn" onclick="shareArticle('facebook', '${postUrl}', '${title}')" title="Share on Facebook">
-                            <i class="material-icons">facebook</i>
+                ${hasImage && !specialContent ? `<img src="${post.image_url}" alt="${title}" class="article-cover desktop-only" onclick="openImageViewer('${post.image_url}', '${title}')">` : ''}
+                
+                ${specialContent ? specialContent : `<div class="article-body">${post.content}</div>`}
+                
+                <div class="article-sharing">
+                    <div class="sharing-header">
+                        <h3 class="sharing-title">Share this article</h3>
+                        <p class="sharing-subtitle">Help others discover this story</p>
+                    </div>
+                    <div class="sharing-buttons">
+                        <button class="modern-share-btn facebook" onclick="shareToFacebook(${post.id}, event)">
+                            <div class="share-icon">
+                                <i class="material-icons" style="font-size: 20px;">facebook</i>
+                            </div>
+                            <span class="share-text">Share on Facebook</span>
                         </button>
-                        <button class="share-btn" onclick="shareArticle('twitter', '${postUrl}', '${title}')" title="Share on Twitter">
-                            <i class="material-icons">share</i>
+                        <button class="modern-share-btn twitter" onclick="shareToTwitter(${post.id}, event)">
+                            <div class="share-icon">
+                                <span style="font-weight: bold; font-size: 16px;">𝕏</span>
+                            </div>
+                            <span class="share-text">Share on X</span>
                         </button>
-                        <button class="share-btn" onclick="copyToClipboard('${postUrl}')" title="Copy link">
-                            <i class="material-icons">link</i>
+                        <button class="modern-share-btn issuu" onclick="shareToIssuu(${post.id}, event)">
+                            <div class="share-icon">
+                                <i class="material-icons" style="font-size: 20px;">library_books</i>
+                            </div>
+                            <span class="share-text">Share on Issuu</span>
+                        </button>
+                        <button class="modern-share-btn copy" onclick="copyPostLink(${post.id}, event)">
+                            <div class="share-icon">
+                                <i class="material-icons" style="font-size: 20px;">link</i>
+                            </div>
+                            <span class="share-text">Copy Link</span>
                         </button>
                     </div>
-                    <button class="share-btn" onclick="toggleBookmark(${post.id})" title="${isPostBookmarked(post.id) ? 'Remove bookmark' : 'Bookmark this article'}">
-                        <i class="material-icons">${isPostBookmarked(post.id) ? 'bookmark' : 'bookmark_border'}</i>
-                    </button>
                 </div>
             `;
 
+            articleContainer.innerHTML = articleContent;
+
+            // Make all images in article body clickable
+            const articleImages = articleContainer.querySelectorAll('.article-body img');
+            articleImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    openImageViewer(img.src, img.alt);
+                });
+            });
+
             articleModal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
-            // Setup reading progress
+
+            // Setup reading progress and scroll tracking
             const modalContent = articleModal.querySelector('.modal-content');
-            modalContent.addEventListener('scroll', updateReadingProgress);
-            
+            modalContent.addEventListener('scroll', () => {
+                updateReadingProgress();
+                trackScrollProgress(postId);
+            });
+
+            // Update URL
+            history.pushState({ postId }, title, `?post=${postId}`);
+
             incrementViewCount(postId);
         }
 
         function closeArticle() {
             articleModal.classList.remove('active');
             document.body.style.overflow = 'auto';
-            window.history.pushState({}, '', window.location.pathname);
             currentPostId = null;
+            
+            // Reset URL
+            history.pushState({}, document.title, window.location.pathname);
         }
 
         function updateReadingProgress() {
@@ -2019,26 +2234,28 @@
             readingProgress.style.width = `${Math.min(scrollPercentage, 100)}%`;
         }
 
-        function shareArticle(platform, url, title) {
-            let shareUrl = '';
-            switch (platform) {
-                case 'facebook':
-                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-                    break;
-                case 'twitter':
-                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
-                    break;
-            }
-            if (shareUrl) {
-                window.open(shareUrl, '_blank', 'width=600,height=400');
+        function trackScrollProgress(postId) {
+            const modalContent = articleModal.querySelector('.modal-content');
+            const scrollTop = modalContent.scrollTop;
+            const scrollHeight = modalContent.scrollHeight;
+            const clientHeight = modalContent.clientHeight;
+            const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+            // If user scrolled past 50% of the article, count as a scroll view
+            if (scrollPercentage > 50 && !scrollViewCounts[postId]) {
+                incrementViewCount(postId, true);
             }
         }
 
         // Event Listeners
         function addEventListeners() {
-            // Story click events
+            // Article click events
             document.querySelectorAll('[data-post-id]').forEach(element => {
-                element.addEventListener('click', () => {
+                element.addEventListener('click', (e) => {
+                    // Don't open article if clicking on share buttons
+                    if (e.target.closest('.social-share')) {
+                        return;
+                    }
                     const postId = element.dataset.postId;
                     if (postId) {
                         openArticle(postId);
@@ -2053,7 +2270,7 @@
                 const { data: posts, error } = await supabase.from("posts").select("*");
                 
                 if (error) throw error;
-
+                
                 if (posts && posts.length > 0) {
                     allPosts = [...posts].sort((a, b) => {
                         const dateA = a.created_at || a.date || a.timestamp || a.id;
@@ -2068,44 +2285,44 @@
                             title: "The Evolution of Filipino Literature in the Digital Age",
                             category: "Feature",
                             author: "Maria Santos",
-                            created_at: "2025-03-25",
+                            created_at: "2025-01-28",
                             content: "<p>As technology continues to reshape our world, Filipino literature finds new expressions and audiences through digital platforms, creating unprecedented opportunities for young writers.</p><p>The digital revolution has transformed how we create, share, and consume literature. For Filipino writers, this shift has opened doors to global audiences while presenting new challenges in preserving cultural authenticity.</p><p>Young Filipino authors are increasingly turning to online platforms to share their work, bypassing traditional publishing routes that were once gatekeepers to literary recognition. This democratization of publishing has led to a flourishing of diverse voices and perspectives.</p>",
                             views: 120,
-                            image_url: "https://via.placeholder.com/800x500?text=Filipino+Literature"
+                            image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=face"
                         },
                         {
                             id: 2,
                             title: "Student Poets Win National Recognition",
                             category: "Literary",
                             author: "Juan Dela Cruz",
-                            created_at: "2025-03-24",
+                            created_at: "2025-01-27",
                             content: "<p>Sophomore Miguel Santos received second place in the English Poetry division for his work 'Echoes of Manila,' a vivid portrayal of urban life and social inequality in the capital.</p><p>First-year student Sophia Lim earned an honorable mention for her experimental bilingual poetry that seamlessly weaves together English and Filipino, reflecting the linguistic reality of many young Filipinos today.</p>",
                             views: 85,
-                            image_url: "https://via.placeholder.com/400x300?text=Student+Poets"
+                            image_url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=200&fit=crop"
                         },
                         {
                             id: 3,
                             title: "Preserving Indigenous Filipino Words",
                             category: "Silak",
                             author: "Antonio Reyes",
-                            created_at: "2025-03-23",
+                            created_at: "2025-01-26",
                             content: "<p>A new initiative by UCLM-SHS students aims to document and preserve indigenous Filipino words through digital storytelling and social media campaigns.</p>",
                             pronunciation: "sa-li-ta ng ni-nu-no",
                             part_of_speech: "Pangngalan",
                             definition: "Isang proyekto na naglalayong mapreserba ang mga katutubong salita ng Pilipinas sa pamamagitan ng digital storytelling at social media.",
                             example: "Ang Salita ng Ninuno ay nakatulong upang makilala ng mga kabataan ang kayamanang pangwika ng ating bansa.",
                             views: 65,
-                            image_url: "https://via.placeholder.com/400x300?text=Indigenous+Words"
+                            image_url: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=200&fit=crop"
                         },
                         {
                             id: 4,
                             title: "A Day in Campus Life",
                             category: "Photostory",
                             author: "Gabriela Santos",
-                            created_at: "2025-03-22",
+                            created_at: "2025-01-25",
                             content: "<p>This photo essay captures the vibrant daily life of UCLM-SHS students, from early morning study sessions to afternoon cultural performances and evening dormitory activities.</p>",
                             views: 92,
-                            image_url: "https://via.placeholder.com/800x450?text=Campus+Life",
+                            image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=200&fit=crop",
                             caption: "Students gather in the central plaza for the annual Buwan ng Wika celebration, showcasing traditional Filipino attire and performances."
                         },
                         {
@@ -2113,50 +2330,44 @@
                             title: "Rising Influence of Filipino Youth in Global Literature",
                             category: "Feature",
                             author: "Marco Bonifacio",
-                            created_at: "2025-03-21",
+                            created_at: "2025-01-24",
                             content: "<p>Young Filipino writers are increasingly making their mark on the global literary scene, bringing unique perspectives shaped by the country's complex cultural history.</p><p>International literary festivals and publishing houses have begun to take notice of the distinctive voice emerging from Philippine youth literature.</p>",
                             views: 78,
-                            image_url: "https://via.placeholder.com/400x300?text=Filipino+Youth+Writers"
+                            image_url: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=200&fit=crop"
                         },
                         {
                             id: 6,
                             title: "Why Filipino Literature Deserves Greater Recognition",
                             category: "Literary",
                             author: "Dr. Isabella Cruz",
-                            created_at: "2025-03-20",
+                            created_at: "2025-01-23",
                             content: "<p>Despite its rich literary tradition and unique cultural perspective, Filipino literature remains underrepresented in global academic curricula and literary discourse.</p>",
                             views: 110,
-                            image_url: "https://via.placeholder.com/400x300?text=Filipino+Literature+Academia"
+                            image_url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=200&fit=crop"
                         }
                     ];
                 }
 
+                // Initialize filtered posts
+                filteredPosts = [...allPosts];
+
+                // Check if there's a post ID in URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get('post');
+                
                 // Initialize content
                 setTimeout(() => {
-                    createHeroContent();
-                    createMagazineGrid();
-                    loadStories();
-                    checkUrlParams();
+                    loadArticles();
+                    
+                    // Open specific post if URL contains post ID
+                    if (postId) {
+                        setTimeout(() => openArticle(postId), 500);
+                    }
                 }, 1000);
-
             } catch (error) {
                 console.error("Error fetching posts:", error);
-                heroGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light);">Error loading content. Please try again later.</div>';
-                magazineGrid.innerHTML = '';
-                storiesGrid.innerHTML = '';
+                articlesContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">Error loading content. Please try again later.</div>';
                 loadMoreBtn.style.display = 'none';
-            }
-        }
-
-        function checkUrlParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('post');
-
-            if (postId && allPosts.length > 0) {
-                const post = allPosts.find(p => p.id == postId);
-                if (post) {
-                    openArticle(postId);
-                }
             }
         }
 
@@ -2169,26 +2380,20 @@
             themeToggle.addEventListener('click', toggleTheme);
 
             // Search functionality
-            searchBtn.addEventListener('click', () => {
-                searchOverlay.classList.add('active');
-                searchInput.focus();
-            });
-
-            searchClose.addEventListener('click', () => {
-                searchOverlay.classList.remove('active');
-            });
-
-            searchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const query = searchInput.value.trim();
-                if (query) {
-                    searchPosts(query);
-                    searchOverlay.classList.remove('active');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value;
+                if (query.length > 0) {
+                    searchClear.classList.add('visible');
+                } else {
+                    searchClear.classList.remove('visible');
                 }
+                performSearch(query);
             });
+
+            searchClear.addEventListener('click', clearSearch);
 
             // Navigation
-            document.querySelectorAll('.nav-link').forEach(link => {
+            document.querySelectorAll('.nav-item').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const filter = link.dataset.filter;
@@ -2215,23 +2420,12 @@
                 document.body.style.overflow = 'auto';
             });
 
-            document.querySelectorAll('.mobile-nav-links a').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const filter = link.dataset.filter;
-                    filterPosts(filter);
-                    mobileMenu.classList.remove('active');
-                    mobileMenuOverlay.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                });
-            });
-
             // Load more
             loadMoreBtn.addEventListener('click', () => {
-                loadMoreBtn.innerHTML = '<i class="material-icons">hourglass_empty</i> Loading...';
+                loadMoreBtn.innerHTML = '<i class="material-icons" style="font-size: 16px;">hourglass_empty</i> Loading...';
                 setTimeout(() => {
-                    loadStories();
-                    loadMoreBtn.innerHTML = '<i class="material-icons">expand_more</i> Load More Stories';
+                    loadArticles();
+                    loadMoreBtn.innerHTML = '<i class="material-icons" style="font-size: 16px;">expand_more</i> Load More Stories';
                 }, 500);
             });
 
@@ -2243,11 +2437,28 @@
                 }
             });
 
+            // Image viewer
+            imageViewerClose.addEventListener('click', closeImageViewer);
+            imageViewer.addEventListener('click', (e) => {
+                if (e.target === imageViewer) {
+                    closeImageViewer();
+                }
+            });
+
+            // Handle browser back/forward
+            window.addEventListener('popstate', (e) => {
+                if (e.state && e.state.postId) {
+                    openArticle(e.state.postId);
+                } else {
+                    closeArticle();
+                }
+            });
+
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    if (searchOverlay.classList.contains('active')) {
-                        searchOverlay.classList.remove('active');
+                    if (imageViewer.classList.contains('active')) {
+                        closeImageViewer();
                     } else if (articleModal.classList.contains('active')) {
                         closeArticle();
                     } else if (mobileMenu.classList.contains('active')) {
@@ -2257,21 +2468,7 @@
                     }
                 }
             });
-
-            // Handle browser back/forward
-            window.addEventListener('popstate', (e) => {
-                if (articleModal.classList.contains('active')) {
-                    closeArticle();
-                } else {
-                    checkUrlParams();
-                }
-            });
         });
-
-        // Global functions for inline event handlers
-        window.shareArticle = shareArticle;
-        window.toggleBookmark = toggleBookmark;
-        window.copyToClipboard = copyToClipboard;
     </script>
 </body>
 </html>
