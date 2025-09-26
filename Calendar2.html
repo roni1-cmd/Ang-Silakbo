@@ -1605,7 +1605,12 @@
             const calendarEl = document.getElementById('calendar');
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                headerToolbar: false, // We'll use our custom header
+                initialDate: '2025-09-26', // Set to current date (September 26, 2025)
+                headerToolbar: false, // Keep custom header
+                titleFormat: { // Customize title to show full month and year
+                    month: 'long',
+                    year: 'numeric'
+                },
                 editable: true,
                 selectable: true,
                 selectMirror: true,
@@ -1651,6 +1656,10 @@
                     updateStatistics();
                     
                     currentView = dateInfo.view.type;
+                    
+                    // Update the page title with the current month and year
+                    const pageTitle = document.querySelector('.page-title');
+                    pageTitle.textContent = `Memos Dashboard - ${calendar.view.title}`;
                 }
             });
 
@@ -2148,9 +2157,9 @@
                 link.download = 'SILAKBO_calendar.png';
                 link.href = canvas.toDataURL();
                 link.click();
-                showNotification('Image saved successfully!', 'success');
-            }).catch(err => {
-                console.error('Error saving image:', err);
+                                showNotification('Image saved successfully!', 'success');
+            }).catch(error => {
+                console.error('Error saving image:', error);
                 showNotification('Error saving image', 'error');
             });
         }
@@ -2158,18 +2167,18 @@
         function exportEvents() {
             const format = document.getElementById('exportFormat').value;
             const dateRange = document.getElementById('exportDateRange').value;
-            
             let events = calendar.getEvents();
-            const now = new Date();
-            
+
             // Filter events based on date range
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
             if (dateRange === 'future') {
                 events = events.filter(event => new Date(event.start) >= now);
             } else if (dateRange === 'past') {
                 events = events.filter(event => new Date(event.end) < now);
             } else if (dateRange === 'month') {
-                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-                const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
                 events = events.filter(event => {
                     const eventDate = new Date(event.start);
                     return eventDate >= monthStart && eventDate <= monthEnd;
@@ -2182,18 +2191,17 @@
                     return eventDate >= startDate && eventDate <= endDate;
                 });
             }
-            
-            // Convert events to the selected format
-            let data;
-            let fileName;
+
+            let exportData;
+            let filename;
             let mimeType;
-            
+
             if (format === 'json') {
-                data = JSON.stringify(events.map(event => ({
+                exportData = JSON.stringify(events.map(event => ({
                     id: event.id,
                     title: event.title,
-                    start: event.startStr,
-                    end: event.endStr,
+                    start: event.start,
+                    end: event.end,
                     backgroundColor: event.backgroundColor,
                     description: event.extendedProps.description,
                     location: event.extendedProps.location,
@@ -2201,317 +2209,207 @@
                     category: event.extendedProps.category,
                     priority: event.extendedProps.priority
                 })), null, 2);
-                fileName = 'silakbo_events.json';
+                filename = 'events.json';
                 mimeType = 'application/json';
             } else if (format === 'csv') {
-                const headers = ['Title', 'Start', 'End', 'Color', 'Description', 'Location', 'Reminder', 'Category', 'Priority'];
+                const headers = ['ID,Title,Start,End,Color,Description,Location,Reminder,Category,Priority'];
                 const rows = events.map(event => [
-                    event.title,
-                    event.startStr,
-                    event.endStr,
+                    event.id,
+                    `"${event.title.replace(/"/g, '""')}"`,
+                    event.start.toISOString(),
+                    event.end ? event.end.toISOString() : '',
                     event.backgroundColor,
-                    event.extendedProps.description || '',
-                    event.extendedProps.location || '',
-                    event.extendedProps.reminder || '',
-                    event.extendedProps.category || '',
-                    event.extendedProps.priority || ''
-                ]);
-                
-                data = [headers, ...rows].map(row => row.join(',')).join('\n');
-                fileName = 'silakbo_events.csv';
+                    `"${(event.extendedProps.description || '').replace(/"/g, '""')}"`,
+                    `"${(event.extendedProps.location || '').replace(/"/g, '""')}"`,
+                    event.extendedProps.reminder || 'none',
+                    event.extendedProps.category || 'other',
+                    event.extendedProps.priority || 'medium'
+                ].join(','));
+                exportData = headers.concat(rows).join('\n');
+                filename = 'events.csv';
                 mimeType = 'text/csv';
             } else if (format === 'ical') {
-                // Simple iCalendar format
-                let icalData = [
-                    'BEGIN:VCALENDAR',
-                    'VERSION:2.0',
-                    'PRODID:-//SILAKBO//Calendar//EN'
-                ];
-                
+                exportData = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Ang Silakbo//Events//EN\n';
                 events.forEach(event => {
-                    const startDate = new Date(event.start);
-                    const endDate = new Date(event.end || event.start);
-                    
-                    // Format dates for iCal
-                    const formatDate = (date) => {
-                        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-                    };
-                    
-                    icalData = [
-                        ...icalData,
-                        'BEGIN:VEVENT',
-                        `UID:${event.id}`,
-                        `DTSTAMP:${formatDate(new Date())}`,
-                        `DTSTART:${formatDate(startDate)}`,
-                        `DTEND:${formatDate(endDate)}`,
-                        `SUMMARY:${event.title}`,
-                        `DESCRIPTION:${event.extendedProps.description || ''}`,
-                        `LOCATION:${event.extendedProps.location || ''}`,
-                        'END:VEVENT'
-                    ];
+                    exportData += 'BEGIN:VEVENT\n';
+                    exportData += `UID:${event.id}\n`;
+                    exportData += `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z\n`;
+                    exportData += `DTSTART:${event.start.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\n`;
+                    if (event.end) {
+                        exportData += `DTEND:${event.end.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\n`;
+                    }
+                    exportData += `SUMMARY:${event.title.replace(/[,;]/g, '')}\n`;
+                    if (event.extendedProps.description) {
+                        exportData += `DESCRIPTION:${event.extendedProps.description.replace(/[,;]/g, '')}\n`;
+                    }
+                    if (event.extendedProps.location) {
+                        exportData += `LOCATION:${event.extendedProps.location.replace(/[,;]/g, '')}\n`;
+                    }
+                    exportData += 'END:VEVENT\n';
                 });
-                
-                icalData.push('END:VCALENDAR');
-                data = icalData.join('\r\n');
-                fileName = 'silakbo_events.ics';
+                exportData += 'END:VCALENDAR';
+                filename = 'events.ics';
                 mimeType = 'text/calendar';
             }
-            
-            // Create and trigger download
-            const blob = new Blob([data], { type: mimeType });
-            const url = URL.createObjectURL(blob);
+
+            const blob = new Blob([exportData], { type: mimeType });
             const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
             link.click();
-            
-            showNotification(`Exported ${events.length} events successfully!`, 'success');
+            showNotification('Events exported successfully!', 'success');
         }
 
         function importEvents() {
             const fileInput = document.getElementById('importFile');
             const importOption = document.getElementById('importOptions').value;
-            
-            if (!fileInput.files || fileInput.files.length === 0) {
-                showNotification('Please select a file to import', 'warning');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showNotification('Please select a file to import', 'error');
                 return;
             }
-            
-            const file = fileInput.files[0];
+
             const reader = new FileReader();
-            
             reader.onload = function(e) {
                 try {
                     let events = [];
-                    
-                    if (file.name.endsWith('.json')) {
+                    const extension = file.name.split('.').pop().toLowerCase();
+
+                    if (extension === 'json') {
                         events = JSON.parse(e.target.result);
-                    } else if (file.name.endsWith('.csv')) {
-                        const lines = e.target.result.split('\n');
-                        const headers = lines[0].split(',');
-                        
-                        for (let i = 1; i < lines.length; i++) {
-                            if (!lines[i].trim()) continue;
-                            
-                            const values = lines[i].split(',');
-                            const event = {
-                                title: values[0],
-                                start: values[1],
-                                end: values[2],
-                                backgroundColor: values[3],
-                                description: values[4],
-                                location: values[5],
-                                reminder: values[6],
-                                category: values[7],
-                                priority: values[8]
+                    } else if (extension === 'csv') {
+                        const rows = e.target.result.split('\n').slice(1); // Skip header
+                        events = rows.map(row => {
+                            const [id, title, start, end, color, description, location, reminder, category, priority] = row.split(',');
+                            return {
+                                id,
+                                title: title.replace(/^"|"$/g, '').replace(/""/g, '"'),
+                                start: new Date(start),
+                                end: end ? new Date(end) : null,
+                                backgroundColor: color,
+                                description: description.replace(/^"|"$/g, '').replace(/""/g, '"'),
+                                location: location.replace(/^"|"$/g, '').replace(/""/g, '"'),
+                                reminder,
+                                category,
+                                priority
                             };
-                            events.push(event);
-                        }
-                    } else if (file.name.endsWith('.ics')) {
-                        // Simple iCal parser
-                        const lines = e.target.result.split(/\r\n|\n|\r/);
+                        });
+                    } else if (extension === 'ics') {
+                        const icsData = e.target.result.split('\n');
                         let currentEvent = null;
-                        
-                        for (let i = 0; i < lines.length; i++) {
-                            const line = lines[i];
-                            
-                            if (line === 'BEGIN:VEVENT') {
+                        events = [];
+                        icsData.forEach(line => {
+                            if (line.startsWith('BEGIN:VEVENT')) {
                                 currentEvent = {};
-                            } else if (line === 'END:VEVENT' && currentEvent) {
+                            } else if (line.startsWith('END:VEVENT')) {
                                 events.push(currentEvent);
                                 currentEvent = null;
                             } else if (currentEvent) {
                                 const [key, value] = line.split(':');
-                                
-                                if (key === 'SUMMARY') {
-                                    currentEvent.title = value;
-                                } else if (key === 'DTSTART') {
-                                    currentEvent.start = formatICalDate(value);
-                                } else if (key === 'DTEND') {
-                                    currentEvent.end = formatICalDate(value);
-                                } else if (key === 'DESCRIPTION') {
-                                    currentEvent.description = value;
-                                } else if (key === 'LOCATION') {
-                                    currentEvent.location = value;
-                                }
+                                if (key === 'UID') currentEvent.id = value;
+                                if (key === 'SUMMARY') currentEvent.title = value;
+                                if (key === 'DTSTART') currentEvent.start = new Date(value.replace(/Z$/, ''));
+                                if (key === 'DTEND') currentEvent.end = new Date(value.replace(/Z$/, ''));
+                                if (key === 'DESCRIPTION') currentEvent.description = value;
+                                if (key === 'LOCATION') currentEvent.location = value;
+                                currentEvent.backgroundColor = colors[0].value; // Default color
+                                currentEvent.category = 'other';
+                                currentEvent.priority = 'medium';
+                                currentEvent.reminder = 'none';
                             }
-                        }
+                        });
                     }
-                    
-                    if (events.length === 0) {
-                        showNotification('No events found in the file', 'warning');
-                        return;
-                    }
-                    
-                    // Clear existing events if replace option is selected
+
                     if (importOption === 'replace') {
-                        if (confirm(`Are you sure you want to replace all existing events with ${events.length} imported events?`)) {
-                            // Remove all events from calendar
+                        db.collection('events').get().then(querySnapshot => {
+                            const batch = db.batch();
+                            querySnapshot.forEach(doc => batch.delete(doc.ref));
+                            return batch.commit();
+                        }).then(() => {
                             calendar.removeAllEvents();
-                            
-                            // Remove all events from database
-                            db.collection('events').get().then((querySnapshot) => {
-                                const batch = db.batch();
-                                querySnapshot.forEach((doc) => {
-                                    batch.delete(doc.ref);
-                                });
-                                return batch.commit();
-                            }).then(() => {
-                                importEventsToDatabase(events);
-                            });
-                        }
+                            importEventsToFirebase(events);
+                        });
                     } else {
-                        importEventsToDatabase(events);
+                        importEventsToFirebase(events);
                     }
                 } catch (error) {
                     console.error('Error importing events:', error);
-                    showNotification('Error importing events: ' + error.message, 'error');
+                    showNotification('Error importing events', 'error');
                 }
             };
-            
-            if (file.name.endsWith('.json') || file.name.endsWith('.ics')) {
-                reader.readAsText(file);
-            } else if (file.name.endsWith('.csv')) {
-                reader.readAsText(file);
-            } else {
-                showNotification('Unsupported file format. Please use JSON, CSV, or ICS files.', 'warning');
-            }
+            reader.readAsText(file);
         }
 
-        function importEventsToDatabase(events) {
-            showNotification(`Importing ${events.length} events...`, 'info');
-            
-            let successCount = 0;
-            let errorCount = 0;
-            
-            events.forEach((event, index) => {
-                setTimeout(() => {
-                    db.collection('events').add(event)
-                        .then((docRef) => {
-                            calendar.addEvent({
-                                id: docRef.id,
-                                ...event
-                            });
-                            successCount++;
-                            
-                            if (successCount + errorCount === events.length) {
-                                showNotification(`Imported ${successCount} events successfully!`, 'success');
-                                updateUpcomingEvents();
-                                updateStatistics();
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error importing event:', error);
-                            errorCount++;
-                            
-                            if (successCount + errorCount === events.length) {
-                                if (errorCount > 0) {
-                                    showNotification(`Imported ${successCount} events with ${errorCount} errors.`, 'warning');
-                                } else {
-                                    showNotification(`Imported ${successCount} events successfully!`, 'success');
-                                }
-                                updateUpcomingEvents();
-                                updateStatistics();
-                            }
-                        });
-                }, index * 100); // Stagger imports to avoid overwhelming the database
+        function importEventsToFirebase(events) {
+            const batch = db.batch();
+            events.forEach(event => {
+                const docRef = db.collection('events').doc();
+                batch.set(docRef, {
+                    title: event.title,
+                    start: event.start.toISOString(),
+                    end: event.end ? event.end.toISOString() : null,
+                    backgroundColor: event.backgroundColor || colors[0].value,
+                    description: event.description || '',
+                    location: event.location || '',
+                    reminder: event.reminder || 'none',
+                    category: event.category || 'other',
+                    priority: event.priority || 'medium'
+                });
             });
+
+            batch.commit()
+                .then(() => {
+                    showNotification('Events imported successfully!', 'success');
+                    loadEvents();
+                })
+                .catch(error => {
+                    console.error('Error importing events to Firebase:', error);
+                    showNotification('Error importing events', 'error');
+                });
         }
 
-        function formatICalDate(dateStr) {
-            // Format: 20210101T120000Z
-            const year = dateStr.substr(0, 4);
-            const month = dateStr.substr(4, 2);
-            const day = dateStr.substr(6, 2);
-            const hour = dateStr.substr(9, 2);
-            const minute = dateStr.substr(11, 2);
-            const second = dateStr.substr(13, 2);
-            
-            return `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
-        }
+        function showNotification(message, type) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type} show`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            container.appendChild(notification);
 
-        function fetchQuote() {
-            const quoteWidget = document.getElementById('quote-widget');
-            
-            // Simulate loading with animation
             setTimeout(() => {
-                if (quoteWidget) {
-                    quoteWidget.querySelector('.quote-content').innerHTML = `
-                        <div class="quote-text">"What would life be if we had no courage to attempt anything? The sadness will last forever—but so will the beauty, the wonder, and the love that we leave behind. Even in the darkest moments, there is light if we choose to see it. Keep going, keep creating, and never stop believing that something inside you is worth sharing with the world."</div>
-                        <div class="quote-author">- Vincent Van Gogh</div>
-                    `;
-                } else {
-                    console.error('Quote widget element not found');
-                }
-            }, 1500);
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
 
         function getContrastColor(hexcolor) {
-            if (!hexcolor) return 'black';
-            
-            // Handle rgba format
-            if (hexcolor.startsWith('rgba') || hexcolor.startsWith('rgb')) {
-                const rgbMatch = hexcolor.match(/\d+/g);
-                if (rgbMatch && rgbMatch.length >= 3) {
-                    const r = parseInt(rgbMatch[0]);
-                    const g = parseInt(rgbMatch[1]);
-                    const b = parseInt(rgbMatch[2]);
-                    const yiq = ((r*299)+(g*587)+(b*114))/1000;
-                    return (yiq >= 128) ? 'black' : 'white';
-                }
-                return 'black';
-            }
-            
-            // Handle hex format
-            hexcolor = hexcolor.replace("#", "");
-            var r = parseInt(hexcolor.substr(0,2),16);
-            var g = parseInt(hexcolor.substr(2,2),16);
-            var b = parseInt(hexcolor.substr(4,2),16);
-            var yiq = ((r*299)+(g*587)+(b*114))/1000;
-            return (yiq >= 128) ? 'black' : 'white';
+            hexcolor = hexcolor.replace('#', '');
+            const r = parseInt(hexcolor.substr(0, 2), 16);
+            const g = parseInt(hexcolor.substr(2, 2), 16);
+            const b = parseInt(hexcolor.substr(4, 2), 16);
+            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            return (yiq >= 128) ? '#000000' : '#FFFFFF';
         }
 
-        // Notification system
-        function showNotification(message, type = 'info') {
-            // Create notification container if it doesn't exist
-            let container = document.getElementById('notification-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'notification-container';
-                document.body.appendChild(container);
-            }
+        function fetchQuote() {
+            const quotes = [
+                { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+                { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
+                { text: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" }
+            ];
+
+            const quoteContent = document.querySelector('#quote-widget .quote-content');
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
             
-            // Create notification
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            
-            // Set type-specific styles and icon
-            let icon = '';
-            if (type === 'success') {
-                icon = '<i class="fas fa-check-circle"></i>';
-            } else if (type === 'error') {
-                icon = '<i class="fas fa-exclamation-circle"></i>';
-            } else if (type === 'warning') {
-                icon = '<i class="fas fa-exclamation-triangle"></i>';
-            } else {
-                icon = '<i class="fas fa-info-circle"></i>';
-            }
-            
-            notification.innerHTML = `${icon} <span>${message}</span>`;
-            container.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            // Auto remove after delay
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
+            quoteContent.innerHTML = `
+                <div class="quote-text">${randomQuote.text}</div>
+                <div class="quote-author">— ${randomQuote.author}</div>
+            `;
         }
     </script>
 </body>
