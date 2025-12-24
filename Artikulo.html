@@ -1593,9 +1593,8 @@
         // Supabase Configuration
         const supabaseUrl = "https://uyxgsziyflquisckdwwc.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5eGdzeml5ZmxxdWlzY2tkd3djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1OTQyODUsImV4cCI6MjA1NzE3MDI4NX0.DoIEoWWuajDpBhD2UwLYzrKRyZNyBP4izasROCdIbkk";
-        const { createClient } = window.supabase;
-        const supabase = createClient(supabaseUrl, supabaseKey, {
-            auth: { persistSession: false },
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth:   { persistSession: false },
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
@@ -1882,7 +1881,7 @@
                         const newViews = (post.views || 0) + 1;
                         post.views = newViews;
                         
-                        const { error } = await supabase
+                        const { error } = await supabaseClient
                             .from('posts')
                             .update({ views: newViews })
                             .eq('id', postId);
@@ -2264,7 +2263,7 @@
         // Data Loading
         async function fetchPosts() {
             try {
-                const { data: posts, error } = await supabase.from("posts").select("*");
+                const { data: posts, error } = await supabaseClient.from("posts").select("*");
                 
                 if (error) throw error;
                 
