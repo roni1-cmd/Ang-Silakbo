@@ -1,1088 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>UCLM-SHS | ANG SILAKBO</title>
-    <link rel="icon" href="SILAKBO (1).png">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Merriweather:wght@300;400;700;900&family=Playfair+Display:wght@400;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Google Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  
-  <style>
-   * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  color: white;
-  overflow-x: hidden;
-  position: relative;
-  min-height: 100vh;
-  font-family: 'Source Sans Pro', sans-serif;
-}
-
-.video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;
-}
-
-.video-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 1;
-  transition: opacity 1s ease-in-out;
-}
-
-#video2 {
-  opacity: 0;
-}
-
-#video1 {
-  opacity: 0;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.1);
-  z-index: -1;
-}
-
-.page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  height: 100vh;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2rem;
-  position: relative;
-  z-index: 1000;
-  flex-shrink: 0;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logo-image {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: white;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: white;
-  text-transform: uppercase;
-  font-family: 'Poppins', sans-serif;
-}
-
-.menu-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1002;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
-  padding: 0.5rem 1rem;
-  gap: 0.5rem;
-}
-
-.menu-toggle::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.menu-toggle:hover::before {
-  left: 100%;
-}
-
-.menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(230, 81, 0, 0.3);
-}
-
-.menu-toggle-text {
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.menu-toggle.active {
-  background: rgba(230, 81, 0, 0.2);
-  border-color: rgba(230, 81, 0, 0.4);
-  transform: scale(1.05);
-}
-
-.menu-toggle.active .material-icons,
-.menu-toggle.active .menu-toggle-text {
-  color: #e65100;
-}
-
-.dropdown-menu {
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 380px;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(15px);
-  transition: right 0.4s ease;
-  z-index: 1001;
-  padding: 6rem 2rem 2rem;
-  overflow-y: auto;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.dropdown-menu.active {
-  right: 0;
-}
-
-.dropdown-menu ul {
-  list-style: none;
-  padding: 0;
-}
-
-.dropdown-menu li {
-  margin-bottom: 1.5rem;
-  opacity: 0;
-  transform: translateX(50px);
-  transition: all 0.3s ease;
-}
-
-.dropdown-menu.active li {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.dropdown-menu.active li:nth-child(1) { transition-delay: 0.1s; }
-.dropdown-menu.active li:nth-child(2) { transition-delay: 0.15s; }
-.dropdown-menu.active li:nth-child(3) { transition-delay: 0.2s; }
-.dropdown-menu.active li:nth-child(4) { transition-delay: 0.25s; }
-.dropdown-menu.active li:nth-child(5) { transition-delay: 0.3s; }
-.dropdown-menu.active li:nth-child(6) { transition-delay: 0.35s; }
-.dropdown-menu.active li:nth-child(7) { transition-delay: 0.4s; }
-.dropdown-menu.active li:nth-child(8) { transition-delay: 0.45s; }
-.dropdown-menu.active li:nth-child(9) { transition-delay: 0.5s; }
-.dropdown-menu.active li:nth-child(10) { transition-delay: 0.55s; }
-.dropdown-menu.active li:nth-child(11) { transition-delay: 0.6s; }
-.dropdown-menu.active li:nth-child(12) { transition-delay: 0.65s; }
-.dropdown-menu.active li:nth-child(13) { transition-delay: 0.7s; }
-
-.dropdown-menu a {
-  color: white;
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  font-family: 'Merriweather', serif;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  z-index: 1002;
-}
-
-.dropdown-menu a:hover {
-  color: #e65100;
-  transform: translateX(10px);
-  border-bottom-color: #e65100;
-}
-
-.dropdown-menu .material-icons {
-  font-size: 1.3rem;
-  color: #e65100;
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background: transparent;
-  overflow-y: auto;
-}
-
-.phone-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 300px;
-}
-
-.phone-image {
-  max-width: 100%;
-  height: auto;
-  max-height: 500px;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
-}
-
-.content-text {
-  flex: 1;
-  padding: 1rem;
-  min-width: 300px;
-  background: transparent;
-}
-
-.notice-section {
-  text-align: right;
-  background: transparent;
-}
-
-.notice-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  font-family: 'Source Sans Pro', sans-serif;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-}
-
-.notice-text {
-  font-size: 1rem;
-  font-family: 'Merriweather', serif;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-}
-
-.footer {
-  flex-shrink: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem;
-  gap: 0.5rem;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  z-index: 1;
-}
-
-/* Desktop footer layout */
-@media (min-width: 769px) {
-  .footer {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-  }
-  
-  .footer-left {
-    display: flex;
-    align-items: center;
-  }
-  
-  .footer-right {
-    display: flex;
-    align-items: center;
-  }
-}
-
-.social-icons {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.social-icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-}
-
-.social-icon:hover {
-  transform: translateY(-3px);
-  filter: drop-shadow(0 5px 10px rgba(230, 81, 0, 0.5));
-  color: #e65100;
-}
-
-.copyright {
-  font-size: 0.9rem;
-  font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.5px;
-  text-align: center;
-  line-height: 1.4;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.brand-name {
-  color: #e65100;
-  font-weight: 700;
-}
-
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1000;
-}
-
-.menu-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Mobile Responsive (max-width: 768px) */
-@media (max-width: 768px) {
-  .page-container {
-    height: 100vh; /* Fixed height */
-    max-height: 100vh; /* Prevent exceeding viewport */
-    overflow: hidden; /* Prevent page scrolling */
-  }
-
-  .header {
-    padding: 0.6rem 0.8rem; /* Reduced padding */
-    height: 60px; /* Fixed header height */
-    flex-shrink: 0;
-  }
-
-  .main-content {
-    flex: 1;
-    flex-direction: column;
-    text-align: center;
-    padding: 0.3rem; /* Minimal padding */
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Prevent scrolling */
-    height: calc(100vh - 60px - 80px); /* Exact height: viewport - header - footer */
-    max-height: calc(100vh - 60px - 80px);
-  }
-
-  .footer {
-    height: 80px; /* Fixed footer height */
-    padding: 0.5rem; /* Compact padding */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.95);
-    flex-shrink: 0;
-    gap: 0.3rem; /* Reduced gap */
-  }
-
-  .logo {
-    font-size: 1.3rem; /* Smaller logo */
-  }
-
-  .logo-image {
-    width: 30px;
-    height: 30px;
-    font-size: 0.9rem;
-  }
-
-  .menu-toggle {
-    padding: 0.4rem 0.8rem;
-  }
-
-  .menu-toggle-text {
-    font-size: 0.8rem;
-  }
-
-  .dropdown-menu {
-    width: 100%;
-    padding: 4rem 1.5rem 2rem; /* Reduced top padding */
-  }
-
-  .dropdown-menu a {
-    font-size: 0.95rem; /* Smaller font */
-    padding: 0.6rem 0; /* Reduced padding */
-  }
-
-  .content-text {
-    padding: 0.2rem; /* Minimal padding */
-    order: 1;
-    flex: 0; /* Don't grow */
-  }
-
-  .phone-container {
-    order: 2;
-    margin: 0; /* Remove margins */
-    flex: 1;
-    max-height: 60px; /* Very limited height */
-  }
-
-  .phone-image {
-    max-height: 60px; /* Very small image */
-    width: auto;
-  }
-
-  .notice-section {
-    text-align: center;
-  }
-
-  .notice-title {
-    font-size: 0.9rem; /* Smaller title */
-    margin-bottom: 0.2rem;
-  }
-
-  .notice-text {
-    font-size: 0.8rem; /* Smaller text */
-  }
-
-  .social-icons {
-    justify-content: center;
-    margin-bottom: 0.2rem; /* Minimal margin */
-    gap: 0.8rem;
-  }
-
-  .social-icon {
-    width: 16px; /* Smaller icons */
-    height: 16px;
-  }
-
-  .copyright {
-    font-size: 0.75rem; /* Smaller copyright text */
-    line-height: 1.2;
-    padding: 0;
-    margin: 0;
-  }
-}
-
-/* Very small screens (max-width: 480px) */
-@media (max-width: 480px) {
-  .page-container {
-    height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
-  }
-
-  .header {
-    padding: 0.5rem 0.6rem;
-    height: 55px; /* Even smaller header */
-  }
-
-  .main-content {
-    height: calc(100vh - 55px - 75px); /* Adjust for smaller header/footer */
-    max-height: calc(100vh - 55px - 75px);
-    padding: 0.2rem;
-  }
-
-  .footer {
-    height: 75px; /* Slightly smaller footer */
-    padding: 0.4rem;
-    gap: 0.2rem;
-  }
-
-  .phone-container {
-    max-height: 50px; /* Even smaller image area */
-  }
-
-  .phone-image {
-    max-height: 50px;
-  }
-
-  .logo {
-    font-size: 1.2rem;
-  }
-
-  .logo-image {
-    width: 28px;
-    height: 28px;
-    font-size: 0.8rem;
-  }
-
-  .menu-toggle {
-    padding: 0.3rem 0.6rem;
-  }
-
-  .menu-toggle-text {
-    font-size: 0.75rem;
-  }
-
-  .social-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .copyright {
-    font-size: 0.7rem;
-  }
-
-  .notice-title {
-    font-size: 0.85rem;
-  }
-
-  .notice-text {
-    font-size: 0.75rem;
-  }
-}
-
-/* Landscape mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-  .page-container {
-    height: 100vh;
-    overflow: hidden;
-  }
-  
-  .header {
-    height: 50px;
-    padding: 0.4rem 0.8rem;
-  }
-  
-  .main-content {
-    flex-direction: row;
-    align-items: center;
-    padding: 0.3rem;
-    height: calc(100vh - 50px - 70px);
-  }
-
-  .content-text {
-    order: 2;
-    padding: 0.3rem;
-    flex: 1;
-  }
-
-  .phone-container {
-    order: 1;
-    margin: 0;
-    flex: 0;
-    max-height: 40px;
-  }
-
-  .phone-image {
-    max-height: 40px;
-  }
-
-  .footer {
-    height: 70px;
-    padding: 0.4rem;
-  }
-
-  .logo {
-    font-size: 1.1rem;
-  }
-
-  .copyright {
-    font-size: 0.7rem;
-  }
-}
-
-/* Very small height screens */
-@media (max-height: 600px) {
-  .page-container {
-    height: 100vh;
-    overflow: hidden;
-  }
-  
-  .header {
-    height: 45px;
-    padding: 0.3rem 0.6rem;
-  }
-  
-  .phone-image {
-    max-height: 35px;
-  }
-
-  .main-content {
-    height: calc(100vh - 45px - 65px);
-    padding: 0.2rem;
-  }
-
-  .footer {
-    height: 65px;
-    padding: 0.3rem;
-  }
-
-  .copyright {
-    font-size: 0.65rem;
-  }
-
-  .social-icon {
-    width: 12px;
-    height: 12px;
-  }
-}
-
-/* Extra small height screens */
-@media (max-height: 500px) {
-  .header {
-    height: 40px;
-    padding: 0.2rem 0.5rem;
-  }
-  
-  .footer {
-    height: 60px;
-    padding: 0.2rem;
-  }
-  
-  .main-content {
-    height: calc(100vh - 40px - 60px);
-  }
-  
-  .phone-image {
-    max-height: 30px;
-  }
-
-  .logo {
-    font-size: 1rem;
-  }
-
-  .copyright {
-    font-size: 0.6rem;
-  }
-}
-
-/* Pulse animation for menu button */
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(230, 81, 0, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(230, 81, 0, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(230, 81, 0, 0);
-  }
-}
-
-.pulse {
-  animation: pulse 2s infinite;
-}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Cannot be Found:((</title>
+    <link rel="icon" type="image/png" href="SILAKBO (1).png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background-color: #d3ccc8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #f5f5f5;
+            width: 100%;
+            max-width: 1400px;
+            height: auto;
+            min-height: 600px;
+            padding: 60px;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            min-height: 500px;
+        }
+
+        .illustration-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .illustration-wrapper img {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 16px;
+            color: #2a2a2a;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+
+
+        .footer {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            padding-top: 40px;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+
+        .footer-404 {
+            font-size: 120px;
+            font-weight: 900;
+            color: #e65100;
+            line-height: 1;
+            margin-top: -20px;
+        }
+
+        .footer-text {
+            max-width: 350px;
+        }
+
+        .footer-text-red {
+            color: #e65100;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+        }
+
+
+
+        .migration-notice {
+            background-color: #fff9f0;
+            border-left: 4px solid #e65100;
+            padding: 24px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+
+        .migration-title {
+            color: #e65100;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .migration-text {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        .migration-link {
+            display: inline-block;
+            background-color: #e65100;
+            color: white;
+            padding: 12px 28px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .migration-link:hover {
+            background-color: #d44900;
+        }
+
+
+
+        @media (max-width: 1024px) {
+            .container {
+                gap: 40px;
+            }
+
+            .illustration-wrapper img {
+                max-height: 400px;
+            }
+
+            .footer-404 {
+                font-size: 100px;
+            }
+
+            .footer-text {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                padding: 30px 20px;
+                min-height: auto;
+                flex-direction: column;
+                gap: 30px;
+                max-width: 100%;
+            }
+
+            .content-wrapper {
+                min-height: auto;
+                width: 100%;
+            }
+
+            .illustration-wrapper {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .illustration-wrapper img {
+                max-height: 250px;
+                width: 100%;
+            }
+
+            .header {
+                width: 100%;
+                margin-bottom: 30px;
+            }
+
+            .logo-image {
+                width: 32px;
+                height: 32px;
+            }
+
+            .logo-text {
+                font-size: 14px;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .footer-left {
+                flex-direction: column;
+                gap: 16px;
+                width: 100%;
+            }
+
+            .footer-404 {
+                font-size: 72px;
+                margin-top: -10px;
+            }
+
+            .footer-text {
+                max-width: 100%;
+            }
+
+            .footer-text-red {
+                font-size: 14px;
+            }
+
+            .migration-notice {
+                padding: 18px;
+                margin-top: 20px;
+                width: 100%;
+            }
+
+            .migration-title {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .migration-text {
+                font-size: 12px;
+                margin-bottom: 14px;
+                line-height: 1.5;
+            }
+
+            .migration-link {
+                padding: 10px 24px;
+                font-size: 13px;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                padding: 20px 16px;
+                gap: 20px;
+                min-height: auto;
+            }
+
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .logo-image {
+                width: 28px;
+                height: 28px;
+            }
+
+            .logo-text {
+                font-size: 12px;
+                letter-spacing: 0.5px;
+            }
+
+            .footer-404 {
+                font-size: 56px;
+                margin-top: -5px;
+            }
+
+            .footer-text-red {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+
+            .illustration-wrapper img {
+                max-height: 200px;
+            }
+
+            .migration-notice {
+                padding: 16px;
+                margin-top: 16px;
+            }
+
+            .migration-title {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            .migration-text {
+                font-size: 11px;
+                margin-bottom: 12px;
+            }
+
+            .migration-link {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Menu Overlay -->
-  <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="logo">
+                    <img src="SILAKBO (1).png" alt="ANG SILAKBO" class="logo-image">
+                    <div class="logo-text">ANG SILAKBO</div>
+                </div>
+            </div>
 
-  <!-- Video Background Container -->
-  <div class="video-container">
-    <!-- First background video -->
-    <video id="video1" class="video-background" autoplay muted loop playsinline>
-      <source src="Untitled video - Made with Clipchamp.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    
-    <!-- Second background video -->
-    <video id="video2" class="video-background" autoplay muted loop playsinline>
-      <source src="Ang Silakbo.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    
-    <!-- Overlay to darken the videos -->
-    <div class="overlay"></div>
-  </div>
+            <div class="footer">
+                <div class="footer-left">
+                    <div class="footer-404">404</div>
+                    <div class="footer-text">
+                        <div class="footer-text-red">indicates that the browser was able to communicate with the server, but the server could not find the requested resource.</div>
+                    </div>
+                </div>
+            </div>
 
-  <!-- Page Container to prevent scrolling -->
-  <div class="page-container">
-    <!-- Dropdown Menu -->
-    <nav class="dropdown-menu" id="dropdownMenu">
-      <ul>
-        <li><a data-section="about"><span class="material-icons">info</span>ABOUT ANG SILAKBO</a></li>
-        <li><a data-section="concepts"><span class="material-icons">lightbulb</span>CONCEPT BLOG</a></li>
-        <li><a data-section="roles"><span class="material-icons">group</span>ROLES AND DUTIES</a></li>
-        <li><a data-section="journalists-guidebook"><span class="material-icons">book</span>JOURNALIST'S GUIDEBOOK</a></li>
-        <li><a data-section="ai-tools"><span class="material-icons">smart_toy</span>DEFINITIVE TOOLS</a></li>
-        <li><a data-section="forums"><span class="material-icons">forum</span>FORUMS</a></li>
-        <li><a data-section="policies"><span class="material-icons">policy</span>POLICIES CENTRE</a></li>
-        <li><a data-section="news"><span class="material-icons">article</span>ARTICLES ARCHIVE</a></li>
-        <li><a data-section="connect"><span class="material-icons">connect_without_contact</span>CONNECT WITH US</a></li>
-        <li><a data-section="submit"><span class="material-icons">upload</span>SUBMIT YOUR WORK</a></li>
-        <li><a data-section="join"><span class="material-icons">person_add</span>JOIN ANG SILAKBO</a></li>
-        <li><a data-section="developer-notes"><span class="material-icons">code</span>DEVELOPER'S NOTEBOOK</a></li>
-        <li><a data-section="sitemap"><span class="material-icons">map</span>SITEMAP</a></li>
-        <li><a data-section="report"><span class="material-icons">report</span>REPORT AN ISSUE</a></li>
-      </ul>
-    </nav>
-
-    <!-- Header with logo and menu -->
-    <header class="header">
-      <div class="logo-container">
-        <img src="SILAKBO (1).png" alt="Logo" class="logo-image">
-        <div class="logo">ANG SILAKBO</div>
-      </div>
-      <div class="menu-toggle pulse" id="menuToggle">
-        <span class="material-icons">menu</span>
-        <span class="menu-toggle-text">Menu</span>
-      </div>
-    </header>
-
-    <!-- Main content section -->
-    <main class="main-content">
-      <div class="content-text">
-        <div class="notice-section">
-          <!-- Content can be added here -->
+            <div class="migration-notice">
+                <div class="migration-title">We are Migrating to a Newer System</div>
+                <div class="migration-text">
+                    We're excited to announce that ANG SILAKBO is transitioning to our latest platform. Our new system offers improved performance, enhanced features, and a better user experience. Your data and preferences are important to us and will be seamlessly transferred to ensure continuity.
+                </div>
+                <a href="https://angsilakbo.vercel.app/" class="migration-link">Visit New Platform</a>
+            </div>
         </div>
-      </div>
-    </main>
 
-    <footer class="footer">
-      <div class="footer-left">
-        <div class="social-icons">
-          <!-- Facebook -->
-          <svg class="social-icon" onclick="openSocialLink('facebook')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-          </svg>
-          
-          <!-- GitHub -->
-          <svg class="social-icon" onclick="openSocialLink('github')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-            <path d="M9 18c-4.51 2-5-2-7-2"></path>
-          </svg>
-          
-          <!-- Issuu -->
-         <svg class="social-icon" onclick="openSocialLink('issuu')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <!-- Outer circle -->
-            <circle cx="12" cy="12" r="11" fill="#e55a4e"/>
-            
-            <!-- Middle white ring -->
-            <circle cx="12" cy="12" r="7.5" fill="white"/>
-            
-            <!-- Inner circle -->
-            <circle cx="12" cy="12" r="4" fill="#e55a4e"/>
-            
-            <!-- Center white circle -->
-            <circle cx="12" cy="12" r="2" fill="white"/>
-          </svg>
+        <div class="illustration-wrapper">
+            <img src="Adobe Express - file (1).png" alt="Error illustration">
         </div>
-      </div>
-      
-      <div class="footer-right">
-        <div class="copyright">
-          Copyright © <span class="brand-name">ANG SILAKBO</span> 2025 | UCLM-SHS. All rights reserved.
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <script>
-    // Menu toggle functionality
-    const menuToggle = document.getElementById('menuToggle');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-
-    function toggleMenu() {
-      menuToggle.classList.toggle('active');
-      dropdownMenu.classList.toggle('active');
-      menuOverlay.classList.toggle('active');
-      
-      // Stop pulsing animation when menu is opened
-      if (dropdownMenu.classList.contains('active')) {
-        menuToggle.classList.remove('pulse');
-        document.body.style.overflow = 'hidden';
-      } else {
-        // Restart pulsing after a delay when menu is closed
-        setTimeout(() => {
-          menuToggle.classList.add('pulse');
-        }, 1000);
-        document.body.style.overflow = 'hidden'; // Keep hidden on mobile
-      }
-    }
-
-    function closeMenu() {
-      menuToggle.classList.remove('active');
-      dropdownMenu.classList.remove('active');
-      menuOverlay.classList.remove('active');
-      
-      // Restart pulsing after a delay
-      setTimeout(() => {
-        menuToggle.classList.add('pulse');
-      }, 1000);
-      
-      document.body.style.overflow = 'hidden'; // Keep hidden on mobile
-    }
-
-    // Event listeners
-    menuToggle.addEventListener('click', toggleMenu);
-    menuOverlay.addEventListener('click', closeMenu);
-
-    // Close menu when pressing Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && dropdownMenu.classList.contains('active')) {
-        closeMenu();
-      }
-    });
-
-    // Navigation function with redirections
-    function navigateTo(section) {
-      closeMenu();
-      
-      // Define routes for each section
-      const routes = {
-        'about': '/About Us',
-        'concepts': 'https://angsilakbo-concepts.vercel.app',
-        'roles': '/Duties',
-        'journalists-guidebook': '/Guides',
-        'ai-tools': '/Definitive Tools',
-        'forums': '/Silakbo Freedom Wall',
-        'policies': '/Policies Center',
-        'news': 'https://angsilakbo-articles.vercel.app/read',
-        'connect': '/Chat Request',
-        'submit': '/Submissionposts',
-        'join': '/Ang Silakbo Application',
-        'developer-notes': '/Dev\'s Note',
-        'sitemap': '/Sitemap.html',
-        'report': '/Report'
-      };
-
-      // In a real application, you would use:
-      window.location.href = routes[section];
-      
-      // For demo purposes, we'll also show an alert
-      console.log(`Navigating to: ${routes[section]}`);
-    }
-
-    // Social media links function
-    function openSocialLink(platform) {
-      const socialLinks = {
-        'facebook': 'https://www.facebook.com/AngSilakboUCLM',
-        'github': 'https://github.com/roni1-cmd',
-        'issuu': 'https://issuu.com/angsilakbo/docs/ang_silakbo_shs_s.y._2020-2021_12x18',
-       
-      };
-
-      if (socialLinks[platform]) {
-        window.open(socialLinks[platform], '_blank');
-      }
-    }
-
-    // Video background functionality
-    const video1 = document.getElementById('video1');
-    const video2 = document.getElementById('video2');
-    
-    // Start with video1 visible with higher opacity
-    video1.style.opacity = '1'; // Increased opacity for better visibility
-    video2.style.opacity = '0';
-    
-    // Function to toggle between videos
-    function toggleVideos() {
-      if (parseFloat(video1.style.opacity) > 0) {
-        video1.style.opacity = '0';
-        video2.style.opacity = '1'; // Increased opacity for better visibility
-      } else {
-        video1.style.opacity = '1'; // Increased opacity for better visibility
-        video2.style.opacity = '0';
-      }
-    }
-    
-    // Toggle videos every 10 seconds
-    setInterval(toggleVideos, 10000);
-
-    // Improved touch event handling - allow clicks in dropdown menu
-    document.addEventListener('touchmove', function(e) {
-      // Only prevent scrolling if menu is closed AND touch is not in dropdown area
-      if (!dropdownMenu.classList.contains('active') && !dropdownMenu.contains(e.target)) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    // Allow clicks and touches within dropdown menu
-    dropdownMenu.addEventListener('touchstart', function(e) {
-      e.stopPropagation();
-    }, { passive: true });
-
-    dropdownMenu.addEventListener('touchend', function(e) {
-      e.stopPropagation();
-    }, { passive: true });
-
-    dropdownMenu.addEventListener('click', function(e) {
-      e.stopPropagation();
-    });
-
-    // Prevent wheel scrolling only when menu is closed
-    document.addEventListener('wheel', function(e) {
-      if (window.innerWidth <= 768 && !dropdownMenu.classList.contains('active')) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
-      // Prevent scrolling on mobile
-      if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-      }
-      
-      // Force layout calculations
-      enforceLayout();
-      
-      // Setup navigation event listeners
-      setupNavigation();
-      
-      console.log('ANG SILAKBO website loaded successfully');
-    });
-
-    // Setup navigation with proper event handling
-    function setupNavigation() {
-      const navLinks = dropdownMenu.querySelectorAll('a[data-section]');
-      
-      // Add close button to dropdown menu
-      const closeButton = document.createElement('div');
-      closeButton.className = 'close-button';
-      closeButton.innerHTML = '<span class="material-icons">close</span>';
-      closeButton.style.cssText = `
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(15px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 50%;
-          transition: all 0.3s ease;
-          color: white;
-      `;
-
-      closeButton.addEventListener('mouseover', function() {
-          this.style.background = 'rgba(230, 81, 0, 0.2)';
-          this.style.borderColor = 'rgba(230, 81, 0, 0.4)';
-          this.style.transform = 'scale(1.1)';
-      });
-
-      closeButton.addEventListener('mouseout', function() {
-          this.style.background = 'rgba(255, 255, 255, 0.1)';
-          this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-          this.style.transform = 'scale(1)';
-      });
-
-      closeButton.addEventListener('click', closeMenu);
-      dropdownMenu.appendChild(closeButton);
-
-      // Add event listeners to navigation links
-      navLinks.forEach(link => {
-          const section = link.getAttribute('data-section');
-          
-          // Handle both touch and click events
-          const handleNavigation = function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              if (section) {
-                  navigateTo(section);
-              }
-          };
-
-          link.addEventListener('touchend', handleNavigation);
-          link.addEventListener('click', handleNavigation);
-      });
-    }
-
-    // Enforce strict layout on mobile (modified to not interfere with dropdown)
-    function enforceLayout() {
-      if (window.innerWidth <= 768) {
-        const pageContainer = document.querySelector('.page-container');
-        const header = document.querySelector('.header');
-        const mainContent = document.querySelector('.main-content');
-        const footer = document.querySelector('.footer');
-        
-        // Force exact heights but don't use fixed positioning
-        pageContainer.style.height = '100vh';
-        pageContainer.style.maxHeight = '100vh';
-        pageContainer.style.overflow = 'hidden';
-        
-        // Calculate and set exact heights
-        const headerHeight = window.innerWidth <= 480 ? 55 : 60;
-        const footerHeight = window.innerWidth <= 480 ? 75 : 80;
-        const mainHeight = window.innerHeight - headerHeight - footerHeight;
-        
-        header.style.height = headerHeight + 'px';
-        footer.style.height = footerHeight + 'px';
-        mainContent.style.height = mainHeight + 'px';
-        mainContent.style.maxHeight = mainHeight + 'px';
-        
-        // Prevent any scrolling
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-        
-        // Don't use fixed positioning as it interferes with dropdown
-        pageContainer.style.position = 'relative';
-      }
-    }
-
-    // Listen for orientation changes and resize
-    window.addEventListener('resize', function() {
-      enforceLayout();
-    });
-    
-    window.addEventListener('orientationchange', function() {
-      setTimeout(function() {
-        enforceLayout();
-      }, 100);
-    });
-
-    // Prevent context menu on mobile to avoid scrolling issues
-    document.addEventListener('contextmenu', function(e) {
-      if (window.innerWidth <= 768 && !dropdownMenu.contains(e.target)) {
-        e.preventDefault();
-      }
-    });
-
-    // Additional scroll prevention (but allow dropdown interaction)
-    window.addEventListener('scroll', function(e) {
-      if (window.innerWidth <= 768 && !dropdownMenu.classList.contains('active')) {
-        window.scrollTo(0, 0);
-      }
-    });
-  </script>
+    </div>
 </body>
 </html>
-
-
-
